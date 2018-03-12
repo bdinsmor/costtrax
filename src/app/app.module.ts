@@ -12,6 +12,11 @@ import { HomeModule } from './home/home.module';
 import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { MessagesComponent } from './messages/messages.component';
+import { ProjectsComponent } from './projects/projects.component';
+import { ProjectDetailsComponent } from './project-details/project-details.component';
+import { RequestsComponent } from './requests/requests.component';
+import { ProjectDetailsDialogComponent } from '@app/project-details/project-dialog.component';
 
 @NgModule({
   imports: [
@@ -27,7 +32,15 @@ import { AppRoutingModule } from './app-routing.module';
     LoginModule,
     AppRoutingModule
   ],
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    MessagesComponent,
+    ProjectsComponent,
+    ProjectDetailsDialogComponent,
+    ProjectDetailsComponent,
+    RequestsComponent
+  ],
+  entryComponents: [ProjectDetailsDialogComponent],
   providers: [
   ],
   bootstrap: [AppComponent]

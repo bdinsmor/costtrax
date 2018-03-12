@@ -1,10 +1,11 @@
-<mat-toolbar class="mat-elevation-z6 navbar" color="primary">
+<mat-toolbar class="navbar">
   <div fxHide.gt-sm fxLayoutAlign="start center">
     <button class="menu-button" mat-icon-button (click)="sidenav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
-    <span class="title">{{title}}</span>
+    
   </div>
+  <span class="brand">RE</span><span class="brand2">COVER</span>
   <span fxFlex></span>
   <button mat-icon-button [matMenuTriggerFor]="userMenu">
     <mat-icon>person</mat-icon>

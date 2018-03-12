@@ -1,0 +1,51 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <span class="dialog-title-inline">Start a New Request</span>
+
+  <mat-radio-group class="radio-smaller">
+    <mat-radio-button value="1">via an Existing Project</mat-radio-button>
+    <mat-radio-button value="2">Request a New Project Be Created</mat-radio-button>
+  </mat-radio-group>
+</div>
+
+
+<mat-dialog-content>
+  <mat-horizontal-stepper #stepper="matHorizontalStepper">
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Select Project</ng-template>
+        <div>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <form>
+        <ng-template matStepLabel>Select Cost Type</ng-template>
+
+        <div>
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Enter Cost Details</ng-template>
+      You are now done.
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="stepper.reset()">Reset</button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Sign and Submit</ng-template>
+      You are now done.
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="stepper.reset()">Reset</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color='accent'>Submit</button>
+</mat-dialog-actions>

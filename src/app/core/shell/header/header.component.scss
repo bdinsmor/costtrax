@@ -1,5 +1,4 @@
 @import "src/theme/theme-variables";
-
 .navbar {
   position: fixed;
   top: 0;
@@ -9,9 +8,12 @@
 }
 
 .brand {
-  color: mat-color($app-primary, "default-contrast");
+  color: mat-color($app-primary, 500, 0.9);
   text-decoration: none;
-  padding-right: 1rem;
+}
+
+.brand2 {
+  color: mat-color($app-primary, 'lighter-contrast');
 }
 
 .menu-button {

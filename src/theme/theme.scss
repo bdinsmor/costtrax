@@ -6,6 +6,7 @@
 // stylelint-disable-next-line selector-max-universal
 * {
   box-sizing: border-box;
+
 }
 
 html,
@@ -14,4 +15,19 @@ body {
   flex-direction: column;
   margin: 0;
   height: 100%;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: rgba(0,0,0,0.688) !important;
+}
+
+.mat-raised-button.mat-primary,
+.mat-fab.mat-primary,
+.mat-mini-fab.mat-primary {
+  color: rgba(255,255,255,0.88);
+}
+
+.mat-divider {
+  border-color: rgba(0, 0, 0, 0.37) !important;
+  border-top-width: 2px !important;
 }
