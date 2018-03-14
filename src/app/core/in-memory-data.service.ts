@@ -8,18 +8,21 @@ export interface Activity {
   date: Date;
 }
 export interface Project {
+  id: String;
   action: string;
   requestNo: string;
   projectName: string;
   date: Date;
 }
 export interface Request {
+  id: String;
   action: string;
   requestNo: string;
   projectName: string;
   date: Date;
 }
 export interface Message {
+  id: String;
   user: String;
   text: String;
   date: Date;
@@ -44,14 +47,16 @@ export class InMemoryDataService implements InMemoryDbService {
 
   createMessages(): Message[] {
     const msg: Message[] = [];
-    for (let i = 0; i < this.chance.integer({ min: 1, max: 17 }); i++) {
+    for (let i = 0; i < 5; i++) {
       const m: Message = {
+        id: this.chance.integer(),
         user: this.chance.name(),
         date: new Date(this.chance.date({ year: 1983 })),
         text: this.chance.sentence()
       };
       msg.push(m);
     }
+    console.log('messages: ' + msg.length);
     return msg;
   }
 }

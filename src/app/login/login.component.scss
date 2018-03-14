@@ -1,4 +1,4 @@
-@import "src/theme/theme-variables";
+@import 'src/styles/theme/theme-variables';
 
 :host {
   display: flex;
@@ -17,7 +17,7 @@
 
 .subtitle {
   font-size: 85%;
-  color: (0,0,0,0.80);
+  color: (0, 0, 0, 0.8);
 }
 
 .inline-loader {

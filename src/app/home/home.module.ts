@@ -17,6 +17,8 @@ import { ProjectDetailsComponent } from '@app/project-details/project-details.co
 import { MessagesService } from '@app/messages/messages.service';
 import { ProjectsService } from '../projects/projects.service';
 import { RequestsService } from '../requests/requests.service';
+import { MessagesModule } from '@app/messages/messages.module';
+import { MessagesListComponent } from '@app/messages/messages-list/messages-list.component';
 
 @NgModule({
   imports: [
@@ -32,6 +34,7 @@ import { RequestsService } from '../requests/requests.service';
     HomeComponent,
     MessagesComponent,
     ProjectsComponent,
+    MessagesListComponent,
     ProjectDetailsDialogComponent,
     ProjectDetailsComponent,
     RequestsComponent

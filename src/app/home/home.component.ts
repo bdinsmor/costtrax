@@ -5,8 +5,9 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 
 import { QuoteService } from './quote.service';
 import { ProjectDetailsDialogComponent } from '@app/project-details/project-dialog.component';
-import { Activity } from '@app/core/in-memory-data.service';
+import { Activity, Message } from '@app/core/in-memory-data.service';
 import { MessagesService } from '../messages/messages.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-home',
@@ -15,17 +16,19 @@ import { MessagesService } from '../messages/messages.service';
 })
 export class HomeComponent implements OnInit {
   quote: string;
-  isLoading: boolean;
-  activities: Activity[];
-  constructor(public dialog: MatDialog, private messagesService: MessagesService) {}
+  messages$: Observable<Message[]>;
+  loading$: Observable<boolean>;
+  constructor(public dialog: MatDialog, private messagesService: MessagesService) {
+    this.messages$ = messagesService.entities$;
+    this.loading$ = messagesService.loading$;
+  }
 
   ngOnInit() {
-    this.isLoading = true;
     this.loadActivities();
   }
 
   loadActivities(): void {
-    this.messagesService.getActivities().subscribe(activities => (this.activities = activities));
+    this.messagesService.getAll();
   }
 
   // break out into new project module

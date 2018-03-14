@@ -1,7 +1,6 @@
-<mat-list fxFlex>
-  <h3 mat-subheader>Messages</h3>
-  <mat-divider></mat-divider>
-  <mat-list-item class="left" *ngFor="let message of messages">
-    <h4 mat-line>{{message.text}}</h4>
-  </mat-list-item>
-</mat-list>
+<div *ngIf="messages$ | async as messages">
+  <mat-spinner *ngIf="loading$ | async;else messagesList" mode="indeterminate" color="accent"></mat-spinner>
+  <ng-template #messagesList>
+    <app-messages-list [messages]="messages" [commands]="commands"></app-messages-list>
+  </ng-template>
+</div>

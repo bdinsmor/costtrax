@@ -15,7 +15,7 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
-      "styles": ["main.scss"],
+      "styles": ["styles/main.scss", "styles/styles.scss"],
       "scripts": ["../node_modules/chance/dist/chance.min.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {

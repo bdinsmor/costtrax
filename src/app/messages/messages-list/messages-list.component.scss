@@ -1,0 +1,9 @@
+@import '../../../styles/theme/theme-variables.scss';
+
+.messages {
+  @include item-list;
+}
+
+.mat-card {
+  @include mat-card-layout;
+}

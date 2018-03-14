@@ -6,11 +6,14 @@
 // stylelint-disable-next-line selector-max-universal
 * {
   box-sizing: border-box;
-
 }
 
-html,
-body {
+.page-content {
+  margin: 1em;
+}
+
+body,
+html {
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -18,13 +21,13 @@ body {
 }
 
 .cdk-overlay-dark-backdrop {
-  background: rgba(0,0,0,0.688) !important;
+  background: rgba(0, 0, 0, 0.688) !important;
 }
 
-.mat-raised-button.mat-primary,
 .mat-fab.mat-primary,
-.mat-mini-fab.mat-primary {
-  color: rgba(255,255,255,0.88);
+.mat-mini-fab.mat-primary,
+.mat-raised-button.mat-primary {
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .mat-divider {

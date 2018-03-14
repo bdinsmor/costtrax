@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
 import { MessagesService } from './messages.service';
+import { Component, OnInit } from '@angular/core';
 import { Message } from '@app/core/in-memory-data.service';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-messages',
@@ -8,14 +9,18 @@ import { Message } from '@app/core/in-memory-data.service';
   styleUrls: ['./messages.component.scss']
 })
 export class MessagesComponent implements OnInit {
-  messages: Message[];
-  constructor(private messagesService: MessagesService) {}
+  messages$: Observable<Message[]>;
+  loading$: Observable<boolean>;
+  constructor(private messagesService: MessagesService) {
+    this.messages$ = messagesService.entities$;
+    this.loading$ = messagesService.loading$;
+  }
 
   ngOnInit() {
     this.getMessages();
   }
 
   getMessages(): void {
-    this.messagesService.getMessages().subscribe(messages => (this.messages = messages));
+    this.messagesService.getAll();
   }
 }
