@@ -17,20 +17,20 @@ import { HttpCacheService } from './http/http-cache.service';
 import { ApiPrefixInterceptor } from './http/api-prefix.interceptor';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService } from './in-memory-data.service';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
+    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService),
     TranslateModule,
     FlexLayoutModule,
     MaterialModule,
     RouterModule
   ],
-  declarations: [
-    HeaderComponent,
-    ShellComponent
-  ],
+  declarations: [HeaderComponent, ShellComponent],
   providers: [
     AuthenticationService,
     AuthenticationGuard,
@@ -55,12 +55,14 @@ import { CacheInterceptor } from './http/cache.interceptor';
   ]
 })
 export class CoreModule {
-
-  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
+  constructor(
+    @Optional()
+    @SkipSelf()
+    parentModule: CoreModule
+  ) {
     // Import guard
     if (parentModule) {
       throw new Error(`${parentModule} has already been loaded. Import Core module in the AppModule only.`);
     }
   }
-
 }

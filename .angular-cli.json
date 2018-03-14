@@ -7,11 +7,7 @@
     {
       "root": "src",
       "outDir": "dist",
-      "assets": [
-        "assets",
-        "favicon.ico",
-        "robots.txt"
-      ],
+      "assets": ["assets", "favicon.ico", "robots.txt"],
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
@@ -19,10 +15,8 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
-      "styles": [
-        "main.scss"
-      ],
-      "scripts": [],
+      "styles": ["main.scss"],
+      "scripts": ["../node_modules/chance/dist/chance.min.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

@@ -9,6 +9,14 @@ import { MaterialModule } from '@app/material.module';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { QuoteService } from './quote.service';
+import { MessagesComponent } from '@app/messages/messages.component';
+import { RequestsComponent } from '@app/requests/requests.component';
+import { ProjectsComponent } from '@app/projects/projects.component';
+import { ProjectDetailsDialogComponent } from '@app/project-details/project-dialog.component';
+import { ProjectDetailsComponent } from '@app/project-details/project-details.component';
+import { MessagesService } from '@app/messages/messages.service';
+import { ProjectsService } from '../projects/projects.service';
+import { RequestsService } from '../requests/requests.service';
 
 @NgModule({
   imports: [
@@ -21,10 +29,14 @@ import { QuoteService } from './quote.service';
     HomeRoutingModule
   ],
   declarations: [
-    HomeComponent
+    HomeComponent,
+    MessagesComponent,
+    ProjectsComponent,
+    ProjectDetailsDialogComponent,
+    ProjectDetailsComponent,
+    RequestsComponent
   ],
-  providers: [
-    QuoteService
-  ]
+  entryComponents: [ProjectDetailsDialogComponent],
+  providers: [MessagesService, ProjectsService, RequestsService]
 })
-export class HomeModule { }
+export class HomeModule {}

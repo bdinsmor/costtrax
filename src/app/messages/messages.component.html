@@ -1,3 +1,7 @@
-<p>
-  messages works!
-</p>
+<mat-list fxFlex>
+  <h3 mat-subheader>Messages</h3>
+  <mat-divider></mat-divider>
+  <mat-list-item class="left" *ngFor="let message of messages">
+    <h4 mat-line>{{message.text}}</h4>
+  </mat-list-item>
+</mat-list>

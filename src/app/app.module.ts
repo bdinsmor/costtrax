@@ -12,11 +12,6 @@ import { HomeModule } from './home/home.module';
 import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { MessagesComponent } from './messages/messages.component';
-import { ProjectsComponent } from './projects/projects.component';
-import { ProjectDetailsComponent } from './project-details/project-details.component';
-import { RequestsComponent } from './requests/requests.component';
-import { ProjectDetailsDialogComponent } from '@app/project-details/project-dialog.component';
 
 @NgModule({
   imports: [
@@ -32,17 +27,8 @@ import { ProjectDetailsDialogComponent } from '@app/project-details/project-dial
     LoginModule,
     AppRoutingModule
   ],
-  declarations: [
-    AppComponent,
-    MessagesComponent,
-    ProjectsComponent,
-    ProjectDetailsDialogComponent,
-    ProjectDetailsComponent,
-    RequestsComponent
-  ],
-  entryComponents: [ProjectDetailsDialogComponent],
-  providers: [
-  ],
+  declarations: [AppComponent],
+  providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
