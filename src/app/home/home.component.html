@@ -6,24 +6,7 @@
         <button mat-raised-button color='primary'>via an Existing Project</button>
         <a href="#" class="primary-link">or via a New Project</a>
       </div>
-      <div fxFlex fxLayoutAlign="start center">
-        <mat-list fxFlex>
-          <h3 mat-subheader>Latest Activity</h3>
-          <mat-divider></mat-divider>
-          <mat-list-item class="left" *ngFor="let activity of activities">
-            <h4 mat-line>Georgia DOT
-              <strong>{{activity.action}}</strong> for {{activity.requestNo}} for {{activity.projectName}} </h4>
-            <div fxLayout="row" fxLayoutGap="4px">
-              <button mat-button class="mat-button-outline nmat-elevation-z2" (click)="showInfo(activity)">
-                View
-              </button>
-              <button mat-icon-button (click)="showInfo(activity)">
-                Clear
-              </button>
-            </div>
-          </mat-list-item>
-        </mat-list>
-      </div>
+
     </mat-tab>
     <mat-tab label="Requests">
       <div class="demo-tab-content">

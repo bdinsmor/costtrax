@@ -13,7 +13,6 @@ import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppStoreModule } from './store/app-store.module';
-import { MessagesModule } from '@app/messages/messages.module';
 
 @NgModule({
   imports: [

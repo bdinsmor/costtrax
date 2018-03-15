@@ -1,17 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { MessagesService } from './messages.service';
-import { SharedModule } from '../shared/shared.module';
+import { CoreModule } from '@app/core';
+import { SharedModule } from '@app/shared';
 import { MaterialModule } from '@app/material.module';
+import { MessagesService } from './messages.service';
 import { MessagesComponent } from './messages.component';
 import { MessagesListComponent } from './messages-list/messages-list.component';
-import { MessagesRoutingModule } from './messages-routing.module';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, MaterialModule, MessagesRoutingModule],
-  exports: [MessagesComponent],
+  imports: [CommonModule, TranslateModule, CoreModule, SharedModule, FlexLayoutModule, MaterialModule],
   declarations: [MessagesComponent, MessagesListComponent],
+  exports: [MessagesComponent, MessagesListComponent],
   providers: [MessagesService]
 })
 export class MessagesModule {}

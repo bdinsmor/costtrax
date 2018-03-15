@@ -22,7 +22,7 @@ export interface Request {
   date: Date;
 }
 export interface Message {
-  id: String;
+  id: number;
   user: String;
   text: String;
   date: Date;
@@ -49,7 +49,7 @@ export class InMemoryDataService implements InMemoryDbService {
     const msg: Message[] = [];
     for (let i = 0; i < 5; i++) {
       const m: Message = {
-        id: this.chance.integer(),
+        id: this.chance.integer({ min: 156, max: 1523453 }),
         user: this.chance.name(),
         date: new Date(this.chance.date({ year: 1983 })),
         text: this.chance.sentence()

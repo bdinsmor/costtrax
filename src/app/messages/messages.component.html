@@ -1,6 +1,7 @@
 <div *ngIf="messages$ | async as messages">
   <mat-spinner *ngIf="loading$ | async;else messagesList" mode="indeterminate" color="accent"></mat-spinner>
   <ng-template #messagesList>
+    <h3>Count: {{count$ | async}}</h3>
     <app-messages-list [messages]="messages" [commands]="commands"></app-messages-list>
   </ng-template>
 </div>
