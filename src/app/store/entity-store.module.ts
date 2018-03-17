@@ -1,16 +1,24 @@
 import { NgModule } from '@angular/core';
 import { EntityMetadataMap, NgrxDataModule } from 'ngrx-data';
-import { Message } from '../core/in-memory-data.service';
 
 export const entityMetadata: EntityMetadataMap = {
   Project: {},
+  Contacts: {},
+  Mails: {},
   Request: {},
   Message: {},
   Activity: {}
 };
 
 // because the plural of "hero" is not "heros"
-export const pluralNames = { Project: 'Projects', Request: 'Requests', Message: 'Messages', Activity: 'Activities' };
+export const pluralNames = {
+  Contacts: 'Contacts',
+  Mails: 'Mails',
+  Project: 'Projects',
+  Request: 'Requests',
+  Message: 'Messages',
+  Activity: 'Activities'
+};
 
 @NgModule({
   imports: [NgrxDataModule.forRoot({ entityMetadata: entityMetadata, pluralNames: pluralNames })]

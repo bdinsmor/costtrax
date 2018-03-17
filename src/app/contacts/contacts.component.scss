@@ -1,0 +1,15 @@
+@import 'src/styles/theme/theme-variables';
+
+#contacts {
+  .content {
+    overflow: hidden;
+  }
+
+  .mat-primary-bg {
+    background-color: mat-color($app-primary, 500, 0.9);
+  }
+
+  .mat-accent-bg {
+    background-color: mat-color($app-primary, 500, 0.9);
+  }
+}

@@ -1,15 +1,17 @@
 @import 'theme/theme-variables';
+@import 'material-fix';
 
-html,
-body {
+body,
+html {
   font-family: 'Roboto', sans-serif;
-  margin: 0px;
+  margin: 0;
   background-color: #ffffff;
 }
 
 .router-link-active {
   @include primary-background-contrast-color;
 }
+
 .page-content {
   margin: 1em;
 }

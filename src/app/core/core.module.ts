@@ -18,14 +18,17 @@ import { ApiPrefixInterceptor } from './http/api-prefix.interceptor';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
+import { PipesModule } from '@app/core/pipes/pipes.module';
+import { FakeDbService } from '@app/core/fake-db/fake-db.service';
+import { AppMatchMediaService } from '@app/core/services/app-match-media.service';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
-    HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService),
+    HttpClientInMemoryWebApiModule.forRoot(FakeDbService),
     TranslateModule,
+    PipesModule,
     FlexLayoutModule,
     MaterialModule,
     RouterModule
@@ -36,6 +39,7 @@ import { InMemoryDataService } from './in-memory-data.service';
     AuthenticationGuard,
     I18nService,
     HttpCacheService,
+    AppMatchMediaService,
     ApiPrefixInterceptor,
     ErrorHandlerInterceptor,
     CacheInterceptor,

@@ -1,4 +1,6 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
+import { Contact } from '@app/contacts/contact.model';
+import { Mail } from '@app/mail/mail.model';
 declare var Chance: any; // for externals librairies
 
 export interface Activity {
@@ -41,8 +43,53 @@ export class InMemoryDataService implements InMemoryDbService {
     ];
     const projects: Project[] = [];
     const requests: Request[] = [];
-    const messages: Message[] = this.createMessages();
-    return { activities: activities, messages: messages };
+    const contacts: Contact[] = this.createContacts();
+    const mails: Mail[] = this.createMails();
+    return { activities: activities, contacts: contacts, mails: mails };
+  }
+
+  createMails(): Mail[] {
+    const list: Mail[] = [];
+
+    return list;
+  }
+
+  createContacts(): Contact[] {
+    const list: Contact[] = [];
+    for (let i = 0; i < 25; i++) {
+      let id: String = '';
+      if (i === 0) {
+        id = '5725a6802d10e277a0f35724';
+      } else {
+        id = this.chance.guid();
+      }
+
+      // name: string;
+      // lastName: string;
+      // avatar: string;
+      // nickname: string;
+      // company: string;
+      // jobTitle: string;
+      // email: string;
+      // phone: string;
+      // address: string;
+      // birthday: string;
+      // notes: string;
+      const c: Contact = new Contact({
+        id: id,
+        name: this.chance.first(),
+        lastName: this.chance.last(),
+        birthday: this.chance.birthday(),
+        phone: this.chance.phone(),
+        nickname: this.chance.last(),
+        address: this.chance.address(),
+        notes: this.chance.paragraph(),
+        company: this.chance.company(),
+        jobTitle: this.chance.profession()
+      });
+      list.push(c);
+    }
+    return list;
   }
 
   createMessages(): Message[] {

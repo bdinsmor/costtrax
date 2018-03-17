@@ -2,6 +2,9 @@
   <mat-spinner *ngIf="loading$ | async;else messagesList" mode="indeterminate" color="accent"></mat-spinner>
   <ng-template #messagesList>
     <h3>Count: {{count$ | async}}</h3>
+    <button mat-raised-button matBadge="22" matBadgePosition="below before">
+      <mat-icon color="primary">home</mat-icon>
+    </button>
     <app-messages-list [messages]="messages" [commands]="commands"></app-messages-list>
   </ng-template>
 </div>

@@ -1,0 +1,17 @@
+@import 'src/styles/theme/theme-variables';
+
+app-contacts-contact-list {
+  mat-cell.mat-cell,
+  mat-header-cell.mat-header-cell {
+    overflow: visible;
+  }
+}
+
+#add-contact-button {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

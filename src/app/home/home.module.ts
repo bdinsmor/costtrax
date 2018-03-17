@@ -9,16 +9,16 @@ import { MaterialModule } from '@app/material.module';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { QuoteService } from './quote.service';
-import { MessagesComponent } from '@app/messages/messages.component';
 import { RequestsComponent } from '@app/requests/requests.component';
 import { ProjectsComponent } from '@app/projects/projects.component';
 import { ProjectDetailsDialogComponent } from '@app/project-details/project-dialog.component';
 import { ProjectDetailsComponent } from '@app/project-details/project-details.component';
-import { MessagesService } from '@app/messages/messages.service';
 import { ProjectsService } from '../projects/projects.service';
 import { RequestsService } from '../requests/requests.service';
-import { MessagesListComponent } from '@app/messages/messages-list/messages-list.component';
-import { MessagesModule } from '../messages/messages.module';
+import { ContactsModule } from '@app/contacts/contacts.module';
+import { MailModule } from '@app/mail/mail.module';
+import { PipesModule } from '@app/core/pipes/pipes.module';
+import { ContactsComponent } from '../contacts/contacts.component';
 
 @NgModule({
   imports: [
@@ -26,9 +26,11 @@ import { MessagesModule } from '../messages/messages.module';
     TranslateModule,
     CoreModule,
     SharedModule,
+    PipesModule,
     FlexLayoutModule,
     MaterialModule,
-    MessagesModule,
+    MailModule,
+    ContactsModule,
     HomeRoutingModule
   ],
   declarations: [
