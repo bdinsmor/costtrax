@@ -1,4 +1,4 @@
-@import 'src/styles/theme/theme-variables';
+@import 'src/styles/styles';
 
 .navbar {
   position: fixed;
@@ -6,15 +6,16 @@
   left: 0;
   right: 0;
   z-index: 1;
+  max-height: 65px;
 }
 
 .brand {
-  color: mat-color($app-primary, 500, 0.9);
+  color: mat-color($primary, 500, 0.9);
   text-decoration: none;
 }
 
 .brand2 {
-  color: mat-color($app-primary, 'lighter-contrast');
+  color: mat-color($primary, 'lighter-contrast');
 }
 
 .menu-button {

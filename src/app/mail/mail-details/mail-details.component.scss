@@ -1,4 +1,4 @@
-@import 'src/styles/theme/theme-variables';
+@import 'src/styles/styles';
 
 :host {
   display: flex;
@@ -58,7 +58,7 @@
 
       .avatar {
         margin-right: 16px;
-        background-color: mat-color($app-accent);
+        background-color: mat-color($accent);
       }
 
       .name {

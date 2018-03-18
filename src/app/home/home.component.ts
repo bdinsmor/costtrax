@@ -19,7 +19,9 @@ export class HomeComponent implements OnInit {
   loading$: Observable<boolean>;
   constructor(public dialog: MatDialog) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('inside home');
+  }
 
   // break out into new project module
   showInfo(activity: Activity): void {

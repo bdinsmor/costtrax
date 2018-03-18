@@ -1,4 +1,4 @@
-@import 'src/styles/theme/theme-variables';
+@import 'src/styles/styles';
 
 :host {
   display: flex;
@@ -23,13 +23,13 @@
 
   &:hover {
     background: rgba(0, 0, 0, 0.05);
+    // See https://angular.io/guide/component-styles#deep
+    // Force style down to child components
   }
 }
 
-.mat-sidenav,
 .mat-drawer-content,
-// Force style down to child components
-// See https://angular.io/guide/component-styles#deep
+.mat-sidenav,
 :host ::ng-deep .mat-drawer-backdrop {
   top: 64px;
   bottom: 0;
@@ -38,10 +38,9 @@
   height: auto;
   position: absolute;
 }
-
 @media ($mat-xsmall) {
-  .mat-sidenav,
   .mat-drawer-content,
+  .mat-sidenav,
   :host ::ng-deep .mat-drawer-backdrop {
     top: 56px;
   }

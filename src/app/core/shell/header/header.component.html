@@ -1,11 +1,6 @@
 <mat-toolbar class="navbar">
-  <div fxHide.gt-sm fxLayoutAlign="start center">
-    <button class="menu-button" mat-icon-button (click)="sidenav.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    
-  </div>
-  <span class="brand">RE</span><span class="brand2">COVER</span>
+  <span class="brand">RE</span>
+  <span class="brand2">COVER</span>
   <span fxFlex></span>
   <button mat-icon-button [matMenuTriggerFor]="userMenu">
     <mat-icon>person</mat-icon>
@@ -13,7 +8,8 @@
   <mat-menu #userMenu="matMenu">
     <mat-list>
       <mat-list-item>
-        <span translate>Logged in as</span>&nbsp;<b>{{username}}</b>
+        <span translate>Logged in as</span>&nbsp;
+        <b>{{username}}</b>
       </mat-list-item>
       <mat-divider></mat-divider>
     </mat-list>

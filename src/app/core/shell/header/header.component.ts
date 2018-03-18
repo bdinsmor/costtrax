@@ -1,10 +1,8 @@
 import { Title } from '@angular/platform-browser';
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSidenav } from '@angular/material';
 
 import { AuthenticationService } from '../../authentication/authentication.service';
-import { I18nService } from '../../i18n.service';
 
 @Component({
   selector: 'app-header',
@@ -12,31 +10,16 @@ import { I18nService } from '../../i18n.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  constructor(
+    private router: Router,
+    private titleService: Title,
+    private authenticationService: AuthenticationService
+  ) {}
 
-  @Input() sidenav: MatSidenav;
-
-  constructor(private router: Router,
-              private titleService: Title,
-              private authenticationService: AuthenticationService,
-              private i18nService: I18nService) { }
-
-  ngOnInit() { }
-
-  setLanguage(language: string) {
-    this.i18nService.language = language;
-  }
+  ngOnInit() {}
 
   logout() {
-    this.authenticationService.logout()
-      .subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
-  }
-
-  get currentLanguage(): string {
-    return this.i18nService.language;
-  }
-
-  get languages(): string[] {
-    return this.i18nService.supportedLanguages;
+    this.authenticationService.logout().subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
   }
 
   get username(): string {
@@ -47,5 +30,4 @@ export class HeaderComponent implements OnInit {
   get title(): string {
     return this.titleService.getTitle();
   }
-
 }

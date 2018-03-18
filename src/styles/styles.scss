@@ -1,17 +1,4 @@
-@import 'theme/theme-variables';
-@import 'material-fix';
-
-body,
-html {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  background-color: #ffffff;
-}
-
-.router-link-active {
-  @include primary-background-contrast-color;
-}
-
-.page-content {
-  margin: 1em;
-}
+// Variables
+@import "variables/theme";
+// Mixins
+@import "mixins/breakpoints";

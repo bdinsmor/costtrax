@@ -9,16 +9,7 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./shell.component.scss']
 })
 export class ShellComponent implements OnInit {
+  constructor(private media: ObservableMedia) {}
 
-  @ViewChild('sidenav') sidenav: MatSidenav;
-
-  constructor(private media: ObservableMedia) { }
-
-  ngOnInit() {
-    // Automatically close side menu on screens > sm breakpoint
-    this.media.asObservable()
-      .pipe(filter((change: MediaChange) => (change.mqAlias !== 'xs' && change.mqAlias !== 'sm')))
-      .subscribe(() => this.sidenav.close());
-  }
-
+  ngOnInit() {}
 }
