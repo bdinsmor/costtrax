@@ -1,7 +1,7 @@
-<div class="container">
-  <mat-tab-group class="demo-tab-group">
+<div class="container" fxLayoutAlign="start center">
+  <mat-tab-group class="full-width">
     <mat-tab label="Home">
-      <div class="demo-tab-content title-color" fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="center center">
+      <div class="title-color" fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="center center">
         <h2>Start A New Request</h2>
         <button mat-raised-button color='primary'>via an Existing Project</button>
         <a href="#" class="primary-link">or via a New Project</a>
@@ -9,20 +9,21 @@
 
     </mat-tab>
     <mat-tab label="Requests">
-      <div class="demo-tab-content">
+      <div>
         <app-requests></app-requests>
       </div>
     </mat-tab>
     <mat-tab label="Projects">
-      <div class="demo-tab-content">
+      <div>
         <app-projects></app-projects>
       </div>
     </mat-tab>
     <mat-tab label="Messages">
 
     </mat-tab>
-    <mat-tab label="Contractors">
-      <div class="demo-tab-content">
+
+    <mat-tab class="tab-spacer" fxFlexAlign="end" label="Contractors">
+      <div>
         <app-contacts></app-contacts>
       </div>
     </mat-tab>

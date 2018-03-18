@@ -6,7 +6,8 @@
   left: 0;
   right: 0;
   z-index: 1;
-  max-height: 65px;
+  max-height: 55px;
+  @include mat-elevation(1);
 }
 
 .brand {

@@ -1,6 +1,14 @@
 .container {
-  text-align: center;
   padding: 1em;
+  width: 100%;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.tab-spacer {
+  flex: 1 1 auto;
 }
 
 a:-webkit-any-link {
@@ -9,18 +17,11 @@ a:-webkit-any-link {
 
 .mat-button-outline {
   border: 1px solid rgba(0, 0, 0, 0.47);
-  background-color: rgba(255,255,255,0.9);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
-.demo-tab-content {
+.tab-content {
   padding: 16px;
-}
-
-.example-container {
-  display: flex;
-  flex-direction: column;
-  max-height: 500px;
-  min-width: 300px;
 }
 
 .mat-table {
@@ -37,13 +38,9 @@ a:-webkit-any-link {
 }
 
 .title-color {
-  color: #A4A4A6;
+  color: #a4a4a6;
 }
 
 .primary-color {
-  color: rgba(0,0,0,0.47);
+  color: rgba(0, 0, 0, 0.47);
 }
-
-
-
-

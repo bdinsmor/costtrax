@@ -3,6 +3,10 @@ app-contacts-contact-list {
   mat-header-cell.mat-header-cell {
     overflow: visible;
   }
+
+  .full-width {
+    width: 100%;
+  }
 }
 
 #add-contact-button {

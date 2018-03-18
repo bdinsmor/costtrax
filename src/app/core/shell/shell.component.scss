@@ -4,6 +4,14 @@
   display: flex;
   flex: 1;
 }
+.content {
+  float: left;
+  clear: both;
+}
+
+.full-width {
+  width: 100%;
+}
 
 .mat-sidenav {
   min-width: 270px;
