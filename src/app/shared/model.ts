@@ -42,6 +42,11 @@ export class Cost {
   subtotal: number;
   total: number;
   date: Date;
+  approved: Boolean;
+  reason: Boolean;
+  approver: Contact;
+  actionDate: Date;
+  submitDate: Date;
 }
 
 export class SubcontractorCosts {
@@ -57,19 +62,6 @@ export class SubcontractorCosts {
   }
 }
 
-export class OtherCost {
-  enabled: Boolean;
-  total: number;
-  costs: Array<Cost>;
-  constructor(otherCost: any) {
-    {
-      this.enabled = otherCost.enabled || false;
-      this.total = otherCost.total || 0;
-      this.costs = otherCost.costs || new Array<Cost>();
-    }
-  }
-}
-
 export class MaterialCost {
   description: string;
   costPerUnit: number;
@@ -78,6 +70,11 @@ export class MaterialCost {
   subtotal: number;
   total: number;
   date: Date;
+  approved: Boolean;
+  reason: Boolean;
+  approver: Contact;
+  actionDate: Date;
+  submitDate: Date;
 }
 
 export class MaterialCosts {
@@ -102,6 +99,12 @@ export class LaborCost {
   doubleTime: number;
   fut: number;
   sut: number;
+  approved: Boolean;
+  reason: Boolean;
+  approver: Contact;
+  actionDate: Date;
+  submitDate: Date;
+
   constructor(laborCost: any) {
     {
       this.employee = laborCost.employee || new Contact({});
@@ -124,6 +127,9 @@ export class LaborCosts {
   additives: number;
   totalCost: number;
   submitter: Contact;
+  submitDate: Date;
+  actionDate: Date;
+
   constructor(laborCosts: any) {
     {
       this.zipCode = laborCosts.zipCode || '90210';
@@ -154,6 +160,11 @@ export class ActiveCost {
   hours: number;
   transportationCost: number;
   total: number;
+  approved: Boolean;
+  reason: Boolean;
+  approver: Contact;
+  actionDate: Date;
+  submitDate: Date;
 }
 
 export class StandbyCost {
@@ -161,6 +172,11 @@ export class StandbyCost {
   transportationCost: number;
   total: number;
   hours: number;
+  approved: Boolean;
+  reason: Boolean;
+  approver: Contact;
+  actionDate: Date;
+  submitDate: Date;
 }
 
 export class RentalCost {
@@ -170,6 +186,11 @@ export class RentalCost {
   other: number;
   invoice: ByteString;
   total: number;
+  approved: Boolean;
+  reason: Boolean;
+  approver: Contact;
+  actionDate: Date;
+  submitDate: Date;
 }
 
 export class ActiveCosts {
@@ -241,12 +262,12 @@ export class RentalCosts {
 
 export class OtherCosts {
   enabled: Boolean;
-  costs: Array<OtherCost>;
+  costs: Array<Cost>;
   total: number;
   constructor(otherCosts: any) {
     {
       this.enabled = otherCosts.enabled || false;
-      this.costs = otherCosts.costs || new Array<OtherCost>();
+      this.costs = otherCosts.costs || new Array<Cost>();
       this.total = otherCosts.total || 0;
     }
   }

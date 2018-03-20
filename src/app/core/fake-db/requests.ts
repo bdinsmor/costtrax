@@ -32,12 +32,23 @@ export class RequestsFakeDb {
   public requests: Array<Request>;
   public companies: Array<Company>;
 
-  constructor(numProjects: number, numCompanies: number, numRequests: number) {
+  constructor() {
     this.chance = new Chance();
-    this.createMachines();
-    this.createProjects(numProjects);
-    this.createCompanies(numCompanies);
-    this.createRequests(numRequests);
+    try {
+      const numProjects = this.chance.integer({ min: 5, max: 30 });
+      const numCompanies = this.chance.integer({ min: 2, max: 15 });
+      const numRequests = this.chance.integer({ min: 100, max: 500 });
+      this.createMachines();
+      console.log('number of machines:  ' + this.machines.length);
+      this.createProjects(numProjects);
+      console.log('number of projects:  ' + this.projects.length);
+      this.createCompanies(numCompanies);
+      console.log('number of companies:  ' + this.companies.length);
+      this.createRequests(numRequests);
+      console.log('number of requests:  ' + this.requests.length);
+    } catch (error) {
+      console.error('Error: ', error);
+    }
   }
 
   getRequests(): Array<Request> {
@@ -68,7 +79,7 @@ export class RequestsFakeDb {
       m.year = this.chance.year({ min: 2008, max: 2018 });
       m.ownershipCost = this.chance.floating({ min: 10, max: 50, fixed: 2 });
       m.operatingCost = this.chance.floating({ min: 15, max: 60, fixed: 2 });
-      m.operatingCost = m.operatingCost * 1000;
+      // m.operatingCost = m.operatingCost * 1000;
       m.fhwa = this.chance.floating({ min: 25, max: 75, fixed: 2 });
       this.machines.push(m);
     }
@@ -81,6 +92,7 @@ export class RequestsFakeDb {
       p.id = AppUtils.generateGUID();
       p.name = this.chance.animal();
       p.details = this.chance.paragraph({ sentences: this.chance.integer({ min: 5, max: 15 }) });
+      this.projects.push(p);
     }
   }
 
@@ -88,7 +100,7 @@ export class RequestsFakeDb {
     this.companies = [];
     for (let i = 0; i < num; i++) {
       const company: Company = new Company();
-      const numEmployees: number = this.chance.integer({ min: 3, max: 5000 });
+      const numEmployees: number = this.chance.integer({ min: 3, max: 25 });
       const companyName = this.chance.company();
       const employees: Array<Contact> = [];
       for (let j = 0; j < numEmployees; j++) {
@@ -106,15 +118,16 @@ export class RequestsFakeDb {
           jobTitle: this.chance.profession()
         });
         employees.push(employee);
-        company.name = companyName;
-        company.address = this.chance.address();
-        company.phone = this.chance.phone();
-        company.url = this.chance.url();
-        company.coordinates = this.chance.coordinates();
-        company.email = this.chance.email();
-        company.employees = employees;
-        this.companies.push(company);
       }
+      company.name = companyName;
+      company.address = this.chance.address();
+      company.phone = this.chance.phone();
+      company.url = this.chance.url();
+      company.coordinates = this.chance.coordinates();
+      company.email = this.chance.email();
+
+      company.employees = employees;
+      this.companies.push(company);
     }
   }
 
@@ -241,7 +254,7 @@ export class EquipmentCosts {
 }
 */
 
-  createActiveCosts(startDate: Date, endDate: Date): ActiveCosts {
+  createActiveCosts(company: Company, startDate: Date, endDate: Date): ActiveCosts {
     const activeList: Array<ActiveCost> = [];
     const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 40 });
     if (stanbyCostEnabled) {
@@ -252,9 +265,15 @@ export class EquipmentCosts {
         s.hours = this.chance.integer({ min: 1, max: 100 });
         s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
         s.total = s.transportationCost + s.hours * s.machine.operatingCost;
+        s.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
+        s.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
+        s.approved = this.chance.bool({ likelihood: 60 });
+        s.approver = _.sample(company.employees);
+        s.reason = this.chance.sentence();
         total += s.total;
         activeList.push(s);
       }
+      // console.log('active costs: ' + activeList.length);
       return new ActiveCosts({
         costs: activeList,
         startDate: startDate,
@@ -267,7 +286,7 @@ export class EquipmentCosts {
     }
   }
 
-  createStandbyCosts(startDate: Date, endDate: Date): StandbyCosts {
+  createStandbyCosts(company: Company, startDate: Date, endDate: Date): StandbyCosts {
     const scList: Array<StandbyCost> = [];
     const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 40 });
     if (stanbyCostEnabled) {
@@ -278,8 +297,14 @@ export class EquipmentCosts {
         s.hours = this.chance.integer({ min: 1, max: 100 });
         s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
         s.total = s.transportationCost + s.hours * s.machine.operatingCost;
+        s.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
+        s.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
+        s.approved = this.chance.bool({ likelihood: 60 });
+        s.approver = _.sample(company.employees);
+        s.reason = this.chance.sentence();
         total += s.total;
         scList.push(s);
+        // console.log('standby costs: ' + scList.length);
       }
       return new StandbyCosts({
         costs: scList,
@@ -293,20 +318,25 @@ export class EquipmentCosts {
     }
   }
 
-  createRentalCosts(startDate: Date, endDate: Date): RentalCosts {
+  createRentalCosts(company: Company, startDate: Date, endDate: Date): RentalCosts {
     const rentalEnabled: Boolean = this.chance.bool({ likelihood: 60 });
     if (rentalEnabled) {
       const rc: Array<RentalCost> = [];
       let total = 0;
       for (let i = 0; i < this.chance.integer({ min: 1, max: 10 }); i++) {
-        const r: RentalCost = new RentalCost();
-        r.machine = _.sample(this.machines);
-        r.date = this.chance.date({ year: startDate.getFullYear(), month: endDate.getMonth() - 1 });
-        r.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
-        r.other = this.chance.floating({ min: 0, max: 250, fixed: 2 });
-        r.total = r.transportationCost + r.other;
-        total += r.total;
-        rc.push(r);
+        const s: RentalCost = new RentalCost();
+        s.machine = _.sample(this.machines);
+        s.date = this.chance.date({ year: startDate.getFullYear(), month: endDate.getMonth() - 1 });
+        s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
+        s.other = this.chance.floating({ min: 0, max: 250, fixed: 2 });
+        s.total = s.transportationCost + s.other;
+        s.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
+        s.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
+        s.approved = this.chance.bool({ likelihood: 60 });
+        s.approver = _.sample(company.employees);
+        s.reason = this.chance.sentence();
+        total += s.total;
+        rc.push(s);
       }
       return new RentalCosts({
         startDate: startDate,
@@ -326,9 +356,9 @@ export class EquipmentCosts {
     if (equipmentCostsEnabled) {
       return new EquipmentCosts({
         enabled: equipmentCostsEnabled,
-        activeCosts: this.createActiveCosts(startDate, endDate),
-        rentalCosts: this.createRentalCosts(startDate, endDate),
-        standbyCosts: this.createStandbyCosts(startDate, endDate)
+        activeCosts: this.createActiveCosts(company, startDate, endDate),
+        rentalCosts: this.createRentalCosts(company, startDate, endDate),
+        standbyCosts: this.createStandbyCosts(company, startDate, endDate)
       });
     } else {
       return new EquipmentCosts({
@@ -379,6 +409,11 @@ export class MaterialCosts {
         c.description = this.chance.sentence();
         c.costPerUnit = this.chance.floating({ min: 0.25, max: 100, fixed: 2 });
         c.unitQuantity = this.chance.integer({ min: 1, max: 15 });
+        c.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
+        c.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
+        c.approved = this.chance.bool({ likelihood: 60 });
+        c.approver = _.sample(company.employees);
+        c.reason = this.chance.sentence();
         c.subtotal = c.costPerUnit * c.unitQuantity;
         c.total = c.subtotal * 0.5 + c.subtotal;
         materialCostList.push(c);
@@ -440,6 +475,11 @@ export class MaterialCosts {
         c.subcontractor = subcontractor;
         c.subtotal = this.chance.integer({ min: 100, max: 16000 });
         c.total = c.subtotal;
+        c.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
+        c.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
+        c.approved = this.chance.bool({ likelihood: 60 });
+        c.approver = _.sample(company.employees);
+        c.reason = this.chance.sentence();
         subcontractorCostList.push(c);
         subcontractorTotal += c.total;
       }
@@ -467,6 +507,11 @@ export class MaterialCosts {
         c.subcontractor = subcontractor;
         c.subtotal = this.chance.integer({ min: 100, max: 16000 });
         c.total = c.subtotal;
+        c.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
+        c.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
+        c.approved = this.chance.bool({ likelihood: 60 });
+        c.approver = _.sample(company.employees);
+        c.reason = this.chance.sentence();
         otherCostList.push(c);
         otherTotal += c.total;
       }
