@@ -13,13 +13,14 @@ import {
   EquipmentCosts,
   StandbyCosts,
   RentalCost,
-  Machine
+  Machine,
+  RentalCosts
 } from '../../shared/model';
 declare var Chance: any; // for externals librairies
 import * as _ from 'lodash';
 import { Contact } from '@app/contacts/contact.model';
 import { AppUtils } from '@app/core/utils/utils';
-import { LaborCosts, EquipmentCosts, ActiveCosts } from '../../shared/model';
+import { LaborCosts, EquipmentCosts, ActiveCosts, StandbyCost, ActiveCost } from '../../shared/model';
 
 export class RequestsFakeDb {
   chance: any;
@@ -58,6 +59,10 @@ export class RequestsFakeDb {
       );
       m.vin = this.chance.cf();
       m.year = this.chance.year({ min: 2008, max: 2018 });
+      m.ownershipCost = this.chance.floating({ min: 10, max: 50, fixed: 2 });
+      m.operatingCost = this.chance.floating({ min: 15, max: 60, fixed: 2 });
+      m.operatingCost = m.operatingCost * 1000;
+      m.fhwa = this.chance.floating({ min: 25, max: 75, fixed: 2 });
       this.machines.push(m);
     }
   }
@@ -229,26 +234,82 @@ export class EquipmentCosts {
 }
 */
 
-  createActiveCosts(): ActiveCosts {
-    const activeCosts: ActiveCosts = new ActiveCosts({});
-    const activeCostEnabled: Boolean = this.chance.bool({ likelihood: 80 });
-    return activeCosts;
-  }
-
-  createStandbyCosts(): StandbyCosts {
-    const sc: StandbyCosts = new StandbyCosts({});
+  createActiveCosts(startDate: Date, endDate: Date): ActiveCosts {
+    const activeList: Array<ActiveCost> = [];
     const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 40 });
-    return sc;
+    if (stanbyCostEnabled) {
+      let total = 0;
+      for (let i = 0; i < this.chance.integer({ min: 1, max: 10 }); i++) {
+        const s: ActiveCost = new ActiveCost();
+        s.machine = _.sample(this.machines);
+        s.hours = this.chance.integer({ min: 1, max: 100 });
+        s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
+        s.total = s.transportationCost + s.hours * s.machine.operatingCost;
+        total += s.total;
+        activeList.push(s);
+      }
+      return new ActiveCosts({
+        costs: activeList,
+        startDate: startDate,
+        endDate: endDate,
+        regionalAdjustment: this.chance.state(),
+        total: total
+      });
+    } else {
+      return new ActiveCosts({});
+    }
   }
 
-  createRentalCosts(): Array<RentalCost> {
-    const rc: Array<RentalCost> = [];
+  createStandbyCosts(startDate: Date, endDate: Date): StandbyCosts {
+    const scList: Array<StandbyCost> = [];
+    const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 40 });
+    if (stanbyCostEnabled) {
+      let total = 0;
+      for (let i = 0; i < this.chance.integer({ min: 1, max: 10 }); i++) {
+        const s: StandbyCost = new StandbyCost();
+        s.machine = _.sample(this.machines);
+        s.hours = this.chance.integer({ min: 1, max: 100 });
+        s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
+        s.total = s.transportationCost + s.hours * s.machine.operatingCost;
+        total += s.total;
+        scList.push(s);
+      }
+      return new StandbyCosts({
+        costs: scList,
+        startDate: startDate,
+        endDate: endDate,
+        regionalAdjustment: this.chance.state(),
+        total: total
+      });
+    } else {
+      return new StandbyCosts({});
+    }
+  }
+
+  createRentalCosts(startDate: Date, endDate: Date): RentalCosts {
     const rentalEnabled: Boolean = this.chance.bool({ likelihood: 60 });
     if (rentalEnabled) {
+      const rc: Array<RentalCost> = [];
+      let total = 0;
       for (let i = 0; i < this.chance.integer({ min: 1, max: 10 }); i++) {
         const r: RentalCost = new RentalCost();
-        r.description = rc.push(r);
+        r.machine = _.sample(this.machines);
+        r.date = this.chance.date({ year: startDate.getFullYear(), month: endDate.getMonth() - 1 });
+        r.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
+        r.other = this.chance.floating({ min: 0, max: 250, fixed: 2 });
+        r.total = r.transportationCost + r.other;
+        total += r.total;
+        rc.push(r);
       }
+      return new RentalCosts({
+        startDate: startDate,
+        endDate: endDate,
+        costs: rc,
+        enabled: rentalEnabled,
+        total: total
+      });
+    } else {
+      return new RentalCosts({});
     }
     return rc;
   }
@@ -259,9 +320,9 @@ export class EquipmentCosts {
     if (equipmentCostsEnabled) {
       return new EquipmentCosts({
         enabled: equipmentCostsEnabled,
-        activeCosts: this.createActiveCosts(),
-        rentalCosts: this.createRentalCosts(),
-        standbyCosts: this.createStandbyCosts()
+        activeCosts: this.createActiveCosts(startDate, endDate),
+        rentalCosts: this.createRentalCosts(startDate, endDate),
+        standbyCosts: this.createStandbyCosts(startDate, endDate)
       });
     } else {
       return new EquipmentCosts({

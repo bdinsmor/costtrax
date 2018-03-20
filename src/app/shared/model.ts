@@ -142,14 +142,15 @@ export class Machine {
   model: string;
   year: number;
   vin: string;
+  description: string;
+  ownershipCost: number;
+  operatingCost: number;
+  baseRental: number;
+  fhwa: number;
 }
 
 export class ActiveCost {
   machine: Machine;
-  description: string;
-  ownershipCost: number;
-  operatingCost: number;
-  fhwa: number;
   hours: number;
   transportationCost: number;
   total: number;
@@ -157,19 +158,15 @@ export class ActiveCost {
 
 export class StandbyCost {
   machine: Machine;
-  ownershipCost: number;
-  operatingCost: number;
-  fhwa: number;
-  hours: number;
   transportationCost: number;
   total: number;
+  hours: number;
 }
 
 export class RentalCost {
-  description: string;
+  date: Date;
   machine: Machine;
-  baseRental: number;
-  transportation: number;
+  transportationCost: number;
   other: number;
   invoice: ByteString;
   total: number;
@@ -179,16 +176,13 @@ export class ActiveCosts {
   startDate: Date;
   endDate: Date;
   regionalAdjustment: string;
-  ownership: number;
-  operating: number;
   costs: Array<ActiveCost>;
+  total: number;
   constructor(activeCosts: any) {
     {
       this.startDate = activeCosts.startDate || new Date();
       this.endDate = activeCosts.endDate || new Date();
       this.regionalAdjustment = activeCosts.regionalAdjustment || '';
-      this.ownership = activeCosts.ownership || 0;
-      this.operating = activeCosts.operating || 0;
       this.costs = activeCosts.costs || new Array<ActiveCost>();
     }
   }
@@ -197,17 +191,14 @@ export class ActiveCosts {
 export class StandbyCosts {
   startDate: Date;
   endDate: Date;
-  regionalAdjustment: string;
-  ownership: number;
-  operating: number;
+  regionalAdjustment: string; // state
   costs: Array<StandbyCost>;
+  total: number;
   constructor(standbyCosts: any) {
     {
       this.startDate = standbyCosts.startDate || new Date();
       this.endDate = standbyCosts.endDate || new Date();
       this.regionalAdjustment = standbyCosts.regionalAdjustment || '';
-      this.ownership = standbyCosts.ownership || 0;
-      this.operating = standbyCosts.operating || 0;
       this.costs = standbyCosts.costs || new Array<StandbyCost>();
     }
   }
@@ -218,12 +209,32 @@ export class EquipmentCosts {
   activeCosts: ActiveCosts;
   standbyCosts: StandbyCosts;
   rentalCosts: Array<RentalCost>;
+  total: number;
+
   constructor(equipmentCosts: any) {
     {
       this.enabled = equipmentCosts.enabled || false;
       this.activeCosts = equipmentCosts.activeCosts || new ActiveCosts({});
       this.standbyCosts = equipmentCosts.standbyCosts || new StandbyCosts({});
-      this.rentalCosts = equipmentCosts.rentalCosts || new Array<RentalCost>();
+      this.rentalCosts = equipmentCosts.rentalCosts || new RentalCosts({});
+      this.total = equipmentCosts.total || 0;
+    }
+  }
+}
+
+export class RentalCosts {
+  enabled: Boolean;
+  costs: Array<RentalCost>;
+  total: number;
+  startDate: Date;
+  endDate: Date;
+  constructor(rentalCosts: any) {
+    {
+      this.enabled = rentalCosts.enabled || false;
+      this.costs = rentalCosts.costs || new Array<RentalCost>();
+      this.total = rentalCosts.total || 0;
+      this.startDate = rentalCosts.startDate || new Date();
+      this.endDate = rentalCosts.endDate || new Date();
     }
   }
 }
