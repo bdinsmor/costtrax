@@ -7,7 +7,8 @@ export const entityMetadata: EntityMetadataMap = {
   Mails: {},
   Request: {},
   Message: {},
-  Activity: {}
+  Activity: {},
+  Requests: {}
 };
 
 // because the plural of "hero" is not "heros"
@@ -17,7 +18,8 @@ export const pluralNames = {
   Project: 'Projects',
   Request: 'Requests',
   Message: 'Messages',
-  Activity: 'Activities'
+  Activity: 'Activities',
+  Requests: 'Requests'
 };
 
 @NgModule({

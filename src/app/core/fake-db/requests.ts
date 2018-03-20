@@ -1,26 +1,29 @@
-import {
-  Request,
-  Project,
-  Company,
-  Costs,
-  Signatures,
-  SubcontractorCosts,
-  Cost,
-  MaterialCost,
-  OtherCosts,
-  LaborCost,
-  MaterialCosts,
-  EquipmentCosts,
-  StandbyCosts,
-  RentalCost,
-  Machine,
-  RentalCosts
-} from '../../shared/model';
 declare var Chance: any; // for externals librairies
 import * as _ from 'lodash';
 import { Contact } from '@app/contacts/contact.model';
 import { AppUtils } from '@app/core/utils/utils';
-import { LaborCosts, EquipmentCosts, ActiveCosts, StandbyCost, ActiveCost } from '../../shared/model';
+import {
+  Request,
+  Project,
+  LaborCosts,
+  EquipmentCosts,
+  ActiveCosts,
+  StandbyCost,
+  ActiveCost,
+  Machine,
+  Company,
+  Signatures,
+  Costs,
+  StandbyCosts,
+  RentalCost,
+  RentalCosts,
+  MaterialCost,
+  MaterialCosts,
+  LaborCost,
+  Cost,
+  SubcontractorCosts,
+  OtherCosts
+} from '../../shared/model';
 
 export class RequestsFakeDb {
   chance: any;
@@ -35,6 +38,10 @@ export class RequestsFakeDb {
     this.createProjects(numProjects);
     this.createCompanies(numCompanies);
     this.createRequests(numRequests);
+  }
+
+  getRequests(): Array<Request> {
+    return this.requests;
   }
 
   createMachines() {
@@ -311,7 +318,6 @@ export class EquipmentCosts {
     } else {
       return new RentalCosts({});
     }
-    return rc;
   }
 
   createEquipmentCosts(company: Company, employee: Contact, startDate: Date, endDate: Date): EquipmentCosts {
