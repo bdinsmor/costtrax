@@ -8,8 +8,6 @@ export class ContactsFakeDb {
     this.chance = new Chance();
   }
 
-  
-
   contacts(): Contact[] {
     const list: Contact[] = [];
     for (let i = 0; i < 25; i++) {

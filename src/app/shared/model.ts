@@ -1,4 +1,3 @@
-
 import { AppUtils } from '@app/core/utils/utils';
 import { Contact } from '@app/contacts/contact.model';
 
@@ -7,6 +6,20 @@ export class Project {
   name: string;
   owner: string;
   details: string;
+}
+
+export class Company {
+  id: string;
+  name: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  coordinates: string;
+  phone: string;
+  url: string;
+  employees: Array<Contact>;
 }
 
 export class Signatures {
@@ -28,6 +41,7 @@ export class Cost {
   receipt: ByteString;
   subtotal: number;
   total: number;
+  date: Date;
 }
 
 export class SubcontractorCosts {
@@ -63,6 +77,7 @@ export class MaterialCost {
   receipt: ByteString;
   subtotal: number;
   total: number;
+  date: Date;
 }
 
 export class MaterialCosts {
@@ -102,7 +117,7 @@ export class LaborCost {
 }
 
 export class LaborCosts {
-  zipCode: number;
+  zipCode: string;
   totalHours: number;
   payroll: number;
   benefits: number;
@@ -111,7 +126,7 @@ export class LaborCosts {
   submitter: Contact;
   constructor(laborCosts: any) {
     {
-      this.zipCode = laborCosts.zipCode || 90210;
+      this.zipCode = laborCosts.zipCode || '90210';
       this.totalHours = laborCosts.totalHours || 0;
       this.payroll = laborCosts.payroll || 0;
       this.benefits = laborCosts.benefits || 0;
@@ -198,7 +213,6 @@ export class StandbyCosts {
   }
 }
 
-
 export class EquipmentCosts {
   enabled: Boolean;
   activeCosts: ActiveCosts;
@@ -228,6 +242,7 @@ export class OtherCosts {
 }
 
 export class Costs {
+  total: number;
   equipmentCosts: EquipmentCosts;
   laborCosts: LaborCosts;
   materialCosts: MaterialCosts;
@@ -235,11 +250,11 @@ export class Costs {
   subcontractorCosts: SubcontractorCosts;
   constructor(costs: any) {
     {
-     this.equipmentCosts = costs.equipmentCosts || new EquipmentCosts({});
-     this.laborCosts = costs.laborCosts || new LaborCosts({});
-     this.materialCosts = costs.materialCosts || new MaterialCosts({});
-     this.otherCosts = costs.otherCosts || new OtherCosts({});
-     this.subcontractorCosts = costs.subcontractorCosts || new SubcontractorCosts({});
+      this.equipmentCosts = costs.equipmentCosts || new EquipmentCosts({});
+      this.laborCosts = costs.laborCosts || new LaborCosts({});
+      this.materialCosts = costs.materialCosts || new MaterialCosts({});
+      this.otherCosts = costs.otherCosts || new OtherCosts({});
+      this.subcontractorCosts = costs.subcontractorCosts || new SubcontractorCosts({});
     }
   }
 }
