@@ -1,0 +1,48 @@
+<mat-table #requestTable [dataSource]="dataSource" style="width:100%">
+
+  <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+
+  <ng-container matColumnDef="messages">
+    <mat-header-cell *matHeaderCellDef> MESSAGES </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.messages}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef> REQUEST ID </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="total">
+    <mat-header-cell *matHeaderCellDef> REQUEST AMOUNT </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.total | currency}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="projectId">
+    <mat-header-cell *matHeaderCellDef> PROJECT ID </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.project.id}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="projectOwner">
+    <mat-header-cell *matHeaderCellDef> PROJECT OWNER </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.project.owner}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="projectName">
+    <mat-header-cell *matHeaderCellDef> PROJECT NAME </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.project.name}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <mat-header-cell *matHeaderCellDef> STATUS </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+  </ng-container>
+
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openRequest(row)"></mat-row>
+</mat-table>
+
+<mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+</mat-paginator>

@@ -9,16 +9,13 @@ import { MaterialModule } from '@app/material.module';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { QuoteService } from './quote.service';
-import { RequestsComponent } from '@app/requests/requests.component';
-import { ProjectsComponent } from '@app/projects/projects.component';
-import { ProjectDetailsDialogComponent } from '@app/project-details/project-dialog.component';
-import { ProjectDetailsComponent } from '@app/project-details/project-details.component';
-import { ProjectsService } from '../projects/projects.service';
-import { RequestsService } from '../requests/requests.service';
+
 import { ContactsModule } from '@app/contacts/contacts.module';
 import { MailModule } from '@app/mail/mail.module';
 import { PipesModule } from '@app/core/pipes/pipes.module';
 import { ContactsComponent } from '../contacts/contacts.component';
+import { RequestsModule } from '@app/requests/requests.module';
+import { ProjectsModule } from '@app/projects/projects.module';
 
 @NgModule({
   imports: [
@@ -31,16 +28,12 @@ import { ContactsComponent } from '../contacts/contacts.component';
     MaterialModule,
     MailModule,
     ContactsModule,
+    RequestsModule,
+    ProjectsModule,
     HomeRoutingModule
   ],
-  declarations: [
-    HomeComponent,
-    ProjectsComponent,
-    ProjectDetailsDialogComponent,
-    ProjectDetailsComponent,
-    RequestsComponent
-  ],
-  entryComponents: [ProjectDetailsDialogComponent],
-  providers: [ProjectsService, RequestsService]
+  declarations: [HomeComponent],
+  entryComponents: [],
+  providers: []
 })
 export class HomeModule {}

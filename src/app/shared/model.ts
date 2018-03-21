@@ -287,6 +287,7 @@ export class Costs {
       this.materialCosts = costs.materialCosts || new MaterialCosts({});
       this.otherCosts = costs.otherCosts || new OtherCosts({});
       this.subcontractorCosts = costs.subcontractorCosts || new SubcontractorCosts({});
+      this.total = costs.total || 0;
     }
   }
 }
@@ -301,6 +302,9 @@ export class Request {
   endDate: Date;
   costs: Costs;
   signatures: Signatures;
+  total: number;
+  messages: number;
+  status: string;
   constructor(request: any) {
     {
       this.id = request.id || AppUtils.generateGUID();
@@ -312,6 +316,9 @@ export class Request {
       this.endDate = request.endDate || new Date();
       this.costs = request.costs || new Costs({});
       this.signatures = request.signatures || new Signatures({});
+      this.messages = request.messages || 0;
+      this.total = request.total || 0;
+      this.status = request.status || 'UNPAID';
     }
   }
 }

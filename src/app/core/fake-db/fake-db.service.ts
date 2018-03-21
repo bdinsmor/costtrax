@@ -3,7 +3,8 @@ import { MailFakeDb } from './mail';
 import { FileManagerFakeDb } from './file-manager';
 import { ContactsFakeDb } from './contacts';
 import { RequestsFakeDb } from './requests';
-import { Request } from '@app/shared/model';
+import { Request, Company, Project } from '@app/shared/model';
+import { Contact } from '@app/contacts/contact.model';
 
 export class FakeDbService implements InMemoryDbService {
   contactsDB: ContactsFakeDb;
@@ -12,16 +13,15 @@ export class FakeDbService implements InMemoryDbService {
   createDb() {
     // this.contactsDB = new ContactsFakeDb();
     this.requestsDB = new RequestsFakeDb();
-    const requests: Array<Request> = this.requestsDB.getRequests();
-    // console.log('inside createDb: ' + JSON.stringify(requests[0], null, 2));
+    const companies: Array<Company> = this.requestsDB.companies;
+    const contacts: Array<Contact> = this.requestsDB.contacts;
+    const projects: Array<Project> = this.requestsDB.projects;
+    const requests: Array<Request> = this.requestsDB.requests;
+    console.log('number of projects: ' + projects.length);
     return {
-      // Mail
-      mails: MailFakeDb.mails,
-      folders: MailFakeDb.folders,
-      filters: MailFakeDb.filters,
-      labels: MailFakeDb.labels, // File Manager
-
-      contacts: this.contactsDB.contacts(),
+      projects: projects,
+      contacts: contacts,
+      companies: companies,
       requests: requests
     };
   }

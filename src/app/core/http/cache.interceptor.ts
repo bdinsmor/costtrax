@@ -11,10 +11,9 @@ import { HttpCacheService } from './http-cache.service';
  */
 @Injectable()
 export class CacheInterceptor implements HttpInterceptor {
+  private forceUpdate = true;
 
-  private forceUpdate = false;
-
-  constructor(private httpCacheService: HttpCacheService) { }
+  constructor(private httpCacheService: HttpCacheService) {}
 
   /**
    * Configures interceptor options
@@ -35,25 +34,24 @@ export class CacheInterceptor implements HttpInterceptor {
     }
 
     return new Observable((subscriber: Subscriber<HttpEvent<any>>) => {
+      console.log('url: ' + request.urlWithParams);
       const cachedData = this.forceUpdate ? null : this.httpCacheService.getCacheData(request.urlWithParams);
       if (cachedData !== null) {
         // Create new response to avoid side-effects
         subscriber.next(new HttpResponse(cachedData as Object));
         subscriber.complete();
       } else {
-        next.handle(request)
-          .subscribe(
-            event => {
-              if (event instanceof HttpResponse) {
-                this.httpCacheService.setCacheData(request.urlWithParams, event);
-              }
-              subscriber.next(event);
-            },
-            error => subscriber.error(error),
-            () => subscriber.complete()
-          );
+        next.handle(request).subscribe(
+          event => {
+            if (event instanceof HttpResponse) {
+              this.httpCacheService.setCacheData(request.urlWithParams, event);
+            }
+            subscriber.next(event);
+          },
+          error => subscriber.error(error),
+          () => subscriber.complete()
+        );
       }
     });
   }
-
 }

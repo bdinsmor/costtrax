@@ -1,0 +1,24 @@
+app-projects-list {
+  mat-cell.mat-cell,
+  mat-header-cell.mat-header-cell {
+    overflow: visible;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+}
+
+#requestTable {
+  max-height: 50vh !important;
+  overflow: auto !important;
+}
+
+#add-request-button {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

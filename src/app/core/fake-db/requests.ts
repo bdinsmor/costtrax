@@ -27,10 +27,11 @@ import {
 
 export class RequestsFakeDb {
   chance: any;
-  public machines: Array<Machine>;
-  public projects: Array<Project>;
-  public requests: Array<Request>;
-  public companies: Array<Company>;
+  public machines: Array<Machine> = [];
+  public projects: Array<Project> = [];
+  public requests: Array<Request> = [];
+  public companies: Array<Company> = [];
+  public contacts: Array<Contact> = [];
 
   constructor() {
     this.chance = new Chance();
@@ -39,20 +40,12 @@ export class RequestsFakeDb {
       const numCompanies = this.chance.integer({ min: 2, max: 15 });
       const numRequests = this.chance.integer({ min: 100, max: 500 });
       this.createMachines();
-      console.log('number of machines:  ' + this.machines.length);
-      this.createProjects(numProjects);
-      console.log('number of projects:  ' + this.projects.length);
       this.createCompanies(numCompanies);
-      console.log('number of companies:  ' + this.companies.length);
+      this.createProjects(numProjects);
       this.createRequests(numRequests);
-      console.log('number of requests:  ' + this.requests.length);
     } catch (error) {
       console.error('Error: ', error);
     }
-  }
-
-  getRequests(): Array<Request> {
-    return this.requests;
   }
 
   createMachines() {
@@ -92,12 +85,14 @@ export class RequestsFakeDb {
       p.id = AppUtils.generateGUID();
       p.name = this.chance.animal();
       p.details = this.chance.paragraph({ sentences: this.chance.integer({ min: 5, max: 15 }) });
+      p.owner = _.sample(this.contacts).name;
       this.projects.push(p);
     }
   }
 
   createCompanies(num: number): void {
     this.companies = [];
+    this.contacts = [];
     for (let i = 0; i < num; i++) {
       const company: Company = new Company();
       const numEmployees: number = this.chance.integer({ min: 3, max: 25 });
@@ -118,6 +113,7 @@ export class RequestsFakeDb {
           jobTitle: this.chance.profession()
         });
         employees.push(employee);
+        this.contacts.push(employee);
       }
       company.name = companyName;
       company.address = this.chance.address();
@@ -145,6 +141,12 @@ export class RequestsFakeDb {
       const company: Company = _.sample(this.companies);
       const employee = _.sample(company.employees);
       const p: Project = _.sample(this.projects);
+      const costs: Costs = this.createCosts(company, employee, startDate, endDate);
+      const statusPaid: Boolean = this.chance.bool({ likelihood: 40 });
+      let status = 'UNPAID';
+      if (statusPaid) {
+        status = 'PAID';
+      }
       const request = new Request({
         id: AppUtils.generateGUID(),
         name: p.name + this.chance.weighted([' Expansion Project', ' Construction Project'], [5, 1]),
@@ -152,8 +154,11 @@ export class RequestsFakeDb {
         requestDate: this.chance.date({ year: 2017 }),
         startDate: startDate,
         endDate: endDate,
-        costs: this.createCosts(company, employee, startDate, endDate),
-        signatures: this.createSignatures(company, employee, endDate)
+        costs: costs,
+        total: costs.total,
+        messages: this.chance.integer({ min: 0, max: 10 }),
+        signatures: this.createSignatures(company, employee, endDate),
+        status: status
       });
       // id: string;
       // name: string;
@@ -225,14 +230,13 @@ export class SubcontractorCosts {
     // total += laborCosts.total;
     const otherCosts = this.createOtherCosts(company, employee, startDate, endDate);
     total += otherCosts.total;
-
     const costs: Costs = new Costs({
       subcontractorCosts: subcontractorCosts,
       materialCosts: materialCosts,
       equipmentCosts: equipmentCosts,
       laborCosts: laborCosts,
       otherCosts: otherCosts,
-      total: total
+      total: total.toFixed(2)
     });
     return costs;
   }
