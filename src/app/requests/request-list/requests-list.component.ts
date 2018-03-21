@@ -50,6 +50,7 @@ export class RequestsListComponent implements OnInit, OnDestroy {
   openRequest(request: any) {
     this.dialogRef = this.dialog.open(RequestFormDialogComponent, {
       panelClass: 'request-form-dialog',
+      width: '85%',
       data: {
         request: request,
         projects: this.projects,
