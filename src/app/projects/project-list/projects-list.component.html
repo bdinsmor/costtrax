@@ -12,6 +12,7 @@
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openProject(row)"></mat-row>
 </mat-table>
-
-<mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]="true">
+<mat-paginator #paginator [length]="dataSource.length() | async" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
 </mat-paginator>
+
+<h4>{{dataSource.length() | async}}</h4>

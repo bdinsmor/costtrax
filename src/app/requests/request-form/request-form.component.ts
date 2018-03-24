@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { Request, Project } from '@app/shared/model';
@@ -23,7 +23,6 @@ export class RequestFormDialogComponent {
   action: string;
   request: Request;
   projects: Observable<Project[]>;
-
   constructor(
     public dialogRef: MatDialogRef<RequestFormDialogComponent>,
     private projectsService: ProjectsService,
@@ -47,8 +46,12 @@ export class RequestFormDialogComponent {
     this.projects = this.projectsService.entities$;
   }
 
+  get projectType() {
+    return this.projectFormGroup.get('projectType');
+  }
+
   createProjectFormGroup() {
-    return this.formBuilder.group({});
+    return this.formBuilder.group({ projectType: new FormControl('1') });
   }
   createCostFormGroup() {
     return this.formBuilder.group({});

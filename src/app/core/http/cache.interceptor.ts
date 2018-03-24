@@ -34,7 +34,6 @@ export class CacheInterceptor implements HttpInterceptor {
     }
 
     return new Observable((subscriber: Subscriber<HttpEvent<any>>) => {
-      console.log('url: ' + request.urlWithParams);
       const cachedData = this.forceUpdate ? null : this.httpCacheService.getCacheData(request.urlWithParams);
       if (cachedData !== null) {
         // Create new response to avoid side-effects

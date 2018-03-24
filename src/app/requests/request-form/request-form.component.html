@@ -1,7 +1,15 @@
 <div>
-  <mat-toolbar matDialogTitle class="mat-accent m-0">
-    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+  <mat-toolbar matDialogTitle class="mat-primary m-0">
+    <mat-toolbar-row>
       <span class="title dialog-title">{{dialogTitle}}</span>
+      <form class="left-margin-5" [formGroup]="projectFormGroup">
+        <mat-radio-group formControlName="projectType">
+          <mat-radio-button value="1">Existing Project</mat-radio-button>
+          <mat-radio-button value="2">New Project</mat-radio-button>
+        </mat-radio-group>
+      </form>
+
+      <span class="spacer"></span>
       <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
         <mat-icon>close</mat-icon>
       </button>
@@ -10,54 +18,79 @@
 
   <div mat-dialog-content class="p-24 m-0">
 
+    <ng-container *ngIf="projectType.value == '1';then existingProject; else newProject"></ng-container>
+    <ng-template #existingProject>
 
-    <mat-horizontal-stepper #stepper="matHorizontalStepper">
-      <mat-step [stepControl]="projectFormGroup">
-        <form [formGroup]="projectFormGroup">
-          <ng-template matStepLabel>Select Project</ng-template>
-          <mat-form-field>
-            <mat-select placeholder="Select Project">
+
+      <mat-horizontal-stepper #stepper="matHorizontalStepper">
+        <mat-step [stepControl]="projectFormGroup">
+          <form [formGroup]="projectFormGroup">
+            <ng-template matStepLabel>Select Project</ng-template>
+            <mat-form-field class="width-50">
+              <mat-select placeholder="Select Project">
+                <mat-option *ngFor="let project of projects | async" [value]="project.id">
+                  {{ project.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="costFormGroup">
+          <form [formGroup]="costFormGroup">
+            <ng-template matStepLabel>Select Cost Type</ng-template>
+
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="costDetailsFormGroup">
+          <form [formGroup]="costDetailsFormGroup">
+            <ng-template matStepLabel>Enter Cost Details</ng-template>
+
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="signatureFormGroup">
+          <form [formGroup]="signatureFormGroup">
+            <ng-template matStepLabel>Sign and Submit</ng-template>
+
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+      </mat-horizontal-stepper>
+    </ng-template>
+
+    <ng-template #newProject>
+
+      <form fxLayout="column" fxFlex fxLayoutAlign="start center" fxLayoutGap="10px" [formGroup]="projectFormGroup">
+        <div fxFlex>
+          <mat-form-field fxFlex class="width-85">
+            <mat-select placeholder="Select Project Owner">
               <mat-option *ngFor="let project of projects | async" [value]="project.id">
-                {{ project.name }}
+                {{ project.owner }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <div>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="costFormGroup">
-        <form [formGroup]="costFormGroup">
-          <ng-template matStepLabel>Select Cost Type</ng-template>
+        </div>
+        <div fxFlex>
+          <mat-form-field fxFlex class="width-85">
+            <textarea matInput placeholder="Project Creation Request Details" matTextareaAutosize matAutosizeMinRows="12" matAutosizeMaxRows="25"></textarea>
+          </mat-form-field>
+        </div>
+      </form>
+    </ng-template>
 
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="costDetailsFormGroup">
-        <form [formGroup]="costDetailsFormGroup">
-          <ng-template matStepLabel>Enter Cost Details</ng-template>
-
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-      <mat-step [stepControl]="signatureFormGroup">
-        <form [formGroup]="signatureFormGroup">
-          <ng-template matStepLabel>Sign and Submit</ng-template>
-
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step>
-    </mat-horizontal-stepper>
 
 
 

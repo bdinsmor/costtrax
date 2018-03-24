@@ -20,6 +20,22 @@
     .toolbar-bottom {
       height: auto;
     }
+
+    .left-margin-5 {
+      margin-left: 5%;
+    }
+
+    .width-85 {
+      width: 85% !important;
+    }
+
+    .width-50 {
+      width: 50% !important;
+    }
+
+    .spacer {
+      flex: 1 1 auto;
+    }
   }
 
   .dialog-content-wrapper {

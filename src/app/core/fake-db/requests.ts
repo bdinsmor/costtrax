@@ -171,6 +171,7 @@ export class RequestsFakeDb {
       //  signatures: Signatures;
       this.requests.push(request);
     }
+    console.log('number of requests: ' + this.requests.length);
   }
 
   createSignatures(company: Company, employee: Contact, endDate: Date): Signatures {
