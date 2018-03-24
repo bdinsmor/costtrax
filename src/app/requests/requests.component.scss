@@ -5,6 +5,25 @@
     overflow: hidden;
   }
 
+  .container {
+    padding: 1em;
+  }
+
+  .info-row {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    margin-top: 10px;
+    border: 2px solid mat-color($mat-fusedark, 100, 0.9);
+    background-color: mat-color($mat-fusedark, 50, 0.9);
+  }
+
+  .totals-column {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+  }
+
   .mat-primary-bg {
     background-color: mat-color($primary, 500, 0.9);
   }

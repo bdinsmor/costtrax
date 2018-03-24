@@ -7,14 +7,14 @@ import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { MaterialModule } from '@app/material.module';
 import { HomeComponent } from './home.component';
-import { QuoteService } from './quote.service';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
         imports: [
           BrowserAnimationsModule,
           FlexLayoutModule,
@@ -24,10 +24,10 @@ describe('HomeComponent', () => {
           HttpClientTestingModule
         ],
         declarations: [HomeComponent],
-        providers: [QuoteService]
-      })
-      .compileComponents();
-  }));
+        providers: []
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);

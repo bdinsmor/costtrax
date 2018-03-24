@@ -8,11 +8,11 @@ import { Observable } from 'rxjs/Observable';
 import { appAnimations } from '@app/core/animations';
 import { ConfirmDialogComponent } from '@app/core/components/confirm-dialog/confirm-dialog.component';
 
-import { RequestFormDialogComponent } from '../request-form/request-form.component';
 import { RequestsService } from '../requests.service';
 import { Request, Project } from '@app/shared/model';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ProjectsService } from '@app/projects/projects.service';
+import { RequestFormDialogComponent } from '@app/requests/request-form-dialog/request-form.dialog.component';
 
 @Component({
   selector: 'app-requests-list',

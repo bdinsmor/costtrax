@@ -4,39 +4,27 @@ import { CdkTableModule } from '@angular/cdk/table';
 
 import { RequestsComponent } from './requests.component';
 import { RequestsService } from './requests.service';
-import { RequestFormDialogComponent } from './request-form/request-form.component';
-import { MaterialModule } from '@app/material.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RequestFormComponent } from './request-form/request-form.component';
 import { PipesModule } from '@app/core/pipes/pipes.module';
-import { CommonModule } from '@angular/common';
 import { DirectivesModule } from '@app/core/directives/directives';
 import { AppMatchMediaService } from '@app/core/services/app-match-media.service';
 import { RequestsListComponent } from '@app/requests/request-list/requests-list.component';
+import { RequestFormDialogComponent } from '@app/requests/request-form-dialog/request-form.dialog.component';
+import { Route } from '@app/core';
+import { SharedModule } from '@app/shared';
 
 const routes: Routes = [
   {
-    path: 'requests',
-    component: RequestsComponent,
-    resolve: {
-      contacts: RequestsService
-    }
+    path: 'requestsList',
+    component: RequestsComponent
   }
 ];
 
 @NgModule({
-  declarations: [RequestsComponent, RequestsListComponent, RequestFormDialogComponent],
-  imports: [
-    CdkTableModule,
-    CommonModule,
-    DirectivesModule,
-    PipesModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MaterialModule,
-    RouterModule.forChild(routes)
-  ],
+  declarations: [RequestsComponent, RequestsListComponent, RequestFormComponent, RequestFormDialogComponent],
+  imports: [SharedModule, CdkTableModule, DirectivesModule, PipesModule, RouterModule.forChild(routes)],
   exports: [RequestsComponent],
   providers: [RequestsService, AppMatchMediaService],
-  entryComponents: [RequestFormDialogComponent]
+  entryComponents: [RequestFormComponent, RequestFormDialogComponent]
 })
 export class RequestsModule {}

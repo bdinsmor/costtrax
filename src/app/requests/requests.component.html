@@ -1,6 +1,29 @@
-<div id="contacts" class="page-layout simple">
+<div id="requests" class="container" fxLayoutAlign="start stretch" fxLayout="column">
 
-  <div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
+  <div fxLayout="row" class="info-row">
+    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+      <label fxFlex>UNPAID TOTAL</label>
+      <div fxFlex>5345</div>
+    </div>
+    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+      <label fxFlex>UNPAID EQUIPMENT</label>
+      <div fxFlex>345</div>
+    </div>
+    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+      <label fxFlex>UNPAID LABOR</label>
+      <div fxFlex>2343</div>
+    </div>
+    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+      <label fxFlex>UNPAID MATERIAL</label>
+      <div fxFlex>34534</div>
+    </div>
+    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+      <label fxFlex>PAID</label>
+      <div fxFlex>345345</div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center">
     <label for="search" class="mr-8">
       <mat-icon>search</mat-icon>
     </label>
@@ -11,23 +34,14 @@
 
 
 
-  <!-- CENTER -->
-  <div class="center p-24 pb-56 pr-sm-92" appPerfectScrollbar>
+  <!-- CONTENT -->
+  <div class="content">
 
-    <!-- CONTENT -->
-    <div class="content mat-white-bg mat-elevation-z4">
-
-      <app-requests-list style="width:100%; max-height:50vh; overflow:auto"></app-requests-list>
-
-    </div>
-    <!-- / CONTENT -->
+    <app-requests-list style="width:100%; max-height:50vh; overflow:auto"></app-requests-list>
 
   </div>
+  <!-- / CONTENT -->
+
 
 
 </div>
-
-<!-- ADD CONTACT BUTTON -->
-
-
-<!-- / ADD CONTACT BUTTON -->

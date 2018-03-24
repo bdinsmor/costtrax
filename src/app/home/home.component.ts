@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 
-import { Activity, Message } from '@app/core/in-memory-data.service';
 import { Observable } from 'rxjs/Observable';
+import { Activity, LogEntry } from '@app/shared/model';
+import { appAnimations } from '@app/core/animations';
+import { LogEntryService } from '@app/home/activity.service';
+import { RequestsService } from '../requests/requests.service';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +15,25 @@ import { Observable } from 'rxjs/Observable';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  quote: string;
-  messages$: Observable<Message[]>;
+  logEntries$: Observable<LogEntry[]>;
+  count$: Observable<number>;
   loading$: Observable<boolean>;
-  constructor(public dialog: MatDialog) {}
+  constructor(private logEntryService: LogEntryService) {}
 
   ngOnInit() {
-    console.log('inside home');
+    this.getLatestActivity();
+  }
+
+  removeEntry(log: LogEntry): void {
+    this.logEntryService.delete(log);
+  }
+
+  viewRequest(log: LogEntry): void {}
+
+  getLatestActivity(): void {
+    this.logEntryService.getAll();
+    this.logEntries$ = this.logEntryService.entities$;
+    this.count$ = this.logEntryService.count$;
+    this.loading$ = this.logEntryService.loading$;
   }
 }

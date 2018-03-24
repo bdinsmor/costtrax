@@ -1,7 +1,15 @@
+@import 'src/styles/styles';
+
 app-requests-list {
   mat-cell.mat-cell,
   mat-header-cell.mat-header-cell {
     overflow: visible;
+    cursor: pointer;
+  }
+
+  .messages-badge {
+    background-color: mat-color($primary, 500, 0.9);
+    padding: 4px;
   }
 
   .full-width {

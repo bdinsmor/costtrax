@@ -7,10 +7,11 @@ import { MatDialog } from '@angular/material';
 
 import { appAnimations } from '@app/core/animations';
 
-import { RequestFormDialogComponent } from './request-form/request-form.component';
+import { RequestFormComponent } from './request-form/request-form.component';
 import { RequestsService } from './requests.service';
-import { Request } from '@app/shared/model';
+import { Request, Costs } from '@app/shared/model';
 import { Observable } from 'rxjs/Observable';
+import { RequestFormDialogComponent } from './request-form-dialog/request-form.dialog.component';
 
 @Component({
   selector: 'app-requests',
@@ -25,6 +26,7 @@ export class RequestsComponent implements OnInit, OnDestroy {
   requests$: Observable<Request[]>;
   count$: Observable<number>;
   loading$: Observable<boolean>;
+  costs: Observable<Costs>;
 
   constructor(private requestsService: RequestsService, public dialog: MatDialog) {
     this.searchInput = new FormControl('');

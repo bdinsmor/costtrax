@@ -1,6 +1,21 @@
 import { AppUtils } from '@app/core/utils/utils';
 import { Contact } from '@app/contacts/contact.model';
 
+export class Activity {
+  project: string;
+  request: string;
+  details: string;
+  timestamp: Date;
+  constructor(activity: any) {
+    {
+      this.project = activity.project || '';
+      this.request = activity.request || '';
+      this.details = activity.details || '';
+      this.timestamp = activity.timestamp || new Date();
+    }
+  }
+}
+
 export class Project {
   id: string;
   name: string;
@@ -41,6 +56,8 @@ export class Cost {
   receipt: ByteString;
   subtotal: number;
   total: number;
+  paid: number;
+  unpaid: number;
   date: Date;
   approved: Boolean;
   reason: Boolean;
@@ -52,6 +69,8 @@ export class Cost {
 export class SubcontractorCosts {
   enabled: Boolean;
   total: number;
+  paid: number;
+  unpaid: number;
   costs: Array<Cost>;
   constructor(subCost: any) {
     {
@@ -80,6 +99,8 @@ export class MaterialCost {
 export class MaterialCosts {
   enabled: Boolean;
   total: number;
+  paid: number;
+  unpaid: number;
   materialCosts: Array<MaterialCost>;
   constructor(materialCosts: any) {
     {
@@ -99,6 +120,8 @@ export class LaborCost {
   doubleTime: number;
   fut: number;
   sut: number;
+  paid: number;
+  unpaid: number;
   approved: Boolean;
   reason: Boolean;
   approver: Contact;
@@ -126,6 +149,8 @@ export class LaborCosts {
   benefits: number;
   additives: number;
   totalCost: number;
+  paid: number;
+  unpaid: number;
   submitter: Contact;
   submitDate: Date;
   actionDate: Date;
@@ -138,6 +163,8 @@ export class LaborCosts {
       this.benefits = laborCosts.benefits || 0;
       this.additives = laborCosts.additives || 0;
       this.totalCost = laborCosts.totalCost || 0;
+      this.paid = laborCosts.paid || 0;
+      this.paid = laborCosts.unpaid || 0;
       this.submitter = laborCosts.submitter || new Contact({});
     }
   }
@@ -160,6 +187,8 @@ export class ActiveCost {
   hours: number;
   transportationCost: number;
   total: number;
+  paid: number;
+  unpaid: number;
   approved: Boolean;
   reason: Boolean;
   approver: Contact;
@@ -171,6 +200,8 @@ export class StandbyCost {
   machine: Machine;
   transportationCost: number;
   total: number;
+  paid: number;
+  unpaid: number;
   hours: number;
   approved: Boolean;
   reason: Boolean;
@@ -186,6 +217,8 @@ export class RentalCost {
   other: number;
   invoice: ByteString;
   total: number;
+  paid: number;
+  unpaid: number;
   approved: Boolean;
   reason: Boolean;
   approver: Contact;
@@ -199,12 +232,16 @@ export class ActiveCosts {
   regionalAdjustment: string;
   costs: Array<ActiveCost>;
   total: number;
+  paid: number;
+  unpaid: number;
   constructor(activeCosts: any) {
     {
       this.startDate = activeCosts.startDate || new Date();
       this.endDate = activeCosts.endDate || new Date();
       this.regionalAdjustment = activeCosts.regionalAdjustment || '';
       this.costs = activeCosts.costs || new Array<ActiveCost>();
+      this.paid = activeCosts.paid || 0;
+      this.unpaid = activeCosts.unpaid || 0;
     }
   }
 }
@@ -215,12 +252,16 @@ export class StandbyCosts {
   regionalAdjustment: string; // state
   costs: Array<StandbyCost>;
   total: number;
+  paid: number;
+  unpaid: number;
   constructor(standbyCosts: any) {
     {
       this.startDate = standbyCosts.startDate || new Date();
       this.endDate = standbyCosts.endDate || new Date();
       this.regionalAdjustment = standbyCosts.regionalAdjustment || '';
       this.costs = standbyCosts.costs || new Array<StandbyCost>();
+      this.paid = standbyCosts.paid || 0;
+      this.unpaid = standbyCosts.unpaid || 0;
     }
   }
 }
@@ -231,6 +272,8 @@ export class EquipmentCosts {
   standbyCosts: StandbyCosts;
   rentalCosts: Array<RentalCost>;
   total: number;
+  paid: number;
+  unpaid: number;
 
   constructor(equipmentCosts: any) {
     {
@@ -239,6 +282,8 @@ export class EquipmentCosts {
       this.standbyCosts = equipmentCosts.standbyCosts || new StandbyCosts({});
       this.rentalCosts = equipmentCosts.rentalCosts || new RentalCosts({});
       this.total = equipmentCosts.total || 0;
+      this.paid = equipmentCosts.paid || 0;
+      this.unpaid = equipmentCosts.unpaid || 0;
     }
   }
 }
@@ -249,11 +294,16 @@ export class RentalCosts {
   total: number;
   startDate: Date;
   endDate: Date;
+  paid: number;
+  unpaid: number;
+
   constructor(rentalCosts: any) {
     {
       this.enabled = rentalCosts.enabled || false;
       this.costs = rentalCosts.costs || new Array<RentalCost>();
       this.total = rentalCosts.total || 0;
+      this.paid = rentalCosts.paid || 0;
+      this.unpaid = rentalCosts.unpaid || 0;
       this.startDate = rentalCosts.startDate || new Date();
       this.endDate = rentalCosts.endDate || new Date();
     }
@@ -264,17 +314,23 @@ export class OtherCosts {
   enabled: Boolean;
   costs: Array<Cost>;
   total: number;
+  paid: number;
+  unpaid: number;
   constructor(otherCosts: any) {
     {
       this.enabled = otherCosts.enabled || false;
       this.costs = otherCosts.costs || new Array<Cost>();
       this.total = otherCosts.total || 0;
+      this.paid = otherCosts.paid || 0;
+      this.unpaid = otherCosts.unpaid || 0;
     }
   }
 }
 
 export class Costs {
   total: number;
+  paid: number;
+  unpaid: number;
   equipmentCosts: EquipmentCosts;
   laborCosts: LaborCosts;
   materialCosts: MaterialCosts;
@@ -288,6 +344,8 @@ export class Costs {
       this.otherCosts = costs.otherCosts || new OtherCosts({});
       this.subcontractorCosts = costs.subcontractorCosts || new SubcontractorCosts({});
       this.total = costs.total || 0;
+      this.paid = costs.paid || 0;
+      this.unpaid = costs.unpaid || 0;
     }
   }
 }
@@ -319,6 +377,23 @@ export class Request {
       this.messages = request.messages || 0;
       this.total = request.total || 0;
       this.status = request.status || 'UNPAID';
+    }
+  }
+}
+
+export class LogEntry {
+  id: string;
+  date: Date;
+  project: Project;
+  request: Request;
+  log: string;
+  constructor(log: any) {
+    {
+      this.id = log.id || AppUtils.generateGUID();
+      this.date = log.date || new Date();
+      this.log = log.log || '';
+      this.project = log.project;
+      this.request = log.request;
     }
   }
 }

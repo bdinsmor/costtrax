@@ -38,9 +38,6 @@ export class PerfectScrollbarDirective implements OnInit, AfterViewInit, OnDestr
     if (!this.isInitialized || !this.ps) {
       return;
     }
-
-    this.onConfigChanged.unsubscribe();
-
     // Destroy the perfect-scrollbar
     this.ps.destroy();
   }

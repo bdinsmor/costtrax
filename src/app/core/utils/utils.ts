@@ -57,14 +57,14 @@ export class AppUtils {
     return value.toLowerCase().includes(searchText);
   }
 
-  public static generateGUID() {
+  public static generateGUID(upperCase?: Boolean) {
     function S4() {
       return Math.floor((1 + Math.random()) * 0x10000)
         .toString(16)
         .substring(1);
     }
 
-    return S4() + S4();
+    return upperCase ? (S4() + S4()).toUpperCase() : S4() + S4();
   }
 
   public static toggleInArray(item: any, array: Array<any>) {

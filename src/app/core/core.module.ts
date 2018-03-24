@@ -38,7 +38,7 @@ import { AppMatchMediaService } from '@app/core/services/app-match-media.service
     AuthenticationService,
     AuthenticationGuard,
     I18nService,
-    HttpCacheService,
+    // HttpCacheService,
     AppMatchMediaService,
     ApiPrefixInterceptor,
     ErrorHandlerInterceptor,

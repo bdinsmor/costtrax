@@ -22,7 +22,9 @@ import {
   LaborCost,
   Cost,
   SubcontractorCosts,
-  OtherCosts
+  OtherCosts,
+  Activity,
+  LogEntry
 } from '../../shared/model';
 
 export class RequestsFakeDb {
@@ -32,6 +34,10 @@ export class RequestsFakeDb {
   public requests: Array<Request> = [];
   public companies: Array<Company> = [];
   public contacts: Array<Contact> = [];
+  public activities: Array<Activity> = [];
+  public logEntries: Array<LogEntry> = [];
+  private actions: Array<string> = ['requested more info', 'approved', 'rejected', 'placed under review'];
+  private projectTypes: Array<string> = ['Project', 'Expansion', 'Construction'];
 
   constructor() {
     this.chance = new Chance();
@@ -43,8 +49,42 @@ export class RequestsFakeDb {
       this.createCompanies(numCompanies);
       this.createProjects(numProjects);
       this.createRequests(numRequests);
+      this.createActivities();
+      this.createHistory();
     } catch (error) {
       console.error('Error: ', error);
+    }
+  }
+
+  createActivities(): void {
+    this.activities = [];
+    for (let i = 0; i < this.chance.integer({ min: 5, max: 35 }); i++) {
+      const timestamp: Date = this.chance.date({ year: 2018 });
+      const r: Request = _.sample(this.requests);
+      this.activities.push(
+        new Activity({
+          project: r.project,
+          request: r,
+          details: 'created',
+          timestamp: timestamp
+        })
+      );
+    }
+  }
+
+  createHistory(): void {
+    this.logEntries = [];
+    for (let i = 0; i < this.chance.integer({ min: 5, max: 35 }); i++) {
+      const r: Request = _.sample(this.requests);
+
+      this.logEntries.push(
+        new LogEntry({
+          project: r.project,
+          request: r,
+          date: this.chance.date({ year: 2018 }),
+          log: _.sample(this.actions)
+        })
+      );
     }
   }
 
@@ -82,8 +122,12 @@ export class RequestsFakeDb {
     this.projects = [];
     for (let i = 0; i < num; i++) {
       const p: Project = new Project();
-      p.id = AppUtils.generateGUID();
-      p.name = this.chance.animal();
+      p.id = AppUtils.generateGUID(true);
+      p.name =
+        this.chance.animal() +
+        ' ' +
+        this.chance.animal() +
+        this.chance.weighted([' Project', ' Construction', ' Expansion'], [5, 3, 3]);
       p.details = this.chance.paragraph({ sentences: this.chance.integer({ min: 5, max: 15 }) });
       p.owner = _.sample(this.contacts).name;
       this.projects.push(p);
@@ -147,11 +191,12 @@ export class RequestsFakeDb {
       if (statusPaid) {
         status = 'PAID';
       }
+      const id: String = AppUtils.generateGUID(true);
       const request = new Request({
-        id: AppUtils.generateGUID(),
+        id: id,
         name: p.name + this.chance.weighted([' Expansion Project', ' Construction Project'], [5, 1]),
         project: p,
-        requestDate: this.chance.date({ year: 2017 }),
+        requestDate: this.chance.date({ year: 2018 }),
         startDate: startDate,
         endDate: endDate,
         costs: costs,
@@ -171,7 +216,6 @@ export class RequestsFakeDb {
       //  signatures: Signatures;
       this.requests.push(request);
     }
-    console.log('number of requests: ' + this.requests.length);
   }
 
   createSignatures(company: Company, employee: Contact, endDate: Date): Signatures {

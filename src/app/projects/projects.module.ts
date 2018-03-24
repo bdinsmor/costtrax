@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { DirectivesModule } from '@app/core/directives/directives';
 import { AppMatchMediaService } from '@app/core/services/app-match-media.service';
 import { ProjectsListComponent } from '@app/projects/project-list/projects-list.component';
+import { SharedModule } from '@app/shared';
 
 const routes: Routes = [
   {
@@ -25,16 +26,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [ProjectsComponent, ProjectsListComponent, ProjectFormDialogComponent],
-  imports: [
-    CdkTableModule,
-    CommonModule,
-    DirectivesModule,
-    PipesModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MaterialModule,
-    RouterModule.forChild(routes)
-  ],
+  imports: [CdkTableModule, SharedModule, DirectivesModule, PipesModule, RouterModule.forChild(routes)],
   exports: [ProjectsComponent],
   providers: [ProjectsService, AppMatchMediaService],
   entryComponents: [ProjectFormDialogComponent]
