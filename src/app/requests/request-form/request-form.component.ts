@@ -38,7 +38,6 @@ export class RequestFormDialogComponent {
       this.dialogTitle = 'New Request';
       this.request = new Request({});
     }
-
     this.projectFormGroup = this.createProjectFormGroup();
     this.costFormGroup = this.createCostFormGroup();
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();

@@ -20,8 +20,6 @@
 
     <ng-container *ngIf="projectType.value == '1';then existingProject; else newProject"></ng-container>
     <ng-template #existingProject>
-
-
       <mat-horizontal-stepper #stepper="matHorizontalStepper">
         <mat-step [stepControl]="projectFormGroup">
           <form [formGroup]="projectFormGroup">
