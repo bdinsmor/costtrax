@@ -74,6 +74,8 @@ export class RequestsFakeDb {
       if (this.projects[i].id === projectId) {
         if (includeEmployees) {
           this.projects[i].numContractors = +this.projects[i].numContractors + request.costs.company.employees.length;
+        } else {
+          this.projects[i].numContractors = +request.costs.company.employees.length;
         }
         this.projects[i].openRequests = +this.projects[i].openRequests + 1;
       }
