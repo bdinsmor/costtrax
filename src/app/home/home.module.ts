@@ -9,13 +9,12 @@ import { MaterialModule } from '@app/material.module';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 
-import { ContactsModule } from '@app/contacts/contacts.module';
 import { MailModule } from '@app/mail/mail.module';
 import { PipesModule } from '@app/core/pipes/pipes.module';
-import { ContactsComponent } from '../contacts/contacts.component';
 import { RequestsModule } from '@app/requests/requests.module';
 import { ProjectsModule } from '@app/projects/projects.module';
 import { LogEntryService } from './activity.service';
+import { ContractorsModule } from '../contractors/contractors.module';
 
 @NgModule({
   imports: [
@@ -27,7 +26,7 @@ import { LogEntryService } from './activity.service';
     FlexLayoutModule,
     MaterialModule,
     MailModule,
-    ContactsModule,
+    ContractorsModule,
     RequestsModule,
     ProjectsModule,
     HomeRoutingModule

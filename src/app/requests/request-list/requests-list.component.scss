@@ -12,6 +12,10 @@ app-requests-list {
     border-top: 1px solid mat-color($mat-fusedark, 100, 0.9);
   }
 
+  .blue-link {
+    color: mat-color($mat-blue, 500, 0.9);
+  }
+
   .messages-badge {
     background-color: mat-color($primary, 500, 0.9);
     padding: 4px;

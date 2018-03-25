@@ -1,7 +1,6 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { RequestsFakeDb } from './requests';
-import { Request, Company, Project, Activity, LogEntry } from '@app/shared/model';
-import { Contact } from '@app/contacts/contact.model';
+import { Request, Company, Project, Activity, LogEntry, Contractor } from '@app/shared/model';
 
 export class FakeDbService implements InMemoryDbService {
   requestsDB: RequestsFakeDb;
@@ -9,7 +8,7 @@ export class FakeDbService implements InMemoryDbService {
   createDb() {
     this.requestsDB = new RequestsFakeDb();
     const companies: Array<Company> = this.requestsDB.companies;
-    const contacts: Array<Contact> = this.requestsDB.contacts;
+    const contractors: Array<Contractor> = this.requestsDB.contractors;
     const projects: Array<Project> = this.requestsDB.projects;
     const requests: Array<Request> = this.requestsDB.requests;
     const activity: Array<Activity> = this.requestsDB.activities;
@@ -18,11 +17,12 @@ export class FakeDbService implements InMemoryDbService {
     // this creates a url path for each entry
     // /projects -> returns projects list, /logentries -> returns list of logEntries...
     return {
-      contacts: contacts,
+      // contractors: contractors,
       activity: activity,
       projects: projects,
       logentries: logEntries,
       companies: companies,
+
       requests: requests
     };
   }

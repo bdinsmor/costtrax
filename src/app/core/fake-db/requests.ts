@@ -1,6 +1,5 @@
 declare var Chance: any; // for externals librairies
 import * as _ from 'lodash';
-import { Contact } from '@app/contacts/contact.model';
 import { AppUtils } from '@app/core/utils/utils';
 import {
   Request,
@@ -24,7 +23,8 @@ import {
   SubcontractorCosts,
   OtherCosts,
   Activity,
-  LogEntry
+  LogEntry,
+  Contractor
 } from '../../shared/model';
 
 export class RequestsFakeDb {
@@ -33,7 +33,7 @@ export class RequestsFakeDb {
   public projects: Array<Project> = [];
   public requests: Array<Request> = [];
   public companies: Array<Company> = [];
-  public contacts: Array<Contact> = [];
+  public contractors: Array<Contractor> = [];
   public activities: Array<Activity> = [];
   public logEntries: Array<LogEntry> = [];
   private actions: Array<string> = ['requested more info', 'approved', 'rejected', 'placed under review'];
@@ -42,17 +42,56 @@ export class RequestsFakeDb {
   constructor() {
     this.chance = new Chance();
     try {
-      const numProjects = this.chance.integer({ min: 5, max: 30 });
+      const numProjects = this.chance.integer({ min: 5, max: 15 });
       const numCompanies = this.chance.integer({ min: 2, max: 15 });
-      const numRequests = this.chance.integer({ min: 100, max: 500 });
+      const numRequests = this.chance.integer({ min: 25, max: 75 });
       this.createMachines();
       this.createCompanies(numCompanies);
       this.createProjects(numProjects);
       this.createRequests(numRequests);
       this.createActivities();
       this.createHistory();
+      this.finalize();
     } catch (error) {
       console.error('Error: ', error);
+    }
+  }
+
+  finalize(): void {
+    const cTracker: Map<string, string> = new Map<string, string>();
+    let companyId = '';
+    for (let i = 0; i < this.requests.length; i++) {
+      this.updateCompany(this.requests[i].costs);
+      companyId = this.requests[i].costs.company.id;
+      this.updateProject(this.requests[i].costs.company.name, this.requests[i], !cTracker.has(companyId));
+      cTracker.set(companyId, companyId);
+    }
+  }
+
+  updateProject(companyName: string, request: Request, includeEmployees: boolean): void {
+    const projectId: string = request.project.id;
+    for (let i = 0; i < this.projects.length; i++) {
+      if (this.projects[i].id === projectId) {
+        if (includeEmployees) {
+          this.projects[i].numContractors = +this.projects[i].numContractors + request.costs.company.employees.length;
+        }
+        this.projects[i].openRequests = +this.projects[i].openRequests + 1;
+      }
+    }
+  }
+
+  updateCompany(costs: Costs): void {
+    const companyId: string = costs.company.id;
+    for (let i = 0; i < this.companies.length; i++) {
+      if (this.companies[i].id === companyId) {
+        this.companies[i].openRequests++;
+        const o: number = this.companies[i].totalPaid;
+        const n: number = costs.total;
+        const total: number = +o + +n;
+
+        this.companies[i].totalPaid = Number(total.toFixed(2));
+        // console.log('totalPaid:  ' + this.companies[i].totalPaid);
+      }
     }
   }
 
@@ -121,7 +160,7 @@ export class RequestsFakeDb {
   createProjects(num: number): void {
     this.projects = [];
     for (let i = 0; i < num; i++) {
-      const p: Project = new Project();
+      const p: Project = new Project({});
       p.id = AppUtils.generateGUID(true);
       p.name =
         this.chance.animal() +
@@ -129,21 +168,21 @@ export class RequestsFakeDb {
         this.chance.animal() +
         this.chance.weighted([' Project', ' Construction', ' Expansion'], [5, 3, 3]);
       p.details = this.chance.paragraph({ sentences: this.chance.integer({ min: 5, max: 15 }) });
-      p.owner = _.sample(this.contacts).name;
+      p.owner = _.sample(this.contractors).name;
       this.projects.push(p);
     }
   }
 
   createCompanies(num: number): void {
     this.companies = [];
-    this.contacts = [];
+    this.contractors = [];
     for (let i = 0; i < num; i++) {
-      const company: Company = new Company();
-      const numEmployees: number = this.chance.integer({ min: 3, max: 25 });
+      const company: Company = new Company({});
+      const numEmployees: number = this.chance.integer({ min: 1, max: 15 });
       const companyName = this.chance.company();
-      const employees: Array<Contact> = [];
+      const employees: Array<Contractor> = [];
       for (let j = 0; j < numEmployees; j++) {
-        const employee: Contact = new Contact({
+        const employee: Contractor = new Contractor({
           id: this.chance.guid(),
           avatar: this.chance.avatar(),
           name: this.chance.first(),
@@ -157,7 +196,7 @@ export class RequestsFakeDb {
           jobTitle: this.chance.profession()
         });
         employees.push(employee);
-        this.contacts.push(employee);
+        this.contractors.push(employee);
       }
       company.name = companyName;
       company.address = this.chance.address();
@@ -218,7 +257,7 @@ export class RequestsFakeDb {
     }
   }
 
-  createSignatures(company: Company, employee: Contact, endDate: Date): Signatures {
+  createSignatures(company: Company, employee: Contractor, endDate: Date): Signatures {
     // contractorName: string;
     // dotName: string;
     //  date: Date;
@@ -233,7 +272,7 @@ export class RequestsFakeDb {
 
   /*
 export class Cost {
-  subcontractor: Contact;
+  subcontractor: Contractor;
   description: string;
   receipt: ByteString;
   subtotal: number;
@@ -255,7 +294,7 @@ export class SubcontractorCosts {
 
   */
 
-  createCosts(company: Company, employee: Contact, startDate: Date, endDate: Date): Costs {
+  createCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): Costs {
     // total: number;
     // equipmentCosts: EquipmentCosts;
     // laborCosts: LaborCosts;
@@ -281,7 +320,8 @@ export class SubcontractorCosts {
       equipmentCosts: equipmentCosts,
       laborCosts: laborCosts,
       otherCosts: otherCosts,
-      total: total.toFixed(2)
+      total: total.toFixed(2),
+      company: company
     });
     return costs;
   }
@@ -399,7 +439,7 @@ export class EquipmentCosts {
     }
   }
 
-  createEquipmentCosts(company: Company, employee: Contact, startDate: Date, endDate: Date): EquipmentCosts {
+  createEquipmentCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): EquipmentCosts {
     const equipmentCostsEnabled: Boolean = this.chance.bool({ likelihood: 80 });
 
     if (equipmentCostsEnabled) {
@@ -444,7 +484,7 @@ export class MaterialCosts {
 }
   */
 
-  createMaterialCosts(company: Company, employee: Contact, startDate: Date, endDate: Date): MaterialCosts {
+  createMaterialCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): MaterialCosts {
     const materialCostsEnabled: Boolean = this.chance.bool({ likelihood: 65 });
     const materialCostList: Array<MaterialCost> = [];
     let materialCostTotal = 0;
@@ -476,7 +516,7 @@ export class MaterialCosts {
     });
   }
 
-  createLaborCosts(company: Company, signee: Contact, startDate: Date, endDate: Date): LaborCosts {
+  createLaborCosts(company: Company, signee: Contractor, startDate: Date, endDate: Date): LaborCosts {
     const laborCostsEnabled: Boolean = this.chance.bool({ likelihood: 10 });
     const laborCostList: Array<LaborCost> = [];
     /*
@@ -486,7 +526,7 @@ export class MaterialCosts {
   benefits: number;
   additives: number;
   totalCost: number;
-  submitter: Contact;
+  submitter: Contractor;
   */
     if (laborCostsEnabled) {
       const employee = _.sample(company.employees);
@@ -508,7 +548,7 @@ export class MaterialCosts {
     }
   }
 
-  createSubcontractorCosts(company: Company, employee: Contact, startDate: Date, endDate: Date): SubcontractorCosts {
+  createSubcontractorCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): SubcontractorCosts {
     const subcontractorCostsEnabled: Boolean = this.chance.bool({ likelihood: 30 });
     const subcontractorCostList: Array<Cost> = [];
     let subcontractorTotal = 0;
@@ -540,7 +580,7 @@ export class MaterialCosts {
     });
   }
 
-  createOtherCosts(company: Company, employee: Contact, startDate: Date, endDate: Date): OtherCosts {
+  createOtherCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): OtherCosts {
     const otherCostsEnabled: Boolean = this.chance.bool({ likelihood: 20 });
     const otherCostList: Array<Cost> = [];
     let otherTotal = 0;

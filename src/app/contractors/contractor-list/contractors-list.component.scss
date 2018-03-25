@@ -1,0 +1,42 @@
+@import 'src/styles/styles';
+
+mat-cell.mat-cell,
+mat-header-cell.mat-header-cell {
+  overflow: visible;
+  cursor: pointer;
+}
+
+mat-header-row {
+  background: mat-color($mat-fusedark, 50, 0.9);
+  border-top: 1px solid mat-color($mat-fusedark, 100, 0.9);
+}
+
+.blue-link {
+  color: mat-color($mat-blue, 500, 0.9);
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-row:nth-child(2n) {
+  background-color: white;
+}
+
+mat-row:nth-child(2n + 1) {
+  background: mat-color($mat-fusedark, 50, 0.9);
+}
+
+#contractorsTable {
+  max-height: 50vh !important;
+  overflow: auto !important;
+}
+
+#add-contractor-button {
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

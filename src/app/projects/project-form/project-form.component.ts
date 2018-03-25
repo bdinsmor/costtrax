@@ -36,7 +36,7 @@ export class ProjectFormDialogComponent {
       this.project = data.project;
     } else {
       this.dialogTitle = 'New Project';
-      this.project = new Project();
+      this.project = new Project({ name: 'New Project' });
     }
 
     this.projectFormGroup = this.createProjectFormGroup();

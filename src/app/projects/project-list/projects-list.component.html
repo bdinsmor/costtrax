@@ -3,6 +3,14 @@
     <mat-header-cell *matHeaderCellDef> PROJECT </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
   </ng-container>
+  <ng-container matColumnDef="openRequests">
+    <mat-header-cell *matHeaderCellDef> OPEN REQUESTS </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.openRequests}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="contractors">
+    <mat-header-cell *matHeaderCellDef> CONTRACTORS </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.numContractors}} </mat-cell>
+  </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openProject(row)"></mat-row>
 </mat-table>

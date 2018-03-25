@@ -26,7 +26,7 @@ export class ProjectsListComponent implements OnInit, OnDestroy {
   requests: Request[];
   dataSource: RequestsDataSource | null;
   user: any;
-  displayedColumns = ['projectName'];
+  displayedColumns = ['projectName', 'openRequests', 'contractors'];
   selection = new SelectionModel<Element>(true, []);
   dialogRef: any;
   projects: Observable<Project[]>;

@@ -1,0 +1,35 @@
+<div id="projects" class="container" fxLayoutAlign="start stretch" fxLayout="column">
+
+  <mat-toolbar class="primary">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <button mat-raised-button color="primary">
+        Invite New
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-toolbar>
+    <mat-toolbar-row class="alt mat-elevation-z1" fxLayoutAlign="start center">
+      <label for="search" class="mr-8">
+        <mat-icon>search</mat-icon>
+      </label>
+      <mat-form-field mat-no-float class="w-75" floatPlaceholder="never">
+        <input matInput [formControl]="searchInput" id="search" placeholder="Search Requests">
+      </mat-form-field>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+
+
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <app-contractors-list style="width:100%; max-height:50vh; overflow:auto"></app-contractors-list>
+
+  </div>
+  <!-- / CONTENT -->
+
+
+
+
+</div>

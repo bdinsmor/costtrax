@@ -1,5 +1,36 @@
 import { AppUtils } from '@app/core/utils/utils';
-import { Contact } from '@app/contacts/contact.model';
+
+export class Contractor {
+  id: string;
+  name: string;
+  lastName: string;
+  avatar: string;
+  nickname: string;
+  company: string;
+  jobTitle: string;
+  email: string;
+  phone: string;
+  address: string;
+  birthday: string;
+  notes: string;
+
+  constructor(contractor: any) {
+    {
+      this.id = contractor.id || AppUtils.generateGUID(true);
+      this.name = contractor.name || '';
+      this.lastName = contractor.lastName || '';
+      this.avatar = contractor.avatar || 'assets/images/avatars/profile.jpg';
+      this.nickname = contractor.nickname || '';
+      this.company = contractor.company || '';
+      this.jobTitle = contractor.jobTitle || '';
+      this.email = contractor.email || '';
+      this.phone = contractor.phone || '';
+      this.address = contractor.address || '';
+      this.birthday = contractor.birhday || '';
+      this.notes = contractor.notes || '';
+    }
+  }
+}
 
 export class Activity {
   project: string;
@@ -21,20 +52,18 @@ export class Project {
   name: string;
   owner: string;
   details: string;
-}
-
-export class Company {
-  id: string;
-  name: string;
-  email: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  coordinates: string;
-  phone: string;
-  url: string;
-  employees: Array<Contact>;
+  numContractors: number;
+  openRequests: number;
+  constructor(project: any) {
+    {
+      this.id = project.id || AppUtils.generateGUID(true);
+      this.name = project.name || '';
+      this.owner = project.owner || '';
+      this.details = project.details || '';
+      this.numContractors = project.numContractors || 0;
+      this.openRequests = project.openRequests || 0;
+    }
+  }
 }
 
 export class Signatures {
@@ -51,7 +80,7 @@ export class Signatures {
 }
 
 export class Cost {
-  subcontractor: Contact;
+  subcontractor: Contractor;
   description: string;
   receipt: ByteString;
   subtotal: number;
@@ -61,7 +90,7 @@ export class Cost {
   date: Date;
   approved: Boolean;
   reason: Boolean;
-  approver: Contact;
+  approver: Contractor;
   actionDate: Date;
   submitDate: Date;
 }
@@ -91,7 +120,7 @@ export class MaterialCost {
   date: Date;
   approved: Boolean;
   reason: Boolean;
-  approver: Contact;
+  approver: Contractor;
   actionDate: Date;
   submitDate: Date;
 }
@@ -112,7 +141,7 @@ export class MaterialCosts {
 }
 
 export class LaborCost {
-  employee: Contact;
+  employee: Contractor;
   trade: string;
   payRate: number;
   regularTime: number;
@@ -124,13 +153,13 @@ export class LaborCost {
   unpaid: number;
   approved: Boolean;
   reason: Boolean;
-  approver: Contact;
+  approver: Contractor;
   actionDate: Date;
   submitDate: Date;
 
   constructor(laborCost: any) {
     {
-      this.employee = laborCost.employee || new Contact({});
+      this.employee = laborCost.employee || new Contractor({});
       this.trade = laborCost.trade || '';
       this.payRate = laborCost.payRate || 0;
       this.regularTime = laborCost.regularTime || 0;
@@ -151,7 +180,7 @@ export class LaborCosts {
   totalCost: number;
   paid: number;
   unpaid: number;
-  submitter: Contact;
+  submitter: Contractor;
   submitDate: Date;
   actionDate: Date;
 
@@ -165,7 +194,7 @@ export class LaborCosts {
       this.totalCost = laborCosts.totalCost || 0;
       this.paid = laborCosts.paid || 0;
       this.paid = laborCosts.unpaid || 0;
-      this.submitter = laborCosts.submitter || new Contact({});
+      this.submitter = laborCosts.submitter || new Contractor({});
     }
   }
 }
@@ -191,7 +220,7 @@ export class ActiveCost {
   unpaid: number;
   approved: Boolean;
   reason: Boolean;
-  approver: Contact;
+  approver: Contractor;
   actionDate: Date;
   submitDate: Date;
 }
@@ -205,7 +234,7 @@ export class StandbyCost {
   hours: number;
   approved: Boolean;
   reason: Boolean;
-  approver: Contact;
+  approver: Contractor;
   actionDate: Date;
   submitDate: Date;
 }
@@ -221,7 +250,7 @@ export class RentalCost {
   unpaid: number;
   approved: Boolean;
   reason: Boolean;
-  approver: Contact;
+  approver: Contractor;
   actionDate: Date;
   submitDate: Date;
 }
@@ -336,6 +365,7 @@ export class Costs {
   materialCosts: MaterialCosts;
   otherCosts: OtherCosts;
   subcontractorCosts: SubcontractorCosts;
+  company: Company;
   constructor(costs: any) {
     {
       this.equipmentCosts = costs.equipmentCosts || new EquipmentCosts({});
@@ -346,6 +376,7 @@ export class Costs {
       this.total = costs.total || 0;
       this.paid = costs.paid || 0;
       this.unpaid = costs.unpaid || 0;
+      this.company = costs.company || new Company({});
     }
   }
 }
@@ -367,7 +398,7 @@ export class Request {
     {
       this.id = request.id || AppUtils.generateGUID();
       this.name = request.name || '';
-      this.project = request.project || new Project();
+      this.project = request.project || new Project({});
       this.type = request.type || '';
       this.requestDate = request.requestDate || new Date();
       this.startDate = request.startDate || new Date();
@@ -380,7 +411,67 @@ export class Request {
     }
   }
 }
+/*
+export class Company {
+  id: string;
+  name: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  coordinates: string;
+  phone: string;
+  url: string;
+  employees: Array<Contractor>;
+}
+*/
 
+/**
+ *
+ *
+ * @export
+ * @class Company
+ */
+export class Company {
+  id: string;
+  name: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  coordinates: string;
+  phone: string;
+  url: string;
+  employees: Array<Contractor>;
+  openRequests: number;
+  totalPaid: number;
+  constructor(c: any) {
+    {
+      this.id = c.id || AppUtils.generateGUID();
+      this.name = c.name || '';
+      this.email = c.email || '';
+      this.address = c.address || '';
+      this.city = c.city || '';
+      this.state = c.state || '';
+      this.zip = c.zip || '';
+      this.coordinates = c.coordinates || '';
+      this.phone = c.phone || '';
+      this.url = c.url || '';
+      this.employees = c.employess || new Array<Contractor>();
+      this.openRequests = c.openRequests || 0;
+      this.totalPaid = c.totalPaid || 0;
+    }
+  }
+}
+
+/**
+ *
+ *
+ * @export
+ * @class LogEntry
+ */
 export class LogEntry {
   id: string;
   date: Date;
