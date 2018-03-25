@@ -8,6 +8,7 @@
   z-index: 1;
   max-height: 55px;
   @include mat-elevation(1);
+  background: mat-color($mat-fusedark, 50, 0.9);
 }
 
 .brand {

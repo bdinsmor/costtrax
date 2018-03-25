@@ -1,35 +1,44 @@
 <div id="requests" class="container" fxLayoutAlign="start stretch" fxLayout="column">
-
+  <mat-toolbar class="primary">
+    <mat-toolbar-row>
+      <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <label fxFlex>UNPAID TOTAL</label>
+        <div fxFlex>{{5345 | currency}}</div>
+      </div>
+      <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <label fxFlex>UNPAID EQUIPMENT</label>
+        <div fxFlex>{{345 | currency}}</div>
+      </div>
+      <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <label fxFlex>UNPAID LABOR</label>
+        <div fxFlex>{{2343 | currency}}</div>
+      </div>
+      <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <label fxFlex>UNPAID MATERIAL</label>
+        <div fxFlex>{{34534 | currency}}</div>
+      </div>
+      <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
+        <label fxFlex>PAID</label>
+        <div fxFlex>{{1234344 | currency}}</div>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-toolbar>
+    <mat-toolbar-row class="alt mat-elevation-z1" fxLayoutAlign="start center">
+      <label for="search" class="mr-8">
+        <mat-icon>search</mat-icon>
+      </label>
+      <mat-form-field mat-no-float class="w-75" floatPlaceholder="never">
+        <input matInput [formControl]="searchInput" id="search" placeholder="Search Requests">
+      </mat-form-field>
+    </mat-toolbar-row>
+  </mat-toolbar>
   <div fxLayout="row" class="info-row">
-    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
-      <label fxFlex>UNPAID TOTAL</label>
-      <div fxFlex>5345</div>
-    </div>
-    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
-      <label fxFlex>UNPAID EQUIPMENT</label>
-      <div fxFlex>345</div>
-    </div>
-    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
-      <label fxFlex>UNPAID LABOR</label>
-      <div fxFlex>2343</div>
-    </div>
-    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
-      <label fxFlex>UNPAID MATERIAL</label>
-      <div fxFlex>34534</div>
-    </div>
-    <div class="totals-column" fxFlex fxLayout="column" fxLayoutAlign="center center">
-      <label fxFlex>PAID</label>
-      <div fxFlex>345345</div>
-    </div>
+
   </div>
 
   <div fxLayout="row" fxLayoutAlign="start center">
-    <label for="search" class="mr-8">
-      <mat-icon>search</mat-icon>
-    </label>
-    <mat-form-field mat-no-float class="m-0" floatPlaceholder="never">
-      <input matInput [formControl]="searchInput" id="search" placeholder="Search Requests...">
-    </mat-form-field>
+
   </div>
 
 

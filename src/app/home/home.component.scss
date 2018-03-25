@@ -1,3 +1,5 @@
+@import 'src/styles/styles';
+
 .container {
   padding: 1em;
   width: 100%;
@@ -29,12 +31,12 @@ a:-webkit-any-link {
   max-height: 500px;
 }
 
-.mat-list > .mat-list-item:nth-child(2n + 1) {
+mat-list-item:nth-child(2n) {
   background-color: white;
 }
 
-.mat-list > .mat-list-item:nth-child(2n) {
-  background-color: #f2f2f2;
+mat-list-item:nth-child(2n + 1) {
+  background: mat-color($mat-fusedark, 50, 0.9);
 }
 
 .title-color {

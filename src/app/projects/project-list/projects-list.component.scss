@@ -1,12 +1,25 @@
-app-projects-list {
-  mat-cell.mat-cell,
-  mat-header-cell.mat-header-cell {
-    overflow: visible;
-  }
+@import 'src/styles/styles';
 
-  .full-width {
-    width: 100%;
-  }
+mat-cell.mat-cell,
+mat-header-cell.mat-header-cell {
+  overflow: visible;
+}
+
+mat-header-row {
+  background: mat-color($mat-fusedark, 50, 0.9);
+  border-top: 1px solid mat-color($mat-fusedark, 100, 0.9);
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-row:nth-child(2n) {
+  background-color: white;
+}
+
+mat-row:nth-child(2n + 1) {
+  background: mat-color($mat-fusedark, 50, 0.9);
 }
 
 #requestTable {

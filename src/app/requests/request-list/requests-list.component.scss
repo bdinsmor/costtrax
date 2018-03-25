@@ -7,6 +7,11 @@ app-requests-list {
     cursor: pointer;
   }
 
+  mat-header-row {
+    background: mat-color($mat-fusedark, 50, 0.9);
+    border-top: 1px solid mat-color($mat-fusedark, 100, 0.9);
+  }
+
   .messages-badge {
     background-color: mat-color($primary, 500, 0.9);
     padding: 4px;

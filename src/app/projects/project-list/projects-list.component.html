@@ -1,14 +1,8 @@
-<mat-table #requestTable [dataSource]="dataSource" style="width:100%">
-
-  <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
-
-
+<mat-table #projectsTable [dataSource]="dataSource" style="width:100%">
   <ng-container matColumnDef="projectName">
     <mat-header-cell *matHeaderCellDef> PROJECT </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
   </ng-container>
-
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openProject(row)"></mat-row>
 </mat-table>
