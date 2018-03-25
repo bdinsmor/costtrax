@@ -6,24 +6,25 @@
         <button mat-raised-button color='primary'>via an Existing Project</button>
         <a href="#" class="primary-link">or via a New Project</a>
       </div>
-      <mat-list fxFlex>
-        <h3 mat-subheader>Latest Activity ({{count$ | async}})</h3>
-        <mat-divider></mat-divider>
-        <mat-list-item class="left" *ngFor="let log of logEntries$ | async">
-          <h4 mat-line>{{log.project.owner}} has
-            <strong>{{log.log}}</strong> Request No: {{log.request.id}} for {{log.project.name}} </h4>
-          <div fxLayout="row" fxLayoutGap="4px">
-            <button mat-button class="mat-button-outline nmat-elevation-z2" (click)="viewRequest(log)">
-              View
-            </button>
-            <button mat-icon-button (click)="removeEntry(log)">
-              Clear
-            </button>
-          </div>
+      <div fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="center center">
+        <mat-list style="overflow:auto;max-height:50vh">
+          <h3 mat-subheader>Latest Activity ({{count$ | async}})</h3>
+          <mat-divider></mat-divider>
+          <mat-list-item class="left" *ngFor="let log of logEntries$ | async">
+            <h4 mat-line>{{log.project.owner}} has
+              <strong>{{log.log}}</strong> Request No: {{log.request.id}} for {{log.project.name}} </h4>
+            <div fxLayout="row" fxLayoutGap="4px">
+              <button mat-button class="mat-button-outline nmat-elevation-z2" (click)="viewRequest(log)">
+                View
+              </button>
+              <button mat-icon-button (click)="removeEntry(log)">
+                Clear
+              </button>
+            </div>
 
-        </mat-list-item>
-      </mat-list>
-
+          </mat-list-item>
+        </mat-list>
+      </div>
 
     </mat-tab>
     <mat-tab label="Requests">
