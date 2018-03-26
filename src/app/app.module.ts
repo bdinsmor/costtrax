@@ -7,29 +7,35 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
-import { HomeModule } from './home/home.module';
 import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppStoreModule } from './store/app-store.module';
+import { LogEntryService } from '@app/home/home.service';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { RequestsService } from '@app/requests/requests.service';
+import { ProjectsService } from '@app/projects/projects.service';
+import { ContractorsService } from '@app/contractors/contractors.service';
+import { CompaniesService } from '@app/contractors/companies.service';
+import { MessagesService } from './messages/messages.service';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    FlexLayoutModule,
     TranslateModule.forRoot(),
     AppStoreModule,
     BrowserAnimationsModule,
     MaterialModule,
     CoreModule,
     SharedModule,
-    HomeModule,
     LoginModule,
     AppRoutingModule
   ],
   declarations: [AppComponent],
-  providers: [],
+  providers: [LogEntryService, MessagesService, RequestsService, ProjectsService, ContractorsService, CompaniesService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

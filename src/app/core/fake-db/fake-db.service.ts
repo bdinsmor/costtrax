@@ -1,6 +1,7 @@
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { RequestsFakeDb } from './requests';
 import { Request, Company, Project, Activity, LogEntry, Contractor } from '@app/shared/model';
+import { MailFakeDb } from './mail';
 
 export class FakeDbService implements InMemoryDbService {
   requestsDB: RequestsFakeDb;
@@ -22,7 +23,7 @@ export class FakeDbService implements InMemoryDbService {
       projects: projects,
       logentries: logEntries,
       companies: companies,
-
+      messages: this.requestsDB.messages,
       requests: requests
     };
   }

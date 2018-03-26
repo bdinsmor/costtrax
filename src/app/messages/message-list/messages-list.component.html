@@ -1,0 +1,19 @@
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let message of messages$ | async">
+    <mat-expansion-panel-header>
+      {{message.subject}}
+    </mat-expansion-panel-header>
+
+    <div class="message-body">
+      {{message.body}}
+    </div>
+    <mat-toolbar>
+      <mat-toolbar-row fxLayoutGap="8px">
+        <button mat-raised-button color="accent">Approve</button>
+        <button mat-raised-button color="warn">Reject</button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+  </mat-expansion-panel>
+
+</mat-accordion>

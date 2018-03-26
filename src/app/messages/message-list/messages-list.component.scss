@@ -1,15 +1,24 @@
 @import 'src/styles/styles';
 
-app-requests-list {
+app-messages-list {
   mat-cell.mat-cell,
   mat-header-cell.mat-header-cell {
     overflow: visible;
     cursor: pointer;
   }
 
-  mat-header-row {
-    background: mat-color($mat-fusedark, 50, 0.9);
-    border-top: 1px solid mat-color($mat-fusedark, 100, 0.9);
+  .mat-expansion-panel-header.mat-expanded {
+    background-color: mat-color($mat-fusedark, 50, 0.9) !important;
+  }
+
+  .message-body {
+    border: 1px solid mat-color($mat-fusedark, 50, 0.9);
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  mat-toolbar-row {
+    background-color: white;
   }
 
   .blue-link {

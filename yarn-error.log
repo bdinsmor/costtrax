@@ -1,0 +1,117 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add
+
+PATH: 
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  9.8.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+    "name": "recover",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "ng": "ng",
+      "build": "yarn run env -s && ng build --prod",
+      "start": "yarn run env -s && ng serve --aot --proxy-config proxy.conf.js",
+      "lint":
+        "ng lint --type-check && stylelint \"src/**/*.scss\" --syntax scss && htmlhint \"src\" --config .htmlhintrc",
+      "test": "ng test",
+      "test:ci": "yarn run lint -s && ng test --single-run --code-coverage",
+      "e2e": "yarn run env -s && ng e2e",
+      "translations:extract":
+        "ngx-translate-extract --input ./src --output ./src/translations/template.json --format=json --clean -sort --marker extract",
+      "docs": "hads ./docs -o",
+      "env": "ngx-scripts env npm_package_version",
+      "generate": "ng generate"
+    },
+    "dependencies": {
+      "@angular/animations": "^5.2.9",
+      "@angular/cdk": "^5.2.4",
+      "@angular/common": "^5.2.9",
+      "@angular/compiler": "^5.2.9",
+      "@angular/core": "^5.2.9",
+      "@angular/flex-layout": "^5.0.0-beta.13",
+      "@angular/forms": "^5.2.9",
+      "@angular/http": "^5.2.9",
+      "@angular/material": "^5.2.4",
+      "@angular/platform-browser": "^5.2.9",
+      "@angular/platform-browser-dynamic": "^5.2.9",
+      "@angular/router": "^5.2.9",
+      "@ngrx/effects": "^5.2.0",
+      "@ngrx/entity": "^5.2.0",
+      "@ngrx/store": "^5.2.0",
+      "@ngrx/store-devtools": "^5.2.0",
+      "@ngx-translate/core": "^9.1.1",
+      "angular-in-memory-web-api": "^0.5.4",
+      "bootstrap": "^4.0.0-beta.3",
+      "chance": "^1.0.13",
+      "core-js": "^2.5.3",
+      "hammerjs": "^2.0.8",
+      "lodash": "^4.17.5",
+      "material-design-icons": "^3.0.1",
+      "ngrx-data": "^1.0.0-beta.2",
+      "perfect-scrollbar": "^1.3.0",
+      "rxjs": "^5.5.7",
+      "zone.js": "^0.8.20"
+    },
+    "devDependencies": {
+      "@angular/cli": "~1.7.3",
+      "@angular/compiler-cli": "^5.2.9",
+      "@angular/language-service": "^5.2.9",
+      "@biesbjerg/ngx-translate-extract": "^2.3.4",
+      "@ngx-rocket/scripts": "^2.1.0",
+      "@types/jasmine": "^2.8.6",
+      "@types/jasminewd2": "^2.0.3",
+      "@types/lodash": "^4.14.106",
+      "@types/node": "^9.6.0",
+      "codelyzer": "^4.2.1",
+      "hads": "^1.6.1",
+      "htmlhint": "^0.9.13",
+      "https-proxy-agent": "^2.2.0",
+      "jasmine-core": "~3.1.0",
+      "jasmine-spec-reporter": "^4.2.1",
+      "karma": "~2.0.0",
+      "karma-chrome-launcher": "^2.2.0",
+      "karma-cli": "~1.0.1",
+      "karma-coverage-istanbul-reporter": "^1.4.2",
+      "karma-jasmine": "^1.1.1",
+      "karma-junit-reporter": "^1.2.0",
+      "protractor": "~5.3.0",
+      "puppeteer": "^1.2.0",
+      "stylelint": "~9.1.3",
+      "stylelint-config-recommended-scss": "~3.1.0",
+      "stylelint-config-standard": "~18.2.0",
+      "stylelint-scss": "~2.5.0",
+      "ts-node": "~5.0.1",
+      "tslint": "~5.9.1",
+      "typescript": "~2.7.2"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: Missing list of packages to add to your project.
+      at new MessageError (/usr/local/lib/node_modules/yarn/lib/cli.js:186:110)
+      at Object.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:40587:13)
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:98:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:116:14
+      at new Promise (<anonymous>)
+      at new F (/usr/local/lib/node_modules/yarn/lib/cli.js:23451:28)
+      at Object.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:95:12)
+      at Object.run (/usr/local/lib/node_modules/yarn/lib/cli.js:40599:19)
+      at run (/usr/local/lib/node_modules/yarn/lib/cli.js:89113:20)

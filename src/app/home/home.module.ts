@@ -1,38 +1,29 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { RouterModule, Routes } from '@angular/router';
+import { CdkTableModule } from '@angular/cdk/table';
 
-import { CoreModule } from '@app/core';
-import { SharedModule } from '@app/shared';
 import { MaterialModule } from '@app/material.module';
-import { HomeRoutingModule } from './home-routing.module';
-import { HomeComponent } from './home.component';
-
-import { MailModule } from '@app/mail/mail.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '@app/core/pipes/pipes.module';
-import { RequestsModule } from '@app/requests/requests.module';
-import { ProjectsModule } from '@app/projects/projects.module';
-import { LogEntryService } from './activity.service';
-import { ContractorsModule } from '../contractors/contractors.module';
+import { CommonModule } from '@angular/common';
+import { DirectivesModule } from '@app/core/directives/directives';
+import { AppMatchMediaService } from '@app/core/services/app-match-media.service';
+import { ProjectsListComponent } from '@app/projects/project-list/projects-list.component';
+import { SharedModule } from '@app/shared';
+import { HomeComponent } from '@app/home/home.component';
+import { LogEntryService } from './home.service';
+
+const routes: Routes = [
+  {
+    path: 'home',
+    component: HomeComponent
+  }
+];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    CoreModule,
-    SharedModule,
-    PipesModule,
-    FlexLayoutModule,
-    MaterialModule,
-    MailModule,
-    ContractorsModule,
-    RequestsModule,
-    ProjectsModule,
-    HomeRoutingModule
-  ],
   declarations: [HomeComponent],
-  entryComponents: [],
-  providers: [LogEntryService]
+  imports: [CdkTableModule, SharedModule, DirectivesModule, PipesModule, RouterModule.forChild(routes)],
+  exports: [HomeComponent],
+  providers: [LogEntryService, AppMatchMediaService]
 })
 export class HomeModule {}

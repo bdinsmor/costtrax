@@ -1,0 +1,20 @@
+<div id="messages" class="container" fxLayoutAlign="start stretch" fxLayout="column">
+  <mat-toolbar>
+    <mat-toolbar-row class="alt" fxLayoutAlign="start center">
+      <label for="search" class="mr-8">
+        <mat-icon>search</mat-icon>
+      </label>
+      <mat-form-field mat-no-float class="w-75" floatPlaceholder="never">
+        <input matInput [formControl]="searchInput" id="search" placeholder="Search Messages">
+      </mat-form-field>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <mat-card>
+      <app-messages-list style="width:100%; max-height:50vh; overflow:auto"></app-messages-list>
+    </mat-card>
+  </div>
+  <!-- / CONTENT -->
+</div>

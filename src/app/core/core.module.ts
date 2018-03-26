@@ -21,6 +21,10 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { PipesModule } from '@app/core/pipes/pipes.module';
 import { FakeDbService } from '@app/core/fake-db/fake-db.service';
 import { AppMatchMediaService } from '@app/core/services/app-match-media.service';
+import { TabsComponent } from '@app/core/shell/tabs/tabs.component';
+import { LogEntryService } from '@app/home/home.service';
+import { ProjectsService } from '@app/projects/projects.service';
+import { RequestsService } from '@app/requests/requests.service';
 
 @NgModule({
   imports: [
@@ -33,7 +37,7 @@ import { AppMatchMediaService } from '@app/core/services/app-match-media.service
     MaterialModule,
     RouterModule
   ],
-  declarations: [HeaderComponent, ShellComponent],
+  declarations: [HeaderComponent, TabsComponent, ShellComponent],
   providers: [
     AuthenticationService,
     AuthenticationGuard,

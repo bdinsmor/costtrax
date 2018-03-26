@@ -1,6 +1,7 @@
 declare var Chance: any; // for externals librairies
 import * as _ from 'lodash';
 import { AppUtils } from '@app/core/utils/utils';
+import { Subject } from 'rxjs/Subject';
 import {
   Request,
   Project,
@@ -24,7 +25,8 @@ import {
   OtherCosts,
   Activity,
   LogEntry,
-  Contractor
+  Contractor,
+  Message
 } from '../../shared/model';
 
 export class RequestsFakeDb {
@@ -34,6 +36,7 @@ export class RequestsFakeDb {
   public requests: Array<Request> = [];
   public companies: Array<Company> = [];
   public contractors: Array<Contractor> = [];
+  public messages: Array<Message> = [];
   public activities: Array<Activity> = [];
   public logEntries: Array<LogEntry> = [];
   private actions: Array<string> = ['requested more info', 'approved', 'rejected', 'placed under review'];
@@ -49,6 +52,7 @@ export class RequestsFakeDb {
       this.createCompanies(numCompanies);
       this.createProjects(numProjects);
       this.createRequests(numRequests);
+      this.createMessages();
       this.createActivities();
       this.createHistory();
       this.finalize();
@@ -94,6 +98,23 @@ export class RequestsFakeDb {
         this.companies[i].totalPaid = Number(total.toFixed(2));
         // console.log('totalPaid:  ' + this.companies[i].totalPaid);
       }
+    }
+  }
+
+  createMessages(): void {
+    this.messages = [];
+    for (let i = 0; i < this.chance.integer({ min: 5, max: 35 }); i++) {
+      const r: Request = _.sample(this.requests);
+      this.messages.push(
+        new Message({
+          sender: _.sample(this.contractors),
+          project: r.project,
+          request: r,
+          timestamp: this.chance.date({ year: 2018 }),
+          subject: 'Re: ' + r.project.name,
+          body: this.chance.paragraph({ sentences: 3 })
+        })
+      );
     }
   }
 

@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
-
 import { Observable } from 'rxjs/Observable';
 import { Activity, LogEntry } from '@app/shared/model';
 import { appAnimations } from '@app/core/animations';
-import { LogEntryService } from '@app/home/activity.service';
+import { LogEntryService } from '@app/home/home.service';
 import { RequestsService } from '../requests/requests.service';
 
 @Component({

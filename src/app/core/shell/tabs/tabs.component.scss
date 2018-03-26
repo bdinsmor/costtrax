@@ -1,0 +1,48 @@
+@import 'src/styles/styles';
+
+.container {
+  padding: 1em;
+  width: 100%;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.tab-spacer {
+  flex: 1 1 auto;
+}
+
+a:-webkit-any-link {
+  color: rgba(0, 0, 0, 0.57) !important;
+}
+
+.mat-button-outline {
+  border: 1px solid rgba(0, 0, 0, 0.47);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.tab-content {
+  padding: 16px;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+mat-list-item:nth-child(2n) {
+  background-color: white;
+}
+
+mat-list-item:nth-child(2n + 1) {
+  background: mat-color($mat-fusedark, 50, 0.9);
+}
+
+.title-color {
+  color: #a4a4a6;
+}
+
+.primary-color {
+  color: rgba(0, 0, 0, 0.47);
+}

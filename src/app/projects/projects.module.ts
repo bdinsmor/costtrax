@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { CdkTableModule } from '@angular/cdk/table';
 
 import { ProjectsComponent } from './projects.component';
@@ -14,19 +13,9 @@ import { AppMatchMediaService } from '@app/core/services/app-match-media.service
 import { ProjectsListComponent } from '@app/projects/project-list/projects-list.component';
 import { SharedModule } from '@app/shared';
 
-const routes: Routes = [
-  {
-    path: 'projects',
-    component: ProjectsComponent,
-    resolve: {
-      projects: ProjectsService
-    }
-  }
-];
-
 @NgModule({
   declarations: [ProjectsComponent, ProjectsListComponent, ProjectFormDialogComponent],
-  imports: [CdkTableModule, SharedModule, DirectivesModule, PipesModule, RouterModule.forChild(routes)],
+  imports: [CdkTableModule, SharedModule, DirectivesModule, PipesModule],
   exports: [ProjectsComponent],
   providers: [ProjectsService, AppMatchMediaService],
   entryComponents: [ProjectFormDialogComponent]

@@ -5,6 +5,7 @@ import { Request, Project } from '@app/shared/model';
 import { ProjectsService } from '@app/projects/projects.service';
 import { Observable } from 'rxjs/Observable';
 import { RequestsService } from '../requests.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-request-form',
@@ -12,7 +13,7 @@ import { RequestsService } from '../requests.service';
   styleUrls: ['./request-form.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class RequestFormComponent {
+export class RequestFormComponent implements OnInit {
   dialogTitle: string;
   requestForm: FormGroup;
   projectFormGroup: FormGroup;
@@ -23,7 +24,12 @@ export class RequestFormComponent {
   @Input() request: Request;
   projects: Observable<Project[]>;
 
-  constructor(private projectsService: ProjectsService, private formBuilder: FormBuilder) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private projectsService: ProjectsService,
+    private formBuilder: FormBuilder
+  ) {
     if (!this.request) {
       this.request = new Request({});
     }
@@ -32,6 +38,12 @@ export class RequestFormComponent {
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();
     this.signatureFormGroup = this.createSignatureFormGroup();
     this.projects = this.projectsService.entities$;
+  }
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    console.log('id: ' + id);
   }
 
   get projectType() {

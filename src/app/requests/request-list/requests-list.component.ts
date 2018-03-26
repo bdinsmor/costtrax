@@ -13,6 +13,7 @@ import { Request, Project } from '@app/shared/model';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ProjectsService } from '@app/projects/projects.service';
 import { RequestFormDialogComponent } from '@app/requests/request-form-dialog/request-form.dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-requests-list',
@@ -34,6 +35,7 @@ export class RequestsListComponent implements OnInit, OnDestroy {
   confirmDialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(
+    private router: Router,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
     public dialog: MatDialog
@@ -48,32 +50,7 @@ export class RequestsListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   openRequest(request: any) {
-    this.dialogRef = this.dialog.open(RequestFormDialogComponent, {
-      panelClass: 'request-form-dialog',
-      width: '85%',
-      data: {
-        request: request,
-        projects: this.projects,
-        action: 'edit'
-      }
-    });
-
-    this.dialogRef.afterClosed().subscribe((response: any) => {
-      if (!response) {
-        return;
-      }
-      const actionType: string = response[0];
-      const formData: FormGroup = response[1];
-      switch (actionType) {
-        /**
-         * Save
-         */
-        case 'save':
-          this.requestsService.update(formData.getRawValue());
-
-          break;
-      }
-    });
+    this.router.navigate(['../requests', request.id]);
   }
 }
 

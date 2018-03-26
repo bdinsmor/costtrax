@@ -1,5 +1,27 @@
 import { AppUtils } from '@app/core/utils/utils';
 
+export class Message {
+  id: string;
+  subject: string;
+  sender: Contractor;
+  body: string;
+  timestamp: Date;
+  project: Project;
+  request: Request;
+
+  constructor(message: any) {
+    {
+      this.id = message.id || AppUtils.generateGUID(true);
+      this.sender = message.sender || new Contractor({});
+      this.subject = message.subject || '';
+      this.body = message.body || '';
+      this.timestamp = message.timestamp || new Date();
+      this.project = message.project || new Project({});
+      this.request = message.request || new Request({});
+    }
+  }
+}
+
 export class Contractor {
   id: string;
   name: string;

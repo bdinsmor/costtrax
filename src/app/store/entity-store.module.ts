@@ -3,10 +3,11 @@ import { EntityMetadataMap, NgrxDataModule } from 'ngrx-data';
 
 export const entityMetadata: EntityMetadataMap = {
   Company: {},
+  Message: {},
+  Messages: {},
   Contractor: {},
   Contractors: {},
   Requests: {},
-  Activity: {},
   Projects: {},
   LogEntries: {}
 };
@@ -14,9 +15,9 @@ export const entityMetadata: EntityMetadataMap = {
 // because the plural of "hero" is not "heros"
 export const pluralNames = {
   Company: 'Companies',
+  Messages: 'Messages',
   Projects: 'Projects',
   Requests: 'Requests',
-  Activity: 'Activity',
   Contractors: 'Contractors',
   LogEntries: 'LogEntries'
 };

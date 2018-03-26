@@ -7,7 +7,7 @@
   <ng-container matColumnDef="messages">
     <mat-header-cell *matHeaderCellDef> MESSAGES </mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button mat-raised-button color="primary">{{element.messages}}</button>
+      <span class="messages-badge">{{element.messages}}</span>
     </mat-cell>
   </ng-container>
 

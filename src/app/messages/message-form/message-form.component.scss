@@ -1,0 +1,35 @@
+@import 'src/styles/styles';
+
+.request-form {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+
+  @include media-breakpoint-up('xs') {
+    width: 400px;
+  }
+
+  .mat-toolbar {
+    min-height: initial;
+  }
+
+  .toolbar-bottom {
+    height: auto;
+  }
+
+  .left-margin-5 {
+    margin-left: 5%;
+  }
+
+  .width-85 {
+    width: 85% !important;
+  }
+
+  .width-50 {
+    width: 50% !important;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
