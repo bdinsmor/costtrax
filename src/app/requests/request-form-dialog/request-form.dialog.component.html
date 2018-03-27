@@ -25,12 +25,15 @@
           <form [formGroup]="projectFormGroup">
             <ng-template matStepLabel>Select Project</ng-template>
             <mat-form-field class="width-50">
-              <mat-select placeholder="Select Project">
+              <mat-select placeholder="Select Project" formControlName="projectSelect">
                 <mat-option *ngFor="let project of projects | async" [value]="project.id">
                   {{ project.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
+            <div *ngIf="">
+
+            </div>
             <div>
               <button mat-button matStepperNext>Next</button>
             </div>

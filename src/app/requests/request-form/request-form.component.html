@@ -1,93 +1,244 @@
-<div>
-  <mat-toolbar class="mat-primary m-0">
-    <mat-toolbar-row>
-      <span class="title">{{dialogTitle}}</span>
-      <form class="left-margin-5" [formGroup]="projectFormGroup">
+<div class="p-24">
+  <mat-card class="request-form">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+      <h2>New Request</h2>
+      <form [formGroup]="projectFormGroup">
         <mat-radio-group formControlName="projectType">
-          <mat-radio-button value="1">Existing Project</mat-radio-button>
+          <mat-radio-button color="primary" value="1">Existing Project</mat-radio-button>
           <mat-radio-button value="2">New Project</mat-radio-button>
         </mat-radio-group>
       </form>
-    </mat-toolbar-row>
-  </mat-toolbar>
+    </div>
+    <div class="p-4 m-0">
 
-  <div class="p-24 m-0">
+      <ng-container *ngIf="projectType.value == '1';then existingProject; else newProject"></ng-container>
+      <ng-template #existingProject class="input-form">
+        <div class="input-form">
+          <mat-horizontal-stepper #stepper="matHorizontalStepper">
+            <mat-step [stepControl]="projectFormGroup">
+              <form [formGroup]="projectFormGroup">
+                <ng-template matStepLabel>Select Project</ng-template>
+                <mat-form-field class="width-50">
+                  <mat-select [(value)]="selectedProject" formControlName="projectSelect" placeholder="Select Project">
+                    <mat-option *ngFor="let project of projects | async" [value]="project">
+                      {{ project.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div *ngIf="selectedProject" class="p-8">
+                  <h4 class="gray-color">Instructions</h4>
+                  <p>
+                    {{selectedProject.details}}
+                  </p>
+                  <button mat-raised-button matStepperNext color="primary">Next</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="costFormGroup">
 
-    <ng-container *ngIf="projectType.value == '1';then existingProject; else newProject"></ng-container>
-    <ng-template #existingProject>
-      <mat-horizontal-stepper #stepper="matHorizontalStepper">
-        <mat-step [stepControl]="projectFormGroup">
-          <form [formGroup]="projectFormGroup">
-            <ng-template matStepLabel>Select Project</ng-template>
-            <mat-form-field class="width-50">
-              <mat-select placeholder="Select Project">
+              <ng-template matStepLabel>Select Cost Type</ng-template>
+              <form [formGroup]="costFormGroup" *ngIf="selectedProject">
+                <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
+                  <mat-toolbar class="alt">
+                    <mat-toolbar-row>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>REQUEST ID</label>
+                        <div fxFlex>{{request.id}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>PROJECT ID</label>
+                        <div fxFlex>{{selectedProject.id}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>PROJECT OWNER</label>
+                        <div fxFlex>{{selectedProject.owner}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>DATE OF REQUEST</label>
+                        <div fxFlex>{{request.requestDate | date:'shortDate'}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>PROJECT</label>
+                        <div fxFlex>{{selectedProject.name}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>REQUEST TYPE</label>
+                        <div fxFlex>{{request.type}}</div>
+                      </div>
+                    </mat-toolbar-row>
+                  </mat-toolbar>
+                  <mat-toolbar class="alt">
+                    <mat-toolbar-row>
+                      <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>WORK COMPLETION PERIOD</label>
+                        <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
+                          <mat-checkbox>Today Only</mat-checkbox>
+
+                          <label style="font-size: 75%">OR</label>
+
+                        </div>
+                      </div>
+                    </mat-toolbar-row>
+
+                  </mat-toolbar>
+                  <div></div>
+                  <mat-toolbar class="alt">
+                    <mat-toolbar-row>
+                      <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>Select All That Apply</label>
+                        <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
+                          <mat-checkbox (change)="toggleCheckbox('equipment',$event)" formControlName="equipmentCostsCheckbox">Equipment Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('labor',$event)" formControlName="laborCostsCheckbox">Labor Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('material',$event)" formControlName="materialCostsCheckbox">Material Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('other',$event)" formControlName="otherCostsCheckbox">Other Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('subcontractor',$event)" formControlName="subcontractorCostsCheckbox">Subcontractor Costs</mat-checkbox>
+                        </div>
+                      </div>
+                    </mat-toolbar-row>
+
+                  </mat-toolbar>
+                  <div></div>
+                  <div class="p-8">
+                    <button mat-raised-button matStepperNext color="primary">Next</button>
+                    <button mat-button matStepperPrevious>Back</button>
+                  </div>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="costDetailsFormGroup">
+              <form [formGroup]="costDetailsFormGroup" *ngIf="selectedProject">
+                <ng-template matStepLabel>Enter Cost Details</ng-template>
+                <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
+                  <mat-toolbar class="alt">
+                    <mat-toolbar-row>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>REQUEST ID</label>
+                        <div fxFlex>{{request.id}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>PROJECT ID</label>
+                        <div fxFlex>{{selectedProject.id}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>PROJECT OWNER</label>
+                        <div fxFlex>{{selectedProject.owner}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>DATE OF REQUEST</label>
+                        <div fxFlex>{{request.requestDate | date:'shortDate'}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>PROJECT</label>
+                        <div fxFlex>{{selectedProject.name}}</div>
+                      </div>
+                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                        <label class="cost-label" fxFlex>REQUEST TYPE</label>
+                        <div fxFlex>{{request.type}}</div>
+                      </div>
+                    </mat-toolbar-row>
+                  </mat-toolbar>
+
+                  <div class="p-24 full-width" fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
+                    <mat-card class="input-form full-width">
+                      <mat-tab-group class="cost-tab-group">
+                        <mat-tab *ngIf="request.costs.equipmentCosts.enabled" label="Equipment Costs">
+                          <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
+                            <mat-toolbar class="alt">
+                              <mat-toolbar-row>
+                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                                  <label class="cost-label" fxFlex>ACTIVE USE</label>
+                                  <div fxFlex>{{19459 | currency}}</div>
+                                </div>
+                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                                  <label class="cost-label" fxFlex>STANDBY</label>
+                                  <div fxFlex>{{4236 | currency}}</div>
+                                </div>
+                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                                  <label class="cost-label" fxFlex>RENTAL</label>
+                                  <div fxFlex>{{15216 | currency}}</div>
+                                </div>
+                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                                  <label class="cost-label" fxFlex>TRANSPORTATION</label>
+                                  <div fxFlex>{{345 | currency}}</div>
+                                </div>
+                                <div class="total-cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+                                  <label class="cost-label" fxFlex>TOTAL EQUIPMENT COSTS</label>
+                                  <div fxFlex>{{38911 | currency}}</div>
+                                </div>
+                              </mat-toolbar-row>
+                            </mat-toolbar>
+                            <div class="p-24">
+                              <mat-tab-group class="equipment-tab-group">
+                                <mat-tab label="Active Use"></mat-tab>
+                                <mat-tab label="Standby"></mat-tab>
+                                <mat-tab label="Rental Equipment"></mat-tab>
+                              </mat-tab-group>
+
+                            </div>
+                          </div>
+                        </mat-tab>
+                        <mat-tab *ngIf="request.costs.laborCosts.enabled" label="Labor Costs">
+
+                        </mat-tab>
+                        <mat-tab *ngIf="request.costs.materialCosts.enabled" label="Material Costs">
+
+                        </mat-tab>
+                        <mat-tab *ngIf="request.costs.otherCosts.enabled" label="Other Costs">
+
+                        </mat-tab>
+                        <mat-tab *ngIf="request.costs.subcontractorCosts.enabled" label="Subcontractor Costs">
+
+                        </mat-tab>
+                      </mat-tab-group>
+                    </mat-card>
+                  </div>
+
+
+
+                </div>
+                <div></div>
+                <div class="p-4">
+                  <button mat-raised-button matStepperNext color="primary">Next</button>
+                  <button mat-button matStepperPrevious>Back</button>
+                </div>
+              </form>
+            </mat-step>
+            <mat-step [stepControl]="signatureFormGroup">
+              <form [formGroup]="signatureFormGroup">
+                <ng-template matStepLabel>Sign and Submit</ng-template>
+
+                <div class="p-4">
+                  <button mat-raised-button matStepperNext color="primary">Next</button>
+                  <button mat-button matStepperPrevious>Back</button>
+                </div>
+              </form>
+            </mat-step>
+          </mat-horizontal-stepper>
+        </div>
+      </ng-template>
+
+      <ng-template #newProject>
+        <div class="input-form">
+          <form [formGroup]="projectFormGroup" fxLayout="column">
+            <mat-form-field fxFlex class="width-85">
+              <mat-select placeholder="Select Project Owner">
                 <mat-option *ngFor="let project of projects | async" [value]="project.id">
-                  {{ project.name }}
+                  {{ project.owner }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            <div>
-              <button mat-button matStepperNext>Next</button>
-            </div>
+            <mat-form-field fxFlex class="width-85">
+              <textarea matInput placeholder="Project Creation Request Details" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="25"></textarea>
+            </mat-form-field>
           </form>
-        </mat-step>
-        <mat-step [stepControl]="costFormGroup">
-          <form [formGroup]="costFormGroup">
-            <ng-template matStepLabel>Select Cost Type</ng-template>
-
-            <div>
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext>Next</button>
-            </div>
-          </form>
-        </mat-step>
-        <mat-step [stepControl]="costDetailsFormGroup">
-          <form [formGroup]="costDetailsFormGroup">
-            <ng-template matStepLabel>Enter Cost Details</ng-template>
-
-            <div>
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext>Next</button>
-            </div>
-          </form>
-        </mat-step>
-        <mat-step [stepControl]="signatureFormGroup">
-          <form [formGroup]="signatureFormGroup">
-            <ng-template matStepLabel>Sign and Submit</ng-template>
-
-            <div>
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext>Next</button>
-            </div>
-          </form>
-        </mat-step>
-      </mat-horizontal-stepper>
-    </ng-template>
-
-    <ng-template #newProject>
-
-      <form fxLayout="column" fxFlex fxLayoutAlign="start center" fxLayoutGap="10px" [formGroup]="projectFormGroup">
-        <div fxFlex>
-          <mat-form-field fxFlex class="width-85">
-            <mat-select placeholder="Select Project Owner">
-              <mat-option *ngFor="let project of projects | async" [value]="project.id">
-                {{ project.owner }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
         </div>
-        <div fxFlex>
-          <mat-form-field fxFlex class="width-85">
-            <textarea matInput placeholder="Project Creation Request Details" matTextareaAutosize matAutosizeMinRows="12" matAutosizeMaxRows="25"></textarea>
-          </mat-form-field>
-        </div>
-      </form>
-    </ng-template>
+      </ng-template>
 
 
 
 
-  </div>
+    </div>
 
 
+  </mat-card>
 </div>

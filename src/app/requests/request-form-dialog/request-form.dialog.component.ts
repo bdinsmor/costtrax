@@ -45,12 +45,17 @@ export class RequestFormDialogComponent {
     this.projects = this.projectsService.entities$;
   }
 
+  getProjects() {
+    console.log('inside onInit');
+    this.projectsService.getAll();
+  }
+
   get projectType() {
     return this.projectFormGroup.get('projectType');
   }
 
   createProjectFormGroup() {
-    return this.formBuilder.group({ projectType: new FormControl('1') });
+    return this.formBuilder.group({ projectType: new FormControl('1'), projectSelect: new FormControl() });
   }
   createCostFormGroup() {
     return this.formBuilder.group({});

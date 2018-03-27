@@ -20,6 +20,7 @@ export class RequestFormComponent implements OnInit {
   costFormGroup: FormGroup;
   costDetailsFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
+  selectedProject: Project;
   action: string;
   @Input() request: Request;
   projects: Observable<Project[]>;
@@ -42,8 +43,32 @@ export class RequestFormComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    this.projectsService.getAll();
+  }
 
-    console.log('id: ' + id);
+  toggleCheckbox(type: string, event: any) {
+    switch (type) {
+      case 'equipment': {
+        this.request.costs.equipmentCosts.enabled = event.checked;
+        break;
+      }
+      case 'labor': {
+        this.request.costs.laborCosts.enabled = event.checked;
+        break;
+      }
+      case 'material': {
+        this.request.costs.materialCosts.enabled = event.checked;
+        break;
+      }
+      case 'other': {
+        this.request.costs.otherCosts.enabled = event.checked;
+        break;
+      }
+      case 'subcontractor': {
+        this.request.costs.subcontractorCosts.enabled = event.checked;
+        break;
+      }
+    }
   }
 
   get projectType() {
@@ -51,10 +76,18 @@ export class RequestFormComponent implements OnInit {
   }
 
   createProjectFormGroup() {
-    return this.formBuilder.group({ projectType: new FormControl('1') });
+    return this.formBuilder.group({ projectType: new FormControl('1'), projectSelect: new FormControl() });
   }
   createCostFormGroup() {
-    return this.formBuilder.group({});
+    return this.formBuilder.group({
+      startDate: new FormControl(new Date()),
+      endDate: new FormControl(new Date()),
+      equipmentCostsCheckbox: new FormControl(this.request.costs.equipmentCosts.enabled),
+      laborCostsCheckbox: new FormControl(this.request.costs.laborCosts.enabled),
+      materialCostsCheckbox: new FormControl(this.request.costs.materialCosts.enabled),
+      otherCostsCheckbox: new FormControl(this.request.costs.otherCosts.enabled),
+      subcontractorCostsCheckbox: new FormControl(this.request.costs.subcontractorCosts.enabled)
+    });
   }
   createCostDetailsFormGroup() {
     return this.formBuilder.group({});

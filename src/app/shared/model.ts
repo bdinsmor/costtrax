@@ -205,9 +205,11 @@ export class LaborCosts {
   submitter: Contractor;
   submitDate: Date;
   actionDate: Date;
+  enabled: Boolean;
 
   constructor(laborCosts: any) {
     {
+      this.enabled = laborCosts.enabled || false;
       this.zipCode = laborCosts.zipCode || '90210';
       this.totalHours = laborCosts.totalHours || 0;
       this.payroll = laborCosts.payroll || 0;
@@ -421,7 +423,7 @@ export class Request {
       this.id = request.id || AppUtils.generateGUID();
       this.name = request.name || '';
       this.project = request.project || new Project({});
-      this.type = request.type || '';
+      this.type = request.type || 'Force Account';
       this.requestDate = request.requestDate || new Date();
       this.startDate = request.startDate || new Date();
       this.endDate = request.endDate || new Date();
