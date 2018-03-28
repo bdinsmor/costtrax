@@ -1,4 +1,4 @@
-<div class="p-24">
+<div class="p-24" *ngIf="request">
   <mat-card class="request-form">
     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="14px">
       <h2>New Request</h2>
@@ -11,7 +11,7 @@
     </div>
     <div class="p-4 m-0">
 
-      <ng-container *ngIf="projectType.value == '1';then existingProject; else newProject"></ng-container>
+      <ng-container *ngIf="selectedProject && projectType.value == '1';then existingProject; else newProject"></ng-container>
       <ng-template #existingProject class="input-form">
         <div class="input-form">
           <mat-horizontal-stepper #stepper="matHorizontalStepper">
@@ -19,7 +19,8 @@
               <form [formGroup]="projectFormGroup">
                 <ng-template matStepLabel>Select Project</ng-template>
                 <mat-form-field class="width-50">
-                  <mat-select [(value)]="selectedProject" formControlName="projectSelect" placeholder="Select Project">
+                  <mat-select [(ngModel)]="selectedProject" formControlName="selectedProject" [compareWith]="compareFn" formControlName="projectSelect"
+                    placeholder="Select Project">
                     <mat-option *ngFor="let project of projects | async" [value]="project">
                       {{ project.name }}
                     </mat-option>
@@ -71,11 +72,24 @@
                     <mat-toolbar-row>
                       <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
                         <label class="cost-label" fxFlex>WORK COMPLETION PERIOD</label>
+                        <div></div>
                         <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
-                          <mat-checkbox>Today Only</mat-checkbox>
+                          <mat-checkbox [checked]="today === request.startDate === request.endDate">Today Only</mat-checkbox>
 
                           <label style="font-size: 75%">OR</label>
-
+                          <div></div>
+                          <mat-form-field color="accent">
+                            <mat-label>Start Date</mat-label>
+                            <input matInput [matDatepicker]="startDatePicker" formControlName="startDate">
+                            <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                            <mat-datepicker #startDatePicker></mat-datepicker>
+                          </mat-form-field>
+                          <mat-form-field color="accent">
+                            <mat-label>End Date</mat-label>
+                            <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
+                            <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                            <mat-datepicker #endDatePicker></mat-datepicker>
+                          </mat-form-field>
                         </div>
                       </div>
                     </mat-toolbar-row>
@@ -87,11 +101,11 @@
                       <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
                         <label class="cost-label" fxFlex>Select All That Apply</label>
                         <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
-                          <mat-checkbox (change)="toggleCheckbox('equipment',$event)" formControlName="equipmentCostsCheckbox">Equipment Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('labor',$event)" formControlName="laborCostsCheckbox">Labor Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('material',$event)" formControlName="materialCostsCheckbox">Material Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('other',$event)" formControlName="otherCostsCheckbox">Other Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('subcontractor',$event)" formControlName="subcontractorCostsCheckbox">Subcontractor Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('equipment',$event)" [ngModel]="request.costs.equipmentCosts.enabled" formControlName="equipmentCostsCheckbox">Equipment Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('labor',$event)" [ngModel]="request.costs.laborCosts.enabled" formControlName="laborCostsCheckbox">Labor Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('material',$event)" [ngModel]="request.costs.materialCosts.enabled" formControlName="materialCostsCheckbox">Material Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('other',$event)" [ngModel]="request.costs.otherCosts.enabled" formControlName="otherCostsCheckbox">Other Costs</mat-checkbox>
+                          <mat-checkbox (change)="toggleCheckbox('subcontractor',$event)" [ngModel]="request.costs.subcontractorCosts.enabled" formControlName="subcontractorCostsCheckbox">Subcontractor Costs</mat-checkbox>
                         </div>
                       </div>
                     </mat-toolbar-row>
@@ -106,9 +120,9 @@
               </form>
             </mat-step>
             <mat-step [stepControl]="costDetailsFormGroup">
-              <form [formGroup]="costDetailsFormGroup" *ngIf="selectedProject">
+              <form [formGroup]="costDetailsFormGroup">
                 <ng-template matStepLabel>Enter Cost Details</ng-template>
-                <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
+                <div fxLayout="column" fxLayoutGap="18px" *ngIf="selectedProject" fxLayoutAlign="start start">
                   <mat-toolbar class="alt">
                     <mat-toolbar-row>
                       <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
@@ -141,7 +155,7 @@
                   <div class="p-24 full-width" fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
                     <mat-card class="input-form full-width">
                       <mat-tab-group class="cost-tab-group">
-                        <mat-tab *ngIf="request.costs.equipmentCosts.enabled" label="Equipment Costs">
+                        <mat-tab *ngIf="request && request.costs.equipmentCosts.enabled" label="Equipment Costs">
                           <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
                             <mat-toolbar class="alt">
                               <mat-toolbar-row>
@@ -177,16 +191,80 @@
                             </div>
                           </div>
                         </mat-tab>
-                        <mat-tab *ngIf="request.costs.laborCosts.enabled" label="Labor Costs">
+                        <mat-tab *ngIf="request && request.costs.laborCosts.enabled" label="Labor Costs">
 
                         </mat-tab>
-                        <mat-tab *ngIf="request.costs.materialCosts.enabled" label="Material Costs">
+                        <mat-tab *ngIf="request && request.costs.materialCosts.enabled" label="Material Costs">
+                          <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
+                            <mat-toolbar class="alt">
+                              <mat-toolbar-row>
+                                <div class="total-cost-column" fxFlex fxLayout="column" fxLayoutAlign="center end">
+                                  <label class="cost-label" fxFlex>TOTAL MATERIAL COSTS</label>
+                                  <div fxFlex>{{38911 | currency}}</div>
+                                </div>
+                              </mat-toolbar-row>
+                            </mat-toolbar>
+                            <div class="p-24 full-width">
+                              <mat-toolbar class="alt">
+                                <mat-toolbar-row fxLayout="row" fxLayoutAlign="start center">
+                                  <button mat-raised-button color="primary">Add Material</button>
+                                </mat-toolbar-row>
+                              </mat-toolbar>
+
+                              <!-- mat-table for material costs -->
+                              <mat-table #materialCostTable [dataSource]="materialDataSource" style="width:100%">
+
+                                <!--- Note that these columns can be defined in any order.
+                                        The actual rendered columns are set as a property on the row definition" -->
+
+
+                                <ng-container matColumnDef="description">
+                                  <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
+                                  <mat-cell *matCellDef="let element">
+                                    <span>{{element.description}}</span>
+                                  </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="cost">
+                                  <mat-header-cell *matHeaderCellDef> COST PER UNIT </mat-header-cell>
+                                  <mat-cell *matCellDef="let element">
+                                    <span>{{element.costPerUnit}}</span>
+                                  </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="quantity">
+                                  <mat-header-cell *matHeaderCellDef> QUANTITY </mat-header-cell>
+                                  <mat-cell *matCellDef="let element">
+                                    <span>{{element.unitQuantity}}</span>
+                                  </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="receipt">
+                                  <mat-header-cell *matHeaderCellDef> RECEIPT </mat-header-cell>
+                                  <mat-cell *matCellDef="let element">
+                                    <span>{{element.receipt}}</span>
+                                  </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="subtotal">
+                                  <mat-header-cell *matHeaderCellDef> SUBTOTAL </mat-header-cell>
+                                  <mat-cell *matCellDef="let element">
+                                    <span>{{element.subtotal}}</span>
+                                  </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="total">
+                                  <mat-header-cell *matHeaderCellDef> TOTAL* </mat-header-cell>
+                                  <mat-cell *matCellDef="let element">
+                                    <span>{{element.total}}</span>
+                                  </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="materialDisplayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: materialDisplayedColumns;"></mat-row>
+                              </mat-table>
+
+                            </div>
+                          </div>
+                        </mat-tab>
+                        <mat-tab *ngIf="request && request.costs.otherCosts.enabled" label="Other Costs">
 
                         </mat-tab>
-                        <mat-tab *ngIf="request.costs.otherCosts.enabled" label="Other Costs">
-
-                        </mat-tab>
-                        <mat-tab *ngIf="request.costs.subcontractorCosts.enabled" label="Subcontractor Costs">
+                        <mat-tab *ngIf="request && request.costs.subcontractorCosts.enabled" label="Subcontractor Costs">
 
                         </mat-tab>
                       </mat-tab-group>

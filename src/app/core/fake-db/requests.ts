@@ -38,7 +38,7 @@ export class RequestsFakeDb {
   public contractors: Array<Contractor> = [];
   public messages: Array<Message> = [];
   public activities: Array<Activity> = [];
-  public logEntries: Array<LogEntry> = [];
+  public logentries: Array<LogEntry> = [];
   private actions: Array<string> = ['requested more info', 'approved', 'rejected', 'placed under review'];
   private projectTypes: Array<string> = ['Project', 'Expansion', 'Construction'];
 
@@ -135,11 +135,11 @@ export class RequestsFakeDb {
   }
 
   createHistory(): void {
-    this.logEntries = [];
+    this.logentries = [];
     for (let i = 0; i < this.chance.integer({ min: 5, max: 35 }); i++) {
       const r: Request = _.sample(this.requests);
 
-      this.logEntries.push(
+      this.logentries.push(
         new LogEntry({
           project: r.project,
           request: r,
@@ -508,7 +508,7 @@ export class MaterialCosts {
   */
 
   createMaterialCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): MaterialCosts {
-    const materialCostsEnabled: Boolean = this.chance.bool({ likelihood: 65 });
+    const materialCostsEnabled: Boolean = this.chance.bool({ likelihood: 99 });
     const materialCostList: Array<MaterialCost> = [];
     let materialCostTotal = 0;
     if (materialCostsEnabled) {
@@ -532,6 +532,7 @@ export class MaterialCosts {
         materialCostTotal += c.total;
       }
     }
+    console.log('# mat costs:  ' + materialCostList.length);
     return new MaterialCosts({
       enabled: materialCostsEnabled,
       costs: materialCostList,
