@@ -1,14 +1,28 @@
 @import 'src/styles/styles';
 
-.request-form {
+.request-details {
   .primary-link {
     font-weight: 900;
     color: mat-color($primary, 500, 0.9);
     cursor: pointer;
   }
 
+  .smaller-gray-text {
+    font-size: 75%;
+    color: mat-color($mat-fusedark, 500, 0.9);
+  }
+
   .full-width {
     width: 100%;
+  }
+
+  .cost-row {
+    border: 1px solid mat-color($mat-fusedark, 50, 0.9);
+  }
+
+  .cost-row .cost-label {
+    color: mat-color($mat-blue, 400, 0.8);
+    font-size: 40%;
   }
 
   .cost-tab-group {
@@ -16,7 +30,16 @@
     height: 100%;
   }
 
-  .mat-toolbar {
+  .mat-toolbar-row.alt {
+    background-color: mat-color($mat-fusedark, 50, 0.8);
+  }
+
+  .project-info-row {
+    background-color: mat-color($mat-fusedark, 50, 0.8);
+    padding: 14px;
+  }
+
+  .mat-toolbar-white {
     background-color: white;
   }
 
@@ -25,9 +48,18 @@
     color: mat-color($mat-fusedark, 400, 0.8);
   }
 
-  .cost-label {
+  .project-label {
     color: mat-color($mat-fusedark, 400, 0.8);
     font-size: 60%;
+  }
+
+  .project-column div {
+    font-size: 65%;
+  }
+
+  .cost-label {
+    color: mat-color($mat-blue, 400, 0.8);
+    font-size: 70%;
   }
 
   .cost-column div {
@@ -35,8 +67,8 @@
   }
 
   .total-cost-column {
-    padding: 8px;
-    background-color: mat-color($mat-fusedark, 300, 0.8);
+    padding-left: 8px;
+    background-color: mat-color($mat-fusedark, 50, 0.8);
   }
 
   .info-toolbar {
@@ -75,5 +107,66 @@
 
   .spacer {
     flex: 1 1 auto;
+  }
+
+  .cost-table {
+    border: 1px solid mat-color($mat-fusedark, 100, 0.5);
+  }
+
+  .mat-accordion .mat-header-row {
+    padding-left: 1.5rem;
+    padding-right: 2rem;
+    border-bottom: 1px solid mat-color($mat-fusedark, 100, 0.5);
+  }
+
+  .mat-expansion-panel-header.mat-row {
+    border-bottom: none;
+  }
+
+  //copied from https://github.com/angular/material2/blob/master/src/lib/table/table.scss
+  $mat-header-row-height: 56px;
+  $mat-row-height: 48px;
+  $mat-row-horizontal-padding: 24px;
+
+  .mat-table {
+    display: block;
+  }
+
+  .mat-header-row {
+    min-height: $mat-header-row-height;
+  }
+
+  .mat-row {
+    min-height: $mat-row-height;
+  }
+
+  .mat-header-row,
+  .mat-row {
+    display: flex;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    align-items: center;
+    padding: 0 $mat-row-horizontal-padding;
+    box-sizing: border-box;
+
+    // Workaround for https://goo.gl/pFmjJD in IE 11. Adds a pseudo
+    // element that will stretch the row the correct height. See:
+    // https://connect.microsoft.com/IE/feedback/details/802625
+    &::after {
+      display: inline-block;
+      min-height: inherit;
+      content: '';
+    }
+  }
+
+  .mat-cell,
+  .mat-header-cell {
+    flex: 1;
+    overflow: hidden;
+    word-wrap: break-word;
+    display: table-cell;
+    vertical-align: middle;
+    line-height: 1em;
+    /*set line height back to normal*/
   }
 }

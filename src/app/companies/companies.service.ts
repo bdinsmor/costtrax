@@ -7,6 +7,6 @@ import { Company } from '@app/shared/model';
 @Injectable()
 export class CompaniesService extends EntityServiceBase<Company> {
   constructor(entityServiceFactory: EntityServiceFactory) {
-    super('Company', entityServiceFactory);
+    super('Companies', entityServiceFactory);
   }
 }

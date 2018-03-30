@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material';
 
 import { appAnimations } from '@app/core/animations';
 
-import { ProjectFormDialogComponent } from './project-form/project-form.component';
+import { ProjectFormComponent } from './project-form/project-form.component';
 import { ProjectsService } from './projects.service';
 import { Request, Project } from '@app/shared/model';
 import { Observable } from 'rxjs/Observable';
@@ -31,23 +31,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.projects$ = projectsService.entities$;
     this.loading$ = projectsService.loading$;
     this.count$ = projectsService.count$;
-  }
-
-  newRequest() {
-    this.dialogRef = this.dialog.open(ProjectFormDialogComponent, {
-      panelClass: 'project-form-dialog',
-      data: {
-        action: 'new'
-      }
-    });
-
-    this.dialogRef.afterClosed().subscribe((response: FormGroup) => {
-      if (!response) {
-        return;
-      }
-
-      this.projectsService.update(response.getRawValue());
-    });
   }
 
   ngOnInit() {

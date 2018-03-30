@@ -1,0 +1,18 @@
+<mat-table #projectsTable [dataSource]="dataSource" style="width:100%">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> CONTRACTOR </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="blue-link"> {{element.name}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="openRequests">
+    <mat-header-cell *matHeaderCellDef> OPEN REQUESTS </mat-header-cell>
+    <mat-cell *matCellDef="let element" class="blue-link"> {{element.openRequests}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="totalPaid">
+    <mat-header-cell *matHeaderCellDef> TOTAL PAID </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.totalPaid | currency}} </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openCompany(row)"></mat-row>
+</mat-table>
+<mat-paginator #paginator [length]="dataSource.length() | async" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+</mat-paginator>

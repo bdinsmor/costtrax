@@ -12,7 +12,8 @@ import { ContractorFormComponent } from '../contractor-form/contractor-form.comp
 import { ContractorsService } from '../contractors.service';
 import { Request, Company, Contractor } from '@app/shared/model';
 import { SelectionModel } from '@angular/cdk/collections';
-import { CompaniesService } from '@app/contractors/companies.service';
+import { Router } from '@angular/router';
+import { CompaniesService } from '@app/companies/companies.service';
 
 @Component({
   selector: 'app-contractors-list',
@@ -33,6 +34,7 @@ export class ContractorsListComponent implements OnInit, OnDestroy {
   confirmDialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(
+    private router: Router,
     private companiesService: CompaniesService,
     private contractorsService: ContractorsService,
     public dialog: MatDialog
@@ -53,7 +55,9 @@ export class ContractorsListComponent implements OnInit, OnDestroy {
   isAllSelected(): void {}
   ngOnDestroy() {}
 
-  openProject(contractor: any) {}
+  openContractor(contractor: any) {
+    this.router.navigate(['../contractors', contractor.id]);
+  }
 }
 
 export class ContractorsDataService extends DataSource<any> {

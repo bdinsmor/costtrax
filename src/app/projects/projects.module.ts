@@ -3,7 +3,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 
 import { ProjectsComponent } from './projects.component';
 import { ProjectsService } from './projects.service';
-import { ProjectFormDialogComponent } from './project-form/project-form.component';
+import { ProjectFormComponent } from './project-form/project-form.component';
 import { MaterialModule } from '@app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '@app/core/pipes/pipes.module';
@@ -14,10 +14,10 @@ import { ProjectsListComponent } from '@app/projects/project-list/projects-list.
 import { SharedModule } from '@app/shared';
 
 @NgModule({
-  declarations: [ProjectsComponent, ProjectsListComponent, ProjectFormDialogComponent],
+  declarations: [ProjectsComponent, ProjectsListComponent, ProjectFormComponent],
   imports: [CdkTableModule, SharedModule, DirectivesModule, PipesModule],
   exports: [ProjectsComponent],
   providers: [ProjectsService, AppMatchMediaService],
-  entryComponents: [ProjectFormDialogComponent]
+  entryComponents: [ProjectFormComponent]
 })
 export class ProjectsModule {}

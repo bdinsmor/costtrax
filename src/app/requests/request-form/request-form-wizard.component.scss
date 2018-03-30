@@ -1,0 +1,79 @@
+@import 'src/styles/styles';
+
+.request-form {
+  .primary-link {
+    font-weight: 900;
+    color: mat-color($primary, 500, 0.9);
+    cursor: pointer;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .cost-tab-group {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mat-toolbar {
+    background-color: white;
+  }
+
+  .mat-checkbox-label {
+    font-size: 75%;
+    color: mat-color($mat-fusedark, 400, 0.8);
+  }
+
+  .cost-label {
+    color: mat-color($mat-fusedark, 400, 0.8);
+    font-size: 60%;
+  }
+
+  .cost-column div {
+    font-size: 65%;
+  }
+
+  .total-cost-column {
+    padding: 8px;
+    background-color: mat-color($mat-fusedark, 300, 0.8);
+  }
+
+  .info-toolbar {
+    background-color: whitesmoke;
+  }
+
+  .input-form {
+    padding: 12px;
+    background-color: mat-color($mat-fusedark, 50, 0.25);
+    border-radius: 4px;
+  }
+
+  .gray-color {
+    color: mat-color($mat-fusedark, 300, 0.9);
+  }
+
+  .mat-toolbar {
+    min-height: initial;
+  }
+
+  .toolbar-bottom {
+    height: auto;
+  }
+
+  .left-margin-5 {
+    margin-left: 5%;
+  }
+
+  .width-85 {
+    width: 85% !important;
+  }
+
+  .width-50 {
+    width: 50% !important;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}

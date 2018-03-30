@@ -1,0 +1,32 @@
+@import 'src/styles/styles';
+
+#companies {
+  .content {
+    overflow: hidden;
+  }
+
+  mat-toolbar.primary {
+    background: mat-color($mat-fusedark, 50, 0.9);
+  }
+
+  mat-toolbar-row {
+    border-top: 1px solid mat-color($mat-fusedark, 100, 0.9);
+  }
+
+  .mat-toolbar .alt {
+    background: white;
+  }
+
+  .mat-primary-bg {
+    background-color: mat-color($primary, 500, 0.9);
+  }
+
+  .mat-accent-bg {
+    background-color: mat-color($primary, 500, 0.9);
+  }
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px !important;
+}

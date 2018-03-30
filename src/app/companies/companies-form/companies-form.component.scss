@@ -1,0 +1,33 @@
+@import 'src/styles/styles';
+
+.company-form {
+  .primary-link {
+    font-weight: 900;
+    color: mat-color($primary, 500, 0.9);
+    cursor: pointer;
+  }
+
+  .mat-toolbar {
+    min-height: initial;
+  }
+
+  .toolbar-bottom {
+    height: auto;
+  }
+
+  .left-margin-5 {
+    margin-left: 5%;
+  }
+
+  .width-85 {
+    width: 85% !important;
+  }
+
+  .width-50 {
+    width: 50% !important;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}

@@ -19,7 +19,7 @@ export class TabsComponent implements OnInit {
       { label: 'Requests', link: '/requests', index: 1 },
       { label: 'Projects', link: '/projects', index: 2 },
       { label: 'Messages', link: '/messages', index: 3 },
-      { label: 'Contractors', link: '/contractors', index: 4 }
+      { label: 'Contractors', link: '/companies', index: 4 }
     ];
   }
 

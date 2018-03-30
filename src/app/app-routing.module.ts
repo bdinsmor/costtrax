@@ -6,9 +6,11 @@ import { RequestsComponent } from './requests/requests.component';
 import { ProjectsComponent } from '@app/projects/projects.component';
 import { ContractorsComponent } from '@app/contractors/contractors.component';
 import { RequestFormComponent } from '@app/requests/request-form/request-form.component';
-import { ProjectFormDialogComponent } from '@app/projects/project-form/project-form.component';
+import { ProjectFormComponent } from '@app/projects/project-form/project-form.component';
 import { ContractorFormComponent } from '@app/contractors/contractor-form/contractor-form.component';
 import { MessagesComponent } from './messages/messages.component';
+import { CompaniesComponent } from './companies/companies.component';
+import { CompanyFormComponent } from '@app/companies/companies-form/companies-form.component';
 
 const routes: Routes = [
   Route.withShell([
@@ -21,10 +23,12 @@ const routes: Routes = [
     { path: 'requests', component: RequestsComponent },
     { path: 'requests/:id', component: RequestFormComponent },
     { path: 'projects', component: ProjectsComponent },
-    { path: 'projects/:id', component: ProjectFormDialogComponent },
+    { path: 'projects/:id', component: ProjectFormComponent },
     { path: 'messages', component: MessagesComponent },
     { path: 'contractors', component: ContractorsComponent },
-    { path: 'contractors/id', component: ContractorFormComponent }
+    { path: 'contractors/:id', component: ContractorFormComponent },
+    { path: 'companies', component: CompaniesComponent },
+    { path: 'companies/:id', component: CompanyFormComponent }
   ]),
   // Fallback when no prior route is matched
   { path: '**', redirectTo: 'home', pathMatch: 'full' }

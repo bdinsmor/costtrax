@@ -1,7 +1,7 @@
 <mat-table #projectsTable [dataSource]="dataSource" style="width:100%">
   <ng-container matColumnDef="projectName">
     <mat-header-cell *matHeaderCellDef> PROJECT </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    <mat-cell *matCellDef="let element" class="accent-link"> {{element.name}} </mat-cell>
   </ng-container>
   <ng-container matColumnDef="openRequests">
     <mat-header-cell *matHeaderCellDef> OPEN REQUESTS </mat-header-cell>

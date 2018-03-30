@@ -1,30 +1,135 @@
 @import 'src/styles/styles';
 
-.project-form-dialog {
-  @include media-breakpoint('xs') {
+.project-form {
+  .primary-link {
+    font-weight: 900;
+    color: mat-color($primary, 500, 0.9);
+    cursor: pointer;
+  }
+
+  .smaller-gray-text {
+    font-size: 75%;
+    color: mat-color($mat-fusedark, 500, 0.9);
+  }
+
+  .full-width {
     width: 100%;
   }
 
-  @include media-breakpoint-up('xs') {
-    width: 400px;
+  .bordered,
+  .cost-row {
+    border: 1px solid mat-color($mat-fusedark, 50, 0.9);
   }
 
-  .mat-dialog-container {
-    padding: 0;
-    overflow: hidden;
-
-    .mat-toolbar {
-      min-height: initial;
-    }
-
-    .toolbar-bottom {
-      height: auto;
-    }
+  .cost-row .cost-label {
+    color: mat-color($mat-blue, 400, 0.8);
+    font-size: 40%;
   }
 
-  .dialog-content-wrapper {
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
+  .cost-tab-group {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mat-toolbar-row.alt {
+    background-color: mat-color($mat-fusedark, 50, 0.8);
+  }
+
+  .mat-chip:not(.mat-basic-chip) {
+    background-color: mat-color($primary, 500, 0.8);
+  }
+
+  .project-info-row {
+    background-color: mat-color($mat-fusedark, 50, 0.8);
+    padding: 14px;
+  }
+
+  .mat-toolbar-white {
+    background-color: white;
+    padding-right: 0;
+  }
+
+  .mat-checkbox-label {
+    font-size: 75%;
+    color: mat-color($mat-fusedark, 400, 0.8);
+  }
+
+  .project-label {
+    color: mat-color($mat-fusedark, 400, 0.8);
+    font-size: 60%;
+  }
+
+  .project-heading {
+    color: mat-color($mat-fusedark, 400, 0.8);
+  }
+
+  .project-column div {
+    font-size: 65%;
+  }
+
+  .cost-label {
+    color: mat-color($mat-blue, 400, 0.8);
+    font-size: 70%;
+  }
+
+  .cost-column div {
+    font-size: 65%;
+  }
+
+  .total-cost-column {
+    padding-left: 8px;
+    padding-right: 0;
+    margin: 0;
+    background-color: mat-color($mat-fusedark, 50, 0.8);
+  }
+
+  .p-20 {
+    padding: 20px;
+  }
+
+  .m-10 {
+    margin-top: 10px;
+  }
+
+  .info-toolbar {
+    background-color: whitesmoke;
+  }
+
+  .input-form {
+    padding: 12px;
+    background-color: mat-color($mat-fusedark, 50, 0.25);
+    border-radius: 4px;
+  }
+
+  .gray-color {
+    color: mat-color($mat-fusedark, 300, 0.9);
+  }
+
+  .mat-toolbar {
+    min-height: initial;
+  }
+
+  .toolbar-bottom {
+    height: auto;
+  }
+
+  .left-margin-5 {
+    margin-left: 5%;
+  }
+
+  .width-85 {
+    width: 85% !important;
+  }
+
+  .width-50 {
+    width: 50% !important;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .cost-table {
+    border: 1px solid mat-color($mat-fusedark, 100, 0.5);
   }
 }

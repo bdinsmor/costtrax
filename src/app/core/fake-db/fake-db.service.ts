@@ -8,7 +8,7 @@ import {
   STATUS
 } from 'angular-in-memory-web-api';
 import { RequestsFakeDb } from './requests';
-import { Request, Company, Project, Activity, LogEntry, Contractor } from '@app/shared/model';
+import { Request, Company, Project, Activity, LogEntry, Contractor, Dispute } from '@app/shared/model';
 
 export class FakeDbService implements InMemoryDbService {
   requestsDB: RequestsFakeDb;
@@ -22,6 +22,8 @@ export class FakeDbService implements InMemoryDbService {
     } else if (collectionName === 'projects') {
       return this.getRequests(reqInfo);
     } else if (collectionName === 'companies') {
+      return this.getRequests(reqInfo);
+    } else if (collectionName === 'company') {
       return this.getRequests(reqInfo);
     } else if (collectionName === 'contractors') {
       return this.getRequests(reqInfo);
@@ -47,11 +49,12 @@ export class FakeDbService implements InMemoryDbService {
       const id = reqInfo.id;
 
       // tslint:disable-next-line:triple-equals
-      let data = null;
+      let data: any = null;
       if (id) {
         data = reqInfo.utils.findById(collection, id);
-        if (collectionName == 'requests') {
-          console.log('material costs: ' + data.costs.materialCosts.materialCosts.length);
+        // for(let i )
+        if (collectionName === 'requests') {
+          data.disputes = new Array<Dispute>();
         }
       } else {
         data = collection;

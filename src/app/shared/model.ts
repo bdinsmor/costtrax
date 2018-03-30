@@ -33,7 +33,7 @@ export class Contractor {
   email: string;
   phone: string;
   address: string;
-  birthday: string;
+  birthday: Date;
   notes: string;
 
   constructor(contractor: any) {
@@ -48,7 +48,7 @@ export class Contractor {
       this.email = contractor.email || '';
       this.phone = contractor.phone || '';
       this.address = contractor.address || '';
-      this.birthday = contractor.birhday || '';
+      this.birthday = contractor.birthday || new Date();
       this.notes = contractor.notes || '';
     }
   }
@@ -76,6 +76,12 @@ export class Project {
   details: string;
   numContractors: number;
   openRequests: number;
+  materialCostsEnabled: boolean;
+  equipmentCostsEnabled: boolean;
+  laborCostsEnabled: boolean;
+  otherCostsEnabled: boolean;
+  subcontractorCostsEnabled: boolean;
+
   constructor(project: any) {
     {
       this.id = project.id || AppUtils.generateGUID(true);
@@ -84,6 +90,10 @@ export class Project {
       this.details = project.details || '';
       this.numContractors = project.numContractors || 0;
       this.openRequests = project.openRequests || 0;
+      this.materialCostsEnabled = project.materialCostsEnabled || false;
+      this.equipmentCostsEnabled = project.equipmentCostsEnabled || false;
+      this.subcontractorCostsEnabled = project.subcontractorCostsEnabled || false;
+      this.otherCostsEnabled = project.otherCostsEnabled || false;
     }
   }
 }
@@ -102,6 +112,7 @@ export class Signatures {
 }
 
 export class Cost {
+  id: string;
   subcontractor: Contractor;
   description: string;
   receipt: ByteString;
@@ -133,6 +144,7 @@ export class SubcontractorCosts {
 }
 
 export class MaterialCost {
+  id: string;
   description: string;
   costPerUnit: number;
   unitQuantity: number;
@@ -163,6 +175,7 @@ export class MaterialCosts {
 }
 
 export class LaborCost {
+  id: string;
   employee: Contractor;
   trade: string;
   payRate: number;
@@ -181,6 +194,7 @@ export class LaborCost {
 
   constructor(laborCost: any) {
     {
+      this.id = laborCost.id || AppUtils.generateGUID(true);
       this.employee = laborCost.employee || new Contractor({});
       this.trade = laborCost.trade || '';
       this.payRate = laborCost.payRate || 0;
@@ -236,6 +250,7 @@ export class Machine {
 }
 
 export class ActiveCost {
+  id: string;
   machine: Machine;
   hours: number;
   transportationCost: number;
@@ -250,6 +265,7 @@ export class ActiveCost {
 }
 
 export class StandbyCost {
+  id: string;
   machine: Machine;
   transportationCost: number;
   total: number;
@@ -264,6 +280,7 @@ export class StandbyCost {
 }
 
 export class RentalCost {
+  id: string;
   date: Date;
   machine: Machine;
   transportationCost: number;
@@ -283,7 +300,7 @@ export class ActiveCosts {
   startDate: Date;
   endDate: Date;
   regionalAdjustment: string;
-  costs: Array<ActiveCost>;
+  costs: ActiveCost[];
   total: number;
   paid: number;
   unpaid: number;
@@ -303,7 +320,7 @@ export class StandbyCosts {
   startDate: Date;
   endDate: Date;
   regionalAdjustment: string; // state
-  costs: Array<StandbyCost>;
+  costs: StandbyCost[];
   total: number;
   paid: number;
   unpaid: number;
@@ -323,7 +340,7 @@ export class EquipmentCosts {
   enabled: Boolean;
   activeCosts: ActiveCosts;
   standbyCosts: StandbyCosts;
-  rentalCosts: Array<RentalCost>;
+  rentalCosts: RentalCosts;
   total: number;
   paid: number;
   unpaid: number;
@@ -343,7 +360,7 @@ export class EquipmentCosts {
 
 export class RentalCosts {
   enabled: Boolean;
-  costs: Array<RentalCost>;
+  costs: RentalCost[];
   total: number;
   startDate: Date;
   endDate: Date;
@@ -365,7 +382,7 @@ export class RentalCosts {
 
 export class OtherCosts {
   enabled: Boolean;
-  costs: Array<Cost>;
+  costs: Cost[];
   total: number;
   paid: number;
   unpaid: number;
@@ -405,6 +422,12 @@ export class Costs {
   }
 }
 
+export class Dispute {
+  id: string;
+  comments: string;
+  date: Date;
+}
+
 export class Request {
   id: string;
   name: string;
@@ -418,6 +441,7 @@ export class Request {
   total: number;
   messages: number;
   status: string;
+  disputes: Dispute[];
   constructor(request: any) {
     {
       this.id = request.id || AppUtils.generateGUID();

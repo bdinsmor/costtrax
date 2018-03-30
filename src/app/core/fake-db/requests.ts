@@ -26,7 +26,8 @@ import {
   Activity,
   LogEntry,
   Contractor,
-  Message
+  Message,
+  Dispute
 } from '../../shared/model';
 
 export class RequestsFakeDb {
@@ -211,6 +212,7 @@ export class RequestsFakeDb {
           name: this.chance.first(),
           lastName: this.chance.last(),
           birthday: this.chance.birthday(),
+          email: this.chance.email(),
           phone: this.chance.phone(),
           nickname: this.chance.last(),
           address: this.chance.address(),
@@ -260,9 +262,10 @@ export class RequestsFakeDb {
         project: p,
         requestDate: this.chance.date({ year: 2018 }),
         startDate: startDate,
+        disputes: new Array<Dispute>(),
         endDate: endDate,
         costs: costs,
-        total: costs.total,
+        total: Number(costs.total).toFixed(2),
         messages: this.chance.integer({ min: 0, max: 10 }),
         signatures: this.createSignatures(company, employee, endDate),
         status: status
@@ -293,30 +296,6 @@ export class RequestsFakeDb {
     return s;
   }
 
-  /*
-export class Cost {
-  subcontractor: Contractor;
-  description: string;
-  receipt: ByteString;
-  subtotal: number;
-  total: number;
-}
-
-export class SubcontractorCosts {
-  enabled: Boolean;
-  total: number;
-  costs: Array<Cost>;
-  constructor(subCost: any) {
-    {
-      this.enabled = subCost.enabled || false;
-      this.total = subCost.total || 0;
-      this.costs = subCost.costs || new Array<Cost>();
-    }
-  }
-}
-
-  */
-
   createCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): Costs {
     // total: number;
     // equipmentCosts: EquipmentCosts;
@@ -343,33 +322,16 @@ export class SubcontractorCosts {
       equipmentCosts: equipmentCosts,
       laborCosts: laborCosts,
       otherCosts: otherCosts,
-      total: total.toFixed(2),
+      total: Number(total).toFixed(2),
       company: company
     });
     return costs;
   }
 
-  /*
-export class EquipmentCosts {
-  enabled: Boolean;
-  activeCosts: ActiveCosts;
-  standbyCosts: StandbyCosts;
-  rentalCosts: Array<RentalCost>;
-  constructor(equipmentCosts: any) {
-    {
-      this.enabled = equipmentCosts.enabled || false;
-      this.activeCosts = equipmentCosts.activeCosts || new ActiveCosts({});
-      this.standbyCosts = equipmentCosts.standbyCosts || new StandbyCosts({});
-      this.rentalCosts = equipmentCosts.rentalCosts || new Array<RentalCost>();
-    }
-  }
-}
-*/
-
   createActiveCosts(company: Company, startDate: Date, endDate: Date): ActiveCosts {
     const activeList: Array<ActiveCost> = [];
-    const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 40 });
-    if (stanbyCostEnabled) {
+    const activeCostsEnabled: Boolean = this.chance.bool({ likelihood: 90 });
+    if (activeCostsEnabled) {
       let total = 0;
       for (let i = 0; i < this.chance.integer({ min: 1, max: 10 }); i++) {
         const s: ActiveCost = new ActiveCost();
@@ -391,7 +353,7 @@ export class EquipmentCosts {
         startDate: startDate,
         endDate: endDate,
         regionalAdjustment: this.chance.state(),
-        total: total
+        total: Number(total.toFixed(2))
       });
     } else {
       return new ActiveCosts({});
@@ -400,15 +362,15 @@ export class EquipmentCosts {
 
   createStandbyCosts(company: Company, startDate: Date, endDate: Date): StandbyCosts {
     const scList: Array<StandbyCost> = [];
-    const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 40 });
+    const stanbyCostEnabled: Boolean = this.chance.bool({ likelihood: 90 });
     if (stanbyCostEnabled) {
       let total = 0;
-      for (let i = 0; i < this.chance.integer({ min: 1, max: 10 }); i++) {
+      for (let i = 0; i < this.chance.integer({ min: 20, max: 30 }); i++) {
         const s: StandbyCost = new StandbyCost();
         s.machine = _.sample(this.machines);
         s.hours = this.chance.integer({ min: 1, max: 100 });
         s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
-        s.total = s.transportationCost + s.hours * s.machine.operatingCost;
+        s.total = Number((s.transportationCost + s.hours * s.machine.operatingCost).toFixed(2));
         s.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
         s.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
         s.approved = this.chance.bool({ likelihood: 60 });
@@ -423,7 +385,7 @@ export class EquipmentCosts {
         startDate: startDate,
         endDate: endDate,
         regionalAdjustment: this.chance.state(),
-        total: total
+        total: Number(total.toFixed(2))
       });
     } else {
       return new StandbyCosts({});
@@ -441,7 +403,7 @@ export class EquipmentCosts {
         s.date = this.chance.date({ year: startDate.getFullYear(), month: endDate.getMonth() - 1 });
         s.transportationCost = this.chance.floating({ min: 10, max: 250, fixed: 2 });
         s.other = this.chance.floating({ min: 0, max: 250, fixed: 2 });
-        s.total = s.transportationCost + s.other;
+        s.total = Number((s.transportationCost + s.other).toFixed(2));
         s.actionDate = this.chance.date({ year: endDate.getFullYear(), month: endDate.getMonth() - 1 });
         s.submitDate = this.chance.date({ year: startDate.getFullYear, month: startDate.getMonth() });
         s.approved = this.chance.bool({ likelihood: 60 });
@@ -455,7 +417,7 @@ export class EquipmentCosts {
         endDate: endDate,
         costs: rc,
         enabled: rentalEnabled,
-        total: total
+        total: Number(total.toFixed(2))
       });
     } else {
       return new RentalCosts({});
@@ -463,7 +425,7 @@ export class EquipmentCosts {
   }
 
   createEquipmentCosts(company: Company, employee: Contractor, startDate: Date, endDate: Date): EquipmentCosts {
-    const equipmentCostsEnabled: Boolean = this.chance.bool({ likelihood: 80 });
+    const equipmentCostsEnabled: Boolean = this.chance.bool({ likelihood: 95 });
 
     if (equipmentCostsEnabled) {
       return new EquipmentCosts({
@@ -532,11 +494,11 @@ export class MaterialCosts {
         materialCostTotal += c.total;
       }
     }
-    console.log('# mat costs:  ' + materialCostList.length);
+    // console.log('# mat costs:  ' + materialCostList.length);
     return new MaterialCosts({
       enabled: materialCostsEnabled,
       costs: materialCostList,
-      total: materialCostTotal
+      total: Number(materialCostTotal.toFixed(2))
     });
   }
 
@@ -561,7 +523,6 @@ export class MaterialCosts {
       return new LaborCosts({
         submitter: employee,
         totalHours: totalHours,
-        payroll: payroll,
         benefits: benefits,
         additives: additives,
         totalCost: payroll + benefits + additives,
@@ -600,7 +561,7 @@ export class MaterialCosts {
     return new SubcontractorCosts({
       enabled: subcontractorCostsEnabled,
       costs: subcontractorCostList,
-      total: subcontractorTotal
+      total: Number(subcontractorTotal.toFixed(2))
     });
   }
 
@@ -629,6 +590,10 @@ export class MaterialCosts {
         otherTotal += c.total;
       }
     }
-    return new OtherCosts({ enabled: otherCostsEnabled, costs: otherCostList, total: otherTotal });
+    return new OtherCosts({
+      enabled: otherCostsEnabled,
+      costs: otherCostList,
+      total: Number(otherTotal.toFixed(2))
+    });
   }
 }

@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CdkTableModule } from '@angular/cdk/table';
 
-import { ContractorsComponent } from './contractors.component';
-import { ContractorsService } from './contractors.service';
-import { ContractorFormComponent } from './contractor-form/contractor-form.component';
 import { MaterialModule } from '@app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PipesModule } from '@app/core/pipes/pipes.module';
@@ -14,19 +11,24 @@ import { AppMatchMediaService } from '@app/core/services/app-match-media.service
 import { SharedModule } from '@app/shared';
 import { ContractorsListComponent } from '@app/contractors/contractor-list/contractors-list.component';
 import { CompaniesService } from '@app/companies/companies.service';
+import { CompanyFormComponent } from '@app/companies/companies-form/companies-form.component';
+import { ContractorsService } from '@app/contractors/contractors.service';
+import { ContractorFormComponent } from '@app/contractors/contractor-form/contractor-form.component';
+import { CompaniesComponent } from '@app/companies/companies.component';
+import { CompaniesListComponent } from '@app/companies/companies-list/companies-list.component';
 
 const routes: Routes = [
   {
-    path: 'contractors',
-    component: ContractorsComponent
+    path: 'companies',
+    component: CompaniesComponent
   }
 ];
 
 @NgModule({
-  declarations: [ContractorsComponent, ContractorFormComponent, ContractorsListComponent],
+  declarations: [CompaniesComponent, CompanyFormComponent, CompaniesListComponent],
   imports: [CdkTableModule, SharedModule, DirectivesModule, PipesModule, RouterModule.forChild(routes)],
-  exports: [ContractorsComponent],
+  exports: [CompaniesComponent],
   providers: [ContractorsService, CompaniesService, AppMatchMediaService],
   entryComponents: [ContractorFormComponent]
 })
-export class ContractorsModule {}
+export class CompaniesModule {}

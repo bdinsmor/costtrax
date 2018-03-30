@@ -1,322 +1,180 @@
-<div class="p-24" *ngIf="request">
-  <mat-card class="request-form">
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="14px">
-      <h2>New Request</h2>
-      <form [formGroup]="projectFormGroup">
-        <mat-radio-group formControlName="projectType">
-          <mat-radio-button color="primary" value="1">Existing Project</mat-radio-button>
-          <mat-radio-button value="2">New Project</mat-radio-button>
-        </mat-radio-group>
-      </form>
-    </div>
-    <div class="p-4 m-0">
-
-      <ng-container *ngIf="selectedProject && projectType.value == '1';then existingProject; else newProject"></ng-container>
-      <ng-template #existingProject class="input-form">
-        <div class="input-form">
-          <mat-horizontal-stepper #stepper="matHorizontalStepper">
-            <mat-step [stepControl]="projectFormGroup">
-              <form [formGroup]="projectFormGroup">
-                <ng-template matStepLabel>Select Project</ng-template>
-                <mat-form-field class="width-50">
-                  <mat-select [(ngModel)]="selectedProject" formControlName="selectedProject" [compareWith]="compareFn" formControlName="projectSelect"
-                    placeholder="Select Project">
-                    <mat-option *ngFor="let project of projects | async" [value]="project">
-                      {{ project.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <div *ngIf="selectedProject" class="p-8">
-                  <h4 class="gray-color">Instructions</h4>
-                  <p>
-                    {{selectedProject.details}}
-                  </p>
-                  <button mat-raised-button matStepperNext color="primary">Next</button>
-                </div>
-              </form>
-            </mat-step>
-            <mat-step [stepControl]="costFormGroup">
-
-              <ng-template matStepLabel>Select Cost Type</ng-template>
-              <form [formGroup]="costFormGroup" *ngIf="selectedProject">
-                <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
-                  <mat-toolbar class="alt">
-                    <mat-toolbar-row>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>REQUEST ID</label>
-                        <div fxFlex>{{request.id}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>PROJECT ID</label>
-                        <div fxFlex>{{selectedProject.id}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>PROJECT OWNER</label>
-                        <div fxFlex>{{selectedProject.owner}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>DATE OF REQUEST</label>
-                        <div fxFlex>{{request.requestDate | date:'shortDate'}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>PROJECT</label>
-                        <div fxFlex>{{selectedProject.name}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>REQUEST TYPE</label>
-                        <div fxFlex>{{request.type}}</div>
-                      </div>
-                    </mat-toolbar-row>
-                  </mat-toolbar>
-                  <mat-toolbar class="alt">
-                    <mat-toolbar-row>
-                      <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>WORK COMPLETION PERIOD</label>
-                        <div></div>
-                        <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
-                          <mat-checkbox [checked]="today === request.startDate === request.endDate">Today Only</mat-checkbox>
-
-                          <label style="font-size: 75%">OR</label>
-                          <div></div>
-                          <mat-form-field color="accent">
-                            <mat-label>Start Date</mat-label>
-                            <input matInput [matDatepicker]="startDatePicker" formControlName="startDate">
-                            <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-                            <mat-datepicker #startDatePicker></mat-datepicker>
-                          </mat-form-field>
-                          <mat-form-field color="accent">
-                            <mat-label>End Date</mat-label>
-                            <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
-                            <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-                            <mat-datepicker #endDatePicker></mat-datepicker>
-                          </mat-form-field>
-                        </div>
-                      </div>
-                    </mat-toolbar-row>
-
-                  </mat-toolbar>
-                  <div></div>
-                  <mat-toolbar class="alt">
-                    <mat-toolbar-row>
-                      <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>Select All That Apply</label>
-                        <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
-                          <mat-checkbox (change)="toggleCheckbox('equipment',$event)" [ngModel]="request.costs.equipmentCosts.enabled" formControlName="equipmentCostsCheckbox">Equipment Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('labor',$event)" [ngModel]="request.costs.laborCosts.enabled" formControlName="laborCostsCheckbox">Labor Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('material',$event)" [ngModel]="request.costs.materialCosts.enabled" formControlName="materialCostsCheckbox">Material Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('other',$event)" [ngModel]="request.costs.otherCosts.enabled" formControlName="otherCostsCheckbox">Other Costs</mat-checkbox>
-                          <mat-checkbox (change)="toggleCheckbox('subcontractor',$event)" [ngModel]="request.costs.subcontractorCosts.enabled" formControlName="subcontractorCostsCheckbox">Subcontractor Costs</mat-checkbox>
-                        </div>
-                      </div>
-                    </mat-toolbar-row>
-
-                  </mat-toolbar>
-                  <div></div>
-                  <div class="p-8">
-                    <button mat-raised-button matStepperNext color="primary">Next</button>
-                    <button mat-button matStepperPrevious>Back</button>
-                  </div>
-                </div>
-              </form>
-            </mat-step>
-            <mat-step [stepControl]="costDetailsFormGroup">
-              <form [formGroup]="costDetailsFormGroup">
-                <ng-template matStepLabel>Enter Cost Details</ng-template>
-                <div fxLayout="column" fxLayoutGap="18px" *ngIf="selectedProject" fxLayoutAlign="start start">
-                  <mat-toolbar class="alt">
-                    <mat-toolbar-row>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>REQUEST ID</label>
-                        <div fxFlex>{{request.id}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>PROJECT ID</label>
-                        <div fxFlex>{{selectedProject.id}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>PROJECT OWNER</label>
-                        <div fxFlex>{{selectedProject.owner}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>DATE OF REQUEST</label>
-                        <div fxFlex>{{request.requestDate | date:'shortDate'}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>PROJECT</label>
-                        <div fxFlex>{{selectedProject.name}}</div>
-                      </div>
-                      <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                        <label class="cost-label" fxFlex>REQUEST TYPE</label>
-                        <div fxFlex>{{request.type}}</div>
-                      </div>
-                    </mat-toolbar-row>
-                  </mat-toolbar>
-
-                  <div class="p-24 full-width" fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
-                    <mat-card class="input-form full-width">
-                      <mat-tab-group class="cost-tab-group">
-                        <mat-tab *ngIf="request && request.costs.equipmentCosts.enabled" label="Equipment Costs">
-                          <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
-                            <mat-toolbar class="alt">
-                              <mat-toolbar-row>
-                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                                  <label class="cost-label" fxFlex>ACTIVE USE</label>
-                                  <div fxFlex>{{19459 | currency}}</div>
-                                </div>
-                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                                  <label class="cost-label" fxFlex>STANDBY</label>
-                                  <div fxFlex>{{4236 | currency}}</div>
-                                </div>
-                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                                  <label class="cost-label" fxFlex>RENTAL</label>
-                                  <div fxFlex>{{15216 | currency}}</div>
-                                </div>
-                                <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                                  <label class="cost-label" fxFlex>TRANSPORTATION</label>
-                                  <div fxFlex>{{345 | currency}}</div>
-                                </div>
-                                <div class="total-cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
-                                  <label class="cost-label" fxFlex>TOTAL EQUIPMENT COSTS</label>
-                                  <div fxFlex>{{38911 | currency}}</div>
-                                </div>
-                              </mat-toolbar-row>
-                            </mat-toolbar>
-                            <div class="p-24">
-                              <mat-tab-group class="equipment-tab-group">
-                                <mat-tab label="Active Use"></mat-tab>
-                                <mat-tab label="Standby"></mat-tab>
-                                <mat-tab label="Rental Equipment"></mat-tab>
-                              </mat-tab-group>
-
-                            </div>
-                          </div>
-                        </mat-tab>
-                        <mat-tab *ngIf="request && request.costs.laborCosts.enabled" label="Labor Costs">
-
-                        </mat-tab>
-                        <mat-tab *ngIf="request && request.costs.materialCosts.enabled" label="Material Costs">
-                          <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
-                            <mat-toolbar class="alt">
-                              <mat-toolbar-row>
-                                <div class="total-cost-column" fxFlex fxLayout="column" fxLayoutAlign="center end">
-                                  <label class="cost-label" fxFlex>TOTAL MATERIAL COSTS</label>
-                                  <div fxFlex>{{38911 | currency}}</div>
-                                </div>
-                              </mat-toolbar-row>
-                            </mat-toolbar>
-                            <div class="p-24 full-width">
-                              <mat-toolbar class="alt">
-                                <mat-toolbar-row fxLayout="row" fxLayoutAlign="start center">
-                                  <button mat-raised-button color="primary">Add Material</button>
-                                </mat-toolbar-row>
-                              </mat-toolbar>
-
-                              <!-- mat-table for material costs -->
-                              <mat-table #materialCostTable [dataSource]="materialDataSource" style="width:100%">
-
-                                <!--- Note that these columns can be defined in any order.
-                                        The actual rendered columns are set as a property on the row definition" -->
-
-
-                                <ng-container matColumnDef="description">
-                                  <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
-                                  <mat-cell *matCellDef="let element">
-                                    <span>{{element.description}}</span>
-                                  </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="cost">
-                                  <mat-header-cell *matHeaderCellDef> COST PER UNIT </mat-header-cell>
-                                  <mat-cell *matCellDef="let element">
-                                    <span>{{element.costPerUnit}}</span>
-                                  </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="quantity">
-                                  <mat-header-cell *matHeaderCellDef> QUANTITY </mat-header-cell>
-                                  <mat-cell *matCellDef="let element">
-                                    <span>{{element.unitQuantity}}</span>
-                                  </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="receipt">
-                                  <mat-header-cell *matHeaderCellDef> RECEIPT </mat-header-cell>
-                                  <mat-cell *matCellDef="let element">
-                                    <span>{{element.receipt}}</span>
-                                  </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="subtotal">
-                                  <mat-header-cell *matHeaderCellDef> SUBTOTAL </mat-header-cell>
-                                  <mat-cell *matCellDef="let element">
-                                    <span>{{element.subtotal}}</span>
-                                  </mat-cell>
-                                </ng-container>
-                                <ng-container matColumnDef="total">
-                                  <mat-header-cell *matHeaderCellDef> TOTAL* </mat-header-cell>
-                                  <mat-cell *matCellDef="let element">
-                                    <span>{{element.total}}</span>
-                                  </mat-cell>
-                                </ng-container>
-                                <mat-header-row *matHeaderRowDef="materialDisplayedColumns"></mat-header-row>
-                                <mat-row *matRowDef="let row; columns: materialDisplayedColumns;"></mat-row>
-                              </mat-table>
-
-                            </div>
-                          </div>
-                        </mat-tab>
-                        <mat-tab *ngIf="request && request.costs.otherCosts.enabled" label="Other Costs">
-
-                        </mat-tab>
-                        <mat-tab *ngIf="request && request.costs.subcontractorCosts.enabled" label="Subcontractor Costs">
-
-                        </mat-tab>
-                      </mat-tab-group>
-                    </mat-card>
-                  </div>
-
-
-
-                </div>
-                <div></div>
-                <div class="p-4">
-                  <button mat-raised-button matStepperNext color="primary">Next</button>
-                  <button mat-button matStepperPrevious>Back</button>
-                </div>
-              </form>
-            </mat-step>
-            <mat-step [stepControl]="signatureFormGroup">
-              <form [formGroup]="signatureFormGroup">
-                <ng-template matStepLabel>Sign and Submit</ng-template>
-
-                <div class="p-4">
-                  <button mat-raised-button matStepperNext color="primary">Next</button>
-                  <button mat-button matStepperPrevious>Back</button>
-                </div>
-              </form>
-            </mat-step>
-          </mat-horizontal-stepper>
+<div class="p-4 request-details" style="max-height:90vh;overflow:auto" *ngIf="request" appPerfectScrollbar>
+  <mat-toolbar class="alt">
+    <mat-toolbar-row class="alt">
+      <a routerLink="/requests" class="primary-link">Requests</a>&nbsp;> {{request.id}}
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
+  <div class="request-form" fxLayout="column" fxLayoutGap="24px">
+    <mat-toolbar class="project-info-row">
+      <mat-toolbar-row>
+        <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <label class="project-label" fxFlex>REQUEST ID</label>
+          <div fxFlex>{{request.id}}</div>
         </div>
-      </ng-template>
-
-      <ng-template #newProject>
-        <div class="input-form">
-          <form [formGroup]="projectFormGroup" fxLayout="column">
-            <mat-form-field fxFlex class="width-85">
-              <mat-select placeholder="Select Project Owner">
-                <mat-option *ngFor="let project of projects | async" [value]="project.id">
-                  {{ project.owner }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field fxFlex class="width-85">
-              <textarea matInput placeholder="Project Creation Request Details" matTextareaAutosize matAutosizeMinRows="2" matAutosizeMaxRows="25"></textarea>
-            </mat-form-field>
-          </form>
+        <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <label class="project-label" fxFlex>PROJECT ID</label>
+          <div fxFlex>{{selectedProject.id}}</div>
         </div>
-      </ng-template>
+        <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <label class="project-label" fxFlex>PROJECT OWNER</label>
+          <div fxFlex>{{selectedProject.owner}}</div>
+        </div>
+        <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <label class="project-label" fxFlex>WORK COMPLETED PERIOD</label>
+          <div fxFlex>{{request.startDate | date:'shortDate'}} - {{request.endDate | date:'shortDate'}}</div>
+        </div>
+        <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <label class="project-label" fxFlex>PROJECT</label>
+          <div fxFlex>{{selectedProject.name}}</div>
+        </div>
+        <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <label class="project-label" fxFlex>REQUEST TYPE</label>
+          <div fxFlex>{{request.type}}</div>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-toolbar class="mat-toolbar-white">
+      <mat-toolbar-row fxLayout="row" fxLayoutGap="8px">
+        <div fxLayout="column">
+          <button mat-raised-button color="primary">Approval All</button>
+          <button mat-raised-button color="accent">Send {{request.disputes.length}} Disputes</button>
+        </div>
+        <div fxLayout="row" fxFlex class="cost-row p-8" fxLayoutAlign="start stretch">
+          <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+            <label class="cost-label" fxFlex>EQUIPMENT COSTS</label>
+            <div fxFlex>{{19459 | currency}}</div>
+          </div>
+          <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+            <label class="cost-label" fxFlex>LABOR COSTS</label>
+            <div fxFlex>{{4236 | currency}}</div>
+          </div>
+          <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+            <label class="cost-label" fxFlex>MATERIAL COSTS</label>
+            <div fxFlex>{{15216 | currency}}</div>
+          </div>
+          <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+            <label class="cost-label" fxFlex>OTHER COSTS</label>
+            <div fxFlex>{{345 | currency}}</div>
+          </div>
+          <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+            <label class="cost-label" fxFlex>SUBCONTRACTOR COSTS</label>
+            <div fxFlex>{{38911 | currency}}</div>
+          </div>
+          <div class="total-cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+            <label class="cost-label" fxFlex>TOTAL COSTS</label>
+            <div fxFlex>{{38911 | currency}}</div>
+          </div>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <div class="p-4 m-0" fxLayout="column" fxLayoutGap="14px">
+      <div fxLayout="row" fxLayoutGap="14px" fxLayoutAlign="start center">
+        <label>Filter</label>
 
-
-
+        <mat-checkbox (change)="toggleCheckbox('all',$event)">All</mat-checkbox>
+        <mat-checkbox color="warn" (change)="toggleCheckbox('concerns',$event)">Concerns</mat-checkbox>
+        <mat-checkbox color="accent" (change)="toggleCheckbox('no',$event)">No Concerns</mat-checkbox>
+      </div>
 
     </div>
+    <div *ngIf="request.costs.equipmentCosts.enabled" class="p-8 full-width" fxLayout="column" fxLayoutGap="4px">
+      <div *ngIf="request.costs.equipmentCosts.activeCosts.costs.length > 0" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutGap="4px">
+          <label>Equipment |
+            <b>Active Use</b>
+          </label>
+          <span class="spacer"></span>
+          <span class="spacer"></span>
+          <span class="spacer"></span>
 
+          <span fxFlex class="right-align subtitle">powered by
+            <img class="img-responsive" src="../../assets/img/ew-small.gif">
+          </span>
+        </div>
+        <mat-accordion displayMode="flat" multi class="mat-table cost-table">
+          <section matSort class="mat-header-row" fxLayout="row" fxLayoutAlign="start center">
+            <div class="mat-header-cell">MAKE/MODEL</div>
+            <span class="mat-header-cell">DESCRIPTION</span>
+            <span class="mat-header-cell">YEAR</span>
+            <span class="mat-header-cell">SN/VIN</span>
+            <span class="mat-header-cell">OWNERSHIP</span>
+            <span class="mat-header-cell">OPERATING</span>
+            <span class="mat-header-cell">FHWA</span>
+            <span class="mat-header-cell">HOURS</span>
+            <span class="mat-header-cell">TRANSPORT</span>
+            <span class="mat-header-cell">AMOUNT</span>
+          </section>
+          <mat-expansion-panel *ngFor="let item of request.costs.equipmentCosts.activeCosts.costs">
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell">{{item.machine.make}}</span>
+              <span class="mat-cell">{{item.machine.description}}</span>
+              <span class="mat-cell">{{item.machine.year}}</span>
+              <span class="mat-cell">{{item.machine.vin}}</span>
+              <span class="mat-cell">{{item.machine.ownershipCost | currency}}</span>
+              <span class="mat-cell">{{item.machine.operatingCost | currency}}</span>
+              <span class="mat-cell">{{item.machine.fhwa | currency}}</span>
+              <span class="mat-cell">{{item.hours}}</span>
+              <span class="mat-cell">{{item.transportationCost | currency}}</span>
+              <span class="mat-cell">{{item.total | currency}}</span>
 
-  </mat-card>
+            </mat-expansion-panel-header>
+            <div>
+              <pre>{{item | json}}</pre>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
+      <div style="padding-top:10px"></div>
+      <div *ngIf="request.costs.equipmentCosts.standbyCosts.costs.length > 0" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+          <label>Equipment |
+            <b>Standby</b>
+          </label>
+          <span class="spacer"></span>
+          <span class="spacer"></span>
+          <span class="spacer"></span>
+
+          <span fxFlex class="right-align subtitle">powered by
+            <img class="img-responsive" src="../../assets/img/ew-small.gif">
+          </span>
+        </div>
+        <mat-accordion displayMode="flat" multi class="mat-table cost-table">
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell">MAKE/MODEL</span>
+            <span class="mat-header-cell">DESCRIPTION</span>
+            <span class="mat-header-cell">YEAR</span>
+            <span class="mat-header-cell">SN/VIN</span>
+            <span class="mat-header-cell">OWNERSHIP</span>
+            <span class="mat-header-cell">OPERATING</span>
+            <span class="mat-header-cell">FHWA</span>
+            <span class="mat-header-cell">HOURS</span>
+            <span class="mat-header-cell">TRANSPORT</span>
+            <span class="mat-header-cell">AMOUNT</span>
+          </section>
+          <mat-expansion-panel *ngFor="let item of request.costs.equipmentCosts.standbyCosts.costs">
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell">{{item.machine.make}}</span>
+              <span class="mat-cell">{{item.machine.description}}</span>
+              <span class="mat-cell">{{item.machine.year}}</span>
+              <span class="mat-cell">{{item.machine.vin}}</span>
+              <span class="mat-cell">{{item.machine.ownershipCost | currency}}</span>
+              <span class="mat-cell">{{item.machine.operatingCost | currency}}</span>
+              <span class="mat-cell">{{item.machine.fhwa | currency}}</span>
+              <span class="mat-cell">{{item.hours}}</span>
+              <span class="mat-cell">{{item.transportationCost | currency}}</span>
+              <span class="mat-cell">{{item.total | currency}}</span>
+
+            </mat-expansion-panel-header>
+            <div>
+              <pre>{{item | json}}</pre>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
+    </div>
+    <div></div>
+  </div>
 </div>

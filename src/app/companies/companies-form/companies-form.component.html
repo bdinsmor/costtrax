@@ -1,0 +1,59 @@
+<div class="p-8 company-form" *ngIf="company">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <a routerLink="/companies" class="primary-link">Contractors</a>&nbsp;> {{company.name}}
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-tab-group>
+    <mat-tab label="Contacts">
+      <div class="p-8 full-width">
+        <mat-table #contactsTable [dataSource]="employeesDataSource" style="width:100%">
+
+          <!--- Note that these columns can be defined in any order.
+                                                  The actual rendered columns are set as a property on the row definition" -->
+
+          <!--
+   id: string; name: string; lastName: string; avatar: string; nickname: string; company: string; jobTitle: string; email:
+  string; phone: string; address: string; birthday: string; notes: string;
+
+          -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> NAME </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span>{{element.lastName}}, {{element.name}}</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="jobTitle">
+            <mat-header-cell *matHeaderCellDef> JOB </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span>{{element.jobTitle}}</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef> EMAIL </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span>{{element.email}}</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="phone">
+            <mat-header-cell *matHeaderCellDef> PHONE </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span>{{element.phone}}</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="birthday">
+            <mat-header-cell *matHeaderCellDef> BIRTHDAY </mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <span>{{element.birthday | date:'shortDate'}}</span>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="contractorColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: contractorColumns;"></mat-row>
+        </mat-table>
+      </div>
+    </mat-tab>
+    <mat-tab label="Files">
+
+    </mat-tab>
+  </mat-tab-group>
+</div>

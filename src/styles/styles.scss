@@ -4,3 +4,7 @@
 @import 'mixins/breakpoints';
 
 // @import "~bootstrap/dist/css/bootstrap.css"
+.mat-tab-body-content,
+mat-tab-body-content {
+  height: 100%;
+}

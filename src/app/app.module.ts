@@ -16,8 +16,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RequestsService } from '@app/requests/requests.service';
 import { ProjectsService } from '@app/projects/projects.service';
 import { ContractorsService } from '@app/contractors/contractors.service';
-import { CompaniesService } from '@app/contractors/companies.service';
 import { MessagesService } from './messages/messages.service';
+import { CompaniesService } from '@app/companies/companies.service';
 
 @NgModule({
   imports: [
