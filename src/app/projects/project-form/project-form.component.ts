@@ -87,6 +87,31 @@ export class ProjectFormComponent implements OnInit {
     });
   }
 
+  toggleCheckbox(type: string, event: any) {
+    switch (type) {
+      case 'equipment': {
+        this.project.equipmentCostsEnabled = event.checked;
+        break;
+      }
+      case 'labor': {
+        this.project.laborCostsEnabled = event.checked;
+        break;
+      }
+      case 'material': {
+        this.project.materialCostsEnabled = event.checked;
+        break;
+      }
+      case 'other': {
+        this.project.otherCostsEnabled = event.checked;
+        break;
+      }
+      case 'subcontractor': {
+        this.project.subcontractorCostsEnabled = event.checked;
+        break;
+      }
+    }
+  }
+
   inputFocus() {
     setTimeout(() => {
       if (!this.autoCompleteTrigger.panelOpen) {
@@ -136,13 +161,12 @@ export class ProjectFormComponent implements OnInit {
 
   createProjectFormGroup() {
     return this.formBuilder.group({
-      startDate: new FormControl(new Date()),
-      endDate: new FormControl(new Date()),
-      equipmentCostsCheckbox: new FormControl(false),
-      laborCostsCheckbox: new FormControl(false),
-      materialCostsCheckbox: new FormControl(false),
-      otherCostsCheckbox: new FormControl(false),
-      subcontractorCostsCheckbox: new FormControl(false)
+      projectInstructions: new FormControl(this.project.details),
+      equipmentCostsCheckbox: new FormControl(this.project.equipmentCostsEnabled),
+      laborCostsCheckbox: new FormControl(this.project.laborCostsEnabled),
+      materialCostsCheckbox: new FormControl(this.project.materialCostsEnabled),
+      otherCostsCheckbox: new FormControl(this.project.otherCostsEnabled),
+      subcontractorCostsCheckbox: new FormControl(this.project.subcontractorCostsEnabled)
     });
   }
 }

@@ -70,21 +70,26 @@
           </mat-autocomplete>
         </mat-form-field>
       </div>
-      <div class="p-20 m-0" fxLayout="column" fxLayoutGap="14px">
-        <div fxLayout="column" fxLayoutGap="14px" fxLayoutAlign="start start">
-          <label class="project-heading">ALLOWED COST TYPES</label>
-          <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
-            <label class="cost-label m-10" fxFlex>Select All That Apply</label>
-            <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
-              <mat-checkbox (change)="toggleCheckbox('equipment',$event)" [ngModel]="project.equipmentCostsEnabled" formControlName="equipmentCostsCheckbox">Equipment Costs</mat-checkbox>
-              <mat-checkbox (change)="toggleCheckbox('labor',$event)" [ngModel]="project.laborCostEnabled" formControlName="laborCostsCheckbox">Labor Costs</mat-checkbox>
-              <mat-checkbox (change)="toggleCheckbox('material',$event)" [ngModel]="project.materialCostsEnabled" formControlName="materialCostsCheckbox">Material Costs</mat-checkbox>
-              <mat-checkbox (change)="toggleCheckbox('other',$event)" [ngModel]="project.otherCostsEnabled" formControlName="otherCostsCheckbox">Other Costs</mat-checkbox>
-              <mat-checkbox (change)="toggleCheckbox('subcontractor',$event)" [ngModel]="project.subcontractorCostEnabled" formControlName="subcontractorCostsCheckbox">Subcontractor Costs</mat-checkbox>
-            </div>
+      <div class="p-20 m-0" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="14px">
+        <label class="project-heading">ALLOWED COST TYPES</label>
+        <div fxFlex fxLayout="column" fxLayoutGap="24px" fxLayoutAlign="center start">
+          <label class="cost-label m-10" fxFlex>Select All That Apply</label>
+          <div fxFlex fxLayout="row" fxLayoutGap="18px" fxLayoutAlign="center center">
+            <mat-checkbox (change)="toggleCheckbox('equipment',$event)" [ngModel]="project.equipmentCostsEnabled" formControlName="equipmentCostsCheckbox">Equipment Costs</mat-checkbox>
+            <mat-checkbox (change)="toggleCheckbox('labor',$event)" [ngModel]="project.laborCostsEnabled" formControlName="laborCostsCheckbox">Labor Costs</mat-checkbox>
+            <mat-checkbox (change)="toggleCheckbox('material',$event)" [ngModel]="project.materialCostsEnabled" formControlName="materialCostsCheckbox">Material Costs</mat-checkbox>
+            <mat-checkbox (change)="toggleCheckbox('other',$event)" [ngModel]="project.otherCostsEnabled" formControlName="otherCostsCheckbox">Other Costs</mat-checkbox>
+            <mat-checkbox (change)="toggleCheckbox('subcontractor',$event)" [ngModel]="project.subcontractorCostsEnabled" formControlName="subcontractorCostsCheckbox">Subcontractor Costs</mat-checkbox>
           </div>
-
         </div>
+      </div>
+      <div class="p-20 m-0" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="14px">
+        <mat-form-field fxFlex class="m-t-30 width-85">
+          <textarea matInput formControlName="projectInstructions" placeholder="Project Instructions" matTextareaAutosize matAutosizeMinRows="12"
+            matAutosizeMaxRows="25"></textarea>
+        </mat-form-field>
+
+
 
       </div>
     </form>
