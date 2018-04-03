@@ -81,6 +81,7 @@ export class Project {
   laborCostsEnabled: boolean;
   otherCostsEnabled: boolean;
   subcontractorCostsEnabled: boolean;
+  invitedContractors: Company[];
 
   constructor(project: any) {
     {
@@ -94,6 +95,7 @@ export class Project {
       this.equipmentCostsEnabled = project.equipmentCostsEnabled || false;
       this.subcontractorCostsEnabled = project.subcontractorCostsEnabled || false;
       this.otherCostsEnabled = project.otherCostsEnabled || false;
+      this.invitedContractors = [];
     }
   }
 }
