@@ -8,12 +8,11 @@ const log = new Logger('AuthenticationGuard');
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
-
-  constructor(private router: Router,
-              private authenticationService: AuthenticationService) { }
+  constructor(private router: Router, private authenticationService: AuthenticationService) {}
 
   canActivate(): boolean {
     if (this.authenticationService.isAuthenticated()) {
+      log.debug('authenticated... allowing route to complete.');
       return true;
     }
 
@@ -21,5 +20,4 @@ export class AuthenticationGuard implements CanActivate {
     this.router.navigate(['/login'], { replaceUrl: true });
     return false;
   }
-
 }
