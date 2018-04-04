@@ -1,7 +1,7 @@
 <div class="title-color" fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="center center">
   <h2>Start A New Request</h2>
-  <button mat-raised-button color='primary'>via an Existing Project</button>
-  <a href="#" class="primary-link">or via a New Project</a>
+  <button mat-raised-button color='primary' (click)="createRequest(false)">via an Existing Project</button>
+  <a class="primary-link" (click)="createRequest(true)">or via a New Project</a>
 </div>
 <div fxLayout="column" fxLayoutGap="5px" fxLayoutAlign="center center">
   <mat-list style="overflow:auto;max-height:50vh">

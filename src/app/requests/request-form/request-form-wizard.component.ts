@@ -6,7 +6,7 @@ import { ProjectsService } from '@app/projects/projects.service';
 import { Observable } from 'rxjs/Observable';
 import { RequestsService } from '../requests.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar, MatPaginator } from '@angular/material';
+import { MatSnackBar, MatPaginator, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -15,8 +15,8 @@ import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-request-form',
-  templateUrl: './request-form.component.html',
-  styleUrls: ['./request-form.component.scss'],
+  templateUrl: './request-form-wizard.component.html',
+  styleUrls: ['./request-form-wizard.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class RequestFormWizardComponent implements OnInit {
@@ -46,37 +46,28 @@ export class RequestFormWizardComponent implements OnInit {
     private router: Router,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<RequestFormWizardComponent>,
+    @Inject(MAT_DIALOG_DATA) private data: any
   ) {
-    this.projectFormGroup = this.createProjectFormGroup();
     this.costFormGroup = this.createCostFormGroup();
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();
     this.signatureFormGroup = this.createSignatureFormGroup();
     this.projects = this.projectsService.entities$;
+
+    this.action = data.action;
+
+    if (!this.action) {
+      this.projectFormGroup = this.createProjectFormGroup('1');
+    } else {
+      this.projectFormGroup = this.createProjectFormGroup('2');
+    }
+    console.log('inside dialog');
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.requestsService.clearCache();
-      this.requestsService.getByKey(id);
-      this.requestsService.errors$.subscribe(errors => {
-        this.openSnackBar(errors.payload.error.message, '');
-      });
-      this.requestsService.filteredEntities$.subscribe(r => {
-        if (r && r.length === 1) {
-          this.request = r[0];
-          this.selectedProject = r[0].project;
-          this.openSnackBar('Loaded Request', '');
-          this.createCostFormGroup();
-          this.createMaterialCosts();
-        }
-      });
-    } else {
-      this.request = new Request({});
-    }
-
     this.projectsService.getAll();
+    this.request = new Request({});
   }
 
   openSnackBar(message: string, action: string) {
@@ -125,8 +116,8 @@ export class RequestFormWizardComponent implements OnInit {
     this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
   }
 
-  createProjectFormGroup() {
-    return this.formBuilder.group({ projectType: new FormControl('1'), projectSelect: new FormControl() });
+  createProjectFormGroup(projectValue: string) {
+    return this.formBuilder.group({ projectType: new FormControl(projectValue), projectSelect: new FormControl() });
   }
   createCostFormGroup() {
     console.log('createCostForm');

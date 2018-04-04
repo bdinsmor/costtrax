@@ -7,6 +7,39 @@
     cursor: pointer;
   }
 
+  .full-height {
+    height: 100%;
+  }
+
+  .signature-row {
+    height: 30vh;
+  }
+
+  .blue-link {
+    color: mat-color($mat-blue, 500, 0.9);
+    cursor: pointer;
+  }
+
+  .dialog-content-wrapper {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+
+    .mat-toolbar {
+      min-height: initial;
+    }
+
+    .toolbar-bottom {
+      height: auto;
+    }
+  }
+
+  .f-w,
   .full-width {
     width: 100%;
   }
@@ -25,18 +58,44 @@
     color: mat-color($mat-fusedark, 400, 0.8);
   }
 
+  .bordered,
+  .summary-row {
+    border: 1px solid mat-color($mat-fusedark, 100, 0.75);
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
   .cost-label {
     color: mat-color($mat-fusedark, 400, 0.8);
     font-size: 60%;
+    font-weight: 900;
+  }
+
+  .summary-label {
+    color: mat-color($mat-fusedark, 400, 0.8);
+  }
+
+  .summary-column div,
+  .total-cost-column div {
+    font-weight: bold;
+  }
+
+  .summary-column {
+    padding: 8px;
   }
 
   .cost-column div {
-    font-size: 65%;
+    font-size: 75%;
   }
 
   .total-cost-column {
     padding: 8px;
-    background-color: mat-color($mat-fusedark, 300, 0.8);
+    background-color: mat-color($mat-fusedark, 100, 0.8);
+  }
+
+  .total-summary-column {
+    padding: 8px;
+    background-color: mat-color($mat-fusedark, 100, 0.8);
   }
 
   .info-toolbar {
@@ -69,7 +128,8 @@
     width: 85% !important;
   }
 
-  .width-50 {
+  .width-50,
+  .w-50 {
     width: 50% !important;
   }
 

@@ -1,6 +1,13 @@
+import { retry } from 'rxjs/operator/retry';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/retry';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { catchError } from 'rxjs/operators';
 
 export interface Credentials {
   // Customize received credentials here
@@ -22,14 +29,31 @@ const credentialsKey = 'credentials';
  */
 @Injectable()
 export class AuthenticationService {
-
   private _credentials: Credentials | null;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
     }
+  }
+
+  getToken(username: string, password: string) {
+    // now returns an Observable of Credentials
+    return this.http.post<Credentials>('/auth', { username: username, password: password });
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+    }
+    // return an ErrorObservable with a user-facing error message
+    return new ErrorObservable('Something bad happened; please try again later.');
   }
 
   /**
@@ -43,8 +67,18 @@ export class AuthenticationService {
       username: context.username,
       token: '123456'
     };
+
     this.setCredentials(data, context.remember);
     return of(data);
+
+    /*return this.http
+      .post('/auth', JSON.stringify(data))
+      .retry(3)
+      .map((res: any) => {
+        const json = res as any;
+
+        return json.data as Credentials;
+      });*/
   }
 
   /**
@@ -91,5 +125,4 @@ export class AuthenticationService {
       localStorage.removeItem(credentialsKey);
     }
   }
-
 }

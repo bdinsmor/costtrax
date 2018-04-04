@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { JwtModule } from '@auth0/angular-jwt';
+
 import { MaterialModule } from './material.module';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
@@ -18,12 +20,24 @@ import { ProjectsService } from '@app/projects/projects.service';
 import { ContractorsService } from '@app/contractors/contractors.service';
 import { MessagesService } from './messages/messages.service';
 import { CompaniesService } from '@app/companies/companies.service';
+import { RequestFormWizardComponent } from '@app/requests/request-form/request-form-wizard.component';
+
+export function tokenGetter() {
+  return localStorage.getItem('access_token');
+}
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:3001'],
+        blacklistedRoutes: ['localhost:3001/auth/']
+      }
+    }),
     FlexLayoutModule,
     TranslateModule.forRoot(),
     AppStoreModule,
@@ -35,6 +49,7 @@ import { CompaniesService } from '@app/companies/companies.service';
     AppRoutingModule
   ],
   declarations: [AppComponent],
+  entryComponents: [RequestFormWizardComponent],
   providers: [LogEntryService, MessagesService, RequestsService, ProjectsService, ContractorsService, CompaniesService],
   bootstrap: [AppComponent]
 })
