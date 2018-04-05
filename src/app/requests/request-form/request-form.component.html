@@ -36,9 +36,9 @@
     </mat-toolbar>
     <mat-toolbar class="mat-toolbar-white">
       <mat-toolbar-row fxLayout="row" fxLayoutGap="8px">
-        <div fxLayout="column">
+        <div fxLayout="column" fxLayoutGap="8px">
           <button mat-raised-button color="primary">Approval All</button>
-          <button mat-raised-button color="accent">Send {{request.disputes.length}} Disputes</button>
+          <button *ngIf="request && request.disputes && request.disputes.length > 0" mat-raised-button color="accent">Send {{request.disputes.length}} Disputes</button>
         </div>
         <div fxLayout="row" fxFlex class="cost-row p-8" fxLayoutAlign="start stretch">
           <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
