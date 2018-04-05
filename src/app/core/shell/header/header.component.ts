@@ -22,9 +22,9 @@ export class HeaderComponent implements OnInit {
     this.authenticationService.logout().subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
   }
 
-  get username(): string {
+  get email(): string {
     const credentials = this.authenticationService.credentials;
-    return credentials ? credentials.username : null;
+    return credentials ? credentials.email : null;
   }
 
   get title(): string {

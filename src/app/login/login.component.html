@@ -1,31 +1,32 @@
 <div fxFill fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1.5rem" class="mat-typography">
   <div fxLayout="column" fxLayoutAlign="center center" translate>
-    <h1 >
-      <span class="brand">RE</span><span class="brand2">COVER</span>
+    <h1>
+      <span class="brand">RE</span>
+      <span class="brand2">COVER</span>
     </h1>
     <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2rem">
-      <span class="subtitle">powered by <img width="30%" height="30%" class="img-responsive" src="../../assets/img/ew2.gif"></span>
+      <span class="subtitle">powered by
+        <img width="30%" height="30%" class="img-responsive" src="../../assets/img/ew2.gif">
+      </span>
     </div>
   </div>
   <div class="login-container" fxLayout="row" fxLayoutAlign="center">
     <mat-card fxFlex="90%" fxFlex.sm="66%" fxFlex.md="50%" fxFlex.gt-md="33%" class="login-box">
       <form (ngSubmit)="login()" [formGroup]="loginForm" novalidate>
         <div class="login-error" [hidden]="!error || isLoading" translate>
-          Username or password incorrect.
+          Email or password incorrect.
         </div>
         <br/>
-        <div fxLayout="column">
+        <div fxLayout="column" fxLayoutGap="6px">
           <mat-form-field>
-            <input type="text" matInput formControlName="username" autocomplete="username"
-                   [placeholder]="'Username' | translate"/>
-            <mat-error *ngIf="loginForm.controls.username.valid || loginForm.controls.username.untouched">
-              <span translate>Username is required</span>
+            <input type="text" matInput formControlName="email" autocomplete="email" [placeholder]="'Email'" />
+            <mat-error *ngIf="!loginForm.controls.email.valid || loginForm.controls.email.untouched">
+              <span translate>Valid Email is required</span>
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <input type="password" matInput formControlName="password" autocomplete="current-password"
-                   [placeholder]="'Password' | translate" required/>
-            <mat-error *ngIf="loginForm.controls.password.valid || loginForm.controls.password.untouched">
+            <input type="password" matInput formControlName="password" autocomplete="current-password" [placeholder]="'Password'" required/>
+            <mat-error *ngIf="!loginForm.controls.password.valid || loginForm.controls.password.untouched">
               <span translate>Password is required</span>
             </mat-error>
           </mat-form-field>
@@ -40,4 +41,3 @@
     </mat-card>
   </div>
 </div>
-

@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   error: string;
   loginForm: FormGroup;
   isLoading = false;
+  emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
 
   constructor(
     private router: Router,
@@ -41,7 +42,7 @@ export class LoginComponent implements OnInit {
       )
       .subscribe(
         credentials => {
-          log.debug(`${credentials.username} successfully logged in`);
+          log.debug(`${credentials.email} successfully logged in`);
           this.router.navigate(['/'], { replaceUrl: true });
         },
         error => {
@@ -53,7 +54,7 @@ export class LoginComponent implements OnInit {
 
   private createForm() {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
       password: ['', Validators.required],
       remember: true
     });
