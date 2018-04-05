@@ -8,15 +8,17 @@ import 'rxjs/add/operator/catch';
 import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 export interface Credentials {
   // Customize received credentials here
-  username: string;
+  email: string;
+  roles: string[];
   token: string;
 }
 
 export interface LoginContext {
-  username: string;
+  email: string;
   password: string;
   remember?: boolean;
 }
@@ -31,7 +33,7 @@ const credentialsKey = 'credentials';
 export class AuthenticationService {
   private _credentials: Credentials | null;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, public jwtHelper: JwtHelperService) {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
@@ -63,22 +65,47 @@ export class AuthenticationService {
    */
   login(context: LoginContext): Observable<Credentials> {
     // Replace by proper authentication call
-    const data = {
-      username: context.username,
-      token: '123456'
-    };
+    const data = { email: context.email, token: '123456' };
 
-    this.setCredentials(data, context.remember);
-    return of(data);
+    // this.setCredentials(data, context.remember);
+    //  return of(data);
+    console.log('email: ' + context.email);
+    console.log('password: ' + context.password);
+    return this.http
+      .post('https://hermes-api.development.equipmentwatchapi.com/idam/login', {
+        email: 'brian@northavetech.com',
+        password: 'ihateLIFE4'
+      })
+      .retry(3)
+      .map((res: any) => {
+        const token = res.token as any;
+        const creds = { email: context.email, token: token };
+        // console.log('json: ' + JSON.stringify(this.jwtHelper.decodeToken(token), null, 2));
+        this.setCredentials(creds as Credentials, context.remember);
+        return creds as Credentials;
+      });
+  }
 
-    /*return this.http
-      .post('/auth', JSON.stringify(data))
+  reset(context: LoginContext): Observable<Credentials> {
+    // Replace by proper authentication call
+    const data = { email: context.email, token: '123456' };
+
+    // this.setCredentials(data, context.remember);
+    //  return of(data);
+    console.log('email: ' + context.email);
+    console.log('password: ' + context.password);
+    return this.http
+      .post('https://hermes-api.development.equipmentwatchapi.com/idam/reset', {
+        email: 'brian@northavetech.com',
+        password: 'rpL8Zd2k',
+        newpassword: 'ihateLIFE4'
+      })
       .retry(3)
       .map((res: any) => {
         const json = res as any;
 
         return json.data as Credentials;
-      });*/
+      });
   }
 
   /**
