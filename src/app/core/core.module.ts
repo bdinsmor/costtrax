@@ -30,7 +30,7 @@ import { RequestsService } from '@app/requests/requests.service';
   imports: [
     CommonModule,
     HttpClientModule,
-    HttpClientInMemoryWebApiModule.forRoot(FakeDbService),
+    // HttpClientInMemoryWebApiModule.forRoot(FakeDbService),
     TranslateModule,
     PipesModule,
     FlexLayoutModule,
@@ -41,17 +41,16 @@ import { RequestsService } from '@app/requests/requests.service';
   providers: [
     AuthenticationService,
     AuthenticationGuard,
-    I18nService,
-    // HttpCacheService,
+    HttpCacheService,
     AppMatchMediaService,
-    ApiPrefixInterceptor,
+    //  ApiPrefixInterceptor,
     ErrorHandlerInterceptor,
     CacheInterceptor,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ApiPrefixInterceptor,
-      multi: true
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //  useClass: ApiPrefixInterceptor,
+    //   multi: true
+    // },
     {
       provide: HttpClient,
       useClass: HttpService
