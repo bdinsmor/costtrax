@@ -5,6 +5,7 @@ import { RequestsComponent } from './requests.component';
 import { RequestsService } from './requests.service';
 import { RequestFormWizardComponent } from './request-form/request-form-wizard.component';
 import { PipesModule } from '@app/core/pipes/pipes.module';
+import { NgxCurrencyModule } from "ngx-currency";
 import { DirectivesModule } from '@app/core/directives/directives';
 import { AppMatchMediaService } from '@app/core/services/app-match-media.service';
 import { RequestsListComponent } from '@app/requests/request-list/requests-list.component';
@@ -20,7 +21,7 @@ import { RequestFormComponent } from '@app/requests/request-form/request-form.co
     RequestFormWizardComponent,
     RequestFormDialogComponent
   ],
-  imports: [SharedModule, CdkTableModule, DirectivesModule, PipesModule],
+  imports: [SharedModule, CdkTableModule, DirectivesModule, PipesModule,NgxCurrencyModule],
   exports: [RequestsComponent],
   providers: [RequestsService, AppMatchMediaService],
   entryComponents: [RequestFormComponent, RequestFormDialogComponent]

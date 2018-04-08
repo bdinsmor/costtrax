@@ -475,7 +475,7 @@ export class MaterialCosts {
     let materialCostTotal = 0;
     if (materialCostsEnabled) {
       for (let i = 0; i < this.chance.integer({ min: 1, max: 25 }); i++) {
-        const c: MaterialCost = new MaterialCost();
+        const c: MaterialCost = new MaterialCost({});
         c.date = this.chance.date({
           year: endDate.getFullYear(),
           month: this.chance.integer({ min: startDate.getMonth(), max: endDate.getMonth() })

@@ -163,6 +163,8 @@ export class MaterialCost {
     {
       this.id = mc.id || AppUtils.generateGUID(true);
       this.total = mc.total || 0;
+      this.subtotal = mc.subtotal || 0;
+      this.unitQuantity = mc.unitQuantity || 0;
       this.description = mc.description || '';
       this.costPerUnit = mc.costPerUnit || 0;
       this.submitDate = mc.submitDate || new Date();
@@ -224,7 +226,7 @@ export class LaborCosts {
   payroll: number;
   benefits: number;
   additives: number;
-  totalCost: number;
+  total: number;
   paid: number;
   unpaid: number;
   submitter: Contractor;
@@ -240,9 +242,9 @@ export class LaborCosts {
       this.payroll = laborCosts.payroll || 0;
       this.benefits = laborCosts.benefits || 0;
       this.additives = laborCosts.additives || 0;
-      this.totalCost = laborCosts.totalCost || 0;
+      this.total = laborCosts.total || 0;
       this.paid = laborCosts.paid || 0;
-      this.paid = laborCosts.unpaid || 0;
+      this.unpaid = laborCosts.unpaid || 0;
       this.submitter = laborCosts.submitter || new Contractor({});
     }
   }

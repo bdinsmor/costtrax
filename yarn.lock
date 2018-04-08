@@ -5103,6 +5103,10 @@ ngrx-data@^1.0.0-beta.3:
   dependencies:
     tslib "^1.7.1"
 
+ngx-currency@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-currency/-/ngx-currency-1.1.1.tgz#dfee919d7117cd64d741ba82b4dc790a0faf6098"
+
 no-case@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"

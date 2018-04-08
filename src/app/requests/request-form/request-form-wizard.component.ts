@@ -1,13 +1,14 @@
-import { Component, Inject, ViewEncapsulation, OnInit, Input } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import {ActiveCost, StandbyCost, RentalCost, LaborCost} from './../../shared/model';
+import {Component, Inject, ViewEncapsulation, OnInit, Input} from '@angular/core';
+import {FormBuilder, FormGroup, FormControl} from '@angular/forms';
 
-import { Request, Project, Message, MaterialCost } from '@app/shared/model';
-import { ProjectsService } from '@app/projects/projects.service';
-import { Observable } from 'rxjs/Observable';
-import { RequestsService } from '../requests.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar, MatPaginator, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { DataSource } from '@angular/cdk/collections';
+import {Request, Project, Message, MaterialCost, SubcontractorCosts, Cost} from '@app/shared/model';
+import {ProjectsService} from '@app/projects/projects.service';
+import {Observable} from 'rxjs/Observable';
+import {RequestsService} from '../requests.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MatSnackBar, MatPaginator, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {DataSource} from '@angular/cdk/collections';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
@@ -17,7 +18,7 @@ import 'rxjs/add/operator/map';
   selector: 'app-request-form',
   templateUrl: './request-form-wizard.component.html',
   styleUrls: ['./request-form-wizard.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class RequestFormWizardComponent implements OnInit {
   dialogTitle: string;
@@ -33,10 +34,38 @@ export class RequestFormWizardComponent implements OnInit {
   projects: Observable<Project[]>;
   materialDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
   materialDataSource: MaterialDataSource;
-  otherDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
-  otherDataSource: MaterialDataSource;
-  activeDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
-  activeDataSource: MaterialDataSource;
+  otherDisplayedColumns = ['type', 'description', 'receipt', 'subtotal', 'total'];
+  otherDataSource: OtherDataSource;
+  subcontractorDisplayedColumns = ['subcontractor', 'description', 'receipt', 'subtotal', 'total'];
+  subcontractorDataSource: SubcontractorDataSource;
+  activeDisplayedColumns = [
+    'model',
+    'description',
+    'year',
+    'vin',
+    'ownership',
+    'operating',
+    'fhwa',
+    'hours',
+    'transport',
+    'amount',
+  ];
+  activeDataSource: ActiveDataSource;
+  standbyDisplayedColumns = [
+    'model',
+    'description',
+    'year',
+    'vin',
+    'ownership',
+    'operating',
+    'fhwa',
+    'hours',
+    'transport',
+    'amount',
+  ];
+  standbyDataSource: StandbyDataSource;
+  rentalDisplayedColumns = ['description', 'type', 'base', 'transportation', 'other', 'invoice', 'total'];
+  rentalDataSource: RentalDataSource;
   today: Date = new Date();
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
 
@@ -62,17 +91,17 @@ export class RequestFormWizardComponent implements OnInit {
     } else {
       this.projectFormGroup = this.createProjectFormGroup('2');
     }
-    console.log('inside dialog');
   }
 
   ngOnInit() {
     this.projectsService.getAll();
     this.request = new Request({});
+    this.createDataSources();
   }
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 2000
+      duration: 2000,
     });
   }
 
@@ -109,33 +138,159 @@ export class RequestFormWizardComponent implements OnInit {
     return this.projectFormGroup.get('projectType');
   }
 
-  createMaterialCosts() {
-    console.log('material enabled: ' + this.request.costs.materialCosts.enabled);
-    console.log(JSON.stringify(this.request.costs.materialCosts, null, 2));
-    console.log('# of material costs: ' + this.request.costs.materialCosts.materialCosts.length);
+  createDataSources() {
+    this.activeDataSource = new ActiveDataSource(this.request.costs.equipmentCosts.activeCosts.costs);
+    this.standbyDataSource = new StandbyDataSource(this.request.costs.equipmentCosts.standbyCosts.costs);
+    this.rentalDataSource = new RentalDataSource(this.request.costs.equipmentCosts.rentalCosts.costs);
+    this.subcontractorDataSource = new SubcontractorDataSource(this.request.costs.subcontractorCosts.costs);
+    this.otherDataSource = new OtherDataSource(this.request.costs.otherCosts.costs);
     this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
   }
 
+  addActive() {
+    this.request.costs.equipmentCosts.activeCosts.costs.push(new ActiveCost());
+    this.activeDataSource = new ActiveDataSource(this.request.costs.equipmentCosts.activeCosts.costs);
+  }
+
+  activeChanged(mc: ActiveCost) {
+    mc.total = mc.machine.fhwa * mc.hours;
+    this.recalculateTotalEquipment();
+  }
+
+  addStandby() {
+    this.request.costs.equipmentCosts.standbyCosts.costs.push(new StandbyCost());
+    this.standbyDataSource = new StandbyDataSource(this.request.costs.equipmentCosts.standbyCosts.costs);
+  }
+
+  standbyChanged(mc: StandbyCost) {
+    mc.total = mc.machine.fhwa * mc.hours;
+    this.recalculateTotalEquipment();
+  }
+
+  addRental() {
+    this.request.costs.equipmentCosts.rentalCosts.costs.push(new RentalCost());
+    this.rentalDataSource = new RentalDataSource(this.request.costs.equipmentCosts.rentalCosts.costs);
+  }
+
+  rentalChanged(mc: RentalCost) {
+    mc.total = mc.machine.baseRental + mc.transportationCost + mc.other;
+    this.recalculateTotalEquipment();
+  }
+
+  addLabor() {}
+
+  addOther() {
+    this.request.costs.otherCosts.costs.push(new Cost());
+    this.otherDataSource = new OtherDataSource(this.request.costs.otherCosts.costs);
+  }
+
+  otherChanged(mc: MaterialCost) {
+    mc.subtotal = mc.costPerUnit * mc.unitQuantity;
+    mc.total = mc.subtotal * 1.05;
+    this.recalculateTotalOther();
+  }
+
+  addSubcontractor() {
+    this.request.costs.subcontractorCosts.costs.push(new Cost());
+    this.subcontractorDataSource = new SubcontractorDataSource(this.request.costs.subcontractorCosts.costs);
+  }
+
+  subcontractorChanged(mc: Cost) {
+    mc.total = mc.subtotal * 1.05;
+    this.recalculateTotalSubcontractor();
+  }
+
   addMaterial() {
-    console.log('add material...');
     this.request.costs.materialCosts.materialCosts.push(new MaterialCost({}));
     this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
   }
 
-  save() {
-    console.log('material costs: ' + JSON.stringify(this.request.costs.materialCosts, null, 2));
+  materialChanged(mc: MaterialCost) {
+    mc.subtotal = mc.costPerUnit * mc.unitQuantity;
+    mc.total = mc.subtotal * 1.05;
+    this.recalculateTotalMaterial();
   }
 
-  // If you don't need a filter or a pagination this can be simplified, you just use code from else block
-  private refreshMaterialable() {}
+  recalculateTotalMaterial() {
+    let total = 0;
+    for (let i = 0; i < this.request.costs.materialCosts.materialCosts.length; i++) {
+      const c: MaterialCost = this.request.costs.materialCosts.materialCosts[i];
+      total += c.total;
+    }
+    this.request.costs.materialCosts.total = total;
+    this.recalculateTotal();
+  }
+
+  recalculateTotalEquipment() {
+    let total = 0;
+    let activeTotal = 0;
+    let standbyTotal = 0;
+    let rentalTotal = 0;
+    for (let i = 0; i < this.request.costs.equipmentCosts.activeCosts.costs.length; i++) {
+      const c: ActiveCost = this.request.costs.equipmentCosts.activeCosts.costs[i];
+      activeTotal += c.total;
+    }
+    for (let i = 0; i < this.request.costs.equipmentCosts.standbyCosts.costs.length; i++) {
+      const c: StandbyCost = this.request.costs.equipmentCosts.standbyCosts.costs[i];
+      standbyTotal += c.total;
+    }
+    for (let i = 0; i < this.request.costs.equipmentCosts.rentalCosts.costs.length; i++) {
+      const c: RentalCost = this.request.costs.equipmentCosts.rentalCosts.costs[i];
+      rentalTotal += c.total;
+    }
+    this.request.costs.equipmentCosts.activeCosts.total = activeTotal;
+    this.request.costs.equipmentCosts.standbyCosts.total = standbyTotal;
+    this.request.costs.equipmentCosts.rentalCosts.total = rentalTotal;
+    total = activeTotal + standbyTotal + rentalTotal;
+    this.request.costs.equipmentCosts.total = total;
+    this.recalculateTotal();
+  }
+
+  recalculateTotalLabor() {
+    const total = 0;
+    this.request.costs.laborCosts.total = total;
+    this.recalculateTotal();
+  }
+
+  recalculateTotalSubcontractor() {
+    let total = 0;
+    for (let i = 0; i < this.request.costs.subcontractorCosts.costs.length; i++) {
+      const c: Cost = this.request.costs.subcontractorCosts.costs[i];
+      total += c.total;
+    }
+    this.request.costs.subcontractorCosts.total = total;
+    this.recalculateTotal();
+  }
+
+  recalculateTotalOther() {
+    let total = 0;
+    for (let i = 0; i < this.request.costs.otherCosts.costs.length; i++) {
+      const c: Cost = this.request.costs.otherCosts.costs[i];
+      total += c.total;
+    }
+    this.request.costs.otherCosts.total = total;
+    this.recalculateTotal();
+  }
+
+  recalculateTotal() {
+    let total = 0;
+    total += this.request.costs.equipmentCosts.total;
+    total += this.request.costs.laborCosts.total;
+    total += this.request.costs.materialCosts.total;
+    total += this.request.costs.otherCosts.total;
+    total += this.request.costs.subcontractorCosts.total;
+    this.request.total = total;
+  }
+
+  save() {
+    console.log('request: ' + JSON.stringify(this.request, null, 2));
+  }
 
   createProjectFormGroup(projectValue: string) {
-    return this.formBuilder.group({ projectType: new FormControl(projectValue), projectSelect: new FormControl() });
+    return this.formBuilder.group({projectType: new FormControl(projectValue), projectSelect: new FormControl()});
   }
   createCostFormGroup() {
-    console.log('createCostForm');
     if (this.costFormGroup && this.request) {
-      console.log('startDate: ' + this.request.startDate);
       this.costFormGroup.controls['startDate'].patchValue(this.request.startDate);
       this.costFormGroup.controls['endDate'].patchValue(this.request.endDate);
     } else {
@@ -146,7 +301,7 @@ export class RequestFormWizardComponent implements OnInit {
         laborCostsCheckbox: new FormControl(false),
         materialCostsCheckbox: new FormControl(false),
         otherCostsCheckbox: new FormControl(false),
-        subcontractorCostsCheckbox: new FormControl(false)
+        subcontractorCostsCheckbox: new FormControl(false),
       });
     }
   }
@@ -156,6 +311,84 @@ export class RequestFormWizardComponent implements OnInit {
   createSignatureFormGroup() {
     return this.formBuilder.group({});
   }
+}
+
+export class ActiveDataSource extends DataSource<any> {
+  constructor(private dataBase: ActiveCost[]) {
+    super();
+  }
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<ActiveCost[]> {
+    console.log('number of active costs: ' + this.dataBase.length);
+    return Observable.of(this.dataBase);
+  }
+
+  disconnect() {}
+}
+
+export class StandbyDataSource extends DataSource<any> {
+  constructor(private dataBase: StandbyCost[]) {
+    super();
+  }
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<StandbyCost[]> {
+    console.log('number of standby costs: ' + this.dataBase.length);
+    return Observable.of(this.dataBase);
+  }
+
+  disconnect() {}
+}
+
+export class RentalDataSource extends DataSource<any> {
+  constructor(private dataBase: RentalCost[]) {
+    super();
+  }
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<RentalCost[]> {
+    console.log('number of rental costs: ' + this.dataBase.length);
+    return Observable.of(this.dataBase);
+  }
+
+  disconnect() {}
+}
+
+export class LaborDataSource extends DataSource<any> {
+  constructor(private dataBase: LaborCost[]) {
+    super();
+  }
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<LaborCost[]> {
+    console.log('number of labor costs: ' + this.dataBase.length);
+    return Observable.of(this.dataBase);
+  }
+
+  disconnect() {}
+}
+
+export class OtherDataSource extends DataSource<any> {
+  constructor(private dataBase: Cost[]) {
+    super();
+  }
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<Cost[]> {
+    console.log('number of other costs: ' + this.dataBase.length);
+    return Observable.of(this.dataBase);
+  }
+
+  disconnect() {}
+}
+
+export class SubcontractorDataSource extends DataSource<any> {
+  constructor(private dataBase: Cost[]) {
+    super();
+  }
+  /** Connect function called by the table to retrieve one stream containing the data to render. */
+  connect(): Observable<Cost[]> {
+    console.log('number of subcontractor costs: ' + this.dataBase.length);
+    return Observable.of(this.dataBase);
+  }
+
+  disconnect() {}
 }
 
 export class MaterialDataSource extends DataSource<any> {
