@@ -6,13 +6,11 @@
     "ng": "ng",
     "build": "yarn run env -s && ng build --prod",
     "start": "yarn run env -s && ng serve --aot --proxy-config proxy.conf.json",
-    "lint":
-      "ng lint --type-check && stylelint \"src/**/*.scss\" --syntax scss && htmlhint \"src\" --config .htmlhintrc",
+    "lint": "ng lint --type-check && stylelint \"src/**/*.scss\" --syntax scss && htmlhint \"src\" --config .htmlhintrc",
     "test": "ng test",
     "test:ci": "yarn run lint -s && ng test --single-run --code-coverage",
     "e2e": "yarn run env -s && ng e2e",
-    "translations:extract":
-      "ngx-translate-extract --input ./src --output ./src/translations/template.json --format=json --clean -sort --marker extract",
+    "translations:extract": "ngx-translate-extract --input ./src --output ./src/translations/template.json --format=json --clean -sort --marker extract",
     "docs": "hads ./docs -o",
     "env": "ngx-scripts env npm_package_version",
     "generate": "ng generate"
@@ -23,7 +21,7 @@
     "@angular/common": "^5.2.9",
     "@angular/compiler": "^5.2.9",
     "@angular/core": "^5.2.9",
-    "@angular/flex-layout": "^5.0.0-beta.13",
+    "@angular/flex-layout": "^5.0.0-beta.14",
     "@angular/forms": "^5.2.9",
     "@angular/http": "^5.2.9",
     "@angular/material": "^5.2.4",

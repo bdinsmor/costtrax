@@ -159,6 +159,15 @@ export class MaterialCost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  constructor(mc: any) {
+    {
+      this.id = mc.id || AppUtils.generateGUID(true);
+      this.total = mc.total || 0;
+      this.description = mc.description || '';
+      this.costPerUnit = mc.costPerUnit || 0;
+      this.submitDate = mc.submitDate || new Date();
+    }
+  }
 }
 
 export class MaterialCosts {

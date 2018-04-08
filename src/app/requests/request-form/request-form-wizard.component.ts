@@ -116,6 +116,19 @@ export class RequestFormWizardComponent implements OnInit {
     this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
   }
 
+  addMaterial() {
+    console.log('add material...');
+    this.request.costs.materialCosts.materialCosts.push(new MaterialCost({}));
+    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
+  }
+
+  save() {
+    console.log('material costs: ' + JSON.stringify(this.request.costs.materialCosts, null, 2));
+  }
+
+  // If you don't need a filter or a pagination this can be simplified, you just use code from else block
+  private refreshMaterialable() {}
+
   createProjectFormGroup(projectValue: string) {
     return this.formBuilder.group({ projectType: new FormControl(projectValue), projectSelect: new FormControl() });
   }

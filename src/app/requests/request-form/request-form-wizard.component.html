@@ -205,7 +205,7 @@
                           <div class="p-24 full-width">
                             <mat-toolbar class="alt">
                               <mat-toolbar-row fxLayout="row" fxLayoutAlign="start center">
-                                <button mat-raised-button color="primary">Add Material</button>
+                                <button mat-raised-button color="primary" (click)="addMaterial()">Add Material</button>
                               </mat-toolbar-row>
                             </mat-toolbar>
 
@@ -219,7 +219,7 @@
                               <ng-container matColumnDef="description">
                                 <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
-                                  <span>{{element.description}}</span>
+                                  <input matInput [(ngModel)]="element.description" [ngModelOptions]="{standalone: true}">
                                 </mat-cell>
                               </ng-container>
                               <ng-container matColumnDef="cost">
@@ -273,9 +273,11 @@
 
               </div>
               <div></div>
-              <div class="p-4">
+              <div class="p-4" fxLayout="row" fxLayoutGap="14px">
                 <button mat-raised-button matStepperNext color="primary">Next</button>
                 <button mat-button matStepperPrevious>Previous</button>
+
+                <button mat-raised-button (click)="save()">Save</button>
               </div>
             </form>
           </mat-step>
