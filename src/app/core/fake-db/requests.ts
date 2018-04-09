@@ -154,7 +154,7 @@ export class RequestsFakeDb {
   createMachines() {
     this.machines = [];
     for (let i = 0; i < this.chance.integer({ min: 5, max: 35 }); i++) {
-      const m = new Machine({});
+      const m = new Machine();
       m.make = this.chance.weighted(['Caterpillar', 'JCB', 'Komatsu', 'Volvo'], [60, 40, 25, 10]);
       m.model = this.chance.weighted(
         [
