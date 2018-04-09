@@ -1,14 +1,26 @@
-import {ActiveCost, StandbyCost, RentalCost, LaborCost} from './../../shared/model';
-import {Component, Inject, ViewEncapsulation, OnInit, Input} from '@angular/core';
-import {FormBuilder, FormGroup, FormControl} from '@angular/forms';
+import { Component, Inject, ViewEncapsulation, OnInit, Input } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import {Request, Project, Message, MaterialCost, SubcontractorCosts, Cost} from '@app/shared/model';
-import {ProjectsService} from '@app/projects/projects.service';
-import {Observable} from 'rxjs/Observable';
-import {RequestsService} from '../requests.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatSnackBar, MatPaginator, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {DataSource} from '@angular/cdk/collections';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActiveCost,
+  StandbyCost,
+  RentalCost,
+  LaborCost,
+  Machine,
+  Request,
+  Project,
+  Message,
+  MaterialCost,
+  SubcontractorCosts,
+  Cost
+} from '@app/shared/model';
+import { DataSource } from '@angular/cdk/collections';
+import { MachinesService } from '../machines.service';
+import { MatSnackBar, MatPaginator, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { Observable } from 'rxjs/Observable';
+import { ProjectsService } from '@app/projects/projects.service';
+import { RequestsService } from '../requests.service';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
@@ -18,7 +30,7 @@ import 'rxjs/add/operator/map';
   selector: 'app-request-form',
   templateUrl: './request-form-wizard.component.html',
   styleUrls: ['./request-form-wizard.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class RequestFormWizardComponent implements OnInit {
   dialogTitle: string;
@@ -28,43 +40,67 @@ export class RequestFormWizardComponent implements OnInit {
   costDetailsFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
   selectedProject: Project;
+  machines: Observable<Machine[]>;
+  machinesFiltered: Machine[] = [];
+  rentalMachinesFiltered: Machine[] = [];
   action: string;
   request: Request;
   request$: Observable<Request>;
   projects: Observable<Project[]>;
-  materialDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
+  materialDisplayedColumns = [
+    'materialDescription',
+    'materialCost',
+    'materialQuantity',
+    'materialReceipt',
+    'materialSubtotal',
+    'materialTotal'
+  ];
   materialDataSource: MaterialDataSource;
-  otherDisplayedColumns = ['type', 'description', 'receipt', 'subtotal', 'total'];
+  otherDisplayedColumns = ['otherType', 'otherDescription', 'otherReceipt', 'otherSubtotal', 'otherTotal'];
   otherDataSource: OtherDataSource;
-  subcontractorDisplayedColumns = ['subcontractor', 'description', 'receipt', 'subtotal', 'total'];
+  subcontractorDisplayedColumns = [
+    'subcontractor',
+    'subcontractorDescription',
+    'subcontractorReceipt',
+    'subcontractorSubtotal',
+    'subcontractorTotal'
+  ];
   subcontractorDataSource: SubcontractorDataSource;
   activeDisplayedColumns = [
-    'model',
-    'description',
-    'year',
-    'vin',
-    'ownership',
-    'operating',
-    'fhwa',
-    'hours',
-    'transport',
-    'amount',
+    'activeModel',
+    'activeDescription',
+    'activeYear',
+    'activeVin',
+    'activeOwnership',
+    'activeOperating',
+    'activeFHWA',
+    'activeHours',
+    'activeTransport',
+    'activeAmount'
   ];
   activeDataSource: ActiveDataSource;
   standbyDisplayedColumns = [
-    'model',
-    'description',
-    'year',
-    'vin',
-    'ownership',
-    'operating',
-    'fhwa',
-    'hours',
-    'transport',
-    'amount',
+    'standbyModel',
+    'standbyDescription',
+    'standbyYear',
+    'standbyVin',
+    'standbyOwnership',
+    'standbyOperating',
+    'standbyFHWA',
+    'standbyHours',
+    'standbyTransport',
+    'standbyAmount'
   ];
   standbyDataSource: StandbyDataSource;
-  rentalDisplayedColumns = ['description', 'type', 'base', 'transportation', 'other', 'invoice', 'total'];
+  rentalDisplayedColumns = [
+    'rentalDescription',
+    'rentalType',
+    'rentalBase',
+    'rentalTransportation',
+    'rentalOther',
+    'rentalReceipt',
+    'rentalTotal'
+  ];
   rentalDataSource: RentalDataSource;
   today: Date = new Date();
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
@@ -73,6 +109,7 @@ export class RequestFormWizardComponent implements OnInit {
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
+    private machinesService: MachinesService,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
     private formBuilder: FormBuilder,
@@ -83,7 +120,10 @@ export class RequestFormWizardComponent implements OnInit {
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();
     this.signatureFormGroup = this.createSignatureFormGroup();
     this.projects = this.projectsService.entities$;
-
+    this.machines = this.machinesService.entities$;
+    this.machinesService.entities$.subscribe((m: Machine[]) => {
+      console.log('machines: ' + JSON.stringify(m, null, 2));
+    });
     this.action = data.action;
 
     if (!this.action) {
@@ -95,18 +135,29 @@ export class RequestFormWizardComponent implements OnInit {
 
   ngOnInit() {
     this.projectsService.getAll();
+    this.machinesService.getAll();
     this.request = new Request({});
     this.createDataSources();
   }
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 2000,
+      duration: 2000
     });
   }
 
   compareByValue(f1: any, f2: any) {
     return f1 && f2 && f1.id === f2.id;
+  }
+
+  customSearchFn(term: string, item: Machine) {
+    term = term.toLocaleLowerCase();
+    return (
+      item.description.toLocaleLowerCase().indexOf(term) > -1 ||
+      item.vin.toLocaleLowerCase() === term ||
+      item.model.toLocaleLowerCase() === term ||
+      item.make.toLocaleLowerCase() === term
+    );
   }
 
   toggleCheckbox(type: string, event: any) {
@@ -287,7 +338,7 @@ export class RequestFormWizardComponent implements OnInit {
   }
 
   createProjectFormGroup(projectValue: string) {
-    return this.formBuilder.group({projectType: new FormControl(projectValue), projectSelect: new FormControl()});
+    return this.formBuilder.group({ projectType: new FormControl(projectValue), projectSelect: new FormControl() });
   }
   createCostFormGroup() {
     if (this.costFormGroup && this.request) {
@@ -301,7 +352,7 @@ export class RequestFormWizardComponent implements OnInit {
         laborCostsCheckbox: new FormControl(false),
         materialCostsCheckbox: new FormControl(false),
         otherCostsCheckbox: new FormControl(false),
-        subcontractorCostsCheckbox: new FormControl(false),
+        subcontractorCostsCheckbox: new FormControl(false)
       });
     }
   }

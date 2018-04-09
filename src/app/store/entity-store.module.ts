@@ -5,6 +5,7 @@ export const entityMetadata: EntityMetadataMap = {
   Company: {},
   Companies: {},
   Message: {},
+  Machines: {},
   Messages: {},
   Contractor: {},
   Contractors: {},
@@ -17,6 +18,8 @@ export const entityMetadata: EntityMetadataMap = {
 export const pluralNames = {
   Company: 'Companies',
   Companies: 'Companies',
+  Machine: 'Machines',
+  Machines: 'Machines',
   Messages: 'Messages',
   Projects: 'Projects',
   Requests: 'Requests',

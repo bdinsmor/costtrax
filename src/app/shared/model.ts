@@ -455,7 +455,8 @@ export class Request {
   messages: number;
   status: string;
   disputes: Dispute[];
-  constructor(request: any) {
+
+  public constructor(request: any) {
     {
       this.id = request.id || AppUtils.generateGUID();
       this.name = request.name || '';

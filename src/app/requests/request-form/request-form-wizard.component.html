@@ -185,77 +185,67 @@
                                 <mat-toolbar class="alt">
                                   <mat-toolbar-row fxLayout="row" fxLayoutAlign="start center">
                                     <button mat-raised-button color="primary" (click)="addActive()">Add Machine</button>
-                                    <button mat-raised-button color="primary" (click)="addActive()">Add Machine, from Groups</button>
                                   </mat-toolbar-row>
                                 </mat-toolbar>
-    <!-- 'model',
-    'description',
-    'year',
-    'vin',
-    'ownership',
-    'operating',
-    'fhwa',
-    'hours',
-    'transport',
-    'amount',  -->
+
                                 <mat-table #activeCostTable [dataSource]="activeDataSource" style="width:100%">
-                                    <ng-container matColumnDef="model">
-                                        <mat-header-cell *matHeaderCellDef> MAKE/MODEL </mat-header-cell>
-                                        <mat-cell *matCellDef="let element">
-                                          <input matInput [(ngModel)]="element.machine.model" [ngModelOptions]="{standalone: true}">
-                                        </mat-cell>
-                                      </ng-container>
-                                  <ng-container matColumnDef="description">
+                                  <ng-container matColumnDef="activeModel">
+                                    <mat-header-cell *matHeaderCellDef> MAKE/MODEL </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput [(ngModel)]="element.machine.model" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="activeDescription">
                                     <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
                                       <span>{{element.machine.description}}</span>
                                     </mat-cell>
                                   </ng-container>
-                                  <ng-container matColumnDef="year">
+                                  <ng-container matColumnDef="activeYear">
                                     <mat-header-cell *matHeaderCellDef> YEAR </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                        <span>{{element.machine.year}}</span>
+                                      <span>{{element.machine.year}}</span>
                                     </mat-cell>
                                   </ng-container>
-                                  <ng-container matColumnDef="vin">
+                                  <ng-container matColumnDef="activeVin">
                                     <mat-header-cell *matHeaderCellDef> SN/VIN </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                        <span>{{element.machine.vin}}</span>
+                                      <span>{{element.machine.vin}}</span>
                                     </mat-cell>
                                   </ng-container>
-                                  <ng-container matColumnDef="ownership">
-                                      <mat-header-cell *matHeaderCellDef> OWNERSHIP </mat-header-cell>
-                                      <mat-cell *matCellDef="let element">
-                                          <span>{{element.machine.ownership}}</span>
-                                      </mat-cell>
-                                    </ng-container>
-                                    <ng-container matColumnDef="operating">
-                                        <mat-header-cell *matHeaderCellDef> OPERATING </mat-header-cell>
-                                        <mat-cell *matCellDef="let element">
-                                            <span>{{element.machine.fhwa}}</span>
-                                        </mat-cell>
-                                      </ng-container>
-                                      <ng-container matColumnDef="fhwa">
-                                          <mat-header-cell *matHeaderCellDef> FHWA </mat-header-cell>
-                                          <mat-cell *matCellDef="let element">
-                                                 <span>{{element.machine.fhwa}}</span>
-                                          </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="quantity">
-                                            <mat-header-cell *matHeaderCellDef> HOURS </mat-header-cell>
-                                            <mat-cell *matCellDef="let element">
-                                                    <input matInput (change)="activeChanged(element)" [(ngModel)]="element.hours" [ngModelOptions]="{standalone: true}">
-                                            </mat-cell>
-                                          </ng-container>
-                                          <ng-container matColumnDef="quantity">
-                                              <mat-header-cell *matHeaderCellDef> TRANSPORT </mat-header-cell>
-                                              <mat-cell *matCellDef="let element">
-                                                      <input matInput (change)="activeChanged(element)" [(ngModel)]="element.transport" [ngModelOptions]="{standalone: true}">
-                                              </mat-cell>
-                                            </ng-container>
+                                  <ng-container matColumnDef="activeOwnership">
+                                    <mat-header-cell *matHeaderCellDef> OWNERSHIP </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span>{{element.machine.ownership}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="activeOperating">
+                                    <mat-header-cell *matHeaderCellDef> OPERATING </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span>{{element.machine.fhwa}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="activeFHWA">
+                                    <mat-header-cell *matHeaderCellDef> FHWA </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span>{{element.machine.fhwa}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="activeHours">
+                                    <mat-header-cell *matHeaderCellDef> HOURS </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="activeChanged(element)" [(ngModel)]="element.hours" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="activeTransport">
+                                    <mat-header-cell *matHeaderCellDef> TRANSPORT </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="activeChanged(element)" [(ngModel)]="element.transport" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
 
 
-                                  <ng-container matColumnDef="amount">
+                                  <ng-container matColumnDef="activeAmount">
                                     <mat-header-cell *matHeaderCellDef> AMOUNT </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
                                       <span>{{element.total | currency}}</span>
@@ -269,68 +259,84 @@
                                 <mat-toolbar class="alt">
                                   <mat-toolbar-row fxLayout="row" fxLayoutAlign="start center">
                                     <button mat-raised-button color="primary" (click)="addStandby()">Add Machine</button>
-                                    <button mat-raised-button color="primary" (click)="addStandby()">Add Machine, from Groups</button>
                                   </mat-toolbar-row>
                                 </mat-toolbar>
 
                                 <mat-table #standbyCostTable [dataSource]="standbyDataSource" style="width:100%">
-                                    <ng-container matColumnDef="model">
-                                        <mat-header-cell *matHeaderCellDef> MAKE/MODEL </mat-header-cell>
-                                        <mat-cell *matCellDef="let element">
-                                          <input matInput [(ngModel)]="element.machine.model" [ngModelOptions]="{standalone: true}">
-                                        </mat-cell>
-                                      </ng-container>
-                                  <ng-container matColumnDef="description">
+                                  <ng-container matColumnDef="standbyModel">
+                                    <mat-header-cell *matHeaderCellDef> MAKE/MODEL </mat-header-cell>
+
+                                    <mat-cell *matCellDef="let element">
+                                      <div *ngIf="!element.machine">
+                                        <input type="text" placeholder="Pick one" aria-label="Machine" matInput [(ngModel)]="element.machine" [ngModelOptions]="{standalone: true}"
+                                          [matAutocomplete]="auto">
+                                        <mat-autocomplete #auto="matAutocomplete">
+                                          <mat-option *ngFor="let machine of machines | async" [value]="machine">
+                                            <span>{{ machine.make }}</span>
+
+                                            <small>{{machine.model}}</small>
+                                          </mat-option>
+                                        </mat-autocomplete>
+                                      </div>
+                                      <div *ngIf="element.machine" fxLayout="row" fxLayoutGap="4px">
+                                        <span>{{element.machine.make}}</span>
+                                        <span>{{element.machine.model}}</span>
+                                      </div>
+
+
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="standbyDescription">
                                     <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                      <span>{{element.machine.description}}</span>
+                                      <span *ngIf="element.machine">{{element.machine.description}}</span>
                                     </mat-cell>
                                   </ng-container>
-                                  <ng-container matColumnDef="year">
+                                  <ng-container matColumnDef="standbyYear">
                                     <mat-header-cell *matHeaderCellDef> YEAR </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                        <span>{{element.machine.year}}</span>
+                                      <span *ngIf="element.machine">{{element.machine.year}}</span>
                                     </mat-cell>
                                   </ng-container>
-                                  <ng-container matColumnDef="vin">
+                                  <ng-container matColumnDef="standbyVin">
                                     <mat-header-cell *matHeaderCellDef> SN/VIN </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                        <span>{{element.machine.vin}}</span>
+                                      <span *ngIf="element.machine">{{element.machine.vin}}</span>
                                     </mat-cell>
                                   </ng-container>
-                                  <ng-container matColumnDef="ownership">
-                                      <mat-header-cell *matHeaderCellDef> OWNERSHIP </mat-header-cell>
-                                      <mat-cell *matCellDef="let element">
-                                          <span>{{element.machine.ownership}}</span>
-                                      </mat-cell>
-                                    </ng-container>
-                                    <ng-container matColumnDef="operating">
-                                        <mat-header-cell *matHeaderCellDef> OPERATING </mat-header-cell>
-                                        <mat-cell *matCellDef="let element">
-                                            <span>{{element.machine.fhwa}}</span>
-                                        </mat-cell>
-                                      </ng-container>
-                                      <ng-container matColumnDef="fhwa">
-                                          <mat-header-cell *matHeaderCellDef> FHWA </mat-header-cell>
-                                          <mat-cell *matCellDef="let element">
-                                                 <span>{{element.machine.fhwa}}</span>
-                                          </mat-cell>
-                                        </ng-container>
-                                        <ng-container matColumnDef="quantity">
-                                            <mat-header-cell *matHeaderCellDef> HOURS </mat-header-cell>
-                                            <mat-cell *matCellDef="let element">
-                                                    <input matInput (change)="standbyChanged(element)" [(ngModel)]="element.hours" [ngModelOptions]="{standalone: true}">
-                                            </mat-cell>
-                                          </ng-container>
-                                          <ng-container matColumnDef="quantity">
-                                              <mat-header-cell *matHeaderCellDef> TRANSPORT </mat-header-cell>
-                                              <mat-cell *matCellDef="let element">
-                                                      <input matInput (change)="standbyChanged(element)" [(ngModel)]="element.transport" [ngModelOptions]="{standalone: true}">
-                                              </mat-cell>
-                                            </ng-container>
+                                  <ng-container matColumnDef="standbyOwnership">
+                                    <mat-header-cell *matHeaderCellDef> OWNERSHIP </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span *ngIf="element.machine">{{element.machine.ownership}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="standbyOperating">
+                                    <mat-header-cell *matHeaderCellDef> OPERATING </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span *ngIf="element.machine">{{element.machine.fhwa}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="standbyFHWA">
+                                    <mat-header-cell *matHeaderCellDef> FHWA </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span *ngIf="element.machine">{{element.machine.fhwa}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="standbyHours">
+                                    <mat-header-cell *matHeaderCellDef> HOURS </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="standbyChanged(element)" [(ngModel)]="element.hours" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="standbyTransport">
+                                    <mat-header-cell *matHeaderCellDef> TRANSPORT </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="standbyChanged(element)" [(ngModel)]="element.transport" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
 
 
-                                  <ng-container matColumnDef="amount">
+                                  <ng-container matColumnDef="standbyAmount">
                                     <mat-header-cell *matHeaderCellDef> AMOUNT </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
                                       <span>{{element.total | currency}}</span>
@@ -348,7 +354,56 @@
                                 </mat-toolbar>
 
                                 <mat-table #rentalCostTable [dataSource]="rentalDataSource" style="width:100%">
-
+                                  <ng-container matColumnDef="rentalDescription">
+                                    <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span>{{element.machine.description}}</span>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="rentalType">
+                                    <mat-header-cell *matHeaderCellDef> TYPE </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <ng-select [items]="machines | async" bindLabel="make" [searchFn]="customSearchFn" (close)="rentalMachinesFiltered = machines"
+                                        [(ngModel)]="element.machine">
+                                        <ng-template ng-option-tmp let-item="item">
+                                          {{item.make}}
+                                          <br />
+                                          <small>{{item.model}}</small>
+                                        </ng-template>
+                                      </ng-select>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="rentalBase">
+                                    <mat-header-cell *matHeaderCellDef> BASE RENTAL </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="rentalChanged(element)" [(ngModel)]="element.machine.base" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="rentalTransportation">
+                                    <mat-header-cell *matHeaderCellDef> TRANSPORTATION </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="rentalChanged(element)" [(ngModel)]="element.machine.transport" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="rentalOther">
+                                    <mat-header-cell *matHeaderCellDef> OTHER </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <input matInput (change)="rentalChanged(element)" [(ngModel)]="element.other" [ngModelOptions]="{standalone: true}">
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="rentalReceipt">
+                                    <mat-header-cell *matHeaderCellDef> INVOICE </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <a class="blue-link" *ngIf="element.receipt">invoice</a>
+                                      <a class="blue-link" *ngIf="!element.receipt">Add Invoice</a>
+                                    </mat-cell>
+                                  </ng-container>
+                                  <ng-container matColumnDef="rentalTotal">
+                                    <mat-header-cell *matHeaderCellDef> TOTAL </mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                      <span>{{element.total | currency}}</span>
+                                    </mat-cell>
+                                  </ng-container>
                                   <mat-header-row *matHeaderRowDef="rentalDisplayedColumns"></mat-header-row>
                                   <mat-row *matRowDef="let row; columns: rentalDisplayedColumns;"></mat-row>
                                 </mat-table>
@@ -382,38 +437,38 @@
                             </mat-toolbar>
 
                             <mat-table #materialCostTable [dataSource]="materialDataSource" style="width:100%">
-                              <ng-container matColumnDef="description">
+                              <ng-container matColumnDef="materialDescription">
                                 <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
                                   <input matInput [(ngModel)]="element.description" [ngModelOptions]="{standalone: true}">
                                 </mat-cell>
                               </ng-container>
-                              <ng-container matColumnDef="cost">
+                              <ng-container matColumnDef="materialCost">
                                 <mat-header-cell *matHeaderCellDef> COST PER UNIT </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
-                                    <input matInput currencyMask [ngModelOptions]="{standalone: true}" [(ngModel)]="element.costPerUnit" [options]="{ prefix: '$'}">
+                                  <input matInput currencyMask [ngModelOptions]="{standalone: true}" [(ngModel)]="element.costPerUnit">
                                 </mat-cell>
                               </ng-container>
-                              <ng-container matColumnDef="quantity">
+                              <ng-container matColumnDef="materialQuantity">
                                 <mat-header-cell *matHeaderCellDef> QUANTITY </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
-                                        <input matInput (change)="materialChanged(element)" [(ngModel)]="element.unitQuantity" [ngModelOptions]="{standalone: true}">
+                                  <input matInput (change)="materialChanged(element)" [(ngModel)]="element.unitQuantity" [ngModelOptions]="{standalone: true}">
                                 </mat-cell>
                               </ng-container>
-                              <ng-container matColumnDef="receipt">
+                              <ng-container matColumnDef="materialReceipt">
                                 <mat-header-cell *matHeaderCellDef> RECEIPT </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
                                   <a class="blue-link" *ngIf="element.receipt">receipt</a>
                                   <a class="blue-link" *ngIf="!element.receipt">Add Receipt</a>
                                 </mat-cell>
                               </ng-container>
-                              <ng-container matColumnDef="subtotal">
+                              <ng-container matColumnDef="materialSubtotal">
                                 <mat-header-cell *matHeaderCellDef> SUBTOTAL </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
                                   <span>{{element.subtotal | currency}}</span>
                                 </mat-cell>
                               </ng-container>
-                              <ng-container matColumnDef="total">
+                              <ng-container matColumnDef="materialTotal">
                                 <mat-header-cell *matHeaderCellDef> TOTAL* </mat-header-cell>
                                 <mat-cell *matCellDef="let element">
                                   <span>{{element.total | currency}}</span>
