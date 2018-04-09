@@ -343,7 +343,6 @@ export class RequestFormWizardComponent implements OnInit {
     if (this.request.costs.subcontractorCosts) {
       total += this.request.costs.subcontractorCosts.total;
     }
-
     this.request.costs.total = total;
   }
 
