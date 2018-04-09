@@ -54,11 +54,6 @@ export class AuthenticationService {
     return new ErrorObservable('Something bad happened; please try again later.');
   }
 
-  /**
-   * Authenticates the user.
-   * @param {LoginContext} context The login parameters.
-   * @return {Observable<Credentials>} The user credentials.
-   */
   login(context: LoginContext): Observable<Credentials> {
     const data = {
       email: context.email,

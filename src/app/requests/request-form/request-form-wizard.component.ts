@@ -348,7 +348,7 @@ export class RequestFormWizardComponent implements OnInit {
   }
 
   save() {
-    console.log('request: ' + JSON.stringify(this.request, null, 2));
+    console.log('request json: ' + JSON.stringify(this.request, null, 2));
   }
 
   createProjectFormGroup(projectValue: string) {
