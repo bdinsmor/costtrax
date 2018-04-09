@@ -7,7 +7,7 @@ import {
   StandbyCost,
   RentalCost,
   LaborCost,
-  Machine,
+  Equipment,
   Request,
   Project,
   Message,
@@ -16,7 +16,6 @@ import {
   Cost
 } from '@app/shared/model';
 import { DataSource } from '@angular/cdk/collections';
-import { MachinesService } from '../machines.service';
 import { MatSnackBar, MatPaginator, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { ProjectsService } from '@app/projects/projects.service';
@@ -25,6 +24,7 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
+import { EquipmentService } from '@app/requests/equipment.service';
 
 @Component({
   selector: 'app-request-form',
@@ -40,9 +40,9 @@ export class RequestFormWizardComponent implements OnInit {
   costDetailsFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
   selectedProject: Project;
-  machines: Observable<Machine[]>;
-  machinesFiltered: Machine[] = [];
-  rentalMachinesFiltered: Machine[] = [];
+  machines$: Observable<Equipment[]>;
+  machinesFiltered: Equipment[] = [];
+  rentalMachinesFiltered: Equipment[] = [];
   action: string;
   request: Request;
   request$: Observable<Request>;
@@ -68,7 +68,6 @@ export class RequestFormWizardComponent implements OnInit {
   subcontractorDataSource: SubcontractorDataSource;
   activeDisplayedColumns = [
     'activeModel',
-    'activeDescription',
     'activeYear',
     'activeVin',
     'activeOwnership',
@@ -81,7 +80,6 @@ export class RequestFormWizardComponent implements OnInit {
   activeDataSource: ActiveDataSource;
   standbyDisplayedColumns = [
     'standbyModel',
-    'standbyDescription',
     'standbyYear',
     'standbyVin',
     'standbyOwnership',
@@ -109,7 +107,7 @@ export class RequestFormWizardComponent implements OnInit {
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
-    private machinesService: MachinesService,
+    private equipmentService: EquipmentService,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
     private formBuilder: FormBuilder,
@@ -120,10 +118,8 @@ export class RequestFormWizardComponent implements OnInit {
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();
     this.signatureFormGroup = this.createSignatureFormGroup();
     this.projects = this.projectsService.entities$;
-    this.machines = this.machinesService.entities$;
-    this.machinesService.entities$.subscribe((m: Machine[]) => {
-      console.log('machines: ' + JSON.stringify(m, null, 2));
-    });
+    this.machines$ = this.equipmentService.entities$;
+
     this.action = data.action;
 
     if (!this.action) {
@@ -135,7 +131,7 @@ export class RequestFormWizardComponent implements OnInit {
 
   ngOnInit() {
     this.projectsService.getAll();
-    this.machinesService.getAll();
+    this.equipmentService.getAll();
     this.request = new Request({});
     this.createDataSources();
   }
@@ -150,7 +146,7 @@ export class RequestFormWizardComponent implements OnInit {
     return f1 && f2 && f1.id === f2.id;
   }
 
-  customSearchFn(term: string, item: Machine) {
+  customSearchFn(term: string, item: Equipment) {
     term = term.toLocaleLowerCase();
     return (
       item.description.toLocaleLowerCase().indexOf(term) > -1 ||
@@ -214,7 +210,14 @@ export class RequestFormWizardComponent implements OnInit {
   }
 
   standbyChanged(mc: StandbyCost) {
-    mc.total = mc.machine.fhwa * mc.hours;
+    let total = 0;
+    if (mc.hours) {
+      total = mc.hours * mc.machine.fhwa;
+    }
+    if (mc.transportationCost) {
+      total += Number(mc.transportationCost);
+    }
+    mc.total = total;
     this.recalculateTotalEquipment();
   }
 
@@ -325,12 +328,23 @@ export class RequestFormWizardComponent implements OnInit {
 
   recalculateTotal() {
     let total = 0;
-    total += this.request.costs.equipmentCosts.total;
-    total += this.request.costs.laborCosts.total;
-    total += this.request.costs.materialCosts.total;
-    total += this.request.costs.otherCosts.total;
-    total += this.request.costs.subcontractorCosts.total;
-    this.request.total = total;
+    if (this.request.costs.equipmentCosts) {
+      total += this.request.costs.equipmentCosts.total;
+    }
+    if (this.request.costs.laborCosts) {
+      total += this.request.costs.laborCosts.total;
+    }
+    if (this.request.costs.materialCosts) {
+      total += this.request.costs.materialCosts.total;
+    }
+    if (this.request.costs.otherCosts) {
+      total += this.request.costs.otherCosts.total;
+    }
+    if (this.request.costs.subcontractorCosts) {
+      total += this.request.costs.subcontractorCosts.total;
+    }
+
+    this.request.costs.total = total;
   }
 
   save() {

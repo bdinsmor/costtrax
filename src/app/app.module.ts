@@ -21,9 +21,9 @@ import { ContractorsService } from '@app/contractors/contractors.service';
 import { MessagesService } from './messages/messages.service';
 import { CompaniesService } from '@app/companies/companies.service';
 import { RequestFormWizardComponent } from '@app/requests/request-form/request-form-wizard.component';
-import { MachinesService } from '@app/requests/machines.service';
 
 import { NG_SELECT_DEFAULT_CONFIG, NgSelectModule } from '@ng-select/ng-select';
+import { EquipmentService } from '@app/requests/equipment.service';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -57,22 +57,11 @@ export function tokenGetter() {
   providers: [
     LogEntryService,
     MessagesService,
-    MachinesService,
+    EquipmentService,
     RequestsService,
     ProjectsService,
     ContractorsService,
-    CompaniesService,
-    {
-      provide: NG_SELECT_DEFAULT_CONFIG,
-      useValue: {
-        notFoundText: 'Items not found',
-        addTagText: 'Add item',
-        typeToSearchText: 'Type to search',
-        loadingText: 'Loading...',
-        clearAllText: 'Clear all',
-        appendTo: 'body'
-      }
-    }
+    CompaniesService
   ],
   bootstrap: [AppComponent]
 })

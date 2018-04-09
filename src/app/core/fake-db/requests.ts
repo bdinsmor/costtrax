@@ -10,7 +10,7 @@ import {
   ActiveCosts,
   StandbyCost,
   ActiveCost,
-  Machine,
+  Equipment,
   Company,
   Signatures,
   Costs,
@@ -32,7 +32,7 @@ import {
 
 export class RequestsFakeDb {
   chance: any;
-  public machines: Array<Machine> = [];
+  public machines: Array<Equipment> = [];
   public projects: Array<Project> = [];
   public requests: Array<Request> = [];
   public companies: Array<Company> = [];
@@ -154,7 +154,7 @@ export class RequestsFakeDb {
   createMachines() {
     this.machines = [];
     for (let i = 0; i < this.chance.integer({ min: 5, max: 35 }); i++) {
-      const m = new Machine();
+      const m = new Equipment({});
       m.make = this.chance.weighted(['Caterpillar', 'JCB', 'Komatsu', 'Volvo'], [60, 40, 25, 10]);
       m.model = this.chance.weighted(
         [

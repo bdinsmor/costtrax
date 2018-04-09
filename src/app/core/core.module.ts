@@ -25,6 +25,7 @@ import { TabsComponent } from '@app/core/shell/tabs/tabs.component';
 import { LogEntryService } from '@app/home/home.service';
 import { ProjectsService } from '@app/projects/projects.service';
 import { RequestsService } from '@app/requests/requests.service';
+import { TokenInterceptor } from '@app/core/http/http-token.interceptor';
 
 @NgModule({
   imports: [
@@ -46,11 +47,11 @@ import { RequestsService } from '@app/requests/requests.service';
     //  ApiPrefixInterceptor,
     ErrorHandlerInterceptor,
     CacheInterceptor,
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //  useClass: ApiPrefixInterceptor,
-    //   multi: true
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
     {
       provide: HttpClient,
       useClass: HttpService

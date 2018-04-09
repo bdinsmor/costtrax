@@ -250,7 +250,7 @@ export class LaborCosts {
   }
 }
 
-export class Machine {
+export class Equipment {
   make: string;
   model: string;
   year: number;
@@ -260,11 +260,23 @@ export class Machine {
   operatingCost: number;
   baseRental: number;
   fhwa: number;
+  constructor(m: any) {
+    console.log('inside: ' + JSON.stringify(m, null, 2));
+    this.make = m.make || m.manufacturerName || '';
+    this.model = m.model || m.modelName || '';
+    this.year = Number(m.year) || Number(new Date(m.dateIntroduced).getFullYear) || 2018;
+    this.vin = m.vin || 0;
+    this.description = m.description || m.categoryName || '';
+    this.ownershipCost = Number(m.ownershipCost) || 0;
+    this.operatingCost = Number(m.operatingCost) || 0;
+    this.baseRental = Number(m.baseRental) || 0;
+    this.fhwa = Number(m.fhwa) || 0;
+  }
 }
 
 export class ActiveCost {
   id: string;
-  machine: Machine;
+  machine: Equipment;
   hours: number;
   transportationCost: number;
   total: number;
@@ -279,7 +291,7 @@ export class ActiveCost {
 
 export class StandbyCost {
   id: string;
-  machine: Machine;
+  machine: Equipment;
   transportationCost: number;
   total: number;
   paid: number;
@@ -295,7 +307,7 @@ export class StandbyCost {
 export class RentalCost {
   id: string;
   date: Date;
-  machine: Machine;
+  machine: Equipment;
   transportationCost: number;
   other: number;
   invoice: ByteString;

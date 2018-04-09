@@ -1,3 +1,4 @@
+import { EquipmentService } from './equipment.service';
 import { NgModule } from '@angular/core';
 import { CdkTableModule } from '@angular/cdk/table';
 
@@ -13,7 +14,6 @@ import { RequestFormDialogComponent } from '@app/requests/request-form-dialog/re
 import { SharedModule } from '@app/shared';
 import { RequestFormComponent } from '@app/requests/request-form/request-form.component';
 import { ProjectsService } from '@app/projects/projects.service';
-import { MachinesService } from '@app/requests/machines.service';
 
 import { NG_SELECT_DEFAULT_CONFIG, NgSelectModule } from '@ng-select/ng-select';
 
@@ -25,25 +25,9 @@ import { NG_SELECT_DEFAULT_CONFIG, NgSelectModule } from '@ng-select/ng-select';
     RequestFormWizardComponent,
     RequestFormDialogComponent
   ],
-  imports: [SharedModule, CdkTableModule, DirectivesModule, PipesModule, NgSelectModule, NgxCurrencyModule],
+  imports: [SharedModule, CdkTableModule, DirectivesModule, PipesModule, NgxCurrencyModule],
   exports: [RequestsComponent],
-  providers: [
-    RequestsService,
-    ProjectsService,
-    MachinesService,
-    AppMatchMediaService,
-    {
-      provide: NG_SELECT_DEFAULT_CONFIG,
-      useValue: {
-        notFoundText: 'Items not found',
-        addTagText: 'Add item',
-        typeToSearchText: 'Type to search',
-        loadingText: 'Loading...',
-        clearAllText: 'Clear all',
-        appendTo: 'body'
-      }
-    }
-  ],
+  providers: [RequestsService, ProjectsService, EquipmentService, AppMatchMediaService],
   entryComponents: [RequestFormComponent, RequestFormDialogComponent]
 })
 export class RequestsModule {}
