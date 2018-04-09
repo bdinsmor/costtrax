@@ -1,15 +1,69 @@
-<div class="contractor-form">
-  <mat-toolbar class="mat-primary m-0">
-    <mat-toolbar-row>
-      <span class="title">{{formTitle}}</span>
+<div class="p-4 contractor-form full-width" fxLayout="column" *ngIf="contractor">
+  <h2 mat-dialog-title>NEW CONTRACTOR</h2>
+  <div mat-dialog-content class="full-width" fxLayout="column" fxLayoutGap="24px">
+    <form class="full-width" [formGroup]="contractorFormGroup" fxLayout="column" fxLayoutGap="8px">
 
-    </mat-toolbar-row>
-  </mat-toolbar>
+      <div class="full-width" fxLayout="row" fxLayoutGap="24px">
+        <mat-form-field class="w-50">
+          <input matInput placeholder="ACCOUNT LEAD, LAST NAME" formControlName="lastName">
+        </mat-form-field>
+        <mat-form-field class="w-50">
+          <input matInput placeholder="ACCOUNT LEAD, FIRST NAME" formControlName="firstName">
+        </mat-form-field>
+      </div>
+      <mat-form-field class="w-50">
+        <input matInput placeholder="TITLE" formControlName="title">
+      </mat-form-field>
+      <mat-form-field class="w-50">
+        <input matInput placeholder="EMAIL ADDRESS" formControlName="email" autocomplete="email">
 
-  <div class="content">
+      </mat-form-field>
+      <div fxLayout="row" fxLayoutGap="24px">
+        <mat-form-field class="w-30">
+          <input matInput [ngModel]="contractor.phone | phone" (ngModelChange)="contractor.phone=$event" placeholder="PHONE, OFFICE"
+            formControlName="phoneOffice">
+        </mat-form-field>
+        <mat-form-field class="w-30">
+          <input matInput placeholder="PHONE, MOBILE" formControlName="phoneMobile">
+        </mat-form-field>
+        <mat-form-field class="w-30">
+          <input matInput placeholder="FAX" formControlName="fax">
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutGap="24px">
+        <mat-form-field class="w-50">
+          <input matInput placeholder="ADDRESS 1" formControlName="address1">
+        </mat-form-field>
+        <mat-form-field class="w-50">
+          <input matInput placeholder="ADDRESS 2" formControlName="address2">
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutGap="14px">
+        <mat-form-field class="w-25">
+          <input matInput placeholder="CITY" formControlName="city">
+        </mat-form-field>
+        <mat-form-field class="w-10">
+          <input matInput placeholder="STATE" formControlName="state">
+        </mat-form-field>
+        <mat-form-field class="w-10">
+          <input matInput placeholder="ZIP" formControlName="zipCode">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field fxFlex class="m-t-30 width-85">
+        <textarea matInput formControlName="description" placeholder="DESCRIPTION" matTextareaAutosize matAutosizeMinRows="1" matAutosizeMaxRows="25"></textarea>
+      </mat-form-field>
 
 
+
+    </form>
+
+
+    <div></div>
   </div>
+  <mat-dialog-actions>
 
-
-</div>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-raised-button [disabled]="contractorFormGroup.invalid" color="accent" (click)="save()">Save</button>
+    <button mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>

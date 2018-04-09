@@ -24,13 +24,27 @@ export class ContractorsComponent implements OnInit, OnDestroy {
   contractors$: Observable<Contractor[]>;
   count$: Observable<number>;
   loading$: Observable<boolean>;
+  dialogRef: any;
 
-  constructor(private contractorsService: ContractorsService) {
+  constructor(private contractorsService: ContractorsService, public dialog: MatDialog) {
     this.searchInput = new FormControl('');
   }
 
-  newRequest() {
-    // route to new form
+  createContractor() {
+    this.dialogRef = this.dialog.open(ContractorFormComponent, {
+      width: '90vw'
+    });
+    const sub = this.dialogRef.componentInstance.onAdd.subscribe((data: any) => {
+      console.log(data);
+    });
+
+    this.dialogRef.afterClosed().subscribe((response: any) => {
+      if (!response) {
+        return;
+      } else {
+        console.log('response from popup: ' + JSON.stringify(response, null, 2));
+      }
+    });
   }
 
   ngOnInit() {

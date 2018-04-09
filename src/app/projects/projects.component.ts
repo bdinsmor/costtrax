@@ -46,6 +46,24 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       });
   }
 
+  createProject() {
+    const newProject: Project = new Project({});
+    this.dialogRef = this.dialog.open(ProjectFormComponent, {
+      width: '90vw'
+    });
+    const sub = this.dialogRef.componentInstance.onAdd.subscribe((data: any) => {
+      console.log(data);
+    });
+
+    this.dialogRef.afterClosed().subscribe((response: any) => {
+      if (!response) {
+        return;
+      } else {
+        console.log('response from popup: ' + JSON.stringify(response, null, 2));
+      }
+    });
+  }
+
   getData(): void {
     this.projectsService.getAll();
 

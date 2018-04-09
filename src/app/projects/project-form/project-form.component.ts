@@ -1,9 +1,16 @@
+import { AuthenticationService } from './../../core/authentication/authentication.service';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { Component, Inject, ViewEncapsulation, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, ViewEncapsulation, OnInit, ViewChild, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { MatSnackBar, MatInput, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material';
+import {
+  MatSnackBar,
+  MatInput,
+  MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+  MAT_DIALOG_DATA
+} from '@angular/material';
 
-import { Request, Project, Company } from '@app/shared/model';
+import { Request, Project, Company, Contractor } from '@app/shared/model';
 import { Observable } from 'rxjs/Observable';
 import { ProjectsService } from '../projects.service';
 import { ContractorsService } from '@app/contractors/contractors.service';
@@ -24,6 +31,7 @@ export class ProjectFormComponent implements OnInit {
   action: string;
   project: Project;
   companies$: Observable<Company[]>;
+  contractors$: Observable<Contractor[]>;
   @ViewChild('chipInput', { read: MatAutocompleteTrigger })
   private autoCompleteTrigger: MatAutocompleteTrigger;
   // Set up reactive formcontrol
@@ -35,24 +43,29 @@ export class ProjectFormComponent implements OnInit {
   addOnBlur = true;
   selectedItems: string[] = [];
   filteredItems: Observable<any[]>;
+  invitedContractors = new FormControl();
   addItems: FormControl;
   // Enter, comma
   separatorKeysCodes = [ENTER, COMMA];
-  options: Company[];
+  options: Contractor[];
 
   // Define filteredOptins Array and Chips Array
   filteredOptions: any = [];
   chips: any = [];
+  newProject: Boolean = false;
+  onAdd = new EventEmitter();
 
   constructor(
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
     private companiesService: CompaniesService,
+    private contractorsService: ContractorsService,
+    private authService: AuthenticationService,
     private projectsService: ProjectsService,
     private formBuilder: FormBuilder
   ) {
-    this.companies$ = this.companiesService.entities$;
+    this.contractors$ = this.contractorsService.entities$;
   }
 
   ngOnInit() {
@@ -71,15 +84,20 @@ export class ProjectFormComponent implements OnInit {
         }
       });
     } else {
-      this.project = new Project({});
+      this.newProject = true;
+      this.project = new Project({
+        owner: this.authService.credentials.email,
+        laborCostsEnabled: false,
+        materialCostsEnabled: true,
+        equipmentCostsEnabled: true
+      });
+
+      this.projectFormGroup = this.createProjectFormGroup();
     }
 
-    this.companiesService.getAll();
+    this.contractorsService.getAll();
 
-    this.companiesService.entities$.subscribe(c => {
-      this.options = c;
-      this.filteredOptions = c;
-    });
+    this.contractors$ = this.contractorsService.entities$;
 
     // Subscribe to listen for changes to AutoComplete input and run filter
     this.autoCompleteChipList.valueChanges.subscribe(val => {
@@ -118,6 +136,10 @@ export class ProjectFormComponent implements OnInit {
         this.autoCompleteTrigger.openPanel();
       }
     }, 10);
+  }
+
+  saveNew() {
+    this.onAdd.emit(this.projectFormGroup.value);
   }
 
   filterOptions(text: string) {
@@ -161,6 +183,7 @@ export class ProjectFormComponent implements OnInit {
 
   createProjectFormGroup() {
     return this.formBuilder.group({
+      invitedContractors: new FormControl(this.project.invitedContractors),
       projectInstructions: new FormControl(this.project.details),
       equipmentCostsCheckbox: new FormControl(this.project.equipmentCostsEnabled),
       laborCostsCheckbox: new FormControl(this.project.laborCostsEnabled),

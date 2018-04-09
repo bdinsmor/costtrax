@@ -11,6 +11,7 @@ import { CompanyFormComponent } from './companies-form/companies-form.component'
 import { Contractor, Company } from '@app/shared/model';
 import { Observable } from 'rxjs/Observable';
 import { CompaniesService } from '@app/companies/companies.service';
+import { ContractorFormComponent } from '@app/contractors/contractor-form/contractor-form.component';
 
 @Component({
   selector: 'app-companies',
@@ -24,9 +25,27 @@ export class CompaniesComponent implements OnInit, OnDestroy {
   contractors$: Observable<Contractor[]>;
   count$: Observable<number>;
   loading$: Observable<boolean>;
+  dialogRef: any;
 
-  constructor(private companiesService: CompaniesService) {
+  constructor(private companiesService: CompaniesService, public dialog: MatDialog) {
     this.searchInput = new FormControl('');
+  }
+
+  createContractor() {
+    this.dialogRef = this.dialog.open(ContractorFormComponent, {
+      width: '90vw'
+    });
+    const sub = this.dialogRef.componentInstance.onAdd.subscribe((data: any) => {
+      console.log(data);
+    });
+
+    this.dialogRef.afterClosed().subscribe((response: any) => {
+      if (!response) {
+        return;
+      } else {
+        console.log('response from popup: ' + JSON.stringify(response, null, 2));
+      }
+    });
   }
 
   newRequest() {

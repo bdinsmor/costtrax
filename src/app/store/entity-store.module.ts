@@ -6,11 +6,18 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
   // Optionally specify resource URLS for HTTP calls
   entityHttpResourceUrls: {
     // Case matters. Match the case of the entity name.
-    // Equipment: {
-    // You must specify the root as part of the resource URL.
-    //   entityResourceUrl: 'https://external.development.equipmentwatchapi.com/v1/taxonomy/models',
-    //  collectionResourceUrl: 'https://external.development.equipmentwatchapi.com/v1/taxonomy/models'
-    // }
+    /*  Projects: {
+      // You must specify the root as part of the resource URL.
+      // entityResourceUrl: 'https://external.development.equipmentwatchapi.com/v1/taxonomy/models',
+      entityResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/projects/',
+      collectionResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/projects/request'
+    },
+    Requests: {
+      // You must specify the root as part of the resource URL.
+      // entityResourceUrl: 'https://external.development.equipmentwatchapi.com/v1/taxonomy/models',
+      entityResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/lineitems/manage',
+      collectionResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/lineitems/manage'
+    }*/
   }
 };
 

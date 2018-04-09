@@ -35,7 +35,6 @@ export class HomeComponent implements OnInit {
   viewRequest(log: LogEntry): void {}
 
   createRequest(newProject: boolean) {
-    console.log('via a new project: ' + newProject);
     this.dialogRef = this.dialog.open(RequestFormWizardComponent, {
       width: '90vw',
       data: {

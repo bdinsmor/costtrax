@@ -1,7 +1,13 @@
 <div class="p-4 project-form" fxLayout="column" *ngIf="project">
   <mat-toolbar class="alt">
     <mat-toolbar-row class="alt">
-      <a routerLink="/projects" class="primary-link">Projects</a>&nbsp;> {{project.id}}
+      <div *ngIf="!newProject">
+        <a href="/projects" class="primary-link">Projects</a>&nbsp;>
+        <span>{{project.id}}</span>
+      </div>
+      <div *ngIf="newProject">
+        NEW PROJECT
+      </div>
     </mat-toolbar-row>
   </mat-toolbar>
   <mat-divider></mat-divider>
@@ -13,7 +19,7 @@
             <label class="project-label" fxFlex>PROJECT ID</label>
             <div fxFlex>{{project.id}}</div>
           </div>
-          <div class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
+          <div *ngIf="!newProject" class="project-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
             <label class="project-label" fxFlex>OPEN REQUESTS</label>
             <div fxFlex>{{project.openRequests}}</div>
           </div>
@@ -21,9 +27,10 @@
             <label class="project-label" fxFlex>PROJECT OWNER</label>
             <div fxFlex>{{project.owner}}</div>
           </div>
+
         </mat-toolbar-row>
       </mat-toolbar>
-      <mat-toolbar style="margin-top: 8px;" class="bordered">
+      <mat-toolbar *ngIf="!newProject" style="margin-top: 8px;" class="bordered">
         <mat-toolbar-row class="mat-toolbar-white">
           <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
             <label class="cost-label" fxFlex>EQUIPMENT COSTS</label>
@@ -53,21 +60,24 @@
       </mat-toolbar>
       <div class="p-20 m-10" fxLayout="column" fxLayoutGap="14px">
         <label class="project-heading">INIVITED CONTRACTORS</label>
-        <mat-form-field class="full-width">
-          <mat-chip-list #chipList>
-            <mat-chip *ngFor="let chip of chips" [selectable]="selectable" [removable]="removable" (remove)="removeChip(chip)">
-              {{chip.name}}
-              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
 
-            <input placeholder="Select Contractor(s)..." [matChipInputFor]="chipList" [matAutocomplete]="auto" [matChipInputAddOnBlur]="addOnBlur"
-              matInput [formControl]="autoCompleteChipList" #chipInput (focus)="inputFocus()" />
-          </mat-chip-list>
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addChip($event, chipInput)">
-            <mat-option *ngFor="let option of filteredOptions" [value]="option">
-              {{ option.name }}
-            </mat-option>
-          </mat-autocomplete>
+        <mat-form-field>
+          <mat-select placeholder="Select Contractors" [(ngModel)]="project.invitedContractors" formControlName="invitedContractors"
+            multiple>
+            <mat-select-trigger>
+
+              <span *ngIf="project.invitedContractors.length > 1" class="example-additional-selection">
+                {{project.invitedContractors[0].name}} &nbsp;(+{{project.invitedContractors.length - 1}} others)
+              </span>
+              <span *ngIf="project.invitedContractors.length == 1" class="example-additional-selection">
+                {{project.invitedContractors[0].name}}
+              </span>
+              <span *ngIf="project.invitedContractors.length == 0" class="example-additional-selection">
+                {{''}}
+              </span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let choice of contractors$ | async" [value]="choice">{{choice.name}}</mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
       <div class="p-20 m-0" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="14px">
@@ -97,3 +107,9 @@
 
     <div></div>
   </div>
+  <mat-dialog-actions *ngIf="newProject">
+
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-raised-button color="accent" (click)="saveNew()">Save</button>
+    <button mat-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>

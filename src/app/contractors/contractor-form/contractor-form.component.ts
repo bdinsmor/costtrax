@@ -1,5 +1,5 @@
-import { Component, Inject, ViewEncapsulation, OnInit, Input } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { Component, Inject, ViewEncapsulation, OnInit, Input, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Request, Company, Contractor } from '@app/shared/model';
 import { ProjectsService } from '@app/projects/projects.service';
@@ -22,6 +22,72 @@ export class ContractorFormComponent implements OnInit {
   contractor: Contractor;
   contractors$: Observable<Contractor[]>;
   companies$: Observable<Company[]>;
+  onAdd = new EventEmitter();
+
+  emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
+  phonePattern = /^(\+?(\d{1}|\d{2}|\d{3})[- ]?)?\d{3}[- ]?\d{3}[- ]?\d{4}$/;
+  zipCodePattern = /^[0-9]{5}(?:-[0-9]{4})?$/;
+  states: [
+    'AL',
+    'AK',
+    'AS',
+    'AZ',
+    'AR',
+    'CA',
+    'CO',
+    'CT',
+    'DE',
+    'DC',
+    'FM',
+    'FL',
+    'GA',
+    'GU',
+    'HI',
+    'ID',
+    'IL',
+    'IN',
+    'IA',
+    'KS',
+    'KY',
+    'LA',
+    'ME',
+    'MH',
+    'MD',
+    'MA',
+    'MI',
+    'MN',
+    'MS',
+    'MO',
+    'MT',
+    'NE',
+    'NV',
+    'NH',
+    'NJ',
+    'NM',
+    'NY',
+    'NC',
+    'ND',
+    'MP',
+    'OH',
+    'OK',
+    'OR',
+    'PW',
+    'PA',
+    'PR',
+    'RI',
+    'SC',
+    'SD',
+    'TN',
+    'TX',
+    'UT',
+    'VT',
+    'VI',
+    'VA',
+    'WA',
+    'WV',
+    'WI',
+    'WY'
+  ];
 
   constructor(
     public snackBar: MatSnackBar,
@@ -66,16 +132,25 @@ export class ContractorFormComponent implements OnInit {
     });
   }
 
+  save() {
+    this.onAdd.emit(this.contractorFormGroup.value);
+  }
+
   createContractorFormGroup() {
-    return this.formBuilder.group({ projectType: new FormControl('1') });
-  }
-  createCostFormGroup() {
-    return this.formBuilder.group({});
-  }
-  createCostDetailsFormGroup() {
-    return this.formBuilder.group({});
-  }
-  createSignatureFormGroup() {
-    return this.formBuilder.group({});
+    return this.formBuilder.group({
+      firstName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required]),
+      phoneOffice: new FormControl(null, [Validators.pattern(this.phonePattern)]),
+      phoneMobile: new FormControl(null, [Validators.pattern(this.phonePattern)]),
+      fax: new FormControl(''),
+      email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
+      address1: new FormControl(''),
+      address2: new FormControl(''),
+      city: new FormControl(''),
+      state: new FormControl(''),
+      title: new FormControl(''),
+      zipCode: new FormControl('', [Validators.pattern(this.zipCodePattern)]),
+      description: new FormControl('')
+    });
   }
 }

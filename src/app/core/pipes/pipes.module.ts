@@ -5,10 +5,11 @@ import { GetByIdPipe } from './getById.pipe';
 import { HtmlToPlaintextPipe } from './htmlToPlaintext.pipe';
 import { FilterPipe } from './filter.pipe';
 import { CamelCaseToDashPipe } from './camelCaseToDash.pipe';
+import { PhonePipe } from '@app/core/pipes/phone.pipe';
 
 @NgModule({
-  declarations: [KeysPipe, GetByIdPipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe],
+  declarations: [KeysPipe, GetByIdPipe, PhonePipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe],
   imports: [],
-  exports: [KeysPipe, GetByIdPipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe]
+  exports: [KeysPipe, GetByIdPipe, PhonePipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe]
 })
 export class PipesModule {}

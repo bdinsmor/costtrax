@@ -7,6 +7,12 @@
     cursor: pointer;
   }
 
+  .mat-input-element {
+    border: 1px solid mat-color($mat-fusedark, 100, 0.55);
+    border-radius: 2px;
+    padding: 4px;
+  }
+
   .smaller-gray-text {
     font-size: 75%;
     color: mat-color($mat-fusedark, 500, 0.9);
@@ -86,6 +92,7 @@
   .p-20 {
     padding: 20px;
   }
+
   .m-t-30 {
     margin-top: 30px;
   }

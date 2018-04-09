@@ -1,14 +1,6 @@
 @import 'src/styles/styles';
 
 .contractor-form {
-  @include media-breakpoint('xs') {
-    width: 100%;
-  }
-
-  @include media-breakpoint-up('xs') {
-    width: 400px;
-  }
-
   .mat-toolbar {
     min-height: initial;
   }
@@ -21,12 +13,29 @@
     margin-left: 5%;
   }
 
+  .full-width {
+    width: 100% !important;
+  }
+
   .width-85 {
     width: 85% !important;
   }
 
+  .w-50,
   .width-50 {
     width: 50% !important;
+  }
+
+  .w-10 {
+    width: 10% !important;
+  }
+
+  .w-30 {
+    width: 30% !important;
+  }
+
+  .w-25 {
+    width: 25% !important;
   }
 
   .spacer {
