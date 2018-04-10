@@ -30,18 +30,11 @@ export class MessagesListComponent implements OnInit, OnDestroy {
   confirmDialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(private router: Router, private messagesService: MessagesService, public dialog: MatDialog) {
-    this.messages$ = this.messagesService.entities$;
-    this.count$ = this.messagesService.count$;
-    this.loading$ = this.messagesService.loading$;
+    this.messages$ = this.messagesService.getData();
+    this.count$ = this.messagesService.getCount();
   }
 
-  ngOnInit() {
-    this.getData();
-  }
-
-  getData() {
-    this.messagesService.getAll();
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {}
 

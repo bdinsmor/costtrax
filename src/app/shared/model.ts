@@ -96,7 +96,7 @@ export class Project {
       this.subcontractorCostsEnabled = project.subcontractorCostsEnabled || false;
       this.laborCostsEnabled = project.laborCostsEnabled || false;
       this.otherCostsEnabled = project.otherCostsEnabled || false;
-      this.invitedContractors = [];
+      this.invitedContractors = project.invitedContractors || [];
     }
   }
 }
@@ -131,6 +131,7 @@ export class Cost {
   submitDate: Date;
   type: string;
   status: string;
+  disputes: Dispute[];
 }
 
 export class SubcontractorCosts {
@@ -163,6 +164,8 @@ export class MaterialCost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  disputes: Dispute[];
+
   constructor(mc: any) {
     {
       this.id = mc.id || AppUtils.generateGUID(true);
@@ -173,6 +176,7 @@ export class MaterialCost {
       this.costPerUnit = mc.costPerUnit || 0;
       this.submitDate = mc.submitDate || new Date();
       this.status = mc.status || '';
+      this.disputes = mc.disputes || [];
     }
   }
 }
@@ -209,6 +213,7 @@ export class LaborCost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  disputes: Dispute[];
 
   constructor(laborCost: any) {
     {
@@ -221,6 +226,7 @@ export class LaborCost {
       this.doubleTime = laborCost.doubleTime || 0;
       this.fut = laborCost.fut || 0;
       this.sut = laborCost.sut || 0;
+      this.disputes = laborCost.disputes || [];
     }
   }
 }
@@ -256,6 +262,7 @@ export class LaborCosts {
 }
 
 export class Equipment {
+  id: string;
   make: string;
   model: string;
   year: number;
@@ -266,6 +273,7 @@ export class Equipment {
   baseRental: number;
   fhwa: number;
   constructor(m: any) {
+    this.id = m.id || AppUtils.generateGUID(true);
     this.make = m.make || m.manufacturerName || '';
     this.model = m.model || m.modelName || '';
     this.year = Number(m.year) || Number(new Date(m.dateIntroduced).getFullYear) || 2018;
@@ -292,6 +300,7 @@ export class ActiveCost {
   actionDate: Date;
   submitDate: Date;
   status: string;
+  disputes: Dispute[];
 }
 
 export class StandbyCost {
@@ -308,6 +317,7 @@ export class StandbyCost {
   actionDate: Date;
   submitDate: Date;
   status: string;
+  disputes: Dispute[];
 }
 
 export class RentalCost {
@@ -327,6 +337,7 @@ export class RentalCost {
   actionDate: Date;
   submitDate: Date;
   status: string;
+  disputes: Dispute[];
 }
 
 export class ActiveCosts {
@@ -362,7 +373,7 @@ export class StandbyCosts {
       this.startDate = standbyCosts.startDate || new Date();
       this.endDate = standbyCosts.endDate || new Date();
       this.regionalAdjustment = standbyCosts.regionalAdjustment || '';
-      this.costs = standbyCosts.costs || new Array<StandbyCost>();
+      this.costs = standbyCosts.costs || [];
       this.paid = standbyCosts.paid || 0;
       this.unpaid = standbyCosts.unpaid || 0;
     }
@@ -458,6 +469,10 @@ export class Costs {
 export class Dispute {
   id: string;
   comments: string;
+  type: string;
+  issue: string;
+  amount: number;
+  disputeReqest: string;
   date: Date;
 }
 

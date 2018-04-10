@@ -18,6 +18,11 @@
   font-size: 14px;
 }
 
+.cdk-overlay-pane {
+  max-width: none !important;
+  width: auto !important;
+}
+
 .material-icons.md-18 {
   font-size: 18px;
 }

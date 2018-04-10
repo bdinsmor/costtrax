@@ -37,19 +37,11 @@ export class CompanyFormComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.companiesService.clearCache();
-      this.companiesService.getByKey(id);
-      this.companiesService.errors$.subscribe(errors => {
-        this.openSnackBar(errors.payload.error.message, '');
-      });
-      this.companiesService.filteredEntities$.subscribe(r => {
-        if (r && r.length === 1) {
-          this.company = r[0];
-          //  console.log('company: ' + JSON.stringify(this.company));
-          this.openSnackBar('Loaded Company', '');
+      this.companiesService.findById(id).subscribe(r => {
+        if (r) {
+          this.company = r;
           this.createCompanyFormGroup();
           this.employeesDataSource = new ContractorsDataSource(this.company.employees);
-          console.log('# employees: ' + this.company.employees.length);
         }
       });
     } else {

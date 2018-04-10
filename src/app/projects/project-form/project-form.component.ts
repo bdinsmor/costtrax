@@ -65,21 +65,15 @@ export class ProjectFormComponent implements OnInit {
     private projectsService: ProjectsService,
     private formBuilder: FormBuilder
   ) {
-    this.contractors$ = this.contractorsService.entities$;
+    this.contractors$ = this.contractorsService.getData();
   }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.projectsService.clearCache();
-      this.projectsService.getByKey(id);
-      this.projectsService.errors$.subscribe(errors => {
-        this.openSnackBar(errors.payload.error.message, '');
-      });
-      this.projectsService.filteredEntities$.subscribe(r => {
-        if (r && r.length === 1) {
-          this.project = r[0];
-          this.openSnackBar('Loaded Project', '');
+      this.projectsService.findById(id).subscribe(r => {
+        if (r) {
+          this.project = r;
           this.projectFormGroup = this.createProjectFormGroup();
         }
       });
@@ -95,9 +89,7 @@ export class ProjectFormComponent implements OnInit {
       this.projectFormGroup = this.createProjectFormGroup();
     }
 
-    this.contractorsService.getAll();
-
-    this.contractors$ = this.contractorsService.entities$;
+    this.contractors$ = this.contractorsService.getData();
 
     // Subscribe to listen for changes to AutoComplete input and run filter
     this.autoCompleteChipList.valueChanges.subscribe(val => {

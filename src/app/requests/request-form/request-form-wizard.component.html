@@ -374,25 +374,39 @@
                                   <ng-container matColumnDef="rentalDescription">
                                     <mat-header-cell *matHeaderCellDef> DESCRIPTION </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                      <span>{{element.machine.description}}</span>
+                                      <span>{{element.description}}</span>
                                     </mat-cell>
                                   </ng-container>
                                   <ng-container matColumnDef="rentalType">
                                     <mat-header-cell *matHeaderCellDef> TYPE </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
+                                      <div *ngIf="!element.machine">
+                                        <input type="text" placeholder="Pick one" aria-label="Machine" matInput [(ngModel)]="element.machine" [ngModelOptions]="{standalone: true}"
+                                          [matAutocomplete]="auto">
+                                        <mat-autocomplete #auto="matAutocomplete">
+                                          <mat-option *ngFor="let machine of machines$ | async" [value]="machine">
+                                            <span>{{ machine.make }}</span>
 
+                                            <small>{{machine.model}}</small>
+                                          </mat-option>
+                                        </mat-autocomplete>
+                                      </div>
+                                      <div *ngIf="element.machine" fxLayout="row" fxLayoutGap="4px">
+                                        <span>{{element.machine.make}}</span>
+                                        <span>{{element.machine.model}}</span>
+                                      </div>
                                     </mat-cell>
                                   </ng-container>
                                   <ng-container matColumnDef="rentalBase">
                                     <mat-header-cell *matHeaderCellDef> BASE RENTAL </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                      <input matInput (change)="rentalChanged(element)" [(ngModel)]="element.machine.base" [ngModelOptions]="{standalone: true}">
+                                      <input *ngIf="element.machine" matInput (change)="rentalChanged(element)" [(ngModel)]="element.machine.baseRental" [ngModelOptions]="{standalone: true}">
                                     </mat-cell>
                                   </ng-container>
                                   <ng-container matColumnDef="rentalTransportation">
                                     <mat-header-cell *matHeaderCellDef> TRANSPORTATION </mat-header-cell>
                                     <mat-cell *matCellDef="let element">
-                                      <input matInput (change)="rentalChanged(element)" [(ngModel)]="element.machine.transport" [ngModelOptions]="{standalone: true}">
+                                      <input matInput (change)="rentalChanged(element)" [(ngModel)]="element.transportationCost" [ngModelOptions]="{standalone: true}">
                                     </mat-cell>
                                   </ng-container>
                                   <ng-container matColumnDef="rentalOther">

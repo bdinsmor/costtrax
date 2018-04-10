@@ -25,18 +25,25 @@ export class ProjectsListComponent implements OnInit, OnDestroy {
   @ViewChild('dialogContent') dialogContent: TemplateRef<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   requests: Request[];
-  dataSource: RequestsDataSource | null;
+  dataSource: ProjectsDataSource | null;
   user: any;
   displayedColumns = ['projectName', 'openRequests', 'contractors'];
   selection = new SelectionModel<Element>(true, []);
   dialogRef: any;
-  projects: Observable<Project[]>;
+  projects: Project[];
+  rawProjects$: Observable<Project[]>;
   confirmDialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(private router: Router, private projectsService: ProjectsService) {}
 
   ngOnInit() {
-    this.dataSource = new RequestsDataSource(this.projectsService);
+    this.projectsService.getAll();
+    this.rawProjects$ = this.projectsService.entities$;
+    this.rawProjects$.subscribe((res: any[]) => {
+      this.projectsService.buildProjects(res);
+      this.projects = this.projectsService.projects;
+      this.dataSource = new ProjectsDataSource(this.projects);
+    });
   }
 
   masterToggle(): void {}
@@ -48,18 +55,16 @@ export class ProjectsListComponent implements OnInit, OnDestroy {
   }
 }
 
-export class RequestsDataSource extends DataSource<any> {
-  constructor(private projectsService: ProjectsService) {
+export class ProjectsDataSource extends DataSource<any> {
+  constructor(private dataBase: Project[]) {
     super();
   }
-
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<any[]> {
-    //  console.log('num: ' + this.requestsService.count$);
-    return this.projectsService.entities$;
+  connect(): Observable<Project[]> {
+    return Observable.of(this.dataBase);
   }
   length(): Observable<number> {
-    return this.projectsService.count$;
+    return Observable.of(this.dataBase.length);
   }
 
   disconnect() {}

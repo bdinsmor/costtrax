@@ -105,7 +105,6 @@ export class RequestsService extends EntityServiceBase<Request> {
         c.status = li.status;
         project.owner = 'has rental';
         r.costs.equipmentCosts.enabled = true;
-        console.log(JSON.stringify(li, null, 2));
         r.costs.equipmentCosts.rentalCosts.enabled = true;
         r.costs.equipmentCosts.rentalCosts.costs.push(c);
       } else if (t === 'material') {

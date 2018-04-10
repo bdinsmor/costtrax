@@ -14,8 +14,20 @@ import { RequestFormDialogComponent } from '@app/requests/request-form-dialog/re
 import { SharedModule } from '@app/shared';
 import { RequestFormComponent } from '@app/requests/request-form/request-form.component';
 import { ProjectsService } from '@app/projects/projects.service';
-
+import { NgxDatatableModule, ScrollbarHelper, DimensionsHelper } from '@swimlane/ngx-datatable';
 import { NG_SELECT_DEFAULT_CONFIG, NgSelectModule } from '@ng-select/ng-select';
+import { CurrencyMaskConfig, CURRENCY_MASK_CONFIG } from 'ngx-currency/src/currency-mask.config';
+
+export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
+  align: 'left',
+  allowNegative: true,
+  allowZero: true,
+  precision: 2,
+  prefix: '$ ',
+  suffix: '',
+  thousands: ',',
+  decimal: '.'
+};
 
 @NgModule({
   declarations: [
@@ -25,9 +37,17 @@ import { NG_SELECT_DEFAULT_CONFIG, NgSelectModule } from '@ng-select/ng-select';
     RequestFormWizardComponent,
     RequestFormDialogComponent
   ],
-  imports: [SharedModule, CdkTableModule, DirectivesModule, PipesModule, NgxCurrencyModule],
+  imports: [SharedModule, NgxDatatableModule, CdkTableModule, DirectivesModule, PipesModule, NgxCurrencyModule],
   exports: [RequestsComponent],
-  providers: [RequestsService, ProjectsService, EquipmentService, AppMatchMediaService],
+  providers: [
+    RequestsService,
+    ScrollbarHelper,
+    DimensionsHelper,
+    ProjectsService,
+    EquipmentService,
+    AppMatchMediaService,
+    { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
+  ],
   entryComponents: [RequestFormComponent, RequestFormDialogComponent]
 })
 export class RequestsModule {}

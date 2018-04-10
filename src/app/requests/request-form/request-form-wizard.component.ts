@@ -123,7 +123,7 @@ export class RequestFormWizardComponent implements OnInit {
       this.projectsService.buildProjects(res);
       this.projects = this.projectsService.projects;
     });
-    this.machines$ = this.equipmentService.entities$;
+    this.machines$ = this.equipmentService.getData();
 
     this.action = data.action;
 
@@ -136,7 +136,7 @@ export class RequestFormWizardComponent implements OnInit {
 
   ngOnInit() {
     this.projectsService.getAll();
-    this.equipmentService.getAll();
+    //    this.equipmentService.getAll();
     this.request = new Request({});
     this.createDataSources();
   }
@@ -232,7 +232,15 @@ export class RequestFormWizardComponent implements OnInit {
   }
 
   rentalChanged(mc: RentalCost) {
-    mc.total = mc.machine.baseRental + mc.transportationCost + mc.other;
+    if (mc.machine && mc.machine.baseRental) {
+      mc.total = Number(mc.machine.baseRental);
+    }
+    if (mc.transportationCost) {
+      mc.total += Number(mc.transportationCost);
+    }
+    if (mc.other) {
+      mc.total += Number(mc.other);
+    }
     this.recalculateTotalEquipment();
   }
 
@@ -388,7 +396,6 @@ export class ActiveDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<ActiveCost[]> {
-    console.log('number of active costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 
@@ -401,7 +408,6 @@ export class StandbyDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<StandbyCost[]> {
-    console.log('number of standby costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 
@@ -414,7 +420,6 @@ export class RentalDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<RentalCost[]> {
-    console.log('number of rental costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 
@@ -427,7 +432,6 @@ export class LaborDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<LaborCost[]> {
-    console.log('number of labor costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 
@@ -440,7 +444,6 @@ export class OtherDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Cost[]> {
-    console.log('number of other costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 
@@ -453,7 +456,6 @@ export class SubcontractorDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Cost[]> {
-    console.log('number of subcontractor costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 
@@ -466,7 +468,6 @@ export class MaterialDataSource extends DataSource<any> {
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<MaterialCost[]> {
-    console.log('number of material costs: ' + this.dataBase.length);
     return Observable.of(this.dataBase);
   }
 

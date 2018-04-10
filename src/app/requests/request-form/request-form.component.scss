@@ -1,6 +1,27 @@
 @import 'src/styles/styles';
 
 .request-details {
+  .ngx-datatable.material {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    border: 1px solid mat-color($mat-fusedark, 50, 0.9);
+    background-color: mat-color($mat-fusedark, 50, 0.4);
+  }
+
+  .ngx-datatable {
+    height: 100%;
+  }
+
+  .m-t-12 {
+    margin-top: 12px;
+  }
+
+  .mat-input-element {
+    border: 1px solid mat-color($mat-fusedark, 100, 0.55);
+    border-radius: 2px;
+    padding: 4px;
+  }
+
   .primary-link {
     font-weight: 900;
     color: mat-color($primary, 500, 0.9);
@@ -14,6 +35,10 @@
 
   .full-width {
     width: 100%;
+  }
+
+  .mat-form-field.mat-form-field-type-mat-select .mat-input-infix {
+    height: 55px !important;
   }
 
   .ts-80 {

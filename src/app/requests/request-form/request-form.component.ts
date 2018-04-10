@@ -1,7 +1,17 @@
-import { Component, Inject, ViewEncapsulation, OnInit, Input } from '@angular/core';
+import { StandbyCost, ActiveCost, Cost, Dispute } from './../../shared/model';
+import {
+  Component,
+  Inject,
+  ViewEncapsulation,
+  OnInit,
+  Input,
+  ChangeDetectorRef,
+  AfterViewInit,
+  AfterViewChecked
+} from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-import { Request, Project, Message, MaterialCost } from '@app/shared/model';
+import { Request, Project, Message, MaterialCost, RentalCost } from '@app/shared/model';
 import { ProjectsService } from '@app/projects/projects.service';
 import { Observable } from 'rxjs/Observable';
 import { RequestsService } from '../requests.service';
@@ -19,7 +29,7 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./request-form.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class RequestFormComponent implements OnInit {
+export class RequestFormComponent implements OnInit, AfterViewChecked {
   dialogTitle: string;
   requestForm: FormGroup;
   projectFormGroup: FormGroup;
@@ -32,6 +42,9 @@ export class RequestFormComponent implements OnInit {
   request$: Observable<Request>;
   projects: Observable<Project[]>;
   requests: Observable<Request[]>;
+  disputeTypes: any[] = [{ value: 'hours', viewValue: 'Hours' }, { value: 'transport', viewValue: 'Transport' }];
+  issues: any[] = [{ value: 'ch', viewValue: 'Comparatively High' }];
+  requestDisputes: any[] = [{ value: 'change', viewValue: 'Change' }];
   materialDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
   materialDataSource: MaterialDataSource;
   otherDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
@@ -42,6 +55,7 @@ export class RequestFormComponent implements OnInit {
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
 
   constructor(
+    private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
@@ -57,6 +71,10 @@ export class RequestFormComponent implements OnInit {
     this.requests = this.requestsService.entities$;
   }
 
+  ngAfterViewChecked() {
+    this.changeDetector.detectChanges();
+  }
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -66,9 +84,9 @@ export class RequestFormComponent implements OnInit {
 
         this.createCostFormGroup();
         this.createMaterialCosts();
-        this.openSnackBar('Loaded Request', '');
+        // this.openSnackBar('Loaded Request', '');
       } else {
-        this.openSnackBar('Could NOT Load Request with id: ' + id, '');
+        // this.openSnackBar('Could NOT Load Request with id: ' + id, '');
       }
     } else {
       this.request = new Request({});
@@ -114,6 +132,78 @@ export class RequestFormComponent implements OnInit {
 
   get projectType() {
     return this.projectFormGroup.get('projectType');
+  }
+
+  approveActive(item: ActiveCost) {
+    item.approved = true;
+  }
+  disputeActive(item: ActiveCost) {
+    if (!item.disputes) {
+      item.disputes = [];
+    }
+    const d: Dispute[] = [];
+    d.push(new Dispute());
+    item.disputes = item.disputes.concat(d);
+  }
+
+  approveStandby(item: StandbyCost) {
+    item.approved = true;
+  }
+  disputeStandby(item: StandbyCost) {
+    if (!item.disputes) {
+      item.disputes = [];
+    }
+    const d: Dispute[] = [];
+    d.push(new Dispute());
+    item.disputes = item.disputes.concat(d);
+  }
+
+  approveRental(item: RentalCost) {
+    item.approved = true;
+  }
+  disputeRental(item: RentalCost) {
+    if (!item.disputes) {
+      item.disputes = [];
+    }
+    const d: Dispute[] = [];
+    d.push(new Dispute());
+    item.disputes = item.disputes.concat(d);
+  }
+
+  approveMaterial(item: MaterialCost) {
+    item.approved = true;
+  }
+  disputeMaterial(item: MaterialCost) {
+    if (!item.disputes) {
+      item.disputes = [];
+    }
+    const d: Dispute[] = [];
+    d.push(new Dispute());
+    item.disputes = item.disputes.concat(d);
+  }
+
+  approveOther(item: Cost) {
+    item.approved = true;
+  }
+  disputeOther(item: Cost) {
+    if (!item.disputes) {
+      item.disputes = [];
+    }
+    const d: Dispute[] = [];
+    d.push(new Dispute());
+    item.disputes = item.disputes.concat(d);
+  }
+
+  approveSubcontractor(item: Cost) {
+    item.approved = true;
+  }
+  disputeSubcontractor(item: Cost) {
+    if (!item.disputes) {
+      item.disputes = [];
+    }
+    const d: Dispute[] = [];
+    d.push(new Dispute());
+    item.disputes = item.disputes.concat(d);
   }
 
   createMaterialCosts() {

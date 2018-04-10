@@ -30,7 +30,8 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
   displayedColumns = ['name', 'openRequests', 'totalPaid'];
   selection = new SelectionModel<Element>(true, []);
   dialogRef: any;
-  companies: Observable<Company[]>;
+  companies$: Observable<Company[]>;
+  companies: Company[];
   confirmDialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(
@@ -39,16 +40,19 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
     private contractorsService: ContractorsService,
     public dialog: MatDialog
   ) {
-    this.companies = this.companiesService.entities$;
+    this.companiesService.build();
   }
 
   ngOnInit() {
-    this.dataSource = new CompaniesDataSource(this.companiesService);
     this.getData();
   }
 
   getData() {
-    this.companiesService.getAll();
+    // this.companiesService.getAll();
+    this.companiesService.getData().subscribe((res: Company[]) => {
+      this.companies = res;
+      this.dataSource = new CompaniesDataSource(this.companies);
+    });
   }
 
   masterToggle(): void {}
@@ -61,17 +65,15 @@ export class CompaniesListComponent implements OnInit, OnDestroy {
 }
 
 export class CompaniesDataSource extends DataSource<any> {
-  constructor(private companiesService: CompaniesService) {
+  constructor(private dataBase: Company[]) {
     super();
   }
-
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<any[]> {
-    //  console.log('num: ' + this.requestsService.count$);
-    return this.companiesService.entities$;
+  connect(): Observable<Company[]> {
+    return Observable.of(this.dataBase);
   }
   length(): Observable<number> {
-    return this.companiesService.count$;
+    return Observable.of(this.dataBase.length);
   }
 
   disconnect() {}

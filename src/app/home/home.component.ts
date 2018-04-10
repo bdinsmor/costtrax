@@ -50,9 +50,9 @@ export class HomeComponent implements OnInit {
   }
 
   getLatestActivity(): void {
-    this.logEntryService.getAll();
-    this.logEntries$ = this.logEntryService.entities$;
-    this.count$ = this.logEntryService.count$;
+    // this.logEntryService.getAll();
+    this.logEntries$ = this.logEntryService.getData();
+    this.count$ = this.logEntryService.getCount();
     this.loading$ = this.logEntryService.loading$;
   }
 }

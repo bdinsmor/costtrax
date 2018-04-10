@@ -24,6 +24,7 @@ import { RequestFormWizardComponent } from '@app/requests/request-form/request-f
 
 import { NG_SELECT_DEFAULT_CONFIG, NgSelectModule } from '@ng-select/ng-select';
 import { EquipmentService } from '@app/requests/equipment.service';
+import { ScrollbarHelper, DimensionsHelper } from '@swimlane/ngx-datatable';
 
 export function tokenGetter() {
   return localStorage.getItem('access_token');
@@ -61,7 +62,9 @@ export function tokenGetter() {
     RequestsService,
     ProjectsService,
     ContractorsService,
-    CompaniesService
+    CompaniesService,
+    ScrollbarHelper,
+    DimensionsHelper
   ],
   bootstrap: [AppComponent]
 })

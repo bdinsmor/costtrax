@@ -23,16 +23,10 @@ import { MessageFormDialogComponent } from './message-form-dialog/message-form.d
 export class MessagesComponent implements OnInit, OnDestroy {
   searchInput: FormControl;
   dialogRef: any;
-  messages$: Observable<Message[]>;
-  count$: Observable<number>;
-  loading$: Observable<boolean>;
   costs: Observable<Costs>;
 
   constructor(private messagesService: MessagesService, public dialog: MatDialog) {
     this.searchInput = new FormControl('');
-    this.messages$ = messagesService.entities$;
-    this.loading$ = messagesService.loading$;
-    this.count$ = messagesService.count$;
   }
 
   newRequest() {
@@ -53,7 +47,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getData();
     this.searchInput.valueChanges
       .debounceTime(300)
       .distinctUntilChanged()
@@ -65,11 +58,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
       });
   }
 
-  getData(): void {
-    this.messagesService.getAll();
-
-    // console.log('number of messages: ' + JSON.stringify(this.messagesService.count$));
-  }
   add(m: Message) {
     this.messagesService.add(m);
   }

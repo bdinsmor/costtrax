@@ -119,8 +119,57 @@
               <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
-            <div>
-              <pre>{{item | json}}</pre>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <button mat-raised-button (click)="approveActive(item)">Approve</button>
+              <button mat-button (click)="disputeActive(item)">Add Dispute</button>
+            </div>
+            <div class="m-t-12 full-width" *ngIf="item.disputes && item.disputes.length > 0" fxLayout="column" fxLayoutGap="10px">
+              <ngx-datatable #myActiveTable class="material" [rowHeight]="'auto'" [headerHeight]="50" [limit]="10" [columnMode]="'force'" [footerHeight]="50"
+                [rows]="item.disputes">
+                <ngx-datatable-column name="DISPUTE TYPE" prop="type">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Type" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.type">
+                        <mat-option *ngFor="let t of disputeTypes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ISSUE" prop="issue">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Issue" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.issue">
+                        <mat-option *ngFor="let t of issues" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="DISPUTE REQUEST" prop="disputeRequest">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Request" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.disputeRequest">
+                        <mat-option *ngFor="let t of requestDisputes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="AMOUNT" prop="amount">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput currencyMask [ngModelOptions]="{standalone: true}" [(ngModel)]="row.amount">
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="COMMENT" prop="comment">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="row.comment">
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
           </mat-expansion-panel>
 
@@ -167,8 +216,57 @@
               <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
-            <div>
-              <pre>{{item | json}}</pre>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <button mat-raised-button (click)="approveStandby(item)">Approve</button>
+              <button mat-button (click)="disputeStandby(item)">Add Dispute</button>
+            </div>
+            <div class="m-t-12 full-width" *ngIf="item.disputes && item.disputes.length > 0" fxLayout="column" fxLayoutGap="10px">
+              <ngx-datatable #mystandbytable class="material" [headerHeight]="50" [limit]="10" [columnMode]="'force'" [footerHeight]="50"
+                [rowHeight]="'auto'" [rows]="item.disputes">
+                <ngx-datatable-column name="DISPUTE TYPE" prop="type">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Type" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.type">
+                        <mat-option *ngFor="let t of disputeTypes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ISSUE" prop="issue">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Issue" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.issue">
+                        <mat-option *ngFor="let t of issues" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="DISPUTE REQUEST" prop="disputeRequest">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Request" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.disputeRequest">
+                        <mat-option *ngFor="let t of requestDisputes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="AMOUNT" prop="amount">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput currencyMask [ngModelOptions]="{standalone: true}" [(ngModel)]="row.amount" [options]="{ align: 'left'}">
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="COMMENT" prop="comment">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="row.comment">
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
           </mat-expansion-panel>
 
@@ -200,7 +298,7 @@
           </section>
           <mat-expansion-panel *ngFor="let item of request.costs.equipmentCosts.rentalCosts.costs">
             <mat-expansion-panel-header class="mat-row">
-              <span class="mat-cell ts-80">{{item.description}}</span>
+              <span class="mat-cell ts-80">{{item.description | truncate: 12}}</span>
               <span class="mat-cell ts-80">{{item.machine.description | truncate: 12}}</span>
               <span class="mat-cell ts-80">{{item.machine.baseRental}}</span>
               <span class="mat-cell ts-80">{{item.transportationCost | currency}}</span>
@@ -212,8 +310,57 @@
               <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
-            <div>
-              <pre>{{item | json}}</pre>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <button mat-raised-button (click)="approveRental(item)">Approve</button>
+              <button mat-button (click)="disputeRental(item)">Add Dispute</button>
+            </div>
+            <div class="m-t-12 full-width" *ngIf="item.disputes && item.disputes.length > 0" fxLayout="column" fxLayoutGap="10px">
+              <ngx-datatable #myrentaltable class="material" [headerHeight]="50" [limit]="10" [columnMode]="'force'" [footerHeight]="50"
+                [rowHeight]="'auto'" [rows]="item.disputes">
+                <ngx-datatable-column name="DISPUTE TYPE" prop="type">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Type" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.type">
+                        <mat-option *ngFor="let t of disputeTypes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ISSUE" prop="issue">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Issue" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.issue">
+                        <mat-option *ngFor="let t of issues" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="DISPUTE REQUEST" prop="disputeRequest">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Request" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.disputeRequest">
+                        <mat-option *ngFor="let t of requestDisputes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="AMOUNT" prop="amount">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput currencyMask [options]="{ align: 'left'}" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.amount">
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="COMMENT" prop="comment">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="row.comment">
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
           </mat-expansion-panel>
 
@@ -237,7 +384,7 @@
           </section>
           <mat-expansion-panel *ngFor="let item of request.costs.materialCosts.costs">
             <mat-expansion-panel-header class="mat-row">
-              <span class="mat-cell ts-80">{{item.description}}</span>
+              <span class="mat-cell ts-80">{{item.description | truncate: 6}}</span>
               <span class="mat-cell ts-80">{{item.costPerUnit | currency}}</span>
               <span class="mat-cell ts-80">{{item.unitQuantity}}</span>
               <span class="mat-cell ts-80">
@@ -248,8 +395,57 @@
               <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
-            <div>
-              <pre>{{item | json}}</pre>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <button mat-raised-button (click)="approveMaterial(item)">Approve</button>
+              <button mat-button (click)="disputeMaterial(item)">Add Dispute</button>
+            </div>
+            <div class="m-t-12 full-width" *ngIf="item.disputes && item.disputes.length > 0" fxLayout="column" fxLayoutGap="10px">
+              <ngx-datatable #mymaterialtable class="material" [headerHeight]="50" [limit]="10" [columnMode]="'force'" [footerHeight]="50"
+                [rowHeight]="'auto'" [rows]="item.disputes">
+                <ngx-datatable-column name="DISPUTE TYPE" prop="type">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Type" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.type">
+                        <mat-option *ngFor="let t of disputeTypes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ISSUE" prop="issue">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Issue" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.issue">
+                        <mat-option *ngFor="let t of issues" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="DISPUTE REQUEST" prop="disputeRequest">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Request" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.disputeRequest">
+                        <mat-option *ngFor="let t of requestDisputes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="AMOUNT" prop="amount">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput currencyMask [options]="{ align: 'left'}" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.amount">
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="COMMENT" prop="comment">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="row.comment">
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
           </mat-expansion-panel>
 
@@ -291,8 +487,57 @@
               <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
-            <div>
-              <pre>{{item | json}}</pre>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <button mat-raised-button (click)="approveOther(item)">Approve</button>
+              <button mat-button (click)="disputeOther(item)">Add Dispute</button>
+            </div>
+            <div class="m-t-12 full-width" *ngIf="item.disputes && item.disputes.length > 0" fxLayout="column" fxLayoutGap="10px">
+              <ngx-datatable #myothertable class="material" [headerHeight]="50" [limit]="10" [columnMode]="'force'" [footerHeight]="50"
+                [rowHeight]="'auto'" [rows]="item.disputes">
+                <ngx-datatable-column name="DISPUTE TYPE" prop="type">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Type" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.type">
+                        <mat-option *ngFor="let t of disputeTypes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ISSUE" prop="issue">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Issue" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.issue">
+                        <mat-option *ngFor="let t of issues" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="DISPUTE REQUEST" prop="disputeRequest">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Request" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.disputeRequest">
+                        <mat-option *ngFor="let t of requestDisputes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="AMOUNT" prop="amount">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput currencyMask [options]="{ align: 'left'}" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.amount">
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="COMMENT" prop="comment">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="row.comment">
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
           </mat-expansion-panel>
 
@@ -325,8 +570,57 @@
               <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
-            <div>
-              <pre>{{item | json}}</pre>
+            <div fxLayout="row" fxLayoutGap="8px">
+              <button mat-raised-button (click)="approveSubcontractor(item)">Approve</button>
+              <button mat-button (click)="disputeSubcontractor(item)">Add Dispute</button>
+            </div>
+            <div class="m-t-12 full-width" *ngIf="item.disputes && item.disputes.length > 0" fxLayout="column" fxLayoutGap="10px">
+              <ngx-datatable #mysubcontractortable class="material" [headerHeight]="50" [limit]="10" [columnMode]="'force'" [footerHeight]="50"
+                [rowHeight]="'auto'" [rows]="item.disputes">
+                <ngx-datatable-column name="DISPUTE TYPE" prop="type">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Type" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.type">
+                        <mat-option *ngFor="let t of disputeTypes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="ISSUE" prop="issue">
+                  <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Issue" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.issue">
+                        <mat-option *ngFor="let t of issues" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="DISPUTE REQUEST" prop="disputeRequest">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-form-field>
+                      <mat-select placeholder="Dispute Request" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.disputeRequest">
+                        <mat-option *ngFor="let t of requestDisputes" [value]="t.value">
+                          {{ t.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="AMOUNT" prop="amount">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput currencyMask [options]="{ align: 'left'}" [ngModelOptions]="{standalone: true}" [(ngModel)]="row.amount">
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="COMMENT" prop="comment">
+                  <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <input matInput [ngModelOptions]="{standalone: true}" [(ngModel)]="row.comment">
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
             </div>
           </mat-expansion-panel>
 

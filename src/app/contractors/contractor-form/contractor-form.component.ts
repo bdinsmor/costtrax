@@ -101,23 +101,16 @@ export class ContractorFormComponent implements OnInit {
       this.contractor = new Contractor({});
     }
     this.contractorFormGroup = this.createContractorFormGroup();
-    this.contractors$ = this.contractorsService.entities$;
-    this.companies$ = this.companiesService.entities$;
+    this.contractors$ = this.contractorsService.getData();
+    this.companies$ = this.companiesService.getData();
   }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.contractorsService.clearCache();
-      this.contractorsService.getByKey(id);
-      this.contractorsService.errors$.subscribe(errors => {
-        this.openSnackBar(errors.payload.error.message, '');
-      });
-      this.contractorsService.filteredEntities$.subscribe(r => {
-        if (r && r.length === 1) {
-          this.contractor = r[0];
-
-          this.openSnackBar('Loaded Contractor', '');
+      this.contractorsService.findById(id).subscribe(r => {
+        if (r) {
+          this.contractor = r;
           this.createContractorFormGroup();
         }
       });
