@@ -20,7 +20,7 @@
               <mat-form-field class="width-50">
                 <mat-select [(ngModel)]="selectedProject" formControlName="selectedProject" [compareWith]="compareFn" formControlName="projectSelect"
                   placeholder="Select Project">
-                  <mat-option *ngFor="let project of projects | async" [value]="project">
+                  <mat-option *ngFor="let project of projects" [value]="project">
                     {{ project.name }}
                   </mat-option>
                 </mat-select>
@@ -39,7 +39,7 @@
             <form [formGroup]="costFormGroup" *ngIf="selectedProject">
               <div fxLayout="column" fxLayoutGap="18px" fxLayoutAlign="start start">
                 <mat-toolbar class="alt">
-                  <mat-toolbar-row>
+                  <mat-toolbar-row fxLayout="row" fxLayoutGap="18px">
                     <div class="cost-column" fxFlex fxLayout="column" fxLayoutAlign="center start">
                       <label class="cost-label" fxFlex>REQUEST ID</label>
                       <div fxFlex>{{request.id}}</div>
@@ -615,7 +615,7 @@
         <form [formGroup]="projectFormGroup" fxLayout="column">
           <mat-form-field fxFlex class="width-85">
             <mat-select placeholder="Select Project Owner">
-              <mat-option *ngFor="let project of projects | async" [value]="project.id">
+              <mat-option *ngFor="let project of projects" [value]="project.id">
                 {{ project.owner }}
               </mat-option>
             </mat-select>

@@ -46,7 +46,8 @@ export class RequestFormWizardComponent implements OnInit {
   action: string;
   request: Request;
   request$: Observable<Request>;
-  projects: Observable<Project[]>;
+  projects$: Observable<Project[]>;
+  projects: Project[] = [];
   materialDisplayedColumns = [
     'materialDescription',
     'materialCost',
@@ -117,7 +118,11 @@ export class RequestFormWizardComponent implements OnInit {
     this.costFormGroup = this.createCostFormGroup();
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();
     this.signatureFormGroup = this.createSignatureFormGroup();
-    this.projects = this.projectsService.entities$;
+    this.projects$ = this.projectsService.entities$;
+    this.projects$.subscribe((res: any[]) => {
+      this.projectsService.buildProjects(res);
+      this.projects = this.projectsService.projects;
+    });
     this.machines$ = this.equipmentService.entities$;
 
     this.action = data.action;
