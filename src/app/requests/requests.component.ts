@@ -12,6 +12,7 @@ import { RequestsService } from './requests.service';
 import { Request, Costs } from '@app/shared/model';
 import { Observable } from 'rxjs/Observable';
 import { RequestFormDialogComponent } from './request-form-dialog/request-form.dialog.component';
+import { of } from 'rxjs/observable/of';
 
 @Component({
   selector: 'app-requests',
@@ -24,13 +25,14 @@ export class RequestsComponent implements OnInit, OnDestroy {
   searchInput: FormControl;
   dialogRef: any;
   requests$: Observable<Request[]>;
+  rawLineItems$: Observable<any[]>;
   count$: Observable<number>;
   loading$: Observable<boolean>;
   costs: Observable<Costs>;
 
   constructor(private requestsService: RequestsService, public dialog: MatDialog) {
     this.searchInput = new FormControl('');
-    this.requests$ = requestsService.entities$;
+    this.rawLineItems$ = requestsService.entities$;
     this.loading$ = requestsService.loading$;
     this.count$ = requestsService.count$;
   }
@@ -60,16 +62,14 @@ export class RequestsComponent implements OnInit, OnDestroy {
       .subscribe(searchText => {
         console.log('searchText: ' + searchText);
         const query = 'project.name=' + searchText;
-        this.requestsService.clearCache();
         this.requestsService.getWithQuery(searchText);
       });
   }
 
   getData(): void {
-    this.requestsService.getAll();
-
     // console.log('number of messages: ' + JSON.stringify(this.messagesService.count$));
   }
+
   add(m: Request) {
     this.requestsService.add(m);
   }

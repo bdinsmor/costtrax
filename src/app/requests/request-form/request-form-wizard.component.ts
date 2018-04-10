@@ -191,7 +191,7 @@ export class RequestFormWizardComponent implements OnInit {
     this.rentalDataSource = new RentalDataSource(this.request.costs.equipmentCosts.rentalCosts.costs);
     this.subcontractorDataSource = new SubcontractorDataSource(this.request.costs.subcontractorCosts.costs);
     this.otherDataSource = new OtherDataSource(this.request.costs.otherCosts.costs);
-    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
+    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.costs);
   }
 
   addActive() {
@@ -255,8 +255,8 @@ export class RequestFormWizardComponent implements OnInit {
   }
 
   addMaterial() {
-    this.request.costs.materialCosts.materialCosts.push(new MaterialCost({}));
-    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
+    this.request.costs.materialCosts.costs.push(new MaterialCost({}));
+    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.costs);
   }
 
   materialChanged(mc: MaterialCost) {
@@ -267,8 +267,8 @@ export class RequestFormWizardComponent implements OnInit {
 
   recalculateTotalMaterial() {
     let total = 0;
-    for (let i = 0; i < this.request.costs.materialCosts.materialCosts.length; i++) {
-      const c: MaterialCost = this.request.costs.materialCosts.materialCosts[i];
+    for (let i = 0; i < this.request.costs.materialCosts.costs.length; i++) {
+      const c: MaterialCost = this.request.costs.materialCosts.costs[i];
       total += c.total;
     }
     this.request.costs.materialCosts.total = total;

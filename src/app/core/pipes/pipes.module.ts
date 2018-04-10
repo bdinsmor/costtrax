@@ -6,10 +6,11 @@ import { HtmlToPlaintextPipe } from './htmlToPlaintext.pipe';
 import { FilterPipe } from './filter.pipe';
 import { CamelCaseToDashPipe } from './camelCaseToDash.pipe';
 import { PhonePipe } from '@app/core/pipes/phone.pipe';
+import { TruncatePipe } from '@app/core/pipes/truncate.pipe';
 
 @NgModule({
-  declarations: [KeysPipe, GetByIdPipe, PhonePipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe],
+  declarations: [KeysPipe, TruncatePipe, GetByIdPipe, PhonePipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe],
   imports: [],
-  exports: [KeysPipe, GetByIdPipe, PhonePipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe]
+  exports: [KeysPipe, TruncatePipe, GetByIdPipe, PhonePipe, HtmlToPlaintextPipe, FilterPipe, CamelCaseToDashPipe]
 })
 export class PipesModule {}

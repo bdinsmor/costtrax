@@ -11,13 +11,13 @@ const defaultDataServiceConfig: DefaultDataServiceConfig = {
       // entityResourceUrl: 'https://external.development.equipmentwatchapi.com/v1/taxonomy/models',
       entityResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/projects/',
       collectionResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/projects/request'
-    },
+    },*/
     Requests: {
       // You must specify the root as part of the resource URL.
       // entityResourceUrl: 'https://external.development.equipmentwatchapi.com/v1/taxonomy/models',
       entityResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/lineitems/manage',
-      collectionResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/lineitems/manage'
-    }*/
+      collectionResourceUrl: 'https://hermes-api.development.equipmentwatchapi.com/lineitems/manage?limit=1'
+    }
   }
 };
 

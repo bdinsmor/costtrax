@@ -129,6 +129,8 @@ export class Cost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  type: string;
+  status: string;
 }
 
 export class SubcontractorCosts {
@@ -136,12 +138,12 @@ export class SubcontractorCosts {
   total: number;
   paid: number;
   unpaid: number;
-  costs: Array<Cost>;
+  costs: Cost[];
   constructor(subCost: any) {
     {
       this.enabled = subCost.enabled || false;
       this.total = subCost.total || 0;
-      this.costs = subCost.costs || new Array<Cost>();
+      this.costs = subCost.costs || [];
     }
   }
 }
@@ -157,6 +159,7 @@ export class MaterialCost {
   date: Date;
   approved: Boolean;
   reason: Boolean;
+  status: string;
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
@@ -169,6 +172,7 @@ export class MaterialCost {
       this.description = mc.description || '';
       this.costPerUnit = mc.costPerUnit || 0;
       this.submitDate = mc.submitDate || new Date();
+      this.status = mc.status || '';
     }
   }
 }
@@ -178,12 +182,12 @@ export class MaterialCosts {
   total: number;
   paid: number;
   unpaid: number;
-  materialCosts: Array<MaterialCost>;
-  constructor(materialCosts: any) {
+  costs: MaterialCost[];
+  constructor(m: any) {
     {
-      this.enabled = materialCosts.enabled || false;
-      this.total = materialCosts.total || 0;
-      this.materialCosts = materialCosts.materialCosts || new Array<MaterialCost>();
+      this.enabled = m.enabled || false;
+      this.total = m.total || 0;
+      this.costs = m.costs || [];
     }
   }
 }
@@ -262,7 +266,6 @@ export class Equipment {
   baseRental: number;
   fhwa: number;
   constructor(m: any) {
-    console.log('inside: ' + JSON.stringify(m, null, 2));
     this.make = m.make || m.manufacturerName || '';
     this.model = m.model || m.modelName || '';
     this.year = Number(m.year) || Number(new Date(m.dateIntroduced).getFullYear) || 2018;
@@ -288,6 +291,7 @@ export class ActiveCost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  status: string;
 }
 
 export class StandbyCost {
@@ -303,12 +307,14 @@ export class StandbyCost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  status: string;
 }
 
 export class RentalCost {
   id: string;
   date: Date;
   machine: Equipment;
+  description: string;
   transportationCost: number;
   other: number;
   invoice: ByteString;
@@ -320,6 +326,7 @@ export class RentalCost {
   approver: Contractor;
   actionDate: Date;
   submitDate: Date;
+  status: string;
 }
 
 export class ActiveCosts {
@@ -484,6 +491,92 @@ export class Request {
       this.total = request.total || 0;
       this.status = request.status || 'UNPAID';
     }
+  }
+
+  recalculateTotalMaterial() {
+    let total = 0;
+    for (let i = 0; i < this.costs.materialCosts.costs.length; i++) {
+      const c: MaterialCost = this.costs.materialCosts.costs[i];
+      total += c.total;
+    }
+    this.costs.materialCosts.total = total;
+  }
+
+  recalculateTotalEquipment() {
+    let total = 0;
+    let activeTotal = 0;
+    let standbyTotal = 0;
+    let rentalTotal = 0;
+    for (let i = 0; i < this.costs.equipmentCosts.activeCosts.costs.length; i++) {
+      const c: ActiveCost = this.costs.equipmentCosts.activeCosts.costs[i];
+      activeTotal += c.total;
+    }
+    for (let i = 0; i < this.costs.equipmentCosts.standbyCosts.costs.length; i++) {
+      const c: StandbyCost = this.costs.equipmentCosts.standbyCosts.costs[i];
+      standbyTotal += c.total;
+    }
+    for (let i = 0; i < this.costs.equipmentCosts.rentalCosts.costs.length; i++) {
+      const c: RentalCost = this.costs.equipmentCosts.rentalCosts.costs[i];
+      rentalTotal += c.total;
+    }
+    this.costs.equipmentCosts.activeCosts.total = activeTotal;
+    this.costs.equipmentCosts.standbyCosts.total = standbyTotal;
+    this.costs.equipmentCosts.rentalCosts.total = rentalTotal;
+    total = activeTotal + standbyTotal + rentalTotal;
+    this.costs.equipmentCosts.total = total;
+  }
+
+  recalculateTotalLabor() {
+    const total = 0;
+    this.costs.laborCosts.total = total;
+  }
+
+  recalculateTotalSubcontractor() {
+    let total = 0;
+    for (let i = 0; i < this.costs.subcontractorCosts.costs.length; i++) {
+      const c: Cost = this.costs.subcontractorCosts.costs[i];
+      total += c.total;
+    }
+    this.costs.subcontractorCosts.total = total;
+  }
+
+  recalculateTotalOther() {
+    let total = 0;
+    for (let i = 0; i < this.costs.otherCosts.costs.length; i++) {
+      const c: Cost = this.costs.otherCosts.costs[i];
+      total += c.total;
+    }
+    this.costs.otherCosts.total = total;
+  }
+
+  recalculateTotal() {
+    let t = 0;
+    if (this.costs.equipmentCosts) {
+      this.recalculateTotalEquipment();
+      t += this.costs.equipmentCosts.total;
+    }
+    if (this.costs.laborCosts) {
+      this.recalculateTotalLabor();
+      t += this.costs.laborCosts.total;
+    }
+    if (this.costs.materialCosts) {
+      this.recalculateTotalMaterial();
+      t += this.costs.materialCosts.total;
+    }
+    if (this.costs.otherCosts) {
+      this.recalculateTotalOther();
+      t += this.costs.otherCosts.total;
+    }
+    if (this.costs.subcontractorCosts) {
+      this.recalculateTotalSubcontractor();
+      t += this.costs.subcontractorCosts.total;
+    }
+    this.costs.total = t;
+    this.total = t;
+  }
+
+  calculateTotal() {
+    this.recalculateTotal();
   }
 }
 /*

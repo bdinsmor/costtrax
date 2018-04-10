@@ -31,6 +31,7 @@ export class RequestFormComponent implements OnInit {
   request: Request;
   request$: Observable<Request>;
   projects: Observable<Project[]>;
+  requests: Observable<Request[]>;
   materialDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
   materialDataSource: MaterialDataSource;
   otherDisplayedColumns = ['description', 'cost', 'quantity', 'receipt', 'subtotal', 'total'];
@@ -53,25 +54,22 @@ export class RequestFormComponent implements OnInit {
     this.costDetailsFormGroup = this.createCostDetailsFormGroup();
     this.signatureFormGroup = this.createSignatureFormGroup();
     this.projects = this.projectsService.entities$;
+    this.requests = this.requestsService.entities$;
   }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.requestsService.clearCache();
-      this.requestsService.getByKey(id);
-      this.requestsService.errors$.subscribe(errors => {
-        this.openSnackBar(errors.payload.error.message, '');
-      });
-      this.requestsService.filteredEntities$.subscribe(r => {
-        if (r && r.length === 1) {
-          this.request = r[0];
-          this.selectedProject = r[0].project;
-          this.openSnackBar('Loaded Request', '');
-          this.createCostFormGroup();
-          this.createMaterialCosts();
-        }
-      });
+      this.request = this.requestsService.findById(id);
+      if (this.request) {
+        this.selectedProject = this.request.project;
+
+        this.createCostFormGroup();
+        this.createMaterialCosts();
+        this.openSnackBar('Loaded Request', '');
+      } else {
+        this.openSnackBar('Could NOT Load Request with id: ' + id, '');
+      }
     } else {
       this.request = new Request({});
     }
@@ -119,10 +117,7 @@ export class RequestFormComponent implements OnInit {
   }
 
   createMaterialCosts() {
-    console.log('material enabled: ' + this.request.costs.materialCosts.enabled);
-    console.log(JSON.stringify(this.request.costs.materialCosts, null, 2));
-    console.log('# of material costs: ' + this.request.costs.materialCosts.materialCosts.length);
-    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.materialCosts);
+    this.materialDataSource = new MaterialDataSource(this.request.costs.materialCosts.costs);
   }
 
   createProjectFormGroup() {
@@ -131,7 +126,6 @@ export class RequestFormComponent implements OnInit {
   createCostFormGroup() {
     console.log('createCostForm');
     if (this.costFormGroup && this.request) {
-      console.log('startDate: ' + this.request.startDate);
       this.costFormGroup.controls['startDate'].patchValue(this.request.startDate);
       this.costFormGroup.controls['endDate'].patchValue(this.request.endDate);
     } else {

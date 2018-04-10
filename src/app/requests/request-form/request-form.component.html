@@ -107,16 +107,16 @@
           </section>
           <mat-expansion-panel *ngFor="let item of request.costs.equipmentCosts.activeCosts.costs">
             <mat-expansion-panel-header class="mat-row">
-              <span class="mat-cell">{{item.machine.make}}</span>
-              <span class="mat-cell">{{item.machine.description}}</span>
-              <span class="mat-cell">{{item.machine.year}}</span>
-              <span class="mat-cell">{{item.machine.vin}}</span>
-              <span class="mat-cell">{{item.machine.ownershipCost | currency}}</span>
-              <span class="mat-cell">{{item.machine.operatingCost | currency}}</span>
-              <span class="mat-cell">{{item.machine.fhwa | currency}}</span>
-              <span class="mat-cell">{{item.hours}}</span>
-              <span class="mat-cell">{{item.transportationCost | currency}}</span>
-              <span class="mat-cell">{{item.total | currency}}</span>
+              <span class="mat-cell ts-80">{{item.machine.make}}</span>
+              <span class="mat-cell ts-80">{{item.machine.description | truncate: 12}}</span>
+              <span class="mat-cell ts-80">{{item.machine.year}}</span>
+              <span class="mat-cell ts-80">{{item.machine.vin}}</span>
+              <span class="mat-cell ts-80">{{item.machine.ownershipCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.machine.operatingCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.machine.fhwa | currency}}</span>
+              <span class="mat-cell ts-80">{{item.hours}}</span>
+              <span class="mat-cell ts-80">{{item.transportationCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
             <div>
@@ -155,16 +155,174 @@
           </section>
           <mat-expansion-panel *ngFor="let item of request.costs.equipmentCosts.standbyCosts.costs">
             <mat-expansion-panel-header class="mat-row">
-              <span class="mat-cell">{{item.machine.make}}</span>
-              <span class="mat-cell">{{item.machine.description}}</span>
-              <span class="mat-cell">{{item.machine.year}}</span>
-              <span class="mat-cell">{{item.machine.vin}}</span>
-              <span class="mat-cell">{{item.machine.ownershipCost | currency}}</span>
-              <span class="mat-cell">{{item.machine.operatingCost | currency}}</span>
-              <span class="mat-cell">{{item.machine.fhwa | currency}}</span>
-              <span class="mat-cell">{{item.hours}}</span>
-              <span class="mat-cell">{{item.transportationCost | currency}}</span>
-              <span class="mat-cell">{{item.total | currency}}</span>
+              <span class="mat-cell ts-80">{{item.machine.make}}</span>
+              <span class="mat-cell ts-80">{{item.machine.description | truncate: 12}}</span>
+              <span class="mat-cell ts-80">{{item.machine.year}}</span>
+              <span class="mat-cell ts-80">{{item.machine.vin}}</span>
+              <span class="mat-cell ts-80">{{item.machine.ownershipCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.machine.operatingCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.machine.fhwa | currency}}</span>
+              <span class="mat-cell ts-80">{{item.hours}}</span>
+              <span class="mat-cell ts-80">{{item.transportationCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.total | currency}}</span>
+
+            </mat-expansion-panel-header>
+            <div>
+              <pre>{{item | json}}</pre>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
+      <div style="padding-top:10px"></div>
+      <div *ngIf="request.costs.equipmentCosts.rentalCosts.costs.length > 0" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+          <label>Equipment |
+            <b>Rental</b>
+          </label>
+          <span class="spacer"></span>
+          <span class="spacer"></span>
+          <span class="spacer"></span>
+
+          <span fxFlex class="right-align subtitle">powered by
+            <img class="img-responsive" src="../../assets/img/ew-small.gif">
+          </span>
+        </div>
+        <mat-accordion displayMode="flat" multi class="mat-table cost-table">
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell">DESCRIPTION</span>
+            <span class="mat-header-cell">TYPE</span>
+            <span class="mat-header-cell">BASE RENTAL</span>
+            <span class="mat-header-cell">TRANSPORT</span>
+            <span class="mat-header-cell">OTHER</span>
+            <span class="mat-header-cell">INVOICE</span>
+            <span class="mat-header-cell">TOTAL</span>
+          </section>
+          <mat-expansion-panel *ngFor="let item of request.costs.equipmentCosts.rentalCosts.costs">
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell ts-80">{{item.description}}</span>
+              <span class="mat-cell ts-80">{{item.machine.description | truncate: 12}}</span>
+              <span class="mat-cell ts-80">{{item.machine.baseRental}}</span>
+              <span class="mat-cell ts-80">{{item.transportationCost | currency}}</span>
+              <span class="mat-cell ts-80">{{item.other | currency}}</span>
+              <span class="mat-cell ts-80">
+                <a class="blue-link" *ngIf="item.invoice">invoice</a>
+                <a class="blue-link" *ngIf="!item.invoice">Add Invoice</a>
+              </span>
+              <span class="mat-cell ts-80">{{item.total | currency}}</span>
+
+            </mat-expansion-panel-header>
+            <div>
+              <pre>{{item | json}}</pre>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
+      <div style="padding-top:10px"></div>
+      <div *ngIf="request.costs.materialCosts.costs.length > 0" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+          <label>Material
+          </label>
+
+        </div>
+        <mat-accordion displayMode="flat" multi class="mat-table cost-table">
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell">DESCRIPTION</span>
+            <span class="mat-header-cell">COST PER UNIT</span>
+            <span class="mat-header-cell">QUANTITY</span>
+            <span class="mat-header-cell">RECEIPT</span>
+            <span class="mat-header-cell">SUBTOTAL</span>
+            <span class="mat-header-cell">TOTAL</span>
+          </section>
+          <mat-expansion-panel *ngFor="let item of request.costs.materialCosts.costs">
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell ts-80">{{item.description}}</span>
+              <span class="mat-cell ts-80">{{item.costPerUnit | currency}}</span>
+              <span class="mat-cell ts-80">{{item.unitQuantity}}</span>
+              <span class="mat-cell ts-80">
+                <a class="blue-link" *ngIf="item.receipt">receipt</a>
+                <a class="blue-link" *ngIf="!item.receipt">Add Receipt</a>
+              </span>
+              <span class="mat-cell ts-80">{{item.subtotal | currency}}</span>
+              <span class="mat-cell ts-80">{{item.total | currency}}</span>
+
+            </mat-expansion-panel-header>
+            <div>
+              <pre>{{item | json}}</pre>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
+      <!-- <div style="padding-top:10px"></div>
+      <div *ngIf="request.costs.laborCosts" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+          <label>Labor
+          </label>
+
+        </div>
+
+      </div> -->
+      <div style="padding-top:10px"></div>
+      <div *ngIf="request.costs.otherCosts.costs.length > 0" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+          <label>Other
+          </label>
+
+        </div>
+        <mat-accordion displayMode="flat" multi class="mat-table cost-table">
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell">TYPE</span>
+            <span class="mat-header-cell">DESCRIPTION</span>
+            <span class="mat-header-cell">RECEIPT</span>
+            <span class="mat-header-cell">SUBTOTAL</span>
+            <span class="mat-header-cell">TOTAL</span>
+          </section>
+          <mat-expansion-panel *ngFor="let item of request.costs.otherCosts.costs">
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell ts-80">{{item.type}}</span>
+              <span class="mat-cell ts-80">{{item.description | truncate:12}}</span>
+              <span class="mat-cell ts-80">
+                <a class="blue-link" *ngIf="item.receipt">receipt</a>
+                <a class="blue-link" *ngIf="!item.receipt">Add Receipt</a>
+              </span>
+              <span class="mat-cell ts-80">{{item.subtotal | currency}}</span>
+              <span class="mat-cell ts-80">{{item.total | currency}}</span>
+
+            </mat-expansion-panel-header>
+            <div>
+              <pre>{{item | json}}</pre>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
+      <div style="padding-top:10px"></div>
+      <div *ngIf="request.costs.subcontractorCosts.costs.length > 0" class="full-width" fxLayout="column" fxLayoutGap="4px">
+        <div class="smaller-gray-text" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+          <label>Subcontractor
+          </label>
+
+        </div>
+        <mat-accordion displayMode="flat" multi class="mat-table cost-table">
+          <section matSort class="mat-header-row">
+            <span class="mat-header-cell">TYPE</span>
+            <span class="mat-header-cell">DESCRIPTION</span>
+            <span class="mat-header-cell">RECEIPT</span>
+            <span class="mat-header-cell">SUBTOTAL</span>
+            <span class="mat-header-cell">TOTAL</span>
+          </section>
+          <mat-expansion-panel *ngFor="let item of request.costs.subcontractorCosts.costs">
+            <mat-expansion-panel-header class="mat-row">
+              <span class="mat-cell ts-80">{{item.type}}</span>
+              <span class="mat-cell ts-80">{{item.description | truncate:12}}</span>
+              <span class="mat-cell ts-80">
+                <a class="blue-link" *ngIf="item.receipt">receipt</a>
+                <a class="blue-link" *ngIf="!item.receipt">Add Receipt</a>
+              </span>
+              <span class="mat-cell ts-80">{{item.subtotal | currency}}</span>
+              <span class="mat-cell ts-80">{{item.total | currency}}</span>
 
             </mat-expansion-panel-header>
             <div>

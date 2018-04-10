@@ -1,3 +1,4 @@
+import { StandbyCost, Contractor } from './../../shared/model';
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewEncapsulation, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatPaginator } from '@angular/material';
@@ -9,11 +10,12 @@ import { appAnimations } from '@app/core/animations';
 import { ConfirmDialogComponent } from '@app/core/components/confirm-dialog/confirm-dialog.component';
 
 import { RequestsService } from '../requests.service';
-import { Request, Project } from '@app/shared/model';
+import { Request, Project, Cost, MaterialCost, Equipment } from '@app/shared/model';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ProjectsService } from '@app/projects/projects.service';
 import { RequestFormDialogComponent } from '@app/requests/request-form-dialog/request-form.dialog.component';
 import { Router } from '@angular/router';
+import { RentalCost, ActiveCost } from '../../shared/model';
 
 @Component({
   selector: 'app-requests-list',
@@ -32,6 +34,7 @@ export class RequestsListComponent implements OnInit, OnDestroy {
   selection = new SelectionModel<Element>(true, []);
   dialogRef: any;
   projects: Observable<Project[]>;
+  rawLineItems$: Observable<any[]>;
   confirmDialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(
@@ -42,7 +45,13 @@ export class RequestsListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.dataSource = new RequestsDataSource(this.requestsService);
+    this.requestsService.getAll();
+    this.rawLineItems$ = this.requestsService.entities$;
+    this.rawLineItems$.subscribe((res: any[]) => {
+      this.requestsService.buildRequests(res);
+      this.requests = this.requestsService.requests;
+      this.dataSource = new RequestsDataSource(this.requests);
+    });
   }
 
   masterToggle(): void {}
@@ -55,17 +64,15 @@ export class RequestsListComponent implements OnInit, OnDestroy {
 }
 
 export class RequestsDataSource extends DataSource<any> {
-  constructor(private requestsService: RequestsService) {
+  constructor(private dataBase: Request[]) {
     super();
   }
-
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<any[]> {
-    //  console.log('num: ' + this.requestsService.count$);
-    return this.requestsService.entities$;
+  connect(): Observable<Request[]> {
+    return Observable.of(this.dataBase);
   }
   length(): Observable<number> {
-    return this.requestsService.count$;
+    return Observable.of(this.dataBase.length);
   }
 
   disconnect() {}

@@ -8,12 +8,16 @@
   }
 
   .smaller-gray-text {
-    font-size: 75%;
+    font-size: 90%;
     color: mat-color($mat-fusedark, 500, 0.9);
   }
 
   .full-width {
     width: 100%;
+  }
+
+  .ts-80 {
+    font-size: 80%;
   }
 
   .cost-row {
