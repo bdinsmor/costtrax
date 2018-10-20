@@ -1,0 +1,4 @@
+<ng-select style="width:100%" [items]="searchResults$ | async" [disabled]="shouldDisable" groupBy="subtypeName" appendTo="body" [bindLabel]="type"
+  [placeholder]="placeholder" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [loading]="loading" [typeahead]="searchInput$"
+  [(ngModel)]="selectedItem" (change)="selectionChanged()" dropdownPosition="top" [ngModelOptions]="{standalone: true}">
+</ng-select>

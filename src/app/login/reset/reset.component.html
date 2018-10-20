@@ -1,0 +1,54 @@
+<div class="container full-height mt-5">
+  <div class="row full-height justify-content-center align-items-center">
+    <form class="col-6 full-height" (ngSubmit)="reset()" [formGroup]="loginForm" novalidate>
+
+
+
+      <div class="login-box card no-border header-bg">
+        <clr-header class="header header-6  align-items-center justify-content-center pb-5 pt-5">
+
+          <img class="logo" alt="logo" width="350" src="../assets/img/costtrax.png">
+
+
+        </clr-header>
+        <div class="full-width justify-content-center align-items-center px-2 pt-1">
+          <h3>RESET PASSWORD</h3>
+        </div>
+        <div class="px-2 pt-2 form-bg">
+
+          <div class="full-width">
+            <mat-form-field class="full-width">
+              <input class="full-width" type="text" matInput formControlName="email" autocomplete="email" [placeholder]="'Email'" required
+              />
+              <mat-error *ngIf="!loginForm.controls.email.valid || loginForm.controls.email.untouched">
+                <span>Valid Email is required</span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="full-width">
+            <mat-form-field class="full-width">
+              <input class="full-width" type="password" matInput formControlName="password" autocomplete="current-password" [placeholder]="'New Password'"
+                required/>
+              <mat-error *ngIf="!loginForm.controls.password.valid || loginForm.controls.password.untouched">
+                <span>New Password is required</span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="login-error" [hidden]="!error || isLoading">
+            Email or password incorrect.
+          </div>
+
+
+
+
+          <div class="footer d-flex row justify-content-center pb-2">
+            <button class="btn btn-primary login-btn ripple btn-dark" type="submit" [disabled]="loginForm.invalid || isLoading">
+              <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+              <span>Reset Password</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

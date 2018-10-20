@@ -1,0 +1,172 @@
+<div class="modal-body project-form">
+  <div [formGroup]="projectFormGroup">
+    <section class="form-block">
+      <div class="form-group">
+        <label for="selects_1">Select Account: </label>
+        <div class="select d-flex w-50">
+          <select id="selects_1" formControlName="selectedAccount">
+            <option *ngFor="let choice of accounts$ | async" [value]="choice.id">{{choice.organization}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="project-section full-width pb-2 row align-items-center">
+        <div class="col align-items-center">
+          <label class="required pr-2">Project Name: </label>
+          <div class="full-width">
+            <input type="text" name="projectName" class="full-width" formControlName="projectName" placeholder="project name" />
+          </div>
+        </div>
+      </div>
+      <div class="project-section full-width pb-2 row align-items-center">
+        <div class="col pl-2 align-items-center">
+          <div class="form-block row align-items-center">
+            <label for="pr-1" class="no-bottom-margin">Zip Code:</label>
+            <div class="pl-1 pr-2">
+              <input type="text" name="zipcode" formControlName="zipcode" placeholder="project zip code" />
+            </div>
+            <label class="required no-bottom-margin pr-1">State: </label>
+            <div class="w-50">
+              <ng-select class="full-width" formControlName="state">
+                <ng-option *ngFor="let state of states" [value]="state.value">{{state.label}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="form-group">
+        <label for="formFields_8">Instructions:</label>
+        <textarea id="formFields_8" rows="3" formControlName="projectInstructions"></textarea>
+      </div>
+    </section>
+    <section class="form-group">
+      <app-user-list [users]="project.users" [projectId]="project.id" [newProject]="true" (changed)="refreshUsers($event)"></app-user-list>
+    </section>
+    <section class="form-group">
+      <div class="project-heading pb-1">ALLOWED COST TYPES &amp; ADJUSTMENTS</div>
+      <div class="full-width column">
+        <div class="checkbox">
+          <input type="checkbox" id="laborCheck" (change)="toggleCheckbox('labor',$event)" formControlName="laborCostsCheckbox">
+          <label for="laborCheck">Labor Costs</label>
+        </div>
+        <mat-card *ngIf="project.laborCostsEnabled" class="project-adjustment-section full-width mb-2">
+          <h5>LABOR ADJUSTMENTS</h5>
+          <div class="project-section pl-1 pt-1 row align-items-center">
+            <div class="pl-2 form-group">
+              <label class="pr-1">Method: Direct Labor + Fringe Benefits</label>
+              <!-- <input type="text" name="laborMethod" class="full-width" formControlName="laborMethod" placeholder="Labor Method" /> -->
+            </div>
+            <div class="pl-2 form-group">
+              <label class="pr-1">Markup: 10%</label>
+              <!-- <input type="text" name="laborMarkup" class="full-width" formControlName="laborMarkup" placeholder="Labor Markup" /> -->
+            </div>
+          </div>
+          <div class="project-section pl-1 row align-items-center">
+            <div class="pl-2 form-group">
+              <label class="pr-1">FICA %</label>
+              <input type="number" name="laborFICA" class="full-width" formControlName="laborFICA" placeholder="FICA %" />
+            </div>
+            <div class="pl-2 form-group">
+              <label class="pr-1">FUT %</label>
+              <input type="number" name="laborFUT" class="full-width" formControlName="laborFUT" placeholder="FUT %" />
+            </div>
+            <div class="pl-2 form-group">
+              <label class="pr-1">SUT %</label>
+              <input type="number" name="laborSUT" class="full-width" formControlName="laborSUT" placeholder="SUT %" />
+            </div>
+
+          </div>
+        </mat-card>
+        <div class="checkbox">
+          <input type="checkbox" matRipple id="equipmentCheck" (change)="toggleCheckbox('equipment',$event)"
+            formControlName="equipmentCostsCheckbox">
+          <label for="equipmentCheck">Equipment Costs</label>
+        </div>
+        <mat-card *ngIf="project.equipmentCostsEnabled" class="project-adjustment-section full-width mb-2">
+          <h5>ACTIVE ADJUSTMENTS</h5>
+          <div class="project-section pl-1 pt-1 row align-items-center">
+            <div class="pl-2">
+              <label class="pr-1">Method: FHWA x 1.046</label>
+              <!-- <input type="text" name="activeMethod" class="full-width" formControlName="activeMethod" placeholder="Method" /> -->
+            </div>
+            <div class="pl-2">
+              <label class="pr-1">Markup: 10%</label>
+              <!-- <input type="text" name="activeMarkup" class="full-width" formControlName="activeMarkup" placeholder="Markup" /> -->
+            </div>
+          </div>
+
+          <h5>STANDBY ADJUSTMENTS</h5>
+          <div class="project-section pl-1 pt-1 row align-items-center">
+            <div class="pl-2">
+              <label class="pr-1">Method: (Hourly Ownership x 1.046) x 0.5</label>
+              <!-- <input type="text" name="standbyMethod" class="full-width" formControlName="standbyMethod" placeholder="Method" /> -->
+            </div>
+            <div class="pl-2">
+              <label class="pr-1">Markup: 10%</label>
+              <!-- <input type="text" name="standbyMarkup" class="full-width" formControlName="standbyMarkup" placeholder="Markup" /> -->
+            </div>
+          </div>
+
+          <h5>RENTAL ADJUSTMENTS</h5>
+          <div class="project-section pl-1 pt-1 row align-items-center">
+            <div class="pl-2">
+              <label class="pr-1">Method: Hourly Rental + Operating Cost</label>
+              <!-- <input type="text" name="rentalMethod" class="full-width" formControlName="rentalMethod" placeholder="Method" /> -->
+            </div>
+            <div class="pl-2">
+              <label class="pr-1">Markup: 10%</label>
+              <!-- <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" /> -->
+            </div>
+          </div>
+
+        </mat-card>
+
+        <div class="checkbox">
+          <input type="checkbox" id="materialCheck" (change)="toggleCheckbox('material',$event)" formControlName="materialCostsCheckbox">
+          <label for="materialCheck">Material Costs</label>
+        </div>
+        <mat-card *ngIf="project.materialCostsEnabled" class="project-adjustment-section full-width mb-2">
+          <h5>ADJUSTMENTS</h5>
+          <div class="project-section pl-1 pt-1 row align-items-center">
+            <div class="pl-2 form-group">
+              <label class="pr-1">Markup: 10%</label>
+              <!-- <input type="text" name="materialMarkup" class="full-width" formControlName="materialMarkup" placeholder="Markup" /> -->
+            </div>
+          </div>
+
+        </mat-card>
+
+
+        <div class="checkbox">
+          <input type="checkbox" id="othercheck" (change)="toggleCheckbox('other',$event)" formControlName="otherCostsCheckbox">
+          <label for="othercheck">Other Costs</label>
+        </div>
+
+        <div class="checkbox">
+          <input type="checkbox" id="subcheck" (change)="toggleCheckbox('subcontractor',$event)" formControlName="subcontractorCostsCheckbox">
+          <label for="subcheck">Subcontractor Costs</label>
+        </div>
+        <mat-card *ngIf="project.subcontractorCostsEnabled" class="project-adjustment-section full-width mb-2">
+          <h5>ADJUSTMENTS</h5>
+          <div class="project-section pl-1 pt-1 row align-items-center">
+            <div class="pl-2 form-group">
+              <label class="pr-1">Markup: 10%</label>
+              <!-- <input type="text" name="subcontractorMarkup" class="full-width" formControlName="subcontractorMarkup" placeholder="Markup" /> -->
+            </div>
+          </div>
+
+        </mat-card>
+
+      </div>
+
+    </section>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline" (click)="cancelCreate()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="saveNew()">
+    <clr-icon shape="check"></clr-icon>&nbsp;Save Project
+  </button>
+</div>

@@ -1,0 +1,43 @@
+<div class="projects pt-1 mb-1">
+  <div class="full-width px-2">
+    <div class="row full-width px-1 align-items-center justify-content-center">
+      <h2 class="no-top-margin">Accounts</h2>
+      <div class="spacer"></div>
+
+      <button *ngIf="canCreateAccounts" class="btn btn-primary" (click)="createAccount()">
+        <clr-icon shape="add"></clr-icon>&nbsp;Account
+      </button>
+    </div>
+
+    <clr-tabs class="col-2">
+      <clr-tab>
+        <button clrTabLink class="align-items-center">
+          <clr-icon shape="note"></clr-icon>
+          Active Accounts
+          <strong>({{(activeAccounts$ | async)?.length}})</strong>
+        </button>
+        <clr-tab-content *clrIfActive>
+          <app-account-list [accounts]="activeAccounts$"> </app-account-list>
+        </clr-tab-content>
+      </clr-tab>
+      <clr-tab *ngIf="(archivedAccounts$ | async)?.length > 0">
+        <button clrTabLink class="align-items-center">
+          <clr-icon shape="tasks"></clr-icon>
+          Archived Accounts
+          <strong>({{(archivedAccounts$ | async)?.length}})</strong>
+        </button>
+        <clr-tab-content *clrIfActive>
+          <app-account-list [accounts]="archivedAccounts$"> </app-account-list>
+        </clr-tab-content>
+      </clr-tab>
+    </clr-tabs>
+    <clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_accountModalOpen" [clrModalClosable]="false">
+      <h3 class="modal-title">New Account</h3>
+      <div class="modal-body">
+        <app-account-form (save)="saveAccount($event)" (cancel)="createCancel()"></app-account-form>
+      </div>
+    </clr-modal>
+
+
+  </div>
+</div>

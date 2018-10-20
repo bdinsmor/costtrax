@@ -1,0 +1,289 @@
+// Variables
+@import 'variables/theme';
+@import 'partials/reset';
+@import '~@ng-select/ng-select/themes/default.theme.css';
+@import '~css-ripple-effect/dist/ripple.min.css';
+@import '~material-design-icons/iconfont/material-icons.css';
+
+// ... or
+// @import '~@ng-select/ng-select/themes/material.theme.css';
+.no-bottom-margin {
+    margin-bottom: 0 !important;
+}
+
+.w-150 {
+    width: 150px;
+}
+
+.w-100 {
+    width: 100px;
+}
+
+.disabled-text {
+    color: rgba(0, 0, 0, 0.38);
+}
+
+.header-6 {
+    background-color: #333333 !important;
+}
+
+.mt-3p {
+    margin-top: 3px !important;
+}
+
+.icon-30 {
+    width: 34px !important;
+}
+
+.datagrid-host {
+    max-height: 60vh !important;
+    padding-top: 0 !important;
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.block {
+    display: block;
+}
+
+.ripple {
+    vertical-align: middle !important;
+}
+
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+.strong {
+    font-weight: bold;
+}
+
+.datagrid .datagrid-cell,
+.datagrid .datagrid-column,
+.datagrid .datagrid-head .datagrid-row-actions {
+    line-height: 1.1rem !important;
+}
+
+.readonly-label {
+    padding-top: .3rem;
+}
+
+.no-top-margin {
+    margin-top: 0 !important;
+}
+
+.datagrid-column {
+    //  background-color: #ccc !important;
+}
+
+.btn-dark {
+    border-color: #1A3A4E !important;
+    background-color: #1A3A4E !important;
+}
+
+.btn-light {
+    border-color: #698394 !important;
+    background-color: #698394 !important;
+}
+
+.ng-dropdown-panel {
+    width: 50% !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.datagrid-placeholder-image {
+    background-image: none !important;
+}
+
+.content-area {
+    padding: .1em !important;
+}
+
+.datagrid-scroll-wrapper {
+    padding: 1px !important;
+}
+
+.modal-dialog .modal-content {
+    background-color: #fafafa !important;
+}
+
+.icon-button {
+    outline: none;
+    border: none !important;
+    background: inherit;
+    transition: background .65s ease, border-radius .35s ease;
+}
+
+.icon-button:focus,
+.icon-button:hover {
+    cursor: pointer;
+    background: #ccc;
+    border-radius: 2px;
+}
+
+.mat-icon {
+    vertical-align: middle !important;
+}
+
+.button-padding {
+    padding-top: 4px;
+}
+
+.padding-label-top {
+    padding-top: .4rem !important;
+}
+
+.vh-55 {
+    height: 55vh !important;
+}
+
+.vh-45 {
+    height: 45vh !important;
+}
+
+.vh-30 {
+    height: 30vh !important;
+}
+
+.datagrid-foot {
+    margin-bottom: 1px !important;
+}
+
+.datagrid-head {
+    margin-top: 1px !important;
+}
+
+.datagrid .datagrid-column .datagrid-column-flex,
+.datagrid .datagrid-head .datagrid-row-actions .datagrid-column-flex {
+    align-items: center !important;
+}
+
+footer,
+header {
+    display: flex !important;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.modal,
+.modal-dialog,
+.open {
+    z-index: 5000 !important;
+}
+
+.modal-backdrop {
+    z-index: 4000 !important;
+}
+
+button {
+    outline: none !important;
+}
+
+.card {
+    border-radius: 6px !important;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.card-footer,
+.card-header {
+    background-color: #e9ecef !important;
+}
+
+.z-depth-1 {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.z-depth-1-half {
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+}
+
+.z-depth-2 {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.z-depth-3 {
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.3);
+}
+
+.z-depth-4 {
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
+}
+
+.z-depth-5 {
+    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.warning-fill {
+    fill: $color__accent;
+}
+
+.danger-fill {
+    fill: $color__accent;
+}
+
+.primary-fill {
+    fill: $color__accent;
+}
+
+.w-55 {
+    width: 55px !important;
+}
+
+.w-60 {
+    width: 60px !important;
+}
+
+.w-65 {
+    width: 65px !important;
+}
+
+.w-85p {
+    width: 85px !important;
+}
+
+.w-100p {
+    width: 100px !important;
+}
+
+.w-120 {
+    width: 120px !important;
+}
+
+.disabled-icon {
+    fill: #ccc !important;
+    color: #ccc !important;
+}
+
+.datagrid .datagrid-expandable-caret {
+    padding-top: .6rem !important;
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input > input {
+    padding: 0 !important;
+}
+
+.cm-1 {
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+.cm-2 {
+    margin-left: 2px;
+    margin-right: 2px;
+}

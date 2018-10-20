@@ -1,0 +1,44 @@
+<form class="col-6 full-height" (ngSubmit)="createAccount()" [formGroup]="accountForm" novalidate>
+
+
+  <div class="login-box card no-border header-bg">
+
+    <div class="px-2 pt-2 form-bg">
+      <h2 class="no-margin-top">Add Account</h2>
+
+      <div class="full-width pt-2">
+        <mat-form-field class="full-width">
+          <input matInput placeholder="Accout Name" type="text" formControlName="accountName" required>
+          <mat-error *ngIf="accountForm.get('accountName').hasError('required')">
+            Account Name is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="full-width pt-1">
+        <mat-form-field class="full-width">
+          <input matInput placeholder="Email" type="email" formControlName="email" required>
+          <mat-error *ngIf="accountForm.get('email').hasError('email') && !accountForm.get('email').hasError('required')">
+            Please enter a
+            <strong>valid email address</strong>
+          </mat-error>
+          <mat-error *ngIf="accountForm.get('email').hasError('required')">
+            Email is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <br />
+
+
+
+
+      <div class="footer d-flex row justify-content-center pb-2">
+        <button class="btn btn-primary ripple btn-dark login-btn" type="submit" [disabled]="accountForm.invalid || isLoading">
+          <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+          <span>Login</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

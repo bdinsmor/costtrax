@@ -1,0 +1,148 @@
+body {
+    > mat-sidenav-container {
+        height: 100%;
+    }
+}
+
+button {
+    outline: none !important;
+}
+
+.mat-step-label {
+    font-size: 16px !important;
+}
+
+.mat-step-label-selected {
+    font-size: 18px !important;
+    font-weight: bold;
+}
+
+.mat-step-icon,
+.mat-step-icon-not-touched {
+    height: 30px !important;
+    width: 30px !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.style-success {
+    color: mat-color($mat-white, 500, 0.9);
+    background-color: mat-color($primary, 500, 0.9);
+}
+
+.style-error {
+    color: mat-color($mat-black, 500, 0.9);
+    background-color: mat-color($warn, 500, 0.9);
+}
+
+.style-error .mat-simple-snackbar-action {
+    color: mat-color($mat-black, 500, 0.9);
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.w-85,
+.width-85 {
+    width: 85% !important;
+}
+
+.w-75 {
+    width: 75%;
+}
+
+.w-50,
+.width-50 {
+    width: 50% !important;
+}
+
+.w-10 {
+    width: 10% !important;
+}
+
+.w-30 {
+    width: 30% !important;
+}
+
+.w-25 {
+    width: 25% !important;
+}
+
+.left-margin-5 {
+    margin-left: 5%;
+}
+
+.m-t-12 {
+    margin-top: 12px;
+}
+
+.p-t-4 {
+    padding-top: 4px;
+}
+
+.p-t-6 {
+    padding-top: 6px;
+}
+
+.p-t-8 {
+    padding-top: 8px;
+}
+
+.p-t-10 {
+    padding-top: 10px;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+.p-14 {
+    padding: 14px;
+}
+
+.p-l-14 {
+    padding-left: 14px;
+}
+
+.p-l-24 {
+    padding-left: 24px;
+}
+
+.p-l-48 {
+    padding-left: 48px !important;
+}
+
+.p-l-10p {
+    padding-left: 10%;
+}
+
+.p-l-5p {
+    padding-left: 5%;
+}
+
+.p-t-10 {
+    padding-top: 10px;
+}
+
+.p-24 {
+    padding: 24px;
+}
+
+.m-t-30 {
+    margin-top: 30px;
+}
+
+.m-10 {
+    margin-top: 10px;
+}
+
+.full-height {
+    height: 100%;
+}

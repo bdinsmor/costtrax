@@ -1,0 +1,173 @@
+<div class="full-width">
+  <section *ngIf="!newProject" class="full-width d-flex flex-row align-items-center">
+    <h5 class="no-top-margin pr-1">USERS</h5>
+    <div class="spacer"></div>
+    <button type="button" (click)="inviteUser()" class="btn btn-primary" color="primary">Invite User</button>
+  </section>
+  <section *ngIf="newProject" class="full-width d-flex flex-row align-items-center">
+    <h5 class="no-top-margin pr-1">USERS</h5>
+    <button type="button" class="btn btn-sm btn-primary" (click)="inviteUser()">Add User</button>
+  </section>
+
+  <div class="full-width hidden-md-up">
+    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12" *ngFor="let user of users; let i = index">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="m-0 bold">{{user.email}}</h5>
+        </div>
+        <div class="card-block">
+
+          <div class="card-text row">
+            <div class="d-flex flex-column col-12">
+              <!-- need to set ngModel to user based roles  -->
+              <div class="row">
+                <div class="col-2 pr-1">Project Admin</div>
+                <mat-slide-toggle [(ngModel)]="user.projectAdmin" [ngModelOptions]="{standalone: true}" (change)="roleChanged(user,'ProjectAdmin')"></mat-slide-toggle>
+              </div>
+              <div class="row">
+                <div class="col-2 pr-1">Project Observe</div>
+                <mat-slide-toggle [(ngModel)]="user.projectObserve" [ngModelOptions]="{standalone: true}" (change)="roleChanged(user,'ProjectObserve')"></mat-slide-toggle>
+              </div>
+              <div class="row">
+                <div class="col-2 pr-1">Request Manage</div>
+                <mat-slide-toggle [(ngModel)]="user.requestManage" [ngModelOptions]="{standalone: true}" (change)="roleChanged(user,'RequestManage')"></mat-slide-toggle>
+              </div>
+              <div class="row">
+                <div class="col-2 pr-1">Request Submit</div>
+                <mat-slide-toggle [(ngModel)]="user.requestSubmit" [ngModelOptions]="{standalone: true}" (change)="roleChanged(user,'RequestSubmit')"></mat-slide-toggle>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="full-width hidden-sm-down mb-1">
+    <clr-datagrid>
+      <clr-dg-column>Email</clr-dg-column>
+      <clr-dg-column>Roles</clr-dg-column>
+      <clr-dg-column></clr-dg-column>
+
+      <clr-dg-row *ngFor="let user of users; let i= index">
+        <clr-dg-cell>{{user.email}}</clr-dg-cell>
+        <clr-dg-cell>
+          <div *ngIf="user.roles">
+            <mat-chip-list>
+              <mat-chip *ngFor="let role of user.roles">{{role}}</mat-chip>
+            </mat-chip-list>
+          </div>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <div class="row justify-content-end">
+            <button matTooltip="Edit" class="ripple icon-30 icon-button pr-1" (click)="editUser(user)">
+              <mat-icon color="primary">edit</mat-icon>
+            </button>
+            <button class="ripple icon-30 icon-button" matTooltip="Remove" (click)="removeUser(i,user)">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </div>
+        </clr-dg-cell>
+        <clr-dg-row-detail *clrIfExpanded="user.expanded">
+          <div class="d-flex flex-column col-12">
+            <!-- need to set ngModel to user based roles  -->
+            <h6>Project Owner Roles</h6>
+            <div class="row">
+              <div class="col-2 pr-1">Project Admin</div>
+              <mat-slide-toggle [(ngModel)]="user.projectAdmin" [disabled]="user.isRequestor()" [ngModelOptions]="{standalone: true}"
+                (change)="roleChanged(user,'ProjectAdmin')"></mat-slide-toggle>
+            </div>
+            <div class="row">
+              <div class="col-2 pr-1">Project Observer</div>
+              <mat-slide-toggle [(ngModel)]="user.projectObserve" [disabled]="user.isRequestor()" [ngModelOptions]="{standalone: true}"
+                (change)="roleChanged(user,'ProjectObserve')"></mat-slide-toggle>
+            </div>
+            <div class="row">
+              <div class="col-2 pr-1">Manage Request</div>
+              <mat-slide-toggle [(ngModel)]="user.requestManage" [disabled]="user.isRequestor()" [ngModelOptions]="{standalone: true}"
+                (change)="roleChanged(user,'RequestManage')"></mat-slide-toggle>
+            </div>
+            <h6>Requestor Roles</h6>
+            <div class="row">
+              <div class="col-2 pr-1">Create Request</div>
+              <mat-slide-toggle [(ngModel)]="user.requestSubmit" [disabled]="!user.isRequestor() && user.hasRoles()"
+                [ngModelOptions]="{standalone: true}" (change)="roleChanged(user,'RequestSubmit')"></mat-slide-toggle>
+            </div>
+
+            <div class="row pt-1">
+              <button class="btn btn-primary" matTooltip="Save" (click)="saveRoleEdit(user)" [disabled]="user.rolesChanged()">Save
+                Changes
+              </button>
+              <button matTooltip="Cancel" class="mr-1 btn btn-outline-danger" (click)="cancelRoleEdit(user)" [disabled]="user.rolesChanged()">Cancel</button>
+
+            </div>
+          </div>
+        </clr-dg-row-detail>
+      </clr-dg-row>
+
+
+      <clr-dg-footer>{{users.length}} Users</clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>
+<clr-modal [clrModalSize]="'md'" class="fadeDown in" [(clrModalOpen)]="_inviteUserModal" [clrModalClosable]="false">
+  <h3 class="modal-title">
+    <span *ngIf="!newProject">Invite</span>
+    <span *ngIf="newProject">Add</span> User</h3>
+  <div class="modal-body vh-40">
+    <form class="col-12" [formGroup]="emailForm">
+      <mat-form-field class="pass">
+        <input class="full-width" type="text" matInput formControlName="email" autocomplete="email" [placeholder]="'Email to invite'" />
+        <mat-error *ngIf="!emailForm.controls.email.valid || emailForm.get('email').untouched">
+          <span translate>Valid Email is required</span>
+        </mat-error>
+      </mat-form-field>
+      <h6>Project Owner Roles</h6>
+      <div class="d-flex flex-column column col-12 pb-1 pt-1">
+        <div class="row">
+          <div class="col-4 pr-1">Project Admin</div>
+          <mat-slide-toggle [(ngModel)]="newUser.projectAdmin" [disabled]="newUser.isRequestor()" [ngModelOptions]="{standalone: true}"
+            (change)="roleChanged(newUser,'ProjectAdmin')"></mat-slide-toggle>
+        </div>
+        <div class="row pt-1">
+          <div class="col-4 pr-1">Project Observer</div>
+          <mat-slide-toggle [(ngModel)]="newUser.projectObserve" [disabled]="newUser.isRequestor()" [ngModelOptions]="{standalone: true}"
+            (change)="roleChanged(newUser,'ProjectObserve')"></mat-slide-toggle>
+        </div>
+        <div class="row pt-1">
+          <div class="col-4 pr-1">Manage Request</div>
+          <mat-slide-toggle [(ngModel)]="newUser.requestManage" [disabled]="newUser.isRequestor()" [ngModelOptions]="{standalone: true}"
+            (change)="roleChanged(newUser,'RequestManage')"></mat-slide-toggle>
+        </div>
+      </div>
+      <h6>Requestor Roles</h6>
+      <div class="d-flex flex-column column col-12 pb-1 pt-1">
+        <div class="row">
+          <div class="col-4 pr-1">Create Request</div>
+          <mat-slide-toggle [(ngModel)]="newUser.requestSubmit" [disabled]="!newUser.isRequestor() && newUser.hasRoles()"
+            [ngModelOptions]="{standalone: true}" (change)="roleChanged(newUser,'RequestSubmit')"></mat-slide-toggle>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="cancelInvite()">Cancel</button>
+    <button *ngIf="!newProject" class="btn btn-primary" (click)="sendInvite()" [disabled]="emailForm.invalid">
+      <span>Send Invite</span>
+    </button>
+    <button *ngIf="newProject" class="btn btn-primary" (click)="addUser()" [disabled]="emailForm.invalid">
+      <span>Add User</span>
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal class="fadeDown in" [(clrModalOpen)]="_confirmDeleteModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Confirm Delete User</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to remove this user?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelDelete()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+  </div>
+</clr-modal>

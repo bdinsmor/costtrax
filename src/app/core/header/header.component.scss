@@ -1,0 +1,30 @@
+@import 'src/styles/styles';
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  max-height: 55px;
+  @include mat-elevation(1);
+  background: mat-color($mat-fusedark, 50, 0.9);
+}
+
+.sidenav-header {
+  cursor: pointer;
+}
+
+.brand {
+  color: mat-color($primary, 500, 0.9);
+  text-decoration: none;
+  padding-top: 15px;
+}
+
+.brand2 {
+  color: mat-color($primary, 'lighter-contrast');
+}
+
+.menu-button {
+  margin-right: 1rem;
+}

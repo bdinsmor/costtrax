@@ -1,0 +1,48 @@
+.pass {
+    width: 85% !important;
+}
+
+input[type='date'],
+input[type='date']:not([readonly]):focus,
+input[type='datetime-local'],
+input[type='datetime-local']:not([readonly]):focus,
+input[type='email'],
+input[type='email']:not([readonly]):focus,
+input[type='number'],
+input[type='number']:not([readonly]):focus,
+input[type='password'],
+input[type='password']:not([readonly]):focus,
+input[type='tel'],
+input[type='tel']:not([readonly]):focus,
+input[type='text'],
+input[type='text']:not([readonly]):focus,
+input[type='time'],
+input[type='time']:not([readonly]):focus,
+input[type='url'],
+input[type='url']:not([readonly]):focus {
+    border: none !important;
+}
+
+input[type='date']:not([readonly]),
+input[type='datetime-local']:not([readonly]),
+input[type='email']:not([readonly]),
+input[type='number']:not([readonly]),
+input[type='password']:not([readonly]),
+input[type='tel']:not([readonly]),
+input[type='text']:not([readonly]),
+input[type='time']:not([readonly]),
+input[type='url']:not([readonly]) {
+    background: inherit !important;
+}
+
+.toggle-switch label {
+    min-width: 125px !important;
+}
+
+.vh-35 {
+    max-height: 35vh !important;
+}
+
+.vh-40 {
+    max-height: 40vh !important;
+}

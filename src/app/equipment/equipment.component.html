@@ -1,0 +1,327 @@
+<div class="px-2 pt-2 mb-2 full-width">
+  <section class="full-width d-flex flex-row align-items-center">
+    <h3 class="pr-1 no-top-margin">Add Owned Equipment</h3>
+    <button type="button" class="btn btn-sm btn-primary" (click)="addModel()">Add Model
+    </button>
+    <button type="button" class="btn btn-sm btn-primary" (click)="addMiscEquipment()">Add Miscellaneous Model</button>
+    <button type="button" class="btn btn-sm btn-primary" [disabled]="true">Upload Equipment
+    </button>
+  </section>
+
+  <clr-datagrid class="px-1">
+
+    <clr-dg-column [clrDgField]="'id'">ID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
+    <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+    <clr-dg-column [clrDgField]="'year'">Year</clr-dg-column>
+    <clr-dg-column [clrDgField]="'sizeClassName'">Size Class</clr-dg-column>
+    <clr-dg-column [clrDgField]="'serial'">Serial</clr-dg-column>
+    <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
+    <clr-dg-row *clrDgItems="let item of items; let i=
+      index;trackBy:
+      trackByFn" [clrDgItem]="item">
+      <clr-dg-cell>
+        <div class="padding-label-top" *ngIf="item.isDraft()" style="width:50px">
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.details.id"
+            [ngModelOptions]="{standalone: true}">
+        </div>
+        <div *ngIf="!item.isDraft()" style="width:50px">{{item.details? item.details.id : ''}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div *ngIf="item.isDraft()" style="width:150px">
+          <app-equipment-select type="make" [index]="i" style="width:150px" (selected)="makeSelectionChanged($event)"
+            [initialEquipment]="item"></app-equipment-select>
+        </div>
+        <div *ngIf="!item.isDraft()" style="width:150px">{{item.make}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div *ngIf="item.isDraft()" style="width:150px">
+          <app-equipment-select [makeId]="item.makeId" style="width:150px" [index]="i" (selected)="modelSelectionChanged($event)"
+            [initialEquipment]="item" [shouldDisable]="!item.makeId" type="model"></app-equipment-select>
+        </div>
+        <div *ngIf="!item.isDraft()" style="width:150px">{{item.model}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div class="padding-label-top" *ngIf="item.isDraft()">
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.year" [ngModelOptions]="{standalone: true}">
+        </div>
+        <div *ngIf="!item.isDraft()">{{item.year}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div class="padding-label-top" style="width:100px" *ngIf="item.isDraft()">
+          {{item.sizeClassName}}
+        </div>
+        <div *ngIf="!item.isDraft()" style="width:100px">{{item.sizeClassName}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div class="
+          padding-label-top" *ngIf="item.isDraft()">
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.details.vin"
+            [ngModelOptions]="{standalone: true}">
+        </div>
+        <div *ngIf="!item.isDraft()">{{item.details.vin}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div class="padding-label-top" *ngIf="item.isDraft()">
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.description"
+            [ngModelOptions]="{standalone:
+            true}">
+        </div>
+        <div *ngIf="!item.isDraft()">{{item.description}}</div>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <div class="row justify-content-end">
+          <button *ngIf="item.isDraft()" class="ripple icon-30  icon-button
+            pr-1" matTooltip="Save" (click)="saveChanges(i, item)">
+            <mat-icon color="accent">done</mat-icon>
+          </button>
+          <button *ngIf="!item.isDraft()" class="ripple icon-30 icon-button
+                      pr-1" matTooltip="Edit"
+            (click)="editItem(i, item)">
+            <mat-icon color="accent">edit</mat-icon>
+          </button>
+          <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited" matTooltip="Undo Edits" (click)="revertEdits(i,item)">
+            <mat-icon color="accent">undo</mat-icon>
+          </button>
+          <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited" matTooltip="Remove" (click)="remove(i,item)">
+            <mat-icon color="warn">delete</mat-icon>
+          </button>
+        </div>
+
+      </clr-dg-cell>
+      <ng-container ngProjectAs="clr-dg-row-detail">
+        <clr-dg-row-detail *clrIfExpanded>
+          <div>
+
+            <h5>Model Configuration</h5>
+            <table id="invoice-table" *ngIf="item.details.configurations" class="mt-3p table table-compact
+                                                      table-bordered table-striped comparison-table">
+              <thead>
+                <th *ngFor="let column of item.details.configurations.columns">{{column.name}}</th>
+              </thead>
+              <tbody>
+                <tr class="justify-content-center">
+                  <td *ngFor="let column of item.details.configurations.columns">{{item.details.selectedConfiguration[column.name]}}</td>
+
+                </tr>
+
+              </tbody>
+            </table>
+
+
+
+
+            <h5>Rental Rate Blue Book Ownership & Operating Costs</h5>
+            <table id="invoice-table" *ngIf="item.details.selectedConfiguration" class="w-50 mt-3p table table-compact table-bordered table-striped comparison-table">
+              <thead style="display:none">
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </thead>
+              <tbody>
+                <tr class="justify-content-center">
+                  <td></td>
+                  <td colspan="4">Ownership</td>
+                  <td>Operating</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td></td>
+                  <td>Monthly</td>
+                  <td>Weekly</td>
+                  <td>Daily</td>
+                  <td>Hourly</td>
+                  <td>Hourly</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td class="strong">Cost</td>
+                  <td>{{item.details.selectedConfiguration.monthlyOwnershipCost}}</td>
+                  <td>{{item.details.selectedConfiguration.weeklyOwnershipCost}}</td>
+                  <td>{{item.details.selectedConfiguration.dailyOwnershipCost}}</td>
+                  <td>{{item.details.selectedConfiguration.hourlyOwnershipCost}}</td>
+                  <td>{{item.details.selectedConfiguration.hourlyOperatingCost}}</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td class="strong">Hourly Conversion</td>
+                  <td>176</td>
+                  <td>40</td>
+                  <td>8</td>
+                  <td>1</td>
+                  <td>1</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td class="strong">Hourly Rate</td>
+                  <td>{{item.details.rates.ownership_monthly_calculated_hourly| currency}}</td>
+                  <td>{{item.details.rates.ownership_weekly_calculated_hourly| currency}}</td>
+                  <td>{{item.details.rates.ownership_daily_calculated_hourly| currency}}</td>
+                  <td>{{item.details.rates.ownership_hourly_calculated_hourly | currency}}</td>
+                  <td>{{item.details.rates.operating_hourly_calculated_hourly | currency}}</td>
+                </tr>
+
+
+              </tbody>
+            </table>
+            <h5>Rate Element Allocation</h5>
+            <h5 class="no-top-margin">Ownership Costs, Unadjusted (Monthly)</h5>
+            <table id="invoice-table" *ngIf="item.details.selectedConfiguration" class="mt-3p table table-compact
+                                                                                  table-bordered table-striped comparison-table w-25">
+              <thead>
+                <th>Element</th>
+                <th>Percentage</th>
+                <th>Amount</th>
+              </thead>
+              <tbody>
+                <tr class="justify-content-center">
+                  <td class="strong">Depreciation</td>
+                  <td>{{100*item.details.selectedConfiguration.depreciation | number : '1.2-2'}}%</td>
+                  <td>{{item.details.selectedConfiguration.depreciation *
+                    item.details.selectedConfiguration.monthlyOwnershipCost | currency}}</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td class="strong">Overhaul</td>
+                  <td>{{100*item.details.selectedConfiguration.overhaul | number : '1.2-2'}}%</td>
+                  <td>{{item.details.selectedConfiguration.overhaul *
+                    item.details.selectedConfiguration.monthlyOwnershipCost |
+                    currency}}</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td class="strong">Cost of Facilities Capital</td>
+                  <td>{{100*item.details.selectedConfiguration.costOfFacitiliesCaptial | number : '1.2-2'}}%</td>
+                  <td>{{item.details.selectedConfiguration.costOfFacitiliesCaptial *
+                    item.details.selectedConfiguration.monthlyOwnershipCost |
+                    currency}}</td>
+                </tr>
+                <tr class="justify-content-center">
+                  <td class="strong">Indirect</td>
+                  <td>{{100*item.details.selectedConfiguration.overhead | number : '1.2-2'}}%</td>
+                  <td>{{item.details.selectedConfiguration.overhead *
+                    item.details.selectedConfiguration.monthlyOwnershipCost |
+                    currency}}</td>
+                </tr>
+
+              </tbody>
+            </table>
+
+          </div>
+
+        </clr-dg-row-detail>
+      </ng-container>
+
+    </clr-dg-row>
+    <clr-dg-footer *ngIf="items">{{items.length}} Items</clr-dg-footer>
+  </clr-datagrid>
+</div>
+
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_miscModelModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Add Miscellaneous Model</h3>
+  <div id="parent" class="modal-body vh-55">
+    <div class="px-2 pb-2 full-width justify-content-center
+      align-items-center">
+      <div>
+        <h4 class="pb-1">Category:</h4>
+        <ng-select [items]="categoryResults$ | async" (change)="categoryChanged()" bindLabel="categoryName" bindValue="categoryId"
+          placeholder="Choose Category" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [(ngModel)]="miscCategoryId"
+          [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Subtype:</h4>
+        <ng-select [items]="subtypeResults$ | async" [disabled]="!miscCategoryId" (change)="subtypeChanged()" bindLabel="subtypeName"
+          bindValue="subtypeId" placeholder="Choose
+          subtype" clearAllText="Clear" [closeOnSelect]="true"
+          [hideSelected]="true" [(ngModel)]="miscSubtypeId" [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Size Class:</h4>
+        <ng-select [items]="sizeResults$ | async" [disabled]="!miscSubtypeId" (change)="sizeChanged()" bindLabel="sizeClassName"
+          bindValue="sizeClassId" placeholder="Choose Size Class" clearAllText="Clear" [closeOnSelect]="true"
+          [hideSelected]="true" [(ngModel)]="miscSizeClassId" [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Model:</h4>
+        <ng-select [items]="modelResults$ | async" [disabled]="!miscSizeClassId" bindLabel="model" bindValue="modelId"
+          placeholder="Choose Model" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [loading]="modelLoading"
+          [typeahead]="modelInput$" [(ngModel)]="miscModelId" dropdownPosition="top" (change)="modelSelected()"
+          [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4>Configuration:</h4>
+        <h6 class="disabled-text" *ngIf="!configurations">No configurations found.</h6>
+        <h6 *ngIf="configurations && configurations.values.length === 0">No configurations found for this model.</h6>
+        <clr-datagrid *ngIf="configurations && configurations.values.length > 0" class="datagrid-compact"
+          #projectAssetConfigGrid>
+          <clr-dg-placeholder>No data found</clr-dg-placeholder>
+          <clr-dg-column *ngFor="let column of configurations.columns" [clrDgField]="column.name" [clrDgSorted]="column.name === 'name'">
+            <div>
+              {{column.name}}
+            </div>
+          </clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let configuration of configurations.values" [clrDgItem]="configuration">
+            <button type="button" mat-icon-button color="accent" (click)="confirmAddMiscModel(configuration)">
+              <mat-icon color="accent">radio_button_unchecked</mat-icon>
+            </button>
+            <clr-dg-cell *ngFor="let column of configurations.columns">
+              <div>{{configuration[column.name]}}</div>
+            </clr-dg-cell>
+          </clr-dg-row>
+        </clr-datagrid>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelAddMiscModel()">Cancel</button>
+  </div>
+</clr-modal>
+
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_configurationModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Select Equipment Configuration</h3>
+  <div id="parent" class="modal-body vh-55 full-width justify-content-center
+  align-items-center">
+    <div class="pb-1 justify-content-center
+          align-items-center">
+      <clr-datagrid *ngIf="selectedItem && selectedItem.details.configurations" class="datagrid-compact"
+        #configurationPopupGrid>
+        <clr-dg-placeholder>No data found</clr-dg-placeholder>
+        <clr-dg-column></clr-dg-column>
+        <clr-dg-column *ngFor="let column of selectedItem.details.configurations.columns" [clrDgField]="column.name"
+          [clrDgSorted]="column.name === 'name'">
+          <div>
+            {{column.name}}
+          </div>
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let configuration of selectedItem.details.configurations.values" [clrDgItem]="configuration">
+          <clr-dg-cell>
+            <button type="button" mat-icon-button color="accent" (click)="confirmSelectConfiguration(configuration)">
+              <mat-icon color="accent">radio_button_unchecked</mat-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell *ngFor="let column of selectedItem.details.configurations.columns">
+            <div>{{configuration[column.name]}}</div>
+          </clr-dg-cell>
+        </clr-dg-row>
+      </clr-datagrid>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelSelectConfiguration()">Cancel</button>
+  </div>
+</clr-modal>
+
+<clr-modal class="fadeDown in" [(clrModalOpen)]="_confirmDeleteModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Confirm Remove Model</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to remove this model?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelRemoveModel()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="confirmRemoveModel()">Remove</button>
+  </div>
+</clr-modal>

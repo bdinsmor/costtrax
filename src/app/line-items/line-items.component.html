@@ -1,0 +1,1957 @@
+<div class="line-items full-width hidden-md-up">
+  <div *ngIf="!itemList || !itemList.items || itemList.items.length=== 0" class="full-width">
+    <h2 class="smaller-gray-text">Please add line items</h2>
+  </div>
+  <div *ngIf="itemList && itemList.items && itemList.items.length> 0 &&
+    !draftMode" class="mt-0 full-width"
+    [@listAnimation]="itemList.items.length">
+    <div class="row">
+      <h4>{{itemType}}</h4>
+      <h4 class="no-top-margin">Location: {{project.state}} | Ownership: {{project.adjustments.ownership*100 | number:
+        '1.2-2'}}</h4>
+      <button *ngIf="hasPending && manageRequests" [disabled]="!manageRequests" type="button" class="btn btn-sm ripple"
+        (click)="approveAll()">
+        <mat-icon color="primary">done_all</mat-icon>Approve All
+      </button>
+    </div>
+    <div *ngFor="let item of itemList.items; let i= index;">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row align-items-center">
+            <h6 class="m-0">{{item.amount | currency}}</h6>
+          </div>
+        </div>
+        <div class="card-block">
+
+          <div class="card-text row flex-row">
+            <div class="full-width">
+
+              <ng-container *ngIf="item.type=== 'material'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">UNITS</h6>
+                      <div>{{item.details.units}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">COST PER UNIT</h6>
+                      <div>{{item.details.unitCost | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-1">
+                    <h6 class="row-details">DESCRIPTION</h6>
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'other'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="cost-column px-3">
+                      <h6 class="cost-label">TYPE</h6>
+                      <div>{{item.details.type}}</div>
+                    </div>
+                    <div class="cost-column px-3">
+                      <h6 class="cost-label">DESCRIPTION</h6>
+                      <div [matTooltip]="item.details.description">{{item.details.description
+                        | truncate: '50'}}</div>
+                    </div>
+                  </div>
+                </div>
+
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'equipment.active'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">MACHINE</h6>
+                      <div>{{item.details.year}} {{item.details.make}}
+                        {{item.details.model}}
+                      </div>
+                      <div>{{item.details.serial}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">OPERATING</h6>
+                      <div>{{item.details.operating}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">HOURS</h6>
+                      <div>{{item.details.hours | number: '.1-2'}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TRANSPORT</h6>
+                      <div>{{item.details.transport? item.details.transport :
+                        '0' | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'equipment.standby'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">MACHINE</h6>
+                      <div>{{item.details.year}} {{item.details.make}}
+                        {{item.details.model}}
+                      </div>
+                      <div>{{item.details.serial}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">OPERATING</h6>
+                      <div>{{item.details.operating}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">HOURS</h6>
+                      <div>{{item.details.hours | number: '.1-2'}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TRANSPORT</h6>
+                      <div>{{item.details.transport? item.details.transport :
+                        '0' | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'equipment.rental'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TYPE</h6>
+                      <div>{{item.details.type}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">BASE</h6>
+                      <div>{{item.details.base | currency}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TRANSPORT</h6>
+                      <div>{{item.details.transportation?
+                        item.details.transportation : '0' | currency}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">OTHER</h6>
+                      <div>{{item.details.other | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'labor'">
+                <div class="full-width row align-items-center">
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">EMPLOYEE</h6>
+                    <div>{{item.details.employee.name}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TRADE</h6>
+                    <div>{{item.details.trade}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">RATE</h6>
+                    <div>{{item.details.rate | currency}}</div>
+                  </div>
+                </div>
+                <div class="full-width row align-items-center">
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TIME X 1</h6>
+                    <div>{{item.details.time1 | number: '.1-2'}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TIME X 1.5</h6>
+                    <div>{{item.details.time15 | number: '.1-2'}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TIME X 2</h6>
+                    <div>{{item.details.time2 | number: '.1-2'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'subcontractor'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">SUBCONTRACTOR</h6>
+                      <div>{{item.details.subcontractor}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">DESCRIPTION</h6>
+                      <div [matTooltip]="item.details.description">{{item.details.description
+                        | truncate: '50'}}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngIf="item.status.toLowerCase() !== 'complete'" class="card-footer">
+          <div *ngIf="!printingInvoice && (item && item.beingEdited)" class="row
+            full-width
+            justify-content-end">
+            <button class="icon-30 ripple icon-button" [disabled]="!submitRequests" matTooltip="Edit" (click)="editLineItem(i,item)">
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button class="icon-30 ripple icon-button" [disabled]="!submitRequests" matTooltip="Remove" (click)="removeLineItem(i,item)">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+
+          </div>
+          <div *ngIf="!printingInvoice && (manageRequests &&
+            item.status.toLowerCase()=== 'pending')" class="row full-width
+            justify-content-end">
+            <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve As Is" (click)="approve(item)">
+              <mat-icon color="primary">done</mat-icon>
+            </button>
+            <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With Change"
+              (click)="approveWithChange(item)">
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info"
+              (click)="requestMoreInfo(item)">
+              <mat-icon color="warn">info</mat-icon>
+            </button>
+
+          </div>
+
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<div class="line-items full-width hidden-sm-down pb-1">
+  <div class="m-0">
+    <div *ngIf="itemList.items" class="pt-1 full-width">
+      <div class="full-width align-items-center row">
+        <div class="align-items-center column">
+          <h4 class="mt-0 pr-1">{{itemTypeDisplay}}</h4>
+          <h5 *ngIf="itemType === 'equipment.active'" class="no-top-margin">Location: {{project.state}} | Ownership:
+            100%
+            | Operating: 100%</h5>
+          <div class="ml-0 row align-items-center">
+            <div *ngIf="!printingInvoice && !editMode" class="align-items-center">
+              <button *ngIf="hasPending && manageRequests" [disabled]="!manageRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="approveAll()">
+                <clr-icon shape="check"></clr-icon>Approve All
+              </button>
+              <button *ngIf="submitRequests && (itemType === 'equipment.active' ||
+                        itemType === 'equipment.standby' || itemType ===
+                        'equipment.rental')"
+                [disabled]="!submitRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="addFromSaved()">
+                Add From Saved Models</button>
+              <button *ngIf="submitRequests && (itemType== 'equipment.active' ||
+                        itemType== 'equipment.standby' || itemType== 'equipment.rental')"
+                [disabled]="!submitRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="addLineItems()">
+                Add New Model</button>
+              <button *ngIf="submitRequests && (itemType== 'equipment.active' ||
+                        itemType== 'equipment.standby' || itemType== 'equipment.rental')"
+                [disabled]="!submitRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="addMiscEquipment()">
+                Add New Miscellaneous Model</button>
+              <button *ngIf="submitRequests && (itemType !== 'equipment.active' &&
+                        itemType !== 'equipment.standby' && itemType !==
+                        'equipment.rental' && itemType !== 'labor')"
+                [disabled]="!submitRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="addLineItems()">
+                Add Line Item</button>
+              <button *ngIf="submitRequests && (itemType === 'labor')" [disabled]="!submitRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="addFromSaved()">
+                Add From Saved Employees</button>
+              <button *ngIf="submitRequests && (itemType === 'labor')" [disabled]="!submitRequests" type="button" class="btn btn-sm
+                        btn-outline-primary"
+                (click)="addLineItems()">
+                Add New Employee</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="manageRequests" class="spacer"></div>
+
+        <div *ngIf="manageRequests && (itemType === 'equipment.active' ||
+          itemType === 'equipment.standby' || itemType === 'equipment.rental')"
+          class="row align-items-center">
+          <h6 class="no-top-margin">powered by&nbsp;</h6>
+          <img alt="logo" height="28" src="../assets/img/ew.gif">
+          <h6 class="no-top-margin big-text">&nbsp;|&nbsp;</h6>
+          <div class="px-1 row align-items-center">
+            <mat-icon svgIcon="costtrax-check"></mat-icon>
+            <div class="column">
+              <div class="small-text no-top-margin">&nbsp;Rate Verified</div>
+            </div>
+          </div>
+          <div class="px-1 row align-items-center">
+            <mat-icon class="icon" color="warn">priority_high</mat-icon>
+            <div class="column">
+              <div class="small-text no-top-margin">Rate Issues</div>
+            </div>
+          </div>
+          <div class="px-1 row align-items-center">
+            <mat-icon class="icon">help_outline</mat-icon>
+            <div class="column">
+              <div class="small-text no-top-margin">&nbsp;Missing Data</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <clr-datagrid *ngIf="itemType === 'labor'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.lastName'">Last Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.firstName'">First Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.trade'">Trade/Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.rate'">Hourly Rate</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time1'">Time x 1.0</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time15'">Time x 1.5</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time2'">Time x 2.0</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.benefits'">Fringe Benefits</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row *clrDgItems="let item of itemList.items; let i=
+          index;trackBy:
+          trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>{{item.status}}</clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text" (change)="laborChanged(item)"
+                (keypress)="laborChanged(item)" [(ngModel)]="item.details.employee.lastName" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.employee.lastName}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text" (change)="laborChanged(item)"
+                (keypress)="laborChanged(item)" [(ngModel)]="item.details.employee.firstName" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.employee.firstName}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text" (change)="laborChanged(item)"
+                (keypress)="laborChanged(item)" [(ngModel)]="item.details.trade" [ngModelOptions]="{standalone:
+                true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.trade}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests || item.fromSaved" currencyMask class="full-width" type="text"
+                (change)="laborChanged(item)" (keypress)="laborChanged(item)" [(ngModel)]="item.details.rate"
+                [ngModelOptions]="{standalone:
+                true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.rate | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests" class="full-width" type="number" (change)="laborChanged(item)"
+                (keypress)="laborChanged(item)" [(ngModel)]="item.details.time1" [ngModelOptions]="{standalone:
+                true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.time1 | number:
+              '.1-2'}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests" class="full-width" type="number" (change)="laborChanged(item)"
+                (keypress)="laborChanged(item)" [(ngModel)]="item.details.time15" [ngModelOptions]="{standalone:
+                true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.time15 | number:
+              '.1-2'}}
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests" class="full-width" type="number" (change)="laborChanged(item)"
+                (keypress)="laborChanged(item)" [(ngModel)]="item.details.time2" [ngModelOptions]="{standalone:
+                true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.time2 | number:
+              '.1-2'}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited">
+              <input [disabled]="!submitRequests || item.fromSaved" currencyMask class="full-width" type="text"
+                (keypress)="laborChanged(item)" (change)="laborChanged(item)" [(ngModel)]="item.details.benefits"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+            <div *ngIf="!item.beingEdited">{{item.details.benefits | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>{{item.details.amount | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+              item.status.toLowerCase() !==
+              'complete')"
+              class="row justify-content-end">
+              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
+                icon-30 icon-button
+                pr-1"
+                matTooltip="Save" (click)="saveChanges(i, item)">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                icon-30 icon-button
+                pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+              item.status.toLowerCase()===
+              'pending')"
+              class="row
+              justify-content-end" style="min-width:150px">
+              <button [disabled]="!manageRequests" class="icon-30 ripple
+                icon-button pr-1" color="accent"
+                matTooltip="Approve As Is" (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+
+              <button [disabled]="!manageRequests" class="icon-30 ripple
+                icon-button pr-1" matTooltip="Approve With Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button [disabled]="!manageRequests" class="icon-30 ripple
+                icon-button pr-1" matTooltip="Request More Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+
+
+        </clr-dg-row>
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}} Items</clr-dg-footer>
+      </clr-datagrid>
+      <clr-datagrid *ngIf="itemType === 'equipment.active'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.make'">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.model'">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.year'">Year</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.sizeClassName'">Size Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.selectedConfiguration.hourlyOwnershipCost'">Ownership</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.selectedConfiguration.hourlyOperatingCost'">Operating</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.hours'">Hours</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.fhwa'">FHWA</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.transportation'">Transport</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row class="align-items-center" *clrDgItems="let item of
+          itemList.items; let i=
+          index;trackBy:
+          trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>
+            <div *ngIf="manageRequests && item.rateVerified()" class="padding-label-top row pl-1" style="width:125px;padding-left: 0 !important">
+              <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
+            </div>
+            <div *ngIf="!manageRequests || !item.rateVerified()" class="padding-label-top row pl-1">
+              {{item.status}}
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited" style="width:150px">
+              <app-equipment-select type="make" [index]="i" [initialValue]="item" (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.make}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited" style="width:150px">
+              <app-equipment-select [makeId]="item.details.makeId" [initialValue]="item" [index]="i" (selected)="modelNewSelectionChanged($event,item,i)"
+                [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.model}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:55px" *ngIf="!item.beingEdited">{{item.details.year}}</div>
+            <div class="padding-label-top" *ngIf="item.beingEdited"><input class="w-55" *ngIf="item.beingEdited"
+                [disabled]="!submitRequests
+                || !item.beingEdited" type="number" (change)="activeChanged(item)"
+                [(ngModel)]="item.details.year" [ngModelOptions]="{standalone:
+                true}"></div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.sizeClassName}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.selectedConfiguration.hourlyOwnershipCost
+              | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.selectedConfiguration.hourlyOperatingCost
+              | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top">
+              <div *ngIf="!item.beingEdited">{{item.details.hours | number:
+                '.1-2'}}
+              </div>
+              <input *ngIf="item.beingEdited" [disabled]="!submitRequests
+                || !item.beingEdited" type="number"
+                class="w-55" (change)="activeChanged(item)" [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone:
+                true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.fhwa
+              | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+
+            <div class="padding-label-top" style="width:100px" *ngIf="!item.beingEdited">{{item.details.transportation
+              | currency}}
+            </div>
+            <div class="padding-label-top" *ngIf="item.beingEdited">
+              <input type="text" [disabled]="!submitRequests
+                || !item.beingEdited" currencyMask (blur)="activeChanged(item)"
+                (keypress)="activeChanged(item)" [(ngModel)]="item.details.transportation" style="width:100px"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top">{{item.amount | currency}}</div>
+          </clr-dg-cell>
+
+
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+              item.status.toLowerCase() !==
+              'complete')"
+              class="row padding-label-top justify-content-end">
+              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
+                icon-30 icon-button
+                pr-1"
+                matTooltip="Save" (click)="saveChanges(i, item)">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                icon-30 icon-button
+                pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+              item.status.toLowerCase()===
+              'pending')"
+              class="row padding-label-top
+              justify-content-end" style="min-width:150px">
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+                As Is"
+                (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Approve With Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Request More Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+          <ng-container ngProjectAs="clr-dg-row-detail">
+            <clr-dg-row-detail *clrIfExpanded>
+              <div *ngIf="manageRequests">
+                <h6>Rate Verification: Hourly Ownership & Operating Cost</h6>
+                <table id="invoice-table" class="table table-compact
+                  table-bordered table-striped comparison-table">
+                  <thead>
+                    <th>Hourly Rate</th>
+                    <th>User Supplied</th>
+                    <th>Rental Rate Blue Book</th>
+                  </thead>
+                  <tbody>
+                    <tr class="justify-content-center">
+                      <td class="strong">Ownership</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOwnershipCost}}</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOwnershipCost}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Operating</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOperatingCost}}</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOperatingCost}}</td>
+                    </tr>
+
+                    <tr class="justify-content-center">
+                      <td class="strong">Total</td>
+                      <td class="">{{item.details.rateTotal | currency}}</td>
+                      <td class="" style="position:relative" [class.green]="item.details.terms.blueBook.rateDelta
+                        >= 0 "
+                        [class.red]="item.details.terms.blueBook.rateDelta <0">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.blueBook.rateDelta
+                            >= 0"
+                          svgIcon="costtrax-check"></mat-icon>
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px"
+                          *ngIf="item.details.terms.blueBook.rateDelta <0" color="warn">priority_high</mat-icon>
+                        {{item.details.terms.blueBook.rateTotal | currency}}
+                        <br />
+                        ({{item.details.terms.blueBook.rateDelta}}% vs User
+                        Supplied)
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+              <div *ngIf="submitRequests">
+                <h6>Configuration</h6>
+                <table id="invoice-table" *ngIf="item.details.configurations" class="no-top-margin table table-compact
+                                          table-bordered table-striped comparison-table">
+                  <thead>
+                    <th *ngFor="let column of item.details.configurations.columns">{{column.name}}</th>
+                  </thead>
+                  <tbody>
+                    <tr class="justify-content-center">
+                      <td *ngFor="let column of item.details.configurations.columns">{{item.details.selectedConfiguration[column.name]}}</td>
+
+                    </tr>
+
+                  </tbody>
+                </table>
+
+                <h6>Rate Element Allocation</h6>
+                <h6 class="no-top-margin">Ownership Costs, Unadjusted (Monthly)</h6>
+                <table id="invoice-table" class="no-top-margin table table-compact
+                                                          table-bordered table-striped comparison-table w-25">
+                  <thead>
+                    <th>Element</th>
+                    <th>Percentage</th>
+                    <th>Amount</th>
+                  </thead>
+                  <tbody>
+                    <tr class="justify-content-center">
+                      <td class="strong">Depreciation</td>
+                      <td>{{100*item.details.selectedConfiguration.depreciation | number : '1.2-2'}}%</td>
+                      <td>{{item.details.selectedConfiguration.depreciation *
+                        item.details.selectedConfiguration.monthlyOwnershipCost | currency}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Overhaul</td>
+                      <td>{{100*item.details.selectedConfiguration.overhaul | number : '1.2-2'}}%</td>
+                      <td>{{item.details.selectedConfiguration.overhaul *
+                        item.details.selectedConfiguration.monthlyOwnershipCost |
+                        currency}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Cost of Facilities Capital</td>
+                      <td>{{100*item.details.selectedConfiguration.costOfFacitiliesCaptial | number : '1.2-2'}}%</td>
+                      <td>{{item.details.selectedConfiguration.costOfFacitiliesCaptial *
+                        item.details.selectedConfiguration.monthlyOwnershipCost |
+                        currency}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Indirect</td>
+                      <td>{{100*item.details.selectedConfiguration.overhead | number : '1.2-2'}}%</td>
+                      <td>{{item.details.selectedConfiguration.overhead *
+                        item.details.selectedConfiguration.monthlyOwnershipCost |
+                        currency}}</td>
+                    </tr>
+
+                  </tbody>
+                </table>
+
+              </div>
+
+            </clr-dg-row-detail>
+          </ng-container>
+
+
+        </clr-dg-row>
+
+
+
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
+          Items</clr-dg-footer>
+      </clr-datagrid>
+      <clr-datagrid *ngIf="itemType === 'equipment.standby'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.make'">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.model'">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.year'">Year</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.sizeClassName'">Size Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.ownership'">Ownership</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.hours'">Hours</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.fhwa'">Standby</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.transportation'">Transport</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row *clrDgItems="let item of itemList.items; let i=
+            index;trackBy:
+            trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>
+            <div *ngIf="manageRequests && item.rateVerified()" class="padding-label-top row pl-1" style="width:125px;">
+              <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
+            </div>
+            <div *ngIf="!manageRequests || !item.rateVerified()" class="padding-label-top row pl-1">
+              {{item.status}}
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited" style="width:150px">
+              <app-equipment-select type="make" [index]="i" [initialValue]="item" (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.make}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited" style="width:150px">
+              <app-equipment-select [makeId]="item.details.makeId" [initialValue]="item" [index]="i" (selected)="modelNewSelectionChanged($event,item,i)"
+                [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.model}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:55px" *ngIf="!item.beingEdited">{{item.details.year}}</div>
+            <div class="padding-label-top" *ngIf="item.beingEdited"><input class="w-55" *ngIf="item.beingEdited"
+                [disabled]="!submitRequests
+                  || !item.beingEdited" type="number" (change)="standbyChanged(item)"
+                [(ngModel)]="item.details.year" [ngModelOptions]="{standalone:
+                  true}"></div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.sizeClassName}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.selectedConfiguration.hourlyOwnershipCost
+              | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top">
+              <div *ngIf="!item.beingEdited">{{item.details.hours | number:
+                '.1-2'}}
+              </div>
+              <input *ngIf="item.beingEdited" [disabled]="!submitRequests
+                  || !item.beingEdited" type="number"
+                class="w-55" (change)="standbyChanged(item)" [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone: true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.details.fhwa
+              | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+
+            <div class="padding-label-top" style="width:100px" *ngIf="!item.beingEdited">{{item.details.transportation
+              | currency}}
+            </div>
+            <div *ngIf="item.beingEdited" class="padding-label-top" style="width:100px">
+              <input type="text" [disabled]="!submitRequests
+                  || !item.beingEdited" currencyMask style="width:100px"
+                (blur)="standbyChanged(item)" (keypress)="standbyChanged(item)" [(ngModel)]="item.details.transportation"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top">{{item.amount | currency}}</div>
+          </clr-dg-cell>
+
+
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+                item.status.toLowerCase() !==
+                'complete')"
+              class="row padding-label-top justify-content-end">
+              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
+                  icon-30 icon-button
+                  pr-1"
+                matTooltip="Save" (click)="saveChanges(i, item)">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                  icon-30 icon-button
+                  pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                  Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                  item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+                item.status.toLowerCase()===
+                'pending')"
+              class="row padding-label-top
+                justify-content-end" style="min-width:150px">
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+                  As Is"
+                (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Approve With Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Request More Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+
+        </clr-dg-row>
+
+
+
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
+          Items</clr-dg-footer>
+      </clr-datagrid>
+
+      <clr-datagrid *ngIf="itemType === 'equipment.rental'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'sizeClassName'">Subtype & Size</clr-dg-column>
+        <clr-dg-column [clrDgField]="'startDate'">Rental
+          Start</clr-dg-column>
+        <clr-dg-column [clrDgField]="'endDate'">Rental End</clr-dg-column>
+        <clr-dg-column [clrDgField]="'invoice'">Invoice Amount</clr-dg-column>
+        <clr-dg-column [clrDgField]="'transportation'">Transport</clr-dg-column>
+        <clr-dg-column [clrDgField]="'operating'">Operating</clr-dg-column>
+        <clr-dg-column [clrDgField]="'hours'">Hours</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row *clrDgItems="let item of itemList.items; let i=
+            index;trackBy:
+            trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>
+            <div *ngIf="manageRequests" class="padding-label-top row pl-1" style="width:125px;padding-left: 0 !important">
+              <mat-icon class="icon" *ngIf="item.rateVerified()" svgIcon="costtrax-check"></mat-icon>
+              <mat-icon class="icon" *ngIf="!item.rateVerified()" color="warn">priority_high</mat-icon>
+              {{item.status}}
+            </div>
+            <div *ngIf="!manageRequests" class="padding-label-top row pl-1">
+              {{item.status}}
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+
+            <div *ngIf="item.beingEdited" style="width:150px">
+              <app-equipment-select type="make" [index]="i" [initialValue]="item" (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.make}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="item.beingEdited" style="width:150px">
+              <app-equipment-select [makeId]="item.details.makeId" [initialValue]="item" [index]="i" (selected)="modelNewSelectionChanged($event,item,i)"
+                [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.model}}</div>
+          </clr-dg-cell>
+
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:150px">{{item.details.subtype}}
+              {{item.details.sizeClassName}}
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell [class.no-padding-top]="item.beingEdited">
+            <div *ngIf="item.beingEdited">
+              <mat-form-field style="width:100px" [floatLabel]="'never'">
+                <input class="line-item-font-size" matInput [(ngModel)]="item.details.startDate" autocomplete="off"
+                  [ngModelOptions]="{standalone: true}" [matDatepicker]="picker" placeholder="Start Date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.startDate
+              | date: 'M/dd/yy'}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell [class.no-padding-top]="item.beingEdited">
+            <div *ngIf="item.beingEdited">
+              <mat-form-field style="width:100px" [floatLabel]="'never'">
+                <input class="line-item-font-size" matInput [min]="item.details.startDate" autocomplete="off" [max]="maxDate"
+                  [(ngModel)]="item.details.endDate" [ngModelOptions]="{standalone: true}" [matDatepicker]="endPicker"
+                  placeholder="End Date">
+                <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                <mat-datepicker #endPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.endDate
+              | date: 'M/dd/yy'}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:150px" *ngIf="!item.beingEdited">{{item.details.invoice
+              | currency}}</div>
+            <div class="padding-label-top" style="width:150px" *ngIf="item.beingEdited">
+              <input type="text" [disabled]="!submitRequests
+                  || !item.beingEdited" currencyMask
+                (blur)="rentalChanged(item)" (keypress)="rentalChanged(item)" [(ngModel)]="item.details.invoice"
+                [ngModelOptions]="{standalone: true}" class="w-100p">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+
+            <div class="padding-label-top" style="width:100px" *ngIf="!item.beingEdited">{{item.details.transportation
+              | currency}}
+            </div>
+            <div class="padding-label-top" style="width:100px" *ngIf="item.beingEdited">
+              <input type="text" [disabled]="!submitRequests
+                  || !item.beingEdited" currencyMask
+                (blur)="rentalChanged(item)" (keypress)="rentalChanged(item)" [(ngModel)]="item.details.transportation"
+                [ngModelOptions]="{standalone: true}" class="w-100p">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px" *ngIf="!item.beingEdited">{{item.details.invoice_operating
+              | currency}}</div>
+            <div class="padding-label-top" style="width:100px" *ngIf="item.beingEdited">
+              <input type="text" [disabled]="!submitRequests
+                  || !item.beingEdited" currencyMask
+                (blur)="rentalChanged(item)" [(ngModel)]="item.details.invoice_operating" (keypress)="rentalChanged(item)"
+                [ngModelOptions]="{standalone:
+                  true}" class="w-100p">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.hours
+                | number: '.1-2'}}
+              </div>
+              <div class="padding-label-top" *ngIf="item.beingEdited">
+                <input [disabled]="!submitRequests
+                    || !item.beingEdited" type="number" class="w-55"
+                  (change)="rentalChanged(item)" [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone: true}">
+              </div>
+
+            </div>
+          </clr-dg-cell>
+
+
+          <clr-dg-cell>
+            <div class="padding-label-top" style="width:100px">{{item.amount |
+              currency}}</div>
+          </clr-dg-cell>
+
+
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+                item.status.toLowerCase() !==
+                'complete')"
+              class="row padding-label-top justify-content-end" style="width:100px">
+              <button *ngIf="item.isDraft() || item.beingEdited" [class.ripple]="item && item.details.startDate && item.details.endDate && (item.details.endDate >= item.details.startDate)"
+                class="icon-30 icon-button pr-1" matTooltip="Save" [disabled]="!item || !item.details.startDate || !item.details.endDate || item.details.endDate < item.details.startDate"
+                (click)="saveChanges(i, item)">
+                <mat-icon color="accent" [class.disabled-icon]="!item || !item.details.startDate || !item.details.endDate || item.details.endDate < item.details.startDate">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                  icon-30 icon-button
+                  pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                  Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                  item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+                item.status.toLowerCase()===
+                'pending')"
+              class="row
+                justify-content-end" style="min-width:150px">
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+                  As Is"
+                (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Approve With Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Request More Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="manageRequests">
+            <clr-dg-row-detail *clrIfExpanded>
+              <div>
+                <h6>Rate Verification: Rental Cost</h6>
+                <table id="invoice-table" class="no-top-margin table table-compact
+                    table-bordered table-striped comparison-table">
+                  <thead>
+                    <th>Terms</th>
+                    <th>30 Day Rental,<br />Time Conversion</th>
+                    <th>User Supplied,<br />Invoice Amount</th>
+                    <th>Rental Rate Blue Book,<br />Ownership Cost</th>
+                    <th>Retail Rental,<br />State Average</th>
+                  </thead>
+                  <tbody>
+                    <tr class="justify-content-center">
+                      <td class="strong">Monthly Rate</td>
+                      <td class="">{{item.details.rentalBreakdown.months}}</td>
+                      <td class=""></td>
+                      <td class="">{{item.details.terms.blueBook.monthlyOwnershipCost}}</td>
+                      <td class="">{{item.details.terms.regionalAvg.monthlyRetailRentalCost}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Weekly Rate</td>
+                      <td class="">{{item.details.rentalBreakdown.weeks}}</td>
+                      <td class=""></td>
+                      <td class="">{{item.details.terms.blueBook.weeklyOwnershipCost}}</td>
+                      <td class="">{{item.details.terms.regionalAvg.weeklyRetailRentalCost}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Daily Rate</td>
+                      <td class="">{{item.details.rentalBreakdown.days}}</td>
+                      <td class=""></td>
+                      <td class="">{{item.details.terms.blueBook.dailyOwnershipCost}}</td>
+                      <td class="">{{item.details.terms.regionalAvg.dailyRetailRentalCost}}</td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Total Cost</td>
+                      <td class=""></td>
+                      <td class="">{{item.details.invoice | currency}}</td>
+                      <td class="" style="position: relative" [class.green]="item.details.terms.blueBook.ownershipDelta
+                        <100"
+                        [class.red]="item.details.terms.blueBook.ownershipDelta
+                          >= 100 ">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.blueBook.ownershipDelta
+                          <100"
+                          svgIcon="costtrax-check"></mat-icon>
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px"
+                          *ngIf="item.details.terms.blueBook.ownershipDelta >=
+                            100" color="warn">priority_high</mat-icon>
+                        {{item.details.terms.blueBook.ownershipTotal |
+                        currency}}
+                        <br />
+                        ({{item.details.terms.blueBook.ownershipDelta}}% vs
+                        Invoice)
+                      </td>
+                      <td style="position: relative" [class.green]="item.details.terms.regionalAvg.retailRentalDelta
+                          < 100"
+                        [class.red]="item.details.terms.regionalAvg.retailRentalDelta
+                          >= 100">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.regionalAvg.retailRentalDelta
+                                                      <100"
+                          svgIcon="costtrax-check"></mat-icon>
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px"
+                          *ngIf="item.details.terms.regionalAvg.retailRentalDelta >=
+                                                        100"
+                          color="warn">priority_high</mat-icon>
+                        {{item.details.terms.regionalAvg.retailRentalTotal |
+                        currency}}
+                        <br />
+                        ({{item.details.terms.regionalAvg.retailRentalDelta}}%
+                        vs Invoice)
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h6 *ngIf="item.details.rentalHouseRates &&
+                      item.details.rentalHouseRates.length> 0">Rate
+                  Verification: Local Retail Rates for {{project.zipcode}}</h6>
+                <h6 *ngIf="!item.details.rentalHouseRates ||
+                      item.details.rentalHouseRates.length === 0">Rate
+                  Verification: No Local Retail Rates available for
+                  {{project.zipcode}}</h6>
+                <table *ngIf="item.details.rentalHouseRates &&
+                      item.details.rentalHouseRates.length> 0"
+                  class="no-top-margin table
+                      table-compact table-bordered table-striped
+                      comparison-table">
+                  <thead>
+                    <th>Advertised Rate</th>
+                    <th *ngFor="let rate of item.details.rentalHouseRates">{{rate.participantName}}</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Monthly</td>
+                      <td *ngFor="let rate of
+                            item.details.rentalHouseRates">{{rate.rentalRates.monthlyRate
+                        |
+                        currency}}</td>
+                    </tr>
+                    <tr>
+                      <td>Weekly</td>
+                      <td *ngFor="let rate of
+                            item.details.rentalHouseRates">{{rate.rentalRates.weeklyRate
+                        |
+                        currency}}</td>
+                    </tr>
+                    <tr>
+                      <td>Daily</td>
+                      <td *ngFor="let rate of
+                            item.details.rentalHouseRates">{{rate.rentalRates.dailyRate
+                        |
+                        currency}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </clr-dg-row-detail>
+          </ng-container>
+
+
+
+
+        </clr-dg-row>
+
+
+
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
+          Items</clr-dg-footer>
+      </clr-datagrid>
+      <clr-datagrid *ngIf="itemType === 'material'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.units'">Units</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.unitCost'">Cost Per Unit</clr-dg-column>
+        <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row *clrDgItems="let item of itemList.items; let i=
+              index;trackBy:
+              trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>{{item.status}}</clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="!item.beingEdited">{{item.details.description |
+              truncate: 25}}
+            </div>
+            <input *ngIf="item.beingEdited" [disabled]="!submitRequests ||
+                  !item.beingEdited" class="full-width"
+              type="text" (change)="materialChanged(item)" [(ngModel)]="item.details.description" [ngModelOptions]="{standalone: true}">
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited" style="width:75px">{{item.details.units}}</div>
+              <input *ngIf="item.beingEdited" style="width:75px" [disabled]="!submitRequests
+                    ||
+                    !item.beingEdited"
+                class="w-55" (change)="materialChanged(item)" type="number" [(ngModel)]="item.details.units"
+                [ngModelOptions]="{standalone:
+                    true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited" style="width:100px">{{item.details.unitCost
+                |
+                currency}}
+              </div>
+              <input type="text" *ngIf="item.beingEdited" style="width:100px" [disabled]="!submitRequests
+                    ||
+                    !item.beingEdited"
+                (blur)="materialChanged(item)" (keypress)="materialChanged(item)" currencyMask [(ngModel)]="item.details.unitCost"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited" style="width:100px">{{item.subtotal
+                | currency}}</div>
+              <input type="text" *ngIf="item.beingEdited" style="width:100px" [disabled]="!submitRequests
+                    || !item.beingEdited"
+                (blur)="materialChanged(item)" (keypress)="materialChanged(item)" currencyMask [(ngModel)]="item.subtotal"
+                [ngModelOptions]="{standalone:
+                    true}">
+            </div>
+          </clr-dg-cell>
+
+
+          <clr-dg-cell>{{item.amount | currency}}</clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+                  item.status.toLowerCase() !==
+                  'complete')"
+              class="row justify-content-end">
+              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
+                    icon-30 icon-button
+                    pr-1"
+                matTooltip="Save" (click)="saveChanges(i, item)">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                    icon-30 icon-button
+                    pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                    Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                    item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+                  item.status.toLowerCase()===
+                  'pending')"
+              class="row
+                  justify-content-end" style="min-width:150px">
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+                    As Is"
+                (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Approve With
+                    Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Request More
+                    Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+
+        </clr-dg-row>
+
+
+
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
+          Items</clr-dg-footer>
+      </clr-datagrid>
+      <clr-datagrid *ngIf="itemType === 'other'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.type'">Type</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
+        <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Amount</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row *clrDgItems="let item of itemList.items; let i=
+              index;trackBy:
+              trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>{{item.status}}</clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited" style="width:100px">{{item.details.type}}</div>
+              <input *ngIf="item.beingEdited" [disabled]="!submitRequests
+                    ||
+                    !item.beingEdited"
+                class="full-width" style="width:100px" type="text" (change)="otherChanged(item)" [(ngModel)]="item.details.type"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+
+            <div *ngIf="!item.beingEdited" style="width:175px">{{item.details.description}}</div>
+            <input *ngIf="item.beingEdited" style="width:175px" [disabled]="!submitRequests ||
+                  !item.beingEdited"
+              class="full-width" type="text" (change)="otherChanged(item)" [(ngModel)]="item.details.description"
+              [ngModelOptions]="{standalone: true}">
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited" style="width:100px">{{item.subtotal
+                | currency}}</div>
+              <input type="text" style="width:100px" *ngIf="item.beingEdited" [disabled]="!submitRequests ||
+                    !item.beingEdited"
+                (blur)="otherChanged(item)" (keypress)="otherChanged(item)" currencyMask [(ngModel)]="item.subtotal"
+                [ngModelOptions]="{standalone:
+                    true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>{{item.amount | currency}}</clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+                  item.status.toLowerCase() !==
+                  'complete')"
+              class="row justify-content-end">
+              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
+                    icon-30 icon-button
+                    pr-1"
+                matTooltip="Save" (click)="saveChanges(i, item)">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                    icon-30 icon-button
+                    pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                    Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                    item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+                  item.status.toLowerCase()===
+                  'pending')"
+              class="row
+                  justify-content-end" style="min-width:150px">
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+                    As Is"
+                (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Approve With
+                    Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Request More
+                    Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+        </clr-dg-row>
+
+
+
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
+          Items</clr-dg-footer>
+      </clr-datagrid>
+      <clr-datagrid *ngIf="itemType === 'subcontractor'">
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.subcontractor'">Subcontractor</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
+        <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'">Amount</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row *clrDgItems="let item of itemList.items; let i=
+              index;trackBy:
+              trackByFn"
+          [clrDgItem]="item">
+          <clr-dg-cell>{{item.status}}</clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited">{{item.details.subcontractor}}</div>
+              <input *ngIf="item.beingEdited" [disabled]="!submitRequests
+                    ||
+                    (!item.beingEdited)"
+                class="full-width" type="text" (change)="subcontractorChanged(item)" [(ngModel)]="item.details.subcontractor"
+                [ngModelOptions]="{standalone: true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="!item.beingEdited">{{item.details.description}}</div>
+            <input *ngIf="item.beingEdited" [disabled]="!submitRequests ||
+                  (!item.beingEdited)" class="full-width"
+              type="text" (change)="subcontractorChanged(item)" [(ngModel)]="item.details.description" [ngModelOptions]="{standalone: true}">
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div>
+              <div *ngIf="!item.beingEdited" style="width:100px">{{item.subtotal
+                | currency}}</div>
+              <input type="text" *ngIf="item.beingEdited" style="width:100px" [disabled]="!submitRequests ||
+                    (!item.beingEdited)"
+                (blur)="subcontractorChanged(item)" (keypress)="subcontractorChanged(item)" currencyMask [(ngModel)]="item.subtotal"
+                [ngModelOptions]="{standalone:
+                    true}">
+            </div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div style="width:100px">{{item.amount | currency}}</div>
+          </clr-dg-cell>
+          <clr-dg-cell>
+            <div *ngIf="!printingInvoice && (submitRequests &&
+                  item.status.toLowerCase() !==
+                  'complete')"
+              class="row justify-content-end">
+              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
+                    icon-30 icon-button
+                    pr-1"
+                matTooltip="Save" (click)="saveChanges(i, item)">
+                <mat-icon color="accent">done</mat-icon>
+              </button>
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+                    icon-30 icon-button
+                    pr-1"
+                matTooltip="Edit" (click)="editItem(i, item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+                    Edits"
+                (click)="revertEdits(i,item)">
+                <mat-icon color="accent">undo</mat-icon>
+              </button>
+              <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited || (item.beingEdited &&
+                    item.isDraft())"
+                matTooltip="Remove" (click)="removeLineItem(i,item)">
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+
+
+            <div *ngIf="!printingInvoice && (manageRequests &&
+                  item.status.toLowerCase()===
+                  'pending')"
+              class="row
+                  justify-content-end" style="min-width:150px">
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+                    As Is"
+                (click)="approve(item)">
+                <mat-icon color="primary">done</mat-icon>
+              </button>
+
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Approve With
+                    Change"
+                (click)="approveWithChange(item)">
+                <mat-icon color="accent">edit</mat-icon>
+              </button>
+              <button class="icon-30 ripple icon-button pr-1" [disabled]="!manageRequests" matTooltip="Request More
+                    Info"
+                (click)="requestMoreInfo(item)">
+                <mat-icon color="warn">info</mat-icon>
+              </button>
+            </div>
+
+          </clr-dg-cell>
+
+        </clr-dg-row>
+
+
+
+        <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
+          Items</clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+
+  </div>
+</div>
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_modalOpen" [clrModalClosable]="false">
+  <h3 class="modal-title">{{modalTitle}}</h3>
+  <div class="modal-body">
+    <form *ngIf="selectedItem" class="full-width px-1" [formGroup]="changeFormGroup">
+      <div class="px-1 pb-2 bg-white">
+        <ng-container *ngIf="selectedItem.type=== 'material'">
+
+          <div class="row flex-wrap full-width">
+            <div class="column flex-wrap px-1">
+              <h6 class="row-details">DESCRIPTION</h6>
+              <div [matTooltip]="selectedItem.details.description">{{selectedItem.details.description}}</div>
+            </div>
+            <div class="column flex-wrap px-1">
+              <h6 class="row-details">UNITS</h6>
+              <div>{{selectedItem.details.units}}</div>
+            </div>
+            <div class="column flex-wrap px-1">
+              <h6 class="row-details">COST PER UNIT</h6>
+              <div>{{selectedItem.details.unitCost | currency}}</div>
+            </div>
+
+
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedItem.type=== 'other'">
+          <div class="full-width row align-items-center">
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">TYPE</h6>
+                <div>{{selectedItem.details.type}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">DESCRIPTION</h6>
+                <div [matTooltip]="selectedItem.details.description">{{selectedItem.details.description}}</div>
+              </div>
+            </div>
+          </div>
+
+        </ng-container>
+        <ng-container *ngIf="selectedItem.type=== 'equipment.active'">
+          <div class="full-width row align-items-center">
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">MACHINE</h6>
+                <div>{{selectedItem.details.year}}
+                  {{selectedItem.details.make}}
+                  {{selectedItem.details.model}}
+                </div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">OPERATING</h6>
+                <div>{{selectedItem.details.selectedConfiguration.hourlyOperatingCost | currency}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">HOURS</h6>
+                <div>{{selectedItem.details.hours | number: '.1-2'}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">TRANSPORT</h6>
+                <div>{{selectedItem.details.transportation | currency}}</div>
+              </div>
+            </div>
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">{{selectedItem.details.description}}</h6>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedItem.type=== 'equipment.standby'">
+          <div class="full-width row align-items-center">
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">MACHINE</h6>
+                <div>{{selectedItem.details.year}}
+                  {{selectedItem.details.make}}
+                  {{selectedItem.details.model}}
+                </div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">OPERATING</h6>
+                <div>{{selectedItem.details.selectedConfiguration.hourlyOperatingCost | currency}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">HOURS</h6>
+                <div>{{selectedItem.details.hours | number: '.1-2'}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">TRANSPORT</h6>
+                <div>{{selectedItem.details.transportation | currency}}</div>
+              </div>
+            </div>
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">{{selectedItem.details.description}}</h6>
+              </div>
+            </div>
+
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedItem.type=== 'equipment.rental'">
+          <div class="full-width row align-items-center">
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">MACHINE</h6>
+                <div>{{selectedItem.details.year}}
+                  {{selectedItem.details.make}}
+                  {{selectedItem.details.model}}
+                  {{selectedItem.details.subtype}}
+                  {{selectedItem.details.sizeClassName}}
+                </div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">INVOICE</h6>
+                <div>{{selectedItem.details.invoice | currency}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">TRANSPORT</h6>
+                <div>{{selectedItem.details.transportation || 0 |
+                  currency}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">OTHER</h6>
+                <div>{{selectedItem.details.other || 0 | currency}}</div>
+              </div>
+            </div>
+
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedItem.type=== 'labor'">
+          <div class="full-width row align-items-center">
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">EMPLOYEE</h6>
+                <div>{{selectedItem.details.employee.lastName}},
+                  {{selectedItem.details.employee.firstName}}
+                </div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">TRADE</h6>
+                <div>{{selectedItem.details.trade}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">RATE</h6>
+                <div>{{selectedItem.details.rate | currency}}</div>
+              </div>
+            </div>
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">TIME X 1</h6>
+                <div>{{selectedItem.details.time1 | number: '.1-2'}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">TIME X 1.5</h6>
+                <div>{{selectedItem.details.time15 | number: '.1-2'}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">TIME X 2</h6>
+                <div>{{selectedItem.details.time2 | number: '.1-2'}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">F.U.T.</h6>
+                <div>{{selectedItem.details.fut | currency}}</div>
+              </div>
+              <div class="column flex-wrap px-2">
+                <h6 class="row-details">S.U.T</h6>
+                <div>{{selectedItem.details.sut | currency}}</div>
+              </div>
+            </div>
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">{{selectedItem.details.description}}</h6>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedItem.type=== 'subcontractor'">
+          <div class="full-width row align-items-center">
+            <div class="full-width row align-items-center">
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">SUBCONTRACTOR</h6>
+                <div>{{selectedItem.details.subcontractor}}</div>
+              </div>
+              <div class="column flex-wrap px-1">
+                <h6 class="row-details">DESCRIPTION</h6>
+                <div [matTooltip]="selectedItem.details.description">{{selectedItem.details.description}}</div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div *ngIf="modalType=== 'ApprovedWithChange'" class="column
+              align-items-center">
+          <div class="column flex-wrap">
+            <h4 class="amount-label">
+              <strong>Amount Submitted:&nbsp;&nbsp;</strong>
+            </h4>
+            <label class="amount-label amount-submitted">{{selectedItem.amount
+              | currency}}
+            </label>
+          </div>
+          <div class="column flex-wrap">
+            <h4 class="amount-label">
+              <strong>Amount Approved:&nbsp;&nbsp;</strong>
+            </h4>
+
+            <input class="amount-text" type="text" formControlName="ammountControl" [(ngModel)]="selectedItem.finalAmount"
+              currencyMask placeholder="Amount Approved">
+
+
+          </div>
+        </div>
+        <div *ngIf="modalType=== 'ApprovedAsIs'" class="w-75">
+          <div class="column pb-4 green">
+            <h4 class="amount-label">
+              <strong>Amount Submitted:&nbsp;&nbsp;</strong>
+            </h4>
+            <label class="amount-label amount-submitted">{{selectedItem.amount
+              | currency}}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="modalType=== 'ApprovedWithChange'" class="full-width">
+        <h4 class="amount-label" [ngClass]="(amountChanged>=
+              0)?'green':'red'">
+          <strong>Change Amount:&nbsp;&nbsp;</strong>{{amountChanged |
+          currency}}
+        </h4>
+
+
+
+        <h4 class="amount-label">
+          <strong>Change Reason:&nbsp;&nbsp;</strong>
+        </h4>
+        <textarea id="changeReason" rows="5" [(ngModel)]="selectedItem.changeReason" formControlName="reasonControl"></textarea>
+
+
+
+      </div>
+
+    </form>
+
+  </div>
+  <div class="modal-footer pb-1 mt-1">
+    <div class="full-width row flex-wrap flex-row-reverse">
+      <button class="btn btn-primary mr-1" *ngIf="modalType===
+            'ApprovedAsIs'" (click)="onAsIsConfirm()"
+        color="primary">{{modalSubmitLabel}}</button>
+      <button class="btn btn-primary mr-1" *ngIf="modalType===
+            'ApprovedWithChange'" (click)="onWithChangesConfirm()"
+        [disabled]="!changeFormGroup.valid">{{modalSubmitLabel}}</button>
+      <button class="btn btn-outline-danger" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</clr-modal>
+
+<clr-modal class="fadeDown in" [(clrModalOpen)]="_confirmDeleteModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Confirm Delete</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this line item?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelDelete()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+  </div>
+</clr-modal>
+
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_savedEquipmentModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Add Saved Models</h3>
+  <div class="modal-body">
+    <clr-datagrid [(clrDgSelected)]="selected">
+      <clr-dg-column [clrDgField]="'id'">ID</clr-dg-column>
+      <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
+      <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+      <clr-dg-column [clrDgField]="'year'">Year</clr-dg-column>
+      <clr-dg-column [clrDgField]="'sizeClassName'">Size Class</clr-dg-column>
+      <clr-dg-column [clrDgField]="'serial'">VIN</clr-dg-column>
+      <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
+      <clr-dg-row *clrDgItems="let item of savedModels$ | async; let i=
+            index;trackBy:
+            trackByFn"
+        [clrDgItem]="item">
+        <clr-dg-cell>{{item.details.id}}</clr-dg-cell>
+        <clr-dg-cell>{{item.make}}</clr-dg-cell>
+        <clr-dg-cell>{{item.model}}</clr-dg-cell>
+        <clr-dg-cell>{{item.year}}</clr-dg-cell>
+        <clr-dg-cell>{{item.sizeClassName}}</clr-dg-cell>
+        <clr-dg-cell>{{item.details.vin}}</clr-dg-cell>
+        <clr-dg-cell>{{item.description}}</clr-dg-cell>
+      </clr-dg-row>
+      <clr-dg-footer>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelAddSavedModels()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="confirmAddSavedModels()">Add Selected</button>
+  </div>
+</clr-modal>
+
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_savedLaborModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Add Saved Employees</h3>
+  <div class="modal-body">
+    <clr-datagrid class="full-width" [(clrDgSelected)]="selected">
+      <clr-dg-column [clrDgField]="'lastName'">Last Name
+        <clr-dg-string-filter [clrDgStringFilter]="lastNameFilter"></clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'firstName'">First Name
+        <clr-dg-string-filter [clrDgStringFilter]="firstNameFilter"></clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'trade'">Trade/Class
+        <clr-dg-string-filter [clrDgStringFilter]="tradeFilter"></clr-dg-string-filter>
+      </clr-dg-column>
+      <clr-dg-column [clrDgField]="'rate'">Rate/Hr</clr-dg-column>
+      <clr-dg-column [clrDgField]="'benefits'">Fringe Benefits</clr-dg-column>
+      <clr-dg-row *clrDgItems="let item of savedEmployees$ | async; let i=
+            index;trackBy:
+            trackByFn"
+        [clrDgItem]="item" [(clrDgSelected)]="item.selected">
+        <clr-dg-cell>{{item.lastName}}</clr-dg-cell>
+        <clr-dg-cell>{{item.firstName}}</clr-dg-cell>
+        <clr-dg-cell>{{item.trade}}</clr-dg-cell>
+        <clr-dg-cell>{{item.rate | currency}}</clr-dg-cell>
+        <clr-dg-cell>{{item.benefits | currency}}</clr-dg-cell>
+      </clr-dg-row>
+      <clr-dg-footer>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelAddSavedEmployees()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="confirmAddSavedEmployees()">Add Selected</button>
+  </div>
+</clr-modal>
+
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_miscModelModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Add Miscellaneous Model</h3>
+  <div id="parent" class="modal-body vh-55">
+    <div class="px-2 pb-2 full-width justify-content-center
+          align-items-center">
+      <div>
+        <h4 class="pb-1">Category:</h4>
+        <ng-select [items]="categoryResults$ | async" (change)="categoryChanged()" bindLabel="categoryName" bindValue="categoryId"
+          placeholder="Choose Category" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [(ngModel)]="miscCategoryId"
+          [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Subtype:</h4>
+        <ng-select [items]="subtypeResults$ | async" [disabled]="!miscCategoryId" (change)="subtypeChanged()" bindLabel="subtypeName"
+          bindValue="subtypeId" placeholder="Choose
+              subtype" clearAllText="Clear" [closeOnSelect]="true"
+          [hideSelected]="true" [(ngModel)]="miscSubtypeId" [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Size Class:</h4>
+        <ng-select [items]="sizeResults$ | async" [disabled]="!miscSubtypeId" (change)="sizeChanged()" bindLabel="sizeClassName"
+          bindValue="sizeClassId" placeholder="Choose Size Class" clearAllText="Clear" [closeOnSelect]="true"
+          [hideSelected]="true" [(ngModel)]="miscSizeClassId" [ngModelOptions]="{standalone:
+              true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Model:</h4>
+        <ng-select [items]="modelResults$ | async" [disabled]="!miscSizeClassId" bindLabel="model" bindValue="modelId"
+          placeholder="Choose Model" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [loading]="modelLoading"
+          [typeahead]="modelInput$" [(ngModel)]="miscModelId" (change)="modelSelected()" dropdownPosition="top"
+          [ngModelOptions]="{standalone: true}">
+        </ng-select>
+      </div>
+      <div>
+        <h4 class="pb-1">Configuration:</h4>
+        <h6 class="disabled-text" *ngIf="!configurations">No configurations found.</h6>
+        <h6 *ngIf="configurations && configurations.values.length === 0">No configurations found for this model.</h6>
+        <clr-datagrid *ngIf="configurations && configurations.values.length > 0" class="datagrid-compact"
+          #lineItemConfigurationGrid>
+          <clr-dg-placeholder>No data found</clr-dg-placeholder>
+          <clr-dg-column></clr-dg-column>
+          <clr-dg-column *ngFor="let column of configurations.columns" [clrDgField]="column.name" [clrDgSorted]="column.name === 'name'">
+            <div>
+              {{column.name}}
+            </div>
+          </clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let configuration of configurations.values" [clrDgItem]="configuration">
+            <clr-dg-cell><button type="button" mat-icon-button color="accent" (click)="confirmAddMiscModel(configuration)">
+                <mat-icon color="accent">radio_button_unchecked</mat-icon>
+              </button>
+            </clr-dg-cell>
+            <clr-dg-cell *ngFor="let column of configurations.columns">{{configuration[column.name]}}
+            </clr-dg-cell>
+          </clr-dg-row>
+        </clr-datagrid>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelAddMiscModel()">Cancel</button>
+  </div>
+</clr-modal>
+
+
+<clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_configurationModal" [clrModalClosable]="false">
+  <h3 class="modal-title">Select Configuration</h3>
+  <div id="parent" *ngIf="selectedItem && selectedItem.details.configurations" class="modal-body vh-55">
+    <div class="pb-2 justify-content-center
+          align-items-center">
+      <clr-datagrid class="datagrid-compact" #configurationGrid1>
+        <clr-dg-placeholder>No data found</clr-dg-placeholder>
+        <clr-dg-column>
+        </clr-dg-column>
+        <clr-dg-column *ngFor="let column of selectedItem.details.configurations.columns" [clrDgField]="column.name"
+          [clrDgSorted]="column.name === 'name'">
+          <div>
+            {{column.name}}
+          </div>
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let configuration of selectedItem.details.configurations.values; let index = index"
+          [clrDgItem]="configuration">
+          <clr-dg-cell>
+            <button type="button" mat-icon-button color="accent" (click)="confirmSelectConfiguration(configuration)">
+              <mat-icon color="accent">radio_button_unchecked</mat-icon>
+            </button>
+
+          </clr-dg-cell>
+          <clr-dg-cell *ngFor="let column of selectedItem.details.configurations.columns">{{configuration[column.name]}}
+          </clr-dg-cell>
+        </clr-dg-row>
+      </clr-datagrid>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="cancelSelectConfiguration()">Cancel</button>
+  </div>
+</clr-modal>

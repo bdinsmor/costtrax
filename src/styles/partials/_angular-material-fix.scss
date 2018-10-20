@@ -1,0 +1,129 @@
+// Fix: "Icon button ripple radius is not correct on Edge & Safari"
+
+.mat-icon-button {
+  .mat-button-ripple {
+    border-radius: 50%;
+  }
+}
+
+.mat-tab-body-wrapper {
+  height: 100% !important;
+}
+
+.material-icons {
+  vertical-align: middle;
+}
+
+.material-icons.md-14 {
+  font-size: 14px;
+}
+
+.material-icons.md-18 {
+  font-size: 18px;
+}
+
+.material-icons.md-24 {
+  font-size: 24px;
+}
+
+.material-icons.md-36 {
+  font-size: 36px;
+}
+
+.material-icons.md-48 {
+  font-size: 48px;
+}
+
+.dialog-content-wrapper {
+  max-height: 85vh;
+  max-width: 85vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-dialog-content {
+  margin: 0 !important;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.approve-dialog {
+  background: blue;
+}
+
+.mat-dialog-actions {
+  padding-top: 24px !important;
+}
+
+button {
+  line-height: 36px !important;
+}
+
+// Fix: "Inconsistent font sizes across elements"
+.mat-input-wrapper {
+  font-size: 16px;
+}
+
+.mat-checkbox {
+  font-size: 16px;
+}
+
+.mat-radio-button {
+  font-size: 16px;
+}
+
+.mat-pseudo-checkbox-checked:after {
+  width: 14px !important;
+  height: 7px !important;
+}
+
+// Fix: "Input underlines has wrong color opacity value"
+.mat-form-field-underline {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+// Fix: "Some idiots using table-cell and inline-table in mat-select"
+.mat-form-field {
+  &.mat-form-field-type-mat-select {
+    .mat-input-infix {
+      display: inline-flex;
+      width: auto;
+
+      .mat-select-trigger {
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+
+        .mat-select-value {
+          display: flex;
+          max-width: none;
+          margin-right: 8px;
+        }
+
+        .mat-select-arrow-wrapper {
+          display: inline-flex;
+        }
+      }
+    }
+  }
+}
+
+// Fix: "Stepper icons are broken due to Fuse's icon helpers"
+mat-horizontal-stepper,
+mat-vertical-stepper {
+  mat-step-header {
+    mat-icon {
+      height: 16px !important;
+      width: 16px !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      color: rgba(255, 255, 255, 0.87) !important;
+    }
+  }
+}
+
+mat-vertical-stepper {
+  padding: 16px 0;
+}

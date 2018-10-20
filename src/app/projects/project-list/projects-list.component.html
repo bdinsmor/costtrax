@@ -1,0 +1,17 @@
+<div class="full-width px-1">
+  <clr-datagrid>
+    <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'">Project</clr-dg-column>
+    <clr-dg-column [clrDgField]="'account.organization'">Requesting Organization</clr-dg-column>
+    <clr-dg-column [clrDgField]="'itemsPending'">Open Requests</clr-dg-column>
+    <clr-dg-column [clrDgField]="'age'" [clrDgSortOrder]="descSort">Oldest Open
+      Request</clr-dg-column>
+    <clr-dg-row class="pointer" *clrDgItems="let item of projects | async;
+      let i= index" (click)="openProject(item)">
+      <clr-dg-cell>{{item.name}}</clr-dg-cell>
+      <clr-dg-cell>{{item.account.organization}}</clr-dg-cell>
+      <clr-dg-cell>{{item.itemsPending}}</clr-dg-cell>
+      <clr-dg-cell>{{item.age}} days</clr-dg-cell>
+    </clr-dg-row>
+    <clr-dg-footer>{{(projects | async)?.length}} Projects</clr-dg-footer>
+  </clr-datagrid>
+</div>

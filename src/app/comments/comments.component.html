@@ -1,0 +1,17 @@
+<mat-list>
+  <h3 mat-subheader>Comments</h3>
+  <mat-list-item *ngFor="let comment of comments">
+    <h4 mat-line>{{comment.author}}</h4>
+    <p mat-line> {{comment.date | date}} </p>
+    <div mat-line>{{comment.text}}</div>
+  </mat-list-item>
+</mat-list>
+<form clrForm [formGroup]="commentForm">
+  <clr-input-container>
+    <label>Comment</label>
+    <input clrInput type="text" formControlName="comment" />
+    <clr-control-helper>Add Comment Here</clr-control-helper>
+    <clr-control-error>Must be at least 1 character</clr-control-error>
+    <button class="btn btn-primary" (click)="saveComment()">Save</button>
+  </clr-input-container>
+</form>
