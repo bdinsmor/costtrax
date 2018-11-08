@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Observable } from 'rxjs';
 
 import { Account } from '../shared/model';
+import { AccountFormComponent } from './account-form/account-form.component';
 import { AccountService } from './accounts.service';
 
 @Component({
@@ -14,16 +16,36 @@ export class AccountsComponent implements OnInit, OnDestroy {
   archivedAccounts$: Observable<Account[]>;
   canCreateAccounts = false;
   _accountModalOpen = false;
-  constructor(private accountService: AccountService) {}
+  private config: MatSnackBarConfig;
+  duration = 3000;
+
+  constructor(
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    private accountService: AccountService
+  ) {}
 
   ngOnInit() {
     this.loadActiveAccounts();
+    // this.loadArchivedAccounts();
+  }
+
+  openSnackBar(message: string, type: string, action: string) {
+    this.config = { duration: this.duration };
+    this.snackBar.open(message, action, this.config);
   }
 
   ngOnDestroy(): void {}
 
   createAccount() {
-    this._accountModalOpen = true;
+    const dialogRef = this.dialog.open(AccountFormComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.openSnackBar('Account was added', 'OK', 'OK');
+        this.loadActiveAccounts();
+      }
+    });
   }
 
   createCancel() {
@@ -32,12 +54,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
 
   saveAccount(event: any) {
     console.log('event: ' + JSON.stringify(event, null, 2));
-    /*this.accountService.create(event).subscribe((res: any) => {
+    this.accountService.create(event).subscribe((res: any) => {
       if (res) {
         this.loadActiveAccounts();
         this._accountModalOpen = false;
       }
-    });*/
+    });
   }
 
   loadActiveAccounts() {

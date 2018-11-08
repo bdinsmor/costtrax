@@ -1,6 +1,6 @@
 <div class="container full-height mt-5">
   <div class="row full-height justify-content-center align-items-center">
-    <form class="col-8 full-height" [formGroup]="accountForm" novalidate>
+    <form class="col-6 full-height" [formGroup]="loginForm" novalidate>
       <div class="login-box card no-border header-bg">
         <div
           class="header header-6  align-items-center justify-content-center pb-5 pt-5"
@@ -13,65 +13,72 @@
           />
         </div>
         <div class="px-2 pt-2 form-bg">
-          <h3 class="pb-1 no-top-margin">ADD ADMIN ACCOUNT</h3>
-          <div class="full-width pt-2">
+          <h3 class="pb-1 no-top-margin">Advantage Login</h3>
+          <div class="full-width">
             <mat-form-field class="full-width">
               <input
                 matInput
-                placeholder="Accout Name"
-                type="text"
-                formControlName="accountName"
-                required
-              />
-              <mat-error
-                *ngIf="accountForm.get('accountName').hasError('required')"
-              >
-                Account Name is <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="full-width pt-1">
-            <mat-form-field class="full-width">
-              <input
-                matInput
-                placeholder="Email"
+                placeholder="Advantage Email"
                 type="email"
                 formControlName="email"
                 required
               />
               <mat-error
                 *ngIf="
-                  accountForm.get('email').hasError('email') &&
-                  !accountForm.get('email').hasError('required')
+                  loginForm.get('email').hasError('email') &&
+                  !loginForm.get('email').hasError('required')
                 "
               >
                 Please enter a <strong>valid email address</strong>
               </mat-error>
-              <mat-error *ngIf="accountForm.get('email').hasError('required')">
+              <mat-error *ngIf="loginForm.get('email').hasError('required')">
                 Email is <strong>required</strong>
               </mat-error>
             </mat-form-field>
           </div>
-
+          <div class="full-width pt-1">
+            <mat-form-field class="fw">
+              <input
+                class="full-width"
+                type="password"
+                matInput
+                formControlName="password"
+                autocomplete="current-password"
+                [placeholder]="'Password'"
+                required
+              />
+              <mat-error
+                *ngIf="
+                  !loginForm.get('password').valid ||
+                  loginForm.get('password').untouched
+                "
+              >
+                <span translate>Password is <strong>required</strong> </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="login-error" [hidden]="!error || isLoading">
+            Email or password incorrect.
+          </div>
           <br />
 
           <div class="footer d-flex row justify-content-center pb-2">
             <button
               class="btn btn-warning ripple login-btn"
-              (click)="cancelAccount()"
+              (click)="cancelSync()"
             >
               <span>Cancel</span>
             </button>
             <button
               class="btn btn-primary ripple btn-dark login-btn"
-              (click)="createAccount()"
-              [disabled]="accountForm.invalid || isLoading"
+              (click)="syncLogin()"
+              [disabled]="loginForm.invalid || isLoading"
             >
               <app-loader
                 class="inline-loader"
                 [isLoading]="isLoading"
               ></app-loader>
-              <span>Add Account</span>
+              <span>Login</span>
             </button>
           </div>
         </div>

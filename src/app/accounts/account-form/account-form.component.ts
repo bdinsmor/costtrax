@@ -1,7 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material';
 
 import { Account } from '../../shared/model';
+import { AccountService } from '../accounts.service';
 
 @Component({
   selector: 'app-account-form',
@@ -17,7 +19,11 @@ export class AccountFormComponent implements OnInit {
   cancel = new EventEmitter();
   @Output()
   save = new EventEmitter();
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private accountService: AccountService,
+    public dialogRef: MatDialogRef<any>
+  ) {
     this.createForm();
   }
 
@@ -25,7 +31,17 @@ export class AccountFormComponent implements OnInit {
 
   createAccount() {
     const account: Account = new Account(this.accountForm.value);
-    this.save.emit(account);
+    this.accountService.create(account).subscribe((res: any) => {
+      if (res) {
+        this.dialogRef.close({ success: true });
+      } else {
+        this.dialogRef.close();
+      }
+    });
+  }
+
+  cancelAccount() {
+    this.dialogRef.close();
   }
 
   createForm() {

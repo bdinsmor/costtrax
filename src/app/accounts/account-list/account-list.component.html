@@ -1,12 +1,95 @@
 <div class="full-width px-1">
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'">Account</clr-dg-column>
-    <clr-dg-column [clrDgField]="'email'" [clrDgSortBy]="'name'">Email</clr-dg-column>
-    <clr-dg-row class="pointer" *clrDgItems="let item of accounts | async;
-      let i= index" (click)="viewAccount(item)">
-      <clr-dg-cell>{{item.name}}</clr-dg-cell>
-      <clr-dg-cell>{{item.email}}</clr-dg-cell>
+    <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'"
+      >Account</clr-dg-column
+    >
+    <clr-dg-column [clrDgField]="'email'" [clrDgSortBy]="'name'"
+      >Email</clr-dg-column
+    >
+    <clr-dg-column style="width:100px">Actions</clr-dg-column>
+    <clr-dg-row
+      class="pointer"
+      *clrDgItems="let item of (accounts | async); let i = index"
+      (click)="viewAccount(item)"
+    >
+      <clr-dg-cell>{{ item.organization }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.users | json }}</clr-dg-cell>
+      <clr-dg-cell>
+        <div class="row justify-content-end" style="width:100px">
+          <button
+            *ngIf="item.isActive()"
+            class="ripple
+                            icon-30 icon-button
+                            pr-1"
+            matTooltip="Save"
+            (click)="archiveAccount(item)"
+          >
+            <mat-icon color="accent">archive</mat-icon>
+          </button>
+          <button
+            class="ripple icon-button icon-30 pr-1"
+            matTooltip="Remove"
+            (click)="removeAccount(item)"
+          >
+            <mat-icon color="warn">delete</mat-icon>
+          </button>
+        </div>
+      </clr-dg-cell>
     </clr-dg-row>
-    <clr-dg-footer>{{(accounts | async)?.length}} Accounts</clr-dg-footer>
+    <clr-dg-footer>{{ (accounts | async)?.length }} Accounts</clr-dg-footer>
   </clr-datagrid>
 </div>
+
+<clr-modal
+  class="fadeDown in"
+  [(clrModalOpen)]="_confirmArchiveModal"
+  [clrModalClosable]="false"
+>
+  <h3 class="modal-title">Confirm Archive</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to archive this account?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-danger"
+      (click)="cancelArchiveAccount()"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="confirmArchiveAccount()"
+    >
+      Mark Complete
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal
+  class="fadeDown in"
+  [(clrModalOpen)]="_confirmDeleteModal"
+  [clrModalClosable]="false"
+>
+  <h3 class="modal-title">Confirm Account Deletion</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this account?</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-danger"
+      (click)="cancelDeleteAccount()"
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="confirmDeleteAccount()"
+    >
+      Mark Complete
+    </button>
+  </div>
+</clr-modal>

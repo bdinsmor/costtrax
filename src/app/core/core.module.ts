@@ -1,17 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 
 import { TokenInterceptor } from '../core/http/http-token.interceptor';
-import { PipesModule } from '../core/pipes/pipes.module';
 import { ToolbarNotificationsComponent } from '../core/toolbar-notifications/toolbar-notifications.component';
 import { ToolbarUserButtonComponent } from '../core/toolbar-user-button/toolbar-user-button.component';
-import { UtilsModule } from '../core/utils/utils.module';
-import { MaterialModule } from '../material.module';
+import { SharedModule } from '../shared';
 import { AuthenticationGuard } from './authentication/authentication.guard';
 import { AuthenticationService } from './authentication/authentication.service';
+import { UberAdminGuard } from './authentication/uberAdmin.guard';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { BreadcrumbService } from './breadcrumbs/breadcrumbs.service';
 import { HeaderComponent } from './header/header.component';
@@ -22,17 +19,10 @@ import { RequestCacheService } from './http/http-cache.service';
 import { HttpService } from './http/http.service';
 import { RouteReusableStrategy } from './route-reusable-strategy';
 import { ShellComponent } from './shell/shell.component';
+import { UtilsModule } from './utils/utils.module';
 
 @NgModule({
-  imports: [
-    BrowserAnimationsModule,
-    CommonModule,
-    HttpClientModule,
-    PipesModule,
-    MaterialModule,
-    UtilsModule,
-    RouterModule
-  ],
+  imports: [SharedModule, UtilsModule, RouterModule],
   declarations: [
     HeaderComponent,
     ToolbarNotificationsComponent,
@@ -49,6 +39,7 @@ import { ShellComponent } from './shell/shell.component';
   providers: [
     AuthenticationService,
     AuthenticationGuard,
+    UberAdminGuard,
     BreadcrumbService,
     RequestCacheService,
     ApiPrefixInterceptor,

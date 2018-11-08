@@ -828,15 +828,33 @@ export class Project {
   }
 }
 
+export class Email {
+  email: string;
+}
+
 export class Account {
   id: string;
   organization: string;
+  accountName: string;
   roles: string[];
+  users: Email[];
+  email: string;
+  active = true;
+
+  isActive() {
+    return this.active;
+  }
+
   constructor(a: any) {
     {
+      //  console.log(a.organization + ' ' + JSON.stringify(a, null, 2));
       this.id = a.id || '';
       this.organization = a.organization || '';
+      this.accountName = a.accountName || this.organization || '';
       this.roles = a.roles || [];
+      this.email = a.email || '';
+      this.users = a.users || [];
+      this.active = a.active || true;
     }
   }
 }
@@ -1520,9 +1538,8 @@ export class Request {
     for (const k in sorted) {
       this.itemsByType.push(new ItemList(k, sorted[k]));
     }
-    this.itemsByType.sort(
-      (a, b) =>
-        a.sortOrder < b.sortOrder ? -1 : a.sortOrder > b.sortOrder ? 1 : 0
+    this.itemsByType.sort((a, b) =>
+      a.sortOrder < b.sortOrder ? -1 : a.sortOrder > b.sortOrder ? 1 : 0
     );
     // console.log('tp: ' + JSON.stringify(this.itemsByType, null, 2));
     //  console.log('Request Map: \n' + JSON.stringify(byType.size, null, 2));

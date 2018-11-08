@@ -7,6 +7,7 @@ import { SharedModule } from '../shared';
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './login.component';
 import { ResetComponent } from './reset/reset.component';
+import { SyncDialogComponent } from './sync.dialog';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { ResetComponent } from './reset/reset.component';
     MaterialModule,
     LoginRoutingModule
   ],
-  declarations: [LoginComponent, ResetComponent]
+  declarations: [LoginComponent, SyncDialogComponent, ResetComponent],
+  entryComponents: [SyncDialogComponent]
 })
 export class LoginModule {}

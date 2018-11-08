@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
 import { TextMaskModule } from 'angular2-text-mask';
 
+import { AccountsModule } from './accounts/accounts.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core';
@@ -19,6 +20,8 @@ import { MaterialModule } from './material.module';
 import { ProjectsModule } from './projects/projects.module';
 import { RequestsModule } from './requests/requests.module';
 import { SharedModule } from './shared';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,13 +41,15 @@ import { SharedModule } from './shared';
     RequestsModule,
     LineItemsModule,
     ProjectsModule,
+    AccountsModule,
     AppRoutingModule,
     EquipmentModule,
     LaborModule,
     ClarityModule,
     ClrFormsNextModule,
     MaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
 
   bootstrap: [AppComponent]

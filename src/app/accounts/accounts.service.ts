@@ -11,7 +11,17 @@ export class AccountService {
   constructor(private http: HttpClient) {}
 
   create(account: Account): Observable<any> {
-    return this.http.post(environment.serverUrl + '/account', account);
+    const pb = {
+      organization: account.accountName,
+      users: [{ email: account.email }]
+    };
+    return this.http.post(environment.serverUrl + '/account', pb);
+  }
+
+  archive(accountId: string) {
+    return this.http.put(environment.serverUrl + '/account/' + accountId, {
+      active: false
+    });
   }
 
   delete(accountId: string) {
@@ -19,10 +29,10 @@ export class AccountService {
   }
 
   update(account: Account) {
-    return this.http.put(
-      environment.serverUrl + '/account/' + account.id,
-      account
-    );
+    return this.http.put(environment.serverUrl + '/account/' + account.id, {
+      accountName: account.accountName,
+      email: account.email
+    });
   }
 
   getActiveAccounts(): Observable<Account[]> {
@@ -49,6 +59,14 @@ export class AccountService {
         return accounts;
       })
     );
+  }
+
+  syncAccount(form: any) {
+    const pb = {
+      email: form.email,
+      password: form.password
+    };
+    return this.http.post(environment.serverUrl + '/sync', pb);
   }
 
   getAccount(id: string): Observable<Account> {

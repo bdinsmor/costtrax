@@ -4,10 +4,10 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 import { Logger } from '../logger.service';
 import { AuthenticationService } from './authentication.service';
 
-const log = new Logger('AuthenticationGuard');
+const log = new Logger('UberAdminGuard');
 
 @Injectable()
-export class AuthenticationGuard implements CanActivate {
+export class UberAdminGuard implements CanActivate {
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService
@@ -17,12 +17,8 @@ export class AuthenticationGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (this.authenticationService.isAuthenticated()) {
-      return true;
-    }
-
-    log.debug('Not authenticated, redirecting...');
-    this.router.navigate(['/login'], { replaceUrl: true });
-    return false;
+    console.log('checking uber...');
+    return true;
+    // return this.authenticationService.isUberAdmin();
   }
 }

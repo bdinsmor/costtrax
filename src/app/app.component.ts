@@ -1,10 +1,14 @@
 import { animate, animateChild, group, query, sequence, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 import { Subscription } from '../../node_modules/rxjs';
 import { environment } from '../environments/environment';
+import { AccountService } from './accounts/accounts.service';
 import { Logger } from './core';
 import { AuthenticationService } from './core/authentication/authentication.service';
+import { SyncDialogComponent } from './login/sync.dialog';
 
 const log = new Logger('App');
 
@@ -50,8 +54,20 @@ const log = new Logger('App');
 export class AppComponent implements OnInit {
   subscription: Subscription;
   loggedIn = false;
+  roles: String[];
+  uberAdmin = false;
+  loginForm: FormGroup;
+  isLoading = false;
+  _syncAccountModal = false;
+  private config: MatSnackBarConfig;
+  duration = 3000;
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar,
+    private authService: AuthenticationService,
+    private accountService: AccountService
+  ) {}
 
   getRouteAnimation(outlet) {
     return outlet.activatedRouteData.animation;
@@ -65,10 +81,20 @@ export class AppComponent implements OnInit {
 
     this.subscription = this.authService.getCreds().subscribe(message => {
       if (message) {
+        this.uberAdmin = message.uberAdmin;
         this.loggedIn = true;
       } else {
+        this.uberAdmin = false;
         this.loggedIn = false;
       }
+    });
+  }
+
+  syncAccounts() {
+    const dialogRef = this.dialog.open(SyncDialogComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
     });
   }
 }

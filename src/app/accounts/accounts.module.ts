@@ -9,6 +9,7 @@ import { SharedModule } from '../shared';
 import { AccountFormComponent } from './account-form/account-form.component';
 import { AccountListComponent } from './account-list/account-list.component';
 import { AccountsComponent } from './accounts.component';
+import { AccountService } from './accounts.service';
 
 @NgModule({
   imports: [
@@ -21,6 +22,8 @@ import { AccountsComponent } from './accounts.component';
     MaterialModule
   ],
   declarations: [AccountListComponent, AccountFormComponent, AccountsComponent],
-  exports: [AccountListComponent, AccountFormComponent, AccountsComponent]
+  exports: [AccountListComponent, AccountFormComponent, AccountsComponent],
+  providers: [AccountService],
+  entryComponents: [AccountFormComponent]
 })
 export class AccountsModule {}

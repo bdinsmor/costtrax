@@ -11,6 +11,7 @@ export interface Credentials {
   email: string;
   roles: string[];
   token: string;
+  uberAdmin: boolean;
   decodedToken: string;
   accounts: Account[];
 }
@@ -83,6 +84,9 @@ export class AuthenticationService {
         // tslint:disable-next-line:max-line-length
         //  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNWJmMWY5ZC00YTJkLTQ4NzUtYjk3Yy1hZGI5Y2FiZjUzNjEiLCJlbWFpbCI6Imhlcm1lcy5yZXF1ZXN0b3JAbm9ydGhhdmV0ZWNoLmNvbSIsImlhdCI6MTUyNDQ0NDE5NSwiZXhwIjoxNTI0NTMwNTk1LCJpc3MiOiJpbmZvcm1hIn0.j9T-7N_RpYKJOULGhuUkRkLyaJ6Pn4caCwphTtAmxFY';
         const creds = { email: context.email, token: token };
+        console.log(
+          'token: ' + JSON.stringify(this.decodeToken(token), null, 2)
+        );
         this.setCredentials(creds as Credentials, context.remember);
         return creds as Credentials;
       })
@@ -117,7 +121,6 @@ export class AuthenticationService {
 
   /**
    * Logs out the user and clear credentials.
-   * @return {Observable<boolean>} True if the user was logged out successfully.
    */
   logout(): Observable<boolean> {
     // Customize credentials invalidation here
@@ -128,7 +131,6 @@ export class AuthenticationService {
 
   /**
    * Checks is the user is authenticated.
-   * @return {boolean} True if the user is authenticated.
    */
   isAuthenticated(): boolean {
     if (!this.credentials) {
@@ -140,6 +142,20 @@ export class AuthenticationService {
       this.sendCreds(this.credentials);
     }
     return loggedIn;
+  }
+
+  isUberAdmin(): boolean {
+    if (!this.credentials) {
+      return false;
+    }
+    const loggedIn =
+      !!this.credentials && this.isTokenExpired(this.credentials.token, 0);
+    if (!loggedIn) {
+      return false;
+    } else {
+      return this.credentials.uberAdmin;
+    }
+    return false;
   }
 
   public urlBase64Decode(str: string): string {
@@ -263,7 +279,6 @@ export class AuthenticationService {
 
   /**
    * Gets the user credentials.
-   * @return {Credentials} The user credentials or null if the user is not authenticated.
    */
   get credentials(): Credentials | null {
     return this._credentials;
@@ -271,7 +286,11 @@ export class AuthenticationService {
 
   sendCreds(creds: Credentials) {
     if (creds && creds.email) {
-      this.subject.next({ userName: creds.email });
+      this.subject.next({
+        userName: creds.email,
+        roles: creds.roles,
+        uberAdmin: this.decodeToken(creds.token).uberAdmin
+      });
     } else {
       this.clearCreds();
     }
@@ -289,8 +308,6 @@ export class AuthenticationService {
    * Sets the user credentials.
    * The credentials may be persisted across sessions by setting the `remember` parameter to true.
    * Otherwise, the credentials are only persisted for the current session.
-   * @param {Credentials=} credentials The user credentials.
-   * @param {boolean=} remember True to remember credentials across sessions.
    */
   private setCredentials(credentials?: Credentials, remember?: boolean) {
     this._credentials = credentials || null;
@@ -298,6 +315,7 @@ export class AuthenticationService {
     if (credentials) {
       const storage = remember ? localStorage : sessionStorage;
       storage.setItem(credentialsKey, JSON.stringify(credentials));
+      console.log('creds: ' + JSON.stringify(credentials, null, 2));
       this.sendCreds(credentials);
     } else {
       this.clearCreds();

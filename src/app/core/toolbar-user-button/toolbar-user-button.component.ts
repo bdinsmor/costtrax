@@ -1,4 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -17,6 +27,13 @@ export class ToolbarUserButtonComponent
   isOpen: boolean;
   userName: string;
   subscription: Subscription;
+  _syncAccountModal = false;
+  loginForm: FormGroup;
+  isLoading = false;
+  accountSynced = false;
+  @Output()
+  advantageSync = new EventEmitter();
+
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
@@ -27,8 +44,10 @@ export class ToolbarUserButtonComponent
       .subscribe(message => {
         if (message) {
           this.userName = message.userName;
+          this.accountSynced = message.accountSynced;
         } else {
           this.userName = '';
+          this.accountSynced = false;
         }
         this.cd.detectChanges();
       });
@@ -61,5 +80,10 @@ export class ToolbarUserButtonComponent
 
   onClickOutside() {
     this.isOpen = false;
+  }
+
+  syncAccounts() {
+    this.isOpen = false;
+    this.advantageSync.emit();
   }
 }

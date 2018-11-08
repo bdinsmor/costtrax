@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AccountFormComponent } from './accounts/account-form/account-form.component';
+import { AccountsComponent } from './accounts/accounts.component';
 import { AuthenticationGuard } from './core';
+import { UberAdminGuard } from './core/authentication/uberAdmin.guard';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { HomeComponent } from './home/home.component';
 import { LaborComponent } from './labor/labor.component';
 import { ProjectFormComponent } from './projects/project-form/project-form.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { RequestDetailsComponent } from './requests/request-details/request-details.component';
-
 
 const routes: Routes = [
   {
@@ -36,6 +38,22 @@ const routes: Routes = [
     path: 'projects/:id',
     component: ProjectFormComponent,
     canActivate: [AuthenticationGuard],
+    data: {
+      animation: 'details'
+    }
+  },
+  {
+    path: 'accounts',
+    component: AccountsComponent,
+    canActivate: [AuthenticationGuard, UberAdminGuard],
+    data: {
+      animation: 'accounts'
+    }
+  },
+  {
+    path: 'accounts/:id',
+    component: AccountFormComponent,
+    canActivate: [AuthenticationGuard, UberAdminGuard],
     data: {
       animation: 'details'
     }
