@@ -116,12 +116,11 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/'], { replaceUrl: true });
         },
         (error: Error) => {
-          console.log('email: ' + this.loginForm.get('email').value);
           if (error instanceof Error403) {
             this.createChangePasswordForm();
             this.changePassword = true;
           }
-          log.debug(`ogin error: ${error.message}`);
+          log.debug(`login error: ${error.message}`);
           this.error = error.message;
         }
       );
