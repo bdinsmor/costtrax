@@ -10,7 +10,6 @@
     <clr-dg-row
       class="pointer"
       *clrDgItems="let item of (accounts | async); let i = index"
-      (click)="viewAccount(item)"
     >
       <clr-dg-cell>{{ item.organization }}</clr-dg-cell>
       <clr-dg-cell
@@ -93,7 +92,7 @@
       class="btn btn-primary"
       (click)="confirmDeleteAccount()"
     >
-      Mark Complete
+      Delete
     </button>
   </div>
 </clr-modal>

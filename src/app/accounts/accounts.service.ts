@@ -42,7 +42,6 @@ export class AccountService {
         map((res: any) => {
           const accounts: Account[] = [];
           res.forEach((p: any) => {
-            console.log('account: ' + JSON.stringify(p, null, 2));
             accounts.push(new Account(p));
           });
           return accounts;
