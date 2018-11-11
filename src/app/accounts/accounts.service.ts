@@ -36,37 +36,41 @@ export class AccountService {
   }
 
   getActiveAccounts(): Observable<Account[]> {
-    return this.http.get(environment.serverUrl + '/account?active=1').pipe(
-      map((res: any) => {
-        const accounts: Account[] = [];
-        res.forEach((p: any) => {
-          //   console.log('project name: ' + p.name);
-          accounts.push(new Account(p));
-        });
-        return accounts;
-      })
-    );
+    return this.http
+      .get(environment.serverUrl + '/account/admin?active=1')
+      .pipe(
+        map((res: any) => {
+          const accounts: Account[] = [];
+          res.forEach((p: any) => {
+            console.log('account: ' + JSON.stringify(p, null, 2));
+            accounts.push(new Account(p));
+          });
+          return accounts;
+        })
+      );
   }
 
   getArchivedAccountss(): Observable<Account[]> {
-    return this.http.get(environment.serverUrl + '/account?active=0').pipe(
-      map((res: any) => {
-        const accounts: Account[] = [];
-        res.forEach((p: any) => {
-          //   console.log('project name: ' + p.name);
-          accounts.push(new Account(p));
-        });
-        return accounts;
-      })
-    );
+    return this.http
+      .get(environment.serverUrl + '/account/admin?active=0')
+      .pipe(
+        map((res: any) => {
+          const accounts: Account[] = [];
+          res.forEach((p: any) => {
+            //   console.log('project name: ' + p.name);
+            accounts.push(new Account(p));
+          });
+          return accounts;
+        })
+      );
   }
 
   syncAccount(form: any) {
     const pb = {
-      email: form.email,
+      username: form.email,
       password: form.password
     };
-    return this.http.post(environment.serverUrl + '/sync', pb);
+    return this.http.post(environment.serverUrl + '/auth/eqw', pb);
   }
 
   getAccount(id: string): Observable<Account> {

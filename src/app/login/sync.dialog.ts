@@ -5,11 +5,9 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { AuthenticationService, Logger } from '../core';
+import { AuthenticationService } from '../core';
 import { appAnimations } from '../core/animations';
 import { AccountService } from './../accounts/accounts.service';
-
-const log = new Logger('Login');
 
 @Component({
   selector: 'app-sync-dialog',
@@ -53,13 +51,12 @@ export class SyncDialogComponent implements OnInit {
         })
       )
       .subscribe(
-        credentials => {
-          console.log('synced!');
+        (credentials: any) => {
+          this.authenticationService.setCreds(credentials.token);
+
           this.dialogRef.close({ success: true });
         },
         (error: Error) => {
-          console.log('email: ' + this.loginForm.get('email').value);
-          log.debug(`login error: ${error.message}`);
           this.error = error.message;
         }
       );

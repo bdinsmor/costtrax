@@ -832,14 +832,21 @@ export class Email {
   email: string;
 }
 
+export class Admin {
+  id: string;
+  email: string;
+}
+
 export class Account {
   id: string;
   organization: string;
   accountName: string;
   roles: string[];
   users: Email[];
+  admins: Admin[];
   email: string;
   active = true;
+  adminsList: string;
 
   isActive() {
     return this.active;
@@ -854,6 +861,7 @@ export class Account {
       this.roles = a.roles || [];
       this.email = a.email || '';
       this.users = a.users || [];
+      this.admins = a.admins || [];
       this.active = a.active || true;
     }
   }

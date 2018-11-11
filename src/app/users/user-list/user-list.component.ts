@@ -26,15 +26,14 @@ import { User } from '../../shared/model';
 export class UserListComponent implements OnInit {
   private config: MatSnackBarConfig;
   duration = 3000;
-  @Input()
-  projectId: string;
-  @Input()
-  users: User[];
-  @Input()
-  newProject: boolean;
 
-  @Output()
-  changed = new EventEmitter<any>();
+  @Input() projectId: string;
+  @Input() users: User[];
+  @Input() newProject: boolean;
+  @Input() type: string;
+
+  @Output() changed = new EventEmitter<any>();
+
   _inviteUserModal = false;
   _confirmDeleteModal = false;
   emailForm: FormGroup;
@@ -153,6 +152,10 @@ export class UserListComponent implements OnInit {
       );
   }
 
+  addRequestor() {
+    this._inviteUserModal = true;
+  }
+
   inviteUser() {
     this._inviteUserModal = true;
   }
@@ -163,6 +166,9 @@ export class UserListComponent implements OnInit {
 
   addUser() {
     this.newUser.email = this.emailForm.value.email;
+    if (this.type === 'REQUESTOR') {
+      this.newUser.addRole('RequestSubmit');
+    }
     this.users.push(this.newUser);
     this.changed.emit({ users: this.users });
     this.buildForm();

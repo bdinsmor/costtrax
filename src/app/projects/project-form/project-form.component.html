@@ -3,63 +3,78 @@
   <div class="full-width">
     <div class="px-2 card-header">
       <div class="full-width row align-items-center justify-content-between">
-        <h1 class="project-label no-top-margin">{{project.name}}</h1>
+        <h1 class="project-label no-top-margin">{{ project.name }}</h1>
         <div class="spacer"></div>
-        <!--<button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>dialpad</mat-icon>
-            <span>Redial</span>
+        <!--
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
           </button>
-          <button mat-menu-item disabled>
-            <mat-icon>voicemail</mat-icon>
-            <span>Check voicemail</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>Disable alerts</span>
-          </button>
-        </mat-menu>-->
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>dialpad</mat-icon>
+              <span>Redial</span>
+            </button>
+            <button mat-menu-item disabled>
+              <mat-icon>voicemail</mat-icon>
+              <span>Check voicemail</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>notifications_off</mat-icon>
+              <span>Disable alerts</span>
+            </button>
+          </mat-menu>
+        -->
       </div>
       <div class="full-width row align-items-center justify-content-between">
         <div class="cost-column">
           <h6 class="cost-label">LABOR COSTS</h6>
-          <div>{{project.laborTotal | currency}}</div>
+          <div>{{ project.laborTotal | currency }}</div>
         </div>
         <div class="cost-column">
           <h6 class="cost-label">EQUIPMENT COSTS</h6>
-          <div>{{project.equipmentTotal | currency}}</div>
+          <div>{{ project.equipmentTotal | currency }}</div>
         </div>
         <div class="cost-column">
           <h6 class="cost-label">MATERIAL COSTS</h6>
-          <div>{{project.materialTotal | currency}}</div>
+          <div>{{ project.materialTotal | currency }}</div>
         </div>
         <div class="cost-column">
           <h6 class="cost-label">OTHER COSTS</h6>
-          <div>{{project.otherTotal | currency}}</div>
+          <div>{{ project.otherTotal | currency }}</div>
         </div>
         <div class="cost-column">
           <h6 class="cost-label">SUBCONTRACTOR COSTS</h6>
-          <div>{{project.subcontractorTotal | currency}}</div>
+          <div>{{ project.subcontractorTotal | currency }}</div>
         </div>
         <div class="cost-column">
           <h6 class="cost-label">TOTAL COSTS</h6>
-          <div>{{project.total | currency}}</div>
+          <div>{{ project.total | currency }}</div>
         </div>
-
       </div>
       <div *ngIf="project" class="row mt-1">
-
-        <button type="button" *ngIf="canSubmitRequests" (click)="createRequest()" class="btn btn-primary" color="primary">Create
-          Request
+        <button
+          type="button"
+          *ngIf="canSubmitRequests"
+          (click)="createRequest()"
+          class="btn btn-primary"
+          color="primary"
+        >
+          Create Request
         </button>
-        <button type="button" *ngIf="canChangeSettings &&
-          ((project.draftRequests && project.draftRequests.length === 0) && (project.pendingRequests && project.pendingRequests.length === 0))"
-          (click)="completeProject()" class="btn btn-success">Archive
-          Project
+        <button
+          type="button"
+          *ngIf="
+            canChangeSettings &&
+            (project.draftRequests &&
+              project.draftRequests.length === 0 &&
+              (project.pendingRequests && project.pendingRequests.length === 0))
+          "
+          (click)="completeProject()"
+          class="btn btn-success"
+        >
+          Archive Project
         </button>
+        <div class="spacer"></div>
       </div>
     </div>
     <div class="mt-1 full-width">
@@ -67,47 +82,67 @@
         <clr-tab *ngIf="canSubmitRequests">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="note"></clr-icon>
-            Draft Requests
-            <strong>({{project.draftRequests.length}})</strong>
+            Draft Requests <strong>({{ project.draftRequests.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
-            <app-requests [items]="project.draftRequests" [projectId]="project.id" (changed)="refreshItems()"
-              (duplicated)="refreshItems()" [submitRequests]="canSubmitRequests"></app-requests>
+            <app-requests
+              [items]="project.draftRequests"
+              [projectId]="project.id"
+              (changed)="refreshItems()"
+              (duplicated)="refreshItems()"
+              [submitRequests]="canSubmitRequests"
+            ></app-requests>
           </clr-tab-content>
         </clr-tab>
-        <clr-tab *ngIf="project.pendingRequests &&
-          project.pendingRequests.length>0">
+        <clr-tab
+          *ngIf="project.pendingRequests && project.pendingRequests.length > 0"
+        >
           <button clrTabLink class="align-items-center">
             <clr-icon shape="tasks"></clr-icon>
             Pending Requests
-            <strong>({{project.pendingRequests.length}})</strong>
+            <strong>({{ project.pendingRequests.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
-            <app-requests [items]="project.pendingRequests" [projectId]="project.id" (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"></app-requests>
+            <app-requests
+              [items]="project.pendingRequests"
+              [projectId]="project.id"
+              (duplicated)="refreshItems()"
+              [submitRequests]="canSubmitRequests"
+            ></app-requests>
           </clr-tab-content>
         </clr-tab>
-        <clr-tab *ngIf="project.completeRequests &&
-          project.completeRequests.length>0">
+        <clr-tab
+          *ngIf="
+            project.completeRequests && project.completeRequests.length > 0
+          "
+        >
           <button clrTabLink class="align-items-center">
             <clr-icon shape="check"></clr-icon>
             Complete Requests
-            <strong>({{project.completeRequests.length}})</strong>
+            <strong>({{ project.completeRequests.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
-            <app-requests [items]="project.completeRequests" [projectId]="project.id" (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"></app-requests>
+            <app-requests
+              [items]="project.completeRequests"
+              [projectId]="project.id"
+              (duplicated)="refreshItems()"
+              [submitRequests]="canSubmitRequests"
+            ></app-requests>
           </clr-tab-content>
         </clr-tab>
         <clr-tab *ngIf="isUserAdmin">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="users"></clr-icon>
-            Users
-            <strong>({{project.users.length}})</strong>
+            Users <strong>({{ project.users.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
             <div class="px-2 full-width">
-              <app-user-list [users]="project.users" [projectId]="project.id" [newProject]="newProject" (changed)="refreshUsers()"></app-user-list>
+              <app-user-list
+                [users]="project.users"
+                [projectId]="project.id"
+                [newProject]="newProject"
+                (changed)="refreshUsers()"
+              ></app-user-list>
             </div>
           </clr-tab-content>
         </clr-tab>
@@ -131,179 +166,303 @@
                   <div class="form-block row align-items-center">
                     <label class="no-bottom-margin" for="pr-1">Zip Code:</label>
                     <div class="pl-1 pr-2">
-                      <input type="text" name="zipcode" formControlName="zipcode" placeholder="project zip code" />
+                      <input
+                        type="text"
+                        name="zipcode"
+                        formControlName="zipcode"
+                        placeholder="project zip code"
+                      />
                     </div>
-                    <label class="required no-bottom-margin pr-1">State: </label>
+                    <label class="required no-bottom-margin pr-1"
+                      >State:
+                    </label>
                     <div class="w-50">
                       <ng-select class="full-width" formControlName="state">
-                        <ng-option *ngFor="let state of states" [value]="state.value">{{state.label}}</ng-option>
+                        <ng-option
+                          *ngFor="let state of states"
+                          [value]="state.value"
+                          >{{ state.label }}</ng-option
+                        >
                       </ng-select>
                     </div>
                   </div>
-
                 </section>
 
                 <section class="form-block">
                   <div class="form-block">
                     <label for="formFields_8">Instructions:</label>
-                    <textarea id="formFields_8" rows="3" formControlName="projectInstructions"></textarea>
+                    <textarea
+                      id="formFields_8"
+                      rows="3"
+                      formControlName="projectInstructions"
+                    ></textarea>
                   </div>
                 </section>
                 <section class="form-block">
-
-                  <h4 class="project-heading mb-1">ALLOWED COST TYPES &amp; ADJUSTMENTS
+                  <h4 class="project-heading mb-1">
+                    ALLOWED COST TYPES &amp; ADJUSTMENTS
                   </h4>
                   <div class="full-width column">
                     <div class="checkbox">
-                      <input type="checkbox" id="laborCheck" (change)="toggleCheckbox('labor',$event)" formControlName="laborCostsCheckbox">
+                      <input
+                        type="checkbox"
+                        id="laborCheck"
+                        (change)="toggleCheckbox('labor', $event)"
+                        formControlName="laborCostsCheckbox"
+                      />
                       <label for="laborCheck">Labor Costs</label>
                     </div>
-                    <mat-card *ngIf="project.laborCostsEnabled" class="column
-                      project-adjustment-section full-width mb-2">
+                    <mat-card
+                      *ngIf="project.laborCostsEnabled"
+                      class="column
+                      project-adjustment-section full-width mb-2"
+                    >
                       <h4>LABOR ADJUSTMENTS</h4>
-                      <div class="project-section pl-1 pt-1 row
-                        align-items-center">
+                      <div
+                        class="project-section pl-1 pt-1 row
+                        align-items-center"
+                      >
                         <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Method: Direct Labor + Fringe Benefits</h5>
-                          <!-- <input type="text" name="laborMethod" class="full-width" formControlName="laborMethod" placeholder="Labor Method" /> -->
+                          <h5 class="pr-1 no-top-margin">
+                            Method: Direct Labor + Fringe Benefits
+                          </h5>
+                          <!--
+                            <input type="text" name="laborMethod" class="full-width" formControlName="laborMethod" placeholder="Labor Method" />
+                          -->
                         </div>
                         <div class="pl-2">
                           <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!-- <input type="text" name="laborMarkup" class="full-width" formControlName="laborMarkup" placeholder="Labor Markup" /> -->
+                          <!--
+                            <input type="text" name="laborMarkup" class="full-width" formControlName="laborMarkup" placeholder="Labor Markup" />
+                          -->
                         </div>
                       </div>
-                      <div class="project-section pl-1 pt-1 row
-                        align-items-center">
+                      <div
+                        class="project-section pl-1 pt-1 row
+                        align-items-center"
+                      >
                         <div class="pl-2">
                           <label class="pr-1">FICA %</label>
-                          <input type="number" name="laborFICA" class="full-width" formControlName="laborFICA"
-                            placeholder="FICA %" />
+                          <input
+                            type="number"
+                            name="laborFICA"
+                            class="full-width"
+                            formControlName="laborFICA"
+                            placeholder="FICA %"
+                          />
                         </div>
                         <div class="pl-2">
                           <label class="pr-1">FUT %</label>
-                          <input type="number" name="laborFUT" class="full-width" formControlName="laborFUT"
-                            placeholder="FUT %" />
+                          <input
+                            type="number"
+                            name="laborFUT"
+                            class="full-width"
+                            formControlName="laborFUT"
+                            placeholder="FUT %"
+                          />
                         </div>
                         <div class="pl-2">
                           <label class="pr-1">SUT %</label>
-                          <input type="number" name="laborSUT" class="full-width" formControlName="laborSUT"
-                            placeholder="SUT %" />
+                          <input
+                            type="number"
+                            name="laborSUT"
+                            class="full-width"
+                            formControlName="laborSUT"
+                            placeholder="SUT %"
+                          />
                         </div>
-
                       </div>
                     </mat-card>
                     <div class="checkbox">
-                      <input type="checkbox" matRipple id="equipmentCheck" (change)="toggleCheckbox('equipment',$event)"
-                        formControlName="equipmentCostsCheckbox">
+                      <input
+                        type="checkbox"
+                        matRipple
+                        id="equipmentCheck"
+                        (change)="toggleCheckbox('equipment', $event)"
+                        formControlName="equipmentCostsCheckbox"
+                      />
                       <label for="equipmentCheck">Equipment Costs</label>
                     </div>
-                    <mat-card *ngIf="project.equipmentCostsEnabled" class="project-adjustment-section full-width mb-2">
+                    <mat-card
+                      *ngIf="project.equipmentCostsEnabled"
+                      class="project-adjustment-section full-width mb-2"
+                    >
                       <h4>ACTIVE ADJUSTMENTS</h4>
-                      <div class="project-section project-label pl-1 pt-1 row
-                        align-items-center">
+                      <div
+                        class="project-section project-label pl-1 pt-1 row
+                        align-items-center"
+                      >
                         <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Method: FHWA x 1.046</h5>
-                          <!-- <input type="text" name="activeMethod" class="full-width" formControlName="activeMethod" placeholder="Method" /> -->
+                          <h5 class="pr-1 no-top-margin">
+                            Method: FHWA x 1.046
+                          </h5>
+                          <!--
+                            <input type="text" name="activeMethod" class="full-width" formControlName="activeMethod" placeholder="Method" />
+                          -->
                         </div>
                         <div class="pl-2">
                           <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!-- <input type="text" name="activeMarkup" class="full-width" formControlName="activeMarkup" placeholder="Markup" /> -->
+                          <!--
+                            <input type="text" name="activeMarkup" class="full-width" formControlName="activeMarkup" placeholder="Markup" />
+                          -->
                         </div>
                       </div>
 
                       <h4>STANDBY ADJUSTMENTS</h4>
-                      <div class="project-section pl-1 pt-1 row
-                        align-items-center">
+                      <div
+                        class="project-section pl-1 pt-1 row
+                        align-items-center"
+                      >
                         <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Method: (Hourly Ownership x 1.046) x 0.5</h5>
-                          <!-- <input type="text" name="standbyMethod" class="full-width" formControlName="standbyMethod" placeholder="Method" /> -->
+                          <h5 class="pr-1 no-top-margin">
+                            Method: (Hourly Ownership x 1.046) x 0.5
+                          </h5>
+                          <!--
+                            <input type="text" name="standbyMethod" class="full-width" formControlName="standbyMethod" placeholder="Method" />
+                          -->
                         </div>
                         <div class="pl-2">
                           <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!-- <input type="text" name="standbyMarkup" class="full-width" formControlName="standbyMarkup" placeholder="Markup" /> -->
+                          <!--
+                            <input type="text" name="standbyMarkup" class="full-width" formControlName="standbyMarkup" placeholder="Markup" />
+                          -->
                         </div>
                       </div>
 
                       <h4>RENTAL ADJUSTMENTS</h4>
-                      <div class="project-section pl-1 pt-1 row
-                        align-items-center">
+                      <div
+                        class="project-section pl-1 pt-1 row
+                        align-items-center"
+                      >
                         <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Method: Hourly Rental + Operating Cost</h5>
-                          <!-- <input type="text" name="rentalMethod" class="full-width" formControlName="rentalMethod" placeholder="Method" /> -->
+                          <h5 class="pr-1 no-top-margin">
+                            Method: Hourly Rental + Operating Cost
+                          </h5>
+                          <!--
+                            <input type="text" name="rentalMethod" class="full-width" formControlName="rentalMethod" placeholder="Method" />
+                          -->
                         </div>
                         <div class="pl-2">
                           <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!-- <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" /> -->
+                          <!--
+                            <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" />
+                          -->
                         </div>
                       </div>
-
                     </mat-card>
                     <div class="checkbox">
-                      <input type="checkbox" id="materialCheck" (change)="toggleCheckbox('material',$event)"
-                        formControlName="materialCostsCheckbox">
+                      <input
+                        type="checkbox"
+                        id="materialCheck"
+                        (change)="toggleCheckbox('material', $event)"
+                        formControlName="materialCostsCheckbox"
+                      />
                       <label for="materialCheck">Material Costs</label>
                     </div>
-                    <mat-card *ngIf="project.materialCostsEnabled" class="project-adjustment-section full-width mb-2">
+                    <mat-card
+                      *ngIf="project.materialCostsEnabled"
+                      class="project-adjustment-section full-width mb-2"
+                    >
                       <h5>ADJUSTMENTS</h5>
-                      <div class="project-section pl-1 pt-1 row align-items-center">
+                      <div
+                        class="project-section pl-1 pt-1 row align-items-center"
+                      >
                         <div class="pl-2">
                           <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!-- <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" /> -->
+                          <!--
+                            <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" />
+                          -->
                         </div>
                       </div>
-
                     </mat-card>
 
-
                     <div class="checkbox">
-                      <input type="checkbox" id="othercheck" (change)="toggleCheckbox('other',$event)" formControlName="otherCostsCheckbox">
+                      <input
+                        type="checkbox"
+                        id="othercheck"
+                        (change)="toggleCheckbox('other', $event)"
+                        formControlName="otherCostsCheckbox"
+                      />
                       <label for="othercheck">Other Costs</label>
                     </div>
 
                     <div class="checkbox">
-                      <input type="checkbox" id="subcheck" (change)="toggleCheckbox('subcontractor', $event)"
-                        formControlName="subcontractorCostsCheckbox">
+                      <input
+                        type="checkbox"
+                        id="subcheck"
+                        (change)="toggleCheckbox('subcontractor', $event)"
+                        formControlName="subcontractorCostsCheckbox"
+                      />
                       <label for="subcheck">Subcontractor Costs</label>
                     </div>
-                    <mat-card *ngIf="project.subcontractorCostsEnabled" class="project-adjustment-section full-width mb-2">
+                    <mat-card
+                      *ngIf="project.subcontractorCostsEnabled"
+                      class="project-adjustment-section full-width mb-2"
+                    >
                       <h4>ADJUSTMENTS</h4>
-                      <div class="project-section pl-1 pt-1 row
-                        align-items-center">
+                      <div
+                        class="project-section pl-1 pt-1 row
+                        align-items-center"
+                      >
                         <div class="pl-2">
                           <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!-- <input type="text" name="subcontractorMarkup" class="full-width" formControlName="subcontractorMarkup" placeholder="Markup" /> -->
+                          <!--
+                            <input type="text" name="subcontractorMarkup" class="full-width" formControlName="subcontractorMarkup" placeholder="Markup" />
+                          -->
                         </div>
                       </div>
-
                     </mat-card>
-
                   </div>
-
                 </section>
-
               </form>
             </div>
 
             <div class="p-20 d-flex flex-row flex-row-reverse">
-              <button class="btn btn-primary" (click)="saveProject()" [disabled]="!projectFormGroup.dirty">Save</button>
-              <button class="btn btn-outline-warning" (click)="revertChanges()" [disabled]="!projectFormGroup.dirty">Cancel</button>
+              <button
+                class="btn btn-primary"
+                (click)="saveProject()"
+                [disabled]="!projectFormGroup.dirty"
+              >
+                Save
+              </button>
+              <button
+                class="btn btn-outline-warning"
+                (click)="revertChanges()"
+                [disabled]="!projectFormGroup.dirty"
+              >
+                Cancel
+              </button>
             </div>
           </clr-tab-content>
         </clr-tab>
-
-
       </clr-tabs>
     </div>
-
   </div>
 
-  <clr-modal class="fadeDown in" [(clrModalOpen)]="_confirmArchiveModal" [clrModalClosable]="false">
+  <clr-modal
+    class="fadeDown in"
+    [(clrModalOpen)]="_confirmArchiveModal"
+    [clrModalClosable]="false"
+  >
     <h3 class="modal-title">Confirm Project Completion</h3>
     <div class="modal-body">
       <p>Are you sure you want to mark this project as complete?</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-danger" (click)="cancelCompleteProject()">Cancel</button>
-      <button type="button" class="btn btn-primary" (click)="confirmCompleteProject()">Mark Complete</button>
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        (click)="cancelCompleteProject()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="confirmCompleteProject()"
+      >
+        Mark Complete
+      </button>
     </div>
   </clr-modal>
+</div>

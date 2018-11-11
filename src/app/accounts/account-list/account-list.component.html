@@ -13,7 +13,11 @@
       (click)="viewAccount(item)"
     >
       <clr-dg-cell>{{ item.organization }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.users | json }}</clr-dg-cell>
+      <clr-dg-cell
+        ><div *ngFor="let admin of item.admins">
+          {{ admin.email }}
+        </div></clr-dg-cell
+      >
       <clr-dg-cell>
         <div class="row justify-content-end" style="width:100px">
           <button

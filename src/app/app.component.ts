@@ -91,10 +91,10 @@ export class AppComponent implements OnInit {
   }
 
   syncAccounts() {
-    const dialogRef = this.dialog.open(SyncDialogComponent, {});
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+    const dialogRef = this.dialog.open(SyncDialogComponent, {
+      disableClose: true
     });
+
+    dialogRef.afterClosed().subscribe(result => {});
   }
 }

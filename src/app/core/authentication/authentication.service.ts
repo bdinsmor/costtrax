@@ -84,9 +84,6 @@ export class AuthenticationService {
         // tslint:disable-next-line:max-line-length
         //  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNWJmMWY5ZC00YTJkLTQ4NzUtYjk3Yy1hZGI5Y2FiZjUzNjEiLCJlbWFpbCI6Imhlcm1lcy5yZXF1ZXN0b3JAbm9ydGhhdmV0ZWNoLmNvbSIsImlhdCI6MTUyNDQ0NDE5NSwiZXhwIjoxNTI0NTMwNTk1LCJpc3MiOiJpbmZvcm1hIn0.j9T-7N_RpYKJOULGhuUkRkLyaJ6Pn4caCwphTtAmxFY';
         const creds = { email: context.email, token: token };
-        console.log(
-          'token: ' + JSON.stringify(this.decodeToken(token), null, 2)
-        );
         this.setCredentials(creds as Credentials, context.remember);
         return creds as Credentials;
       })
@@ -226,10 +223,9 @@ export class AuthenticationService {
   }
 
   decodeToken(token: string): any {
-    if (token === null) {
+    if (token === null || token === undefined) {
       return null;
     }
-
     const parts = token.split('.');
 
     if (parts.length !== 3) {
@@ -262,7 +258,7 @@ export class AuthenticationService {
 
   isTokenExpired = function(token, offsetSeconds) {
     if (token === void 0) {
-      token = this.tokenGetter();
+      token = localStorage.getItem('access_token');
     }
     if (token === null || token === '') {
       return true;
@@ -277,20 +273,26 @@ export class AuthenticationService {
     return expired;
   };
 
-  /**
-   * Gets the user credentials.
-   */
   get credentials(): Credentials | null {
     return this._credentials;
   }
 
+  setCreds(creds: any) {
+    this._credentials.token = creds;
+    this.setCredentials(this._credentials);
+  }
+
   sendCreds(creds: Credentials) {
-    if (creds && creds.email) {
-      this.subject.next({
-        userName: creds.email,
-        roles: creds.roles,
-        uberAdmin: this.decodeToken(creds.token).uberAdmin
-      });
+    if (creds && creds.email && creds.token) {
+      const token = this.decodeToken(creds.token);
+      if (token) {
+        this.subject.next({
+          userName: creds.email,
+          roles: creds.roles,
+          uberAdmin: token.uberAdmin,
+          advantageId: token.advantageId
+        });
+      }
     } else {
       this.clearCreds();
     }
@@ -313,9 +315,9 @@ export class AuthenticationService {
     this._credentials = credentials || null;
 
     if (credentials) {
+      console.log('creds to set: ' + JSON.stringify(credentials, null, 2));
       const storage = remember ? localStorage : sessionStorage;
       storage.setItem(credentialsKey, JSON.stringify(credentials));
-      console.log('creds: ' + JSON.stringify(credentials, null, 2));
       this.sendCreds(credentials);
     } else {
       this.clearCreds();

@@ -1,11 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 
 import { TokenInterceptor } from '../core/http/http-token.interceptor';
 import { ToolbarNotificationsComponent } from '../core/toolbar-notifications/toolbar-notifications.component';
 import { ToolbarUserButtonComponent } from '../core/toolbar-user-button/toolbar-user-button.component';
-import { SharedModule } from '../shared';
+import { MaterialModule } from '../material.module';
 import { AuthenticationGuard } from './authentication/authentication.guard';
 import { AuthenticationService } from './authentication/authentication.service';
 import { UberAdminGuard } from './authentication/uberAdmin.guard';
@@ -17,12 +19,20 @@ import { CacheInterceptor } from './http/cache.interceptor';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
 import { RequestCacheService } from './http/http-cache.service';
 import { HttpService } from './http/http.service';
+import { PipesModule } from './pipes/pipes.module';
 import { RouteReusableStrategy } from './route-reusable-strategy';
 import { ShellComponent } from './shell/shell.component';
 import { UtilsModule } from './utils/utils.module';
 
 @NgModule({
-  imports: [SharedModule, UtilsModule, RouterModule],
+  imports: [
+    BrowserAnimationsModule,
+    CommonModule,
+    PipesModule,
+    MaterialModule,
+    UtilsModule,
+    RouterModule
+  ],
   declarations: [
     HeaderComponent,
     ToolbarNotificationsComponent,

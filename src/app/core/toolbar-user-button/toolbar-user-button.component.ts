@@ -44,7 +44,8 @@ export class ToolbarUserButtonComponent
       .subscribe(message => {
         if (message) {
           this.userName = message.userName;
-          this.accountSynced = message.accountSynced;
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
         } else {
           this.userName = '';
           this.accountSynced = false;
