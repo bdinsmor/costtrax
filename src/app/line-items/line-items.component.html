@@ -253,8 +253,8 @@
         <div class="align-items-center column">
           <h4 class="mt-0 pr-1">{{itemTypeDisplay}}</h4>
           <h5 *ngIf="itemType === 'equipment.active'" class="no-top-margin">Location: {{project.state}} | Ownership:
-            100%
-            | Operating: 100%</h5>
+            {{project.adjustments.equipment.active.ownership}}%
+            | Operating: {{project.adjustments.equipment.active.operating}}%</h5>
             <h5 *ngIf="!accountSynced && (itemType === 'equipment.active' ||
             itemType === 'equipment.standby' || itemType ===
             'equipment.rental')">Log in with your EQW credentials to access</h5>

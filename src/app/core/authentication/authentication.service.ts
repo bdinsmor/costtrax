@@ -69,6 +69,10 @@ export class AuthenticationService {
     }
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return of(null);
+  }
+
   login(context: LoginContext): Observable<Credentials> {
     const data = {
       email: context.email,

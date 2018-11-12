@@ -98,7 +98,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   syncAccounts() {
     const dialogRef = this.dialog.open(SyncDialogComponent, {
-      disableClose: true
+      width: '40vw'
     });
 
     dialogRef.afterClosed().subscribe(result => {});

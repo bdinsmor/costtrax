@@ -1,48 +1,51 @@
-<mat-card>
-  <h3 mat-dialog-title>Select Configuration</h3>
-  <div id="parent" *ngIf="configurations" class="modal-body vh-55">
-    <div
-      class="pb-2 justify-content-center
+<h3 mat-dialog-title>Select Configuration</h3>
+<mat-dialog-content *ngIf="configurations">
+  <div
+    class="pb-2 justify-content-center
               align-items-center"
-    >
-      <clr-datagrid class="datagrid-compact" #configurationGrid1>
-        <clr-dg-placeholder>No data found</clr-dg-placeholder>
-        <clr-dg-column> </clr-dg-column>
-        <clr-dg-column
-          *ngFor="let column of configurations.columns"
-          [clrDgField]="column.name"
-          [clrDgSorted]="column.name === 'name'"
-        >
-          <div>{{ column.name }}</div>
-        </clr-dg-column>
+  >
+    <clr-datagrid class="datagrid-compact" #configurationGrid1>
+      <clr-dg-placeholder>No data found</clr-dg-placeholder>
+      <clr-dg-column> </clr-dg-column>
+      <clr-dg-column
+        *ngFor="let column of configurations.columns"
+        [clrDgField]="column.name"
+        [clrDgSorted]="column.name === 'name'"
+      >
+        <div>{{ column.name }}</div>
+      </clr-dg-column>
 
-        <clr-dg-row
-          *clrDgItems="
-            let configuration of configurations.values;
-            let index = index
-          "
-          [clrDgItem]="configuration"
-        >
-          <clr-dg-cell>
-            <button
-              type="button"
-              mat-icon-button
-              color="accent"
-              (click)="confirm(configuration)"
-            >
-              <mat-icon color="accent">radio_button_unchecked</mat-icon>
-            </button>
-          </clr-dg-cell>
-          <clr-dg-cell *ngFor="let column of configurations.columns"
-            >{{ configuration[column.name] }}
-          </clr-dg-cell>
-        </clr-dg-row>
-      </clr-datagrid>
-    </div>
+      <clr-dg-row
+        *clrDgItems="
+          let configuration of configurations.values;
+          let index = index
+        "
+        [clrDgItem]="configuration"
+      >
+        <clr-dg-cell>
+          <button
+            type="button"
+            mat-icon-button
+            color="accent"
+            (click)="confirm(configuration)"
+          >
+            <mat-icon color="accent">radio_button_unchecked</mat-icon>
+          </button>
+        </clr-dg-cell>
+        <clr-dg-cell *ngFor="let column of configurations.columns"
+          >{{ configuration[column.name] }}
+        </clr-dg-cell>
+      </clr-dg-row>
+    </clr-datagrid>
   </div>
-  <div mat-dialog-actions>
-    <button type="button" class="btn btn-outline-danger" (click)="cancel()">
-      Cancel
-    </button>
-  </div>
-</mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    type="button"
+    class="btn btn-outline-danger"
+    cdkFocusInitial
+    mat-dialog-close
+  >
+    Cancel
+  </button>
+</mat-dialog-actions>

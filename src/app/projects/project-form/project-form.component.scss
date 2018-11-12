@@ -5,3 +5,32 @@
 .datagrid-host {
     max-height: 60vh !important;
 }
+
+.bold-label {
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.54);
+    margin-bottom: 0 !important;
+}
+
+.cost-title {
+    color: rgba(0, 0, 0, 0.54);
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding-left: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.cost-section {
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.cost-content {
+    background: #fff;
+    padding: 4px;
+}

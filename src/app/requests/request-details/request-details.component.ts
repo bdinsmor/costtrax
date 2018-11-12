@@ -454,7 +454,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
         { value: 'labor', label: 'Labor', sortOrder: 0 }
       ];
     }
-    if (this.project.equipmentCostsEnabled) {
+    if (this.project.activeCostsEnabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -463,7 +463,8 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
           sortOrder: 1
         }
       ];
-
+    }
+    if (this.project.standbyCostsEnabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -472,7 +473,8 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
           sortOrder: 2
         }
       ];
-
+    }
+    if (this.project.rentalCostsEnabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {

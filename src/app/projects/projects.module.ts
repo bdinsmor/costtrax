@@ -1,7 +1,10 @@
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 
 import { CoreModule } from '../core';
 import { BreadcrumbService } from '../core/breadcrumbs/breadcrumbs.service';
@@ -35,6 +38,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   decimal: '.'
 };
 
+registerLocaleData(en);
+
 @NgModule({
   declarations: [
     ProjectsComponent,
@@ -46,6 +51,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   ],
   imports: [
     CoreModule,
+    NgZorroAntdModule,
     BrowserAnimationsModule,
     RouterModule,
     SharedModule,
@@ -71,6 +77,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   providers: [
     BreadcrumbService,
     ProjectsService,
+    { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [

@@ -254,7 +254,11 @@ export class Adjustments {
     markup: 0.1;
   };
   equipment: {
-    active: { markup: 0.1 };
+    active: {
+      ownership: 1;
+      operating: 1;
+      markup: 0.1;
+    };
     standby: { markup: 0.1 };
     rental: { markup: 0.1 };
   };
@@ -660,6 +664,9 @@ export class Project {
   numContractors: number;
   materialCostsEnabled = true;
   equipmentCostsEnabled = true;
+  activeCostsEnabled = true;
+  standbyCostsEnabled = true;
+  rentalCostsEnabled = true;
   laborCostsEnabled = true;
   otherCostsEnabled = true;
   subcontractorCostsEnabled = true;
@@ -667,7 +674,7 @@ export class Project {
   requestors: User[];
   requestorJSON: any[];
   userJSON: any[];
-  adjustments: Adjustments;
+  adjustments: any;
   draftRequests: Request[];
   pendingRequests: Request[];
   completeRequests: Request[];
@@ -740,6 +747,105 @@ export class Project {
     }
   }
 
+  checkAdjustments() {
+    if (!this.adjustments) {
+      return this.buildDefaultAdjustments();
+    }
+    if (
+      this.adjustments.equipment.active &&
+      !this.adjustments.equipment.active.operating
+    ) {
+      this.adjustments.equipment.active.operating = 100;
+    }
+    if (
+      this.adjustments.equipment.active &&
+      !this.adjustments.equipment.active.ownership
+    ) {
+      this.adjustments.equipment.active.ownership = 100;
+    }
+
+    if (
+      this.adjustments.subcontractor &&
+      this.adjustments.subcontractor.markup &&
+      Number(this.adjustments.subcontractor.markup) < 1
+    ) {
+      this.adjustments.subcontractor.markup =
+        this.adjustments.subcontractor.markup * 100;
+    }
+    if (
+      this.adjustments.other &&
+      this.adjustments.other.markup &&
+      Number(this.adjustments.other.markup) < 1
+    ) {
+      this.adjustments.other.markup = this.adjustments.other.markup * 100;
+    }
+    if (
+      this.adjustments.material &&
+      this.adjustments.material.markup &&
+      Number(this.adjustments.material.markup) < 1
+    ) {
+      this.adjustments.material.markup = this.adjustments.material.markup * 100;
+    }
+    if (
+      this.adjustments.equipment &&
+      this.adjustments.equipment.active &&
+      this.adjustments.equipment.active.markup &&
+      Number(this.adjustments.equipment.active.markup) < 1
+    ) {
+      this.adjustments.equipment.active.markup =
+        this.adjustments.equipment.active.markup * 100;
+    }
+    if (
+      this.adjustments.equipment &&
+      this.adjustments.equipment.standby &&
+      this.adjustments.equipment.standby.markup &&
+      Number(this.adjustments.equipment.standby.markup) < 1
+    ) {
+      this.adjustments.equipment.standby.markup =
+        this.adjustments.equipment.standby.markup * 100;
+    }
+    if (
+      this.adjustments.equipment &&
+      this.adjustments.equipment.rental &&
+      this.adjustments.equipment.rental.markup &&
+      Number(this.adjustments.equipment.rental.markup) < 1
+    ) {
+      this.adjustments.equipment.rental.markup =
+        this.adjustments.equipment.rental.markup * 100;
+    }
+    if (
+      this.adjustments.labor &&
+      this.adjustments.labor.markup &&
+      Number(this.adjustments.labor.markup) < 1
+    ) {
+      this.adjustments.labor.markup = this.adjustments.labor.markup * 100;
+    }
+  }
+
+  buildDefaultAdjustments() {
+    return {
+      subcontractor: { markup: 10 },
+      material: { markup: 10 },
+      other: { markup: 10 },
+      labor: {
+        fica: 0.0765,
+        fut: 0.068,
+        sut: 0.1227,
+        markup: 10
+      },
+      equipment: {
+        active: {
+          regionalAdjustmentsEnabled: true,
+          operating: 100,
+          ownership: 100,
+          markup: 10
+        },
+        standby: { regionalAdjustmentsEnabled: true, markup: 10 },
+        rental: { markup: 10 }
+      }
+    };
+  }
+
   constructor(project: any) {
     {
       this.id = project.id || '';
@@ -762,17 +868,21 @@ export class Project {
       this.itemsPending = project.itemsPending || 0;
       this.itemsOverdue = project.itemsOverdue || 0;
       this.materialCostsEnabled =
-        project.materialCostsEnabled || project.materialCostsCheckbox || true;
-      this.equipmentCostsEnabled =
-        project.equipmentCostsEnabled || project.equipmentCostsCheckbox || true;
+        project.materialCostsEnabled || project.materialCheck || true;
+      this.activeCostsEnabled =
+        project.activeCostsEnabled || project.activeCheck || true;
+      this.standbyCostsEnabled =
+        project.standbyCostsEnabled || project.standbyCheck || true;
+      this.rentalCostsEnabled =
+        project.rentalCostsEnabled || project.rentalCheck || true;
       this.subcontractorCostsEnabled =
         project.subcontractorCostsEnabled ||
         project.subcontractorCostsCheckbox ||
         true;
       this.laborCostsEnabled =
-        project.laborCostsEnabled || project.laborCostsCheckbox || true;
+        project.laborCostsEnabled || project.laborCheck || true;
       this.otherCostsEnabled =
-        project.otherCostsEnabled || project.otherCostsCheckbox || true;
+        project.otherCostsEnabled || project.otherCheck || true;
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
         this.account = new Account({ id: project.accountId });
@@ -780,21 +890,7 @@ export class Project {
         this.account = project.account || new Account({});
       }
       this.roles = project.roles;
-      this.adjustments = project.adjustments || {
-        subcontractor: { markup: 0.1 },
-        material: { markup: 0.1 },
-        labor: {
-          fica: 0.0765,
-          fut: 0.068,
-          sut: 0.1227,
-          markup: 0.1
-        },
-        equipment: {
-          active: { markup: 0.1 },
-          standby: { markup: 0.1 },
-          rental: { markup: 0.1 }
-        }
-      };
+      this.adjustments = project.adjustments || this.buildDefaultAdjustments();
       /*this.laborFICA = 0.0765 * laborTotal;
     this.laborFUT = 0.068 * laborTotal;
     this.laborSUT = 0.1227 * laborTotal;*/
@@ -803,13 +899,13 @@ export class Project {
           fica: 0.0765,
           fut: 0.068,
           sut: 0.1227,
-          markup: 0.1
+          markup: 10
         };
       }
 
       if (!this.adjustments.equipment.rental) {
         this.adjustments.equipment.rental = {
-          markup: 0.1
+          markup: 10
         };
       }
 
@@ -838,6 +934,7 @@ export class Project {
       if (project.overdueRequests) {
         this.itemsOverdue = project.overdueRequests;
       }
+      this.checkAdjustments();
       this.buildUsers();
       const today = new Date();
       const diff = Math.abs(today.getTime() - this.createdOn.getTime());
@@ -1189,6 +1286,7 @@ export class Request {
   materialTotal = 0;
   laborTotal = 0;
   otherTotal = 0;
+  otherMarkup = 0;
   subcontractorTotal = 0;
   laborFUT = 0;
   laborSUT = 0;
@@ -1338,7 +1436,7 @@ export class Request {
     let activeTotal = 0;
     let standbyTotal = 0;
     let rentalTotal = 0;
-    let otherTotal = 0;
+    let otherSubtotal = 0;
     let laborTotal = 0;
     let laborSubtotal = 0;
     let laborBenefits = 0;
@@ -1370,7 +1468,7 @@ export class Request {
         } else if (currentItem.type === 'equipment.standby') {
           standbyTotal += Number(lt);
         } else if (currentItem.type === 'other') {
-          otherTotal += Number(lt);
+          otherSubtotal += Number(lt);
         } else if (currentItem.type === 'material') {
           materialTotal += Number(lt);
         } else if (currentItem.type === 'subcontractor') {
@@ -1392,11 +1490,24 @@ export class Request {
       }
     }
     this.activeSubtotal = activeTotal;
-    this.activeMarkup = 0.1 * activeTotal;
-    this.standbySubtotal = standbyTotal;
-    this.standbyMarkup = 0.1 * standbyTotal;
-    this.rentalSubtotal = rentalTotal;
-    this.rentalMarkup = 0.1 * rentalTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.equipment
+    ) {
+      this.activeMarkup =
+        Number(Number(this.project.adjustments.equipment.active.markup) / 100) *
+        activeTotal;
+      this.standbySubtotal = standbyTotal;
+      this.standbyMarkup =
+        Number(
+          Number(this.project.adjustments.equipment.standby.markup) / 100
+        ) * standbyTotal;
+      this.rentalSubtotal = rentalTotal;
+      this.rentalMarkup =
+        Number(Number(this.project.adjustments.equipment.rental.markup) / 100) *
+        rentalTotal;
+    }
     this.equipmentTotal =
       this.activeSubtotal +
       this.activeMarkup +
@@ -1404,7 +1515,6 @@ export class Request {
       this.standbySubtotal +
       this.rentalMarkup +
       this.rentalSubtotal;
-    this.otherTotal = otherTotal;
     this.laborSubtotal = laborSubtotal;
     this.laborBenefitsTotal = laborBenefits;
 
@@ -1413,6 +1523,9 @@ export class Request {
       this.project.adjustments &&
       this.project.adjustments.labor
     ) {
+      this.laborMarkup =
+        Number(Number(this.project.adjustments.labor.markup) / 100) *
+        laborTotal;
       this.laborFICA = +Number(
         this.project.adjustments.labor.fica * laborSubtotal
       ).toFixed(2);
@@ -1434,13 +1547,39 @@ export class Request {
       +this.laborFUT +
       +this.laborSUT;
 
-    this.laborMarkup = 0.1 * laborTotal;
     this.laborTotal = laborTotal + this.laborMarkup;
     this.subcontractorSubtotal = subcontractorTotal;
-    this.subcontractorMarkup = 0.1 * subcontractorTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.subcontractor
+    ) {
+      this.subcontractorMarkup =
+        Number(Number(this.project.adjustments.subcontractor.markup) / 100) *
+        subcontractorTotal;
+    }
     this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
+
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.other
+    ) {
+      this.otherMarkup =
+        Number(Number(this.project.adjustments.other.markup) / 100) *
+        otherSubtotal;
+    }
+    this.otherTotal = otherSubtotal + this.otherMarkup;
     this.materialSubtotal = materialTotal;
-    this.materialMarkup = 0.1 * materialTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.material
+    ) {
+      this.materialMarkup =
+        Number(Number(this.project.adjustments.material.markup) / 100) *
+        materialTotal;
+    }
     this.materialTotal = materialTotal + this.materialMarkup;
 
     this.total = total;
@@ -1452,7 +1591,7 @@ export class Request {
     let activeTotal = 0;
     let standbyTotal = 0;
     let rentalTotal = 0;
-    let otherTotal = 0;
+    let otherSubtotal = 0;
     let laborTotal = 0;
     let laborSubtotal = 0;
     let laborBenefits = 0;
@@ -1491,7 +1630,7 @@ export class Request {
       } else if (currentItem.type === 'equipment.standby') {
         standbyTotal += Number(lt);
       } else if (currentItem.type === 'other') {
-        otherTotal += Number(lt);
+        otherSubtotal += Number(lt);
       } else if (currentItem.type === 'material') {
         materialTotal += Number(lt);
       } else if (currentItem.type === 'subcontractor') {
@@ -1519,16 +1658,26 @@ export class Request {
       equipmentTotal = this.lineItemTotals.equipment || 0;
       laborTotal = this.lineItemTotals.labor || 0;
       materialTotal = this.lineItemTotals.material || 0;
-      otherTotal = this.lineItemTotals.other || 0;
+      otherSubtotal = this.lineItemTotals.other || 0;
       subcontractorTotal = this.lineItemTotals.subcontractor || 0;
     }
 
     this.activeSubtotal = activeTotal;
-    this.activeMarkup = 0.1 * activeTotal;
-    this.standbySubtotal = standbyTotal;
-    this.standbyMarkup = 0.1 * standbyTotal;
-    this.rentalSubtotal = rentalTotal;
-    this.rentalMarkup = 0.1 * rentalTotal;
+    if (this.project && this.project.adjustments) {
+      this.activeMarkup =
+        Number(Number(this.project.adjustments.equipment.active.markup) / 100) *
+        activeTotal;
+      this.standbySubtotal = standbyTotal;
+      this.standbyMarkup =
+        Number(
+          Number(this.project.adjustments.equipment.standby.markup) / 100
+        ) * standbyTotal;
+      this.rentalSubtotal = rentalTotal;
+      this.rentalMarkup =
+        Number(Number(this.project.adjustments.equipment.rental.markup) / 100) *
+        rentalTotal;
+    }
+
     this.equipmentTotal =
       this.activeSubtotal +
       this.activeMarkup +
@@ -1536,15 +1685,18 @@ export class Request {
       this.standbySubtotal +
       this.rentalMarkup +
       this.rentalSubtotal;
-    this.otherTotal = otherTotal;
+
     this.laborSubtotal = laborSubtotal;
     this.laborBenefitsTotal = laborBenefits;
-    this.laborMarkup = 0.1 * laborSubtotal;
+
     if (
       this.project &&
       this.project.adjustments &&
       this.project.adjustments.labor
     ) {
+      this.laborMarkup =
+        Number(Number(this.project.adjustments.labor.markup) / 100) *
+        laborSubtotal;
       this.laborFICA = +Number(
         this.project.adjustments.labor.fica * laborSubtotal
       ).toFixed(2);
@@ -1568,10 +1720,37 @@ export class Request {
       this.laborSUT;
 
     this.subcontractorSubtotal = subcontractorTotal;
-    this.subcontractorMarkup = 0.1 * subcontractorTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.subcontractor
+    ) {
+      this.subcontractorMarkup =
+        Number(Number(this.project.adjustments.subcontractor.markup / 100)) *
+        subcontractorTotal;
+    }
     this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
     this.materialSubtotal = materialTotal;
-    this.materialMarkup = 0.1 * materialTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.material
+    ) {
+      this.materialMarkup =
+        Number(
+          Number(this.project.adjustments.equipment.material.markup / 100)
+        ) * materialTotal;
+    }
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.other
+    ) {
+      this.otherMarkup =
+        Number(Number(this.project.adjustments.other.markup / 100)) *
+        otherSubtotal;
+    }
+    this.otherTotal = otherSubtotal + this.otherMarkup;
     this.materialTotal = materialTotal + this.materialMarkup;
     this.total =
       this.materialTotal +

@@ -217,218 +217,361 @@
                   </div>
                 </section>
                 <section class="form-block">
-                  <h4 class="project-heading mb-1">ALLOWABLE COSTS</h4>
-                  <div class="full-width column">
-                    <div class="checkbox">
-                      <input
-                        type="checkbox"
-                        id="laborCheck"
-                        (change)="toggleCheckbox('labor', $event)"
-                        formControlName="laborCostsCheckbox"
-                      />
-                      <label for="laborCheck">Labor Costs</label>
-                    </div>
-                    <mat-card
-                      *ngIf="project.laborCostsEnabled"
-                      class="column
-                      project-adjustment-section full-width mb-2"
-                    >
-                      <h4>LABOR ADJUSTMENTS</h4>
-                      <div
-                        class="project-section pl-1 pt-1 row
-                        align-items-center"
-                      >
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">
-                            Method: Direct Labor + Fringe Benefits
-                          </h5>
-                          <!--
-                            <input type="text" name="laborMethod" class="full-width" formControlName="laborMethod" placeholder="Labor Method" />
-                          -->
-                        </div>
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!--
-                            <input type="text" name="laborMarkup" class="full-width" formControlName="laborMarkup" placeholder="Labor Markup" />
-                          -->
-                        </div>
-                      </div>
-                      <div
-                        class="project-section pl-1 pt-1 row
-                        align-items-center"
-                      >
-                        <div class="pl-2">
-                          <label class="pr-1">FICA %</label>
-                          <input
-                            type="number"
-                            name="laborFICA"
-                            class="full-width"
-                            formControlName="laborFICA"
-                            placeholder="FICA %"
-                          />
-                        </div>
-                        <div class="pl-2">
-                          <label class="pr-1">FUT %</label>
-                          <input
-                            type="number"
-                            name="laborFUT"
-                            class="full-width"
-                            formControlName="laborFUT"
-                            placeholder="FUT %"
-                          />
-                        </div>
-                        <div class="pl-2">
-                          <label class="pr-1">SUT %</label>
-                          <input
-                            type="number"
-                            name="laborSUT"
-                            class="full-width"
-                            formControlName="laborSUT"
-                            placeholder="SUT %"
-                          />
-                        </div>
-                      </div>
-                    </mat-card>
-                    <div class="checkbox">
-                      <input
+                  <h4 class="project-heading pb-1">Allowable Costs</h4>
+
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
                         type="checkbox"
                         matRipple
-                        *ngIf="accountSynced"
-                        id="equipmentCheck"
+                        id="activeCheck"
                         (change)="toggleCheckbox('equipment', $event)"
-                        formControlName="equipmentCostsCheckbox"
-                      />
-                      <label for="equipmentCheck">Equipment Costs</label>
+                        formControlName="activeCheck"
+                      >
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Equipment, Active
+                      </h4>
                     </div>
-                    <mat-card
-                      *ngIf="project.equipmentCostsEnabled && accountSynced"
-                      class="project-adjustment-section full-width mb-2"
-                    >
-                      <h4>ACTIVE ADJUSTMENTS</h4>
-                      <div
-                        class="project-section project-label pl-1 pt-1 row
-                        align-items-center"
-                      >
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">
-                            Method: FHWA x 1.046
-                          </h5>
-                          <!--
-                            <input type="text" name="activeMethod" class="full-width" formControlName="activeMethod" placeholder="Method" />
-                          -->
-                        </div>
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!--
-                            <input type="text" name="activeMarkup" class="full-width" formControlName="activeMarkup" placeholder="Markup" />
-                          -->
-                        </div>
-                      </div>
 
-                      <h4>STANDBY ADJUSTMENTS</h4>
-                      <div
-                        class="project-section pl-1 pt-1 row
-                        align-items-center"
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Formula:</label>
+                      <ng-select
+                        class="w-25"
+                        [items]="activeFormulas"
+                        bindValue="name"
+                        bindLabel="label"
+                        placeholder="Choose Formula"
+                        clearAllText="Clear"
+                        [closeOnSelect]="true"
+                        [hideSelected]="true"
+                        appendTo="body"
+                        formControlName="activeFormula"
                       >
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">
-                            Method: (Hourly Ownership x 1.046) x 0.5
-                          </h5>
-                          <!--
-                            <input type="text" name="standbyMethod" class="full-width" formControlName="standbyMethod" placeholder="Method" />
-                          -->
+                      </ng-select>
+                      <div class="row no-margin-left font-italic small-text">
+                        (Rental Rate Blue Book Monthly Ownership
+                        Cost/176)+(Rental Rate Blue Book Hourly Operating Cost)
+                      </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Rate Adjustments:</label>
+                      <div class="px-1">
+                        <div class="checkbox">
+                          <input
+                            type="checkbox"
+                            matRipple
+                            id="activeRegionalCheck"
+                            formControlName="activeRegionalCheck"
+                          />
+                          <label for="activeRegionalCheck"
+                            >Use regional adjustment</label
+                          >
                         </div>
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!--
-                            <input type="text" name="standbyMarkup" class="full-width" formControlName="standbyMarkup" placeholder="Markup" />
-                          -->
+                        <div
+                          class="row no-margin-left pb-1 w-50 align-items-center"
+                        >
+                          <label class="no-bottom-margin"
+                            >Reimbursable %, Ownership Cost:</label
+                          >
+                          <div class="spacer"></div>
+                          <nz-input-number
+                            formControlName="activeOwnershipCost"
+                            [nzMin]="1"
+                            [nzMax]="100"
+                            [nzStep]="1"
+                            [nzFormatter]="formatterPercent"
+                            [nzParser]="parserPercent"
+                          ></nz-input-number>
+                        </div>
+                        <div
+                          class="row no-margin-left pb-1 w-50 align-items-center"
+                        >
+                          <label class="no-bottom-margin"
+                            >Reimbursable %, Operating Cost:</label
+                          >
+                          <div class="spacer"></div>
+                          <nz-input-number
+                            formControlName="activeOperatingCost"
+                            [nzMin]="1"
+                            [nzMax]="100"
+                            [nzStep]="1"
+                            [nzFormatter]="formatterPercent"
+                            [nzParser]="parserPercent"
+                          ></nz-input-number>
                         </div>
                       </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="bold-label">Markup:</div>
+                      <div class="row no-margin-left">
+                        <nz-input-number
+                          formControlName="activeMarkup"
+                          [nzMin]="1"
+                          [nzMax]="100"
+                          [nzStep]="1"
+                          [nzFormatter]="formatterPercent"
+                          [nzParser]="parserPercent"
+                        ></nz-input-number>
+                        <div class="spacer"></div>
+                        <div
+                          class="row no-margin-left font-italic small-text"
+                          style="padding-right: 1rem"
+                        >
+                          <i class="material-icons md-20 md-dark"> info </i
+                          >&nbsp;Rate Adjustments will be applied anywhere rates
+                          are displayed<br />
+                          in CostTrax. Markup applied to Totals and
+                          Recapitulation only.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                      <h4>RENTAL ADJUSTMENTS</h4>
-                      <div
-                        class="project-section pl-1 pt-1 row
-                        align-items-center"
-                      >
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">
-                            Method: Hourly Rental + Operating Cost
-                          </h5>
-                          <!--
-                            <input type="text" name="rentalMethod" class="full-width" formControlName="rentalMethod" placeholder="Method" />
-                          -->
-                        </div>
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!--
-                            <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" />
-                          -->
-                        </div>
-                      </div>
-                    </mat-card>
-                    <div class="checkbox">
-                      <input
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
                         type="checkbox"
+                        matRipple
+                        id="standbyCheck"
+                        (change)="toggleCheckbox('standby', $event)"
+                        formControlName="standbyCheck"
+                      >
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Equipment, Standby
+                      </h4>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Formula:</label>
+                      <ng-select
+                        class="w-50"
+                        [items]="standbyFormulas"
+                        bindValue="name"
+                        bindLabel="label"
+                        placeholder="Choose Formula"
+                        clearAllText="Clear"
+                        [closeOnSelect]="true"
+                        [hideSelected]="true"
+                        appendTo="body"
+                        formControlName="standbyFormula"
+                      >
+                      </ng-select>
+                      <div class="row no-margin-left font-italic small-text">
+                        (Rental Rate Blue Book Monthly Ownership Cost/176)*0.5
+                      </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Rate Adjustments:</label>
+                      <div class="px-1">
+                        <div class="checkbox">
+                          <input
+                            type="checkbox"
+                            matRipple
+                            id="standbyRegionalCheck"
+                            formControlName="standbyRegionalCheck"
+                          />
+                          <label for="standbyRegionalCheck"
+                            >Use regional adjustment</label
+                          >
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="bold-label">Markup:</div>
+                      <div class="row no-margin-left">
+                        <nz-input-number
+                          formControlName="standbyMarkup"
+                          [nzMin]="1"
+                          [nzMax]="100"
+                          [nzStep]="1"
+                          [nzFormatter]="formatterPercent"
+                          [nzParser]="parserPercent"
+                        ></nz-input-number>
+                        <div class="spacer"></div>
+                        <div
+                          class="row no-margin-left font-italic small-text"
+                          style="padding-right: 1rem"
+                        >
+                          <i class="material-icons md-20 md-dark"> info </i
+                          >&nbsp;Rate Adjustments will be applied anywhere rates
+                          are displayed<br />
+                          in CostTrax. Markup applied to Totals and
+                          Recapitulation only.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
+                        type="checkbox"
+                        matRipple
+                        id="rentalCheck"
+                        (change)="toggleCheckbox('rental', $event)"
+                        formControlName="rentalCheck"
+                      >
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Equipment, Rental
+                      </h4>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Formula:</label>
+                      <div class="row no-margin-left font-italic small-text">
+                        Invoice Amount + Hourly Operating Cost
+                      </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="bold-label">Markup:</div>
+                      <div class="row no-margin-left">
+                        <nz-input-number
+                          formControlName="rentalMarkup"
+                          [nzMin]="1"
+                          [nzMax]="100"
+                          [nzStep]="1"
+                          [nzFormatter]="formatterPercent"
+                          [nzParser]="parserPercent"
+                        ></nz-input-number>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
+                        type="checkbox"
+                        matRipple
                         id="materialCheck"
                         (change)="toggleCheckbox('material', $event)"
-                        formControlName="materialCostsCheckbox"
-                      />
-                      <label for="materialCheck">Material Costs</label>
-                    </div>
-                    <mat-card
-                      *ngIf="project.materialCostsEnabled"
-                      class="project-adjustment-section full-width mb-2"
-                    >
-                      <h5>ADJUSTMENTS</h5>
-                      <div
-                        class="project-section pl-1 pt-1 row align-items-center"
+                        formControlName="materialCheck"
                       >
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!--
-                            <input type="text" name="rentalMarkup" class="full-width" formControlName="rentalMarkup" placeholder="Markup" />
-                          -->
-                        </div>
-                      </div>
-                    </mat-card>
-
-                    <div class="checkbox">
-                      <input
-                        type="checkbox"
-                        id="othercheck"
-                        (change)="toggleCheckbox('other', $event)"
-                        formControlName="otherCostsCheckbox"
-                      />
-                      <label for="othercheck">Other Costs</label>
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Material
+                      </h4>
                     </div>
-
-                    <div class="checkbox">
-                      <input
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Formula:</label>
+                      <div class="row no-margin-left font-italic small-text">
+                        Invoice Amount
+                      </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="bold-label">Markup:</div>
+                      <div class="row no-margin-left">
+                        <nz-input-number
+                          formControlName="materialMarkup"
+                          [nzMin]="1"
+                          [nzMax]="100"
+                          [nzStep]="1"
+                          [nzFormatter]="formatterPercent"
+                          [nzParser]="parserPercent"
+                        ></nz-input-number>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
                         type="checkbox"
-                        id="subcheck"
+                        matRipple
+                        id="laborCheck"
+                        (change)="toggleCheckbox('labor', $event)"
+                        formControlName="laborCheck"
+                      >
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Labor
+                      </h4>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Formula:</label>
+                      <div class="row no-margin-left font-italic small-text">
+                        Hourly Rate + Fringe Benefits
+                      </div>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="bold-label">Markup:</div>
+                      <div class="row no-margin-left">
+                        <nz-input-number
+                          formControlName="laborMarkup"
+                          [nzMin]="1"
+                          [nzMax]="100"
+                          [nzStep]="1"
+                          [nzFormatter]="formatterPercent"
+                          [nzParser]="parserPercent"
+                        ></nz-input-number>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
+                        type="checkbox"
+                        matRipple
+                        id="subcontractorCheck"
                         (change)="toggleCheckbox('subcontractor', $event)"
-                        formControlName="subcontractorCostsCheckbox"
-                      />
-                      <label for="subcheck">Subcontractor Costs</label>
-                    </div>
-                    <mat-card
-                      *ngIf="project.subcontractorCostsEnabled"
-                      class="project-adjustment-section full-width mb-2"
-                    >
-                      <h4>ADJUSTMENTS</h4>
-                      <div
-                        class="project-section pl-1 pt-1 row
-                        align-items-center"
+                        formControlName="subcontractorCheck"
                       >
-                        <div class="pl-2">
-                          <h5 class="pr-1 no-top-margin">Markup: 10%</h5>
-                          <!--
-                            <input type="text" name="subcontractorMarkup" class="full-width" formControlName="subcontractorMarkup" placeholder="Markup" />
-                          -->
-                        </div>
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Subcontractor
+                      </h4>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <label class="bold-label">Formula:</label>
+                      <div class="row no-margin-left font-italic small-text">
+                        Invoice Amount
                       </div>
-                    </mat-card>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="bold-label">Markup:</div>
+                      <div class="row no-margin-left">
+                        <nz-input-number
+                          formControlName="subcontractorMarkup"
+                          [nzMin]="1"
+                          [nzMax]="100"
+                          [nzStep]="1"
+                          [nzFormatter]="formatterPercent"
+                          [nzParser]="parserPercent"
+                        ></nz-input-number>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cost-section mb-1">
+                    <div class="row no-margin-left cost-title full-width">
+                      <mat-checkbox
+                        type="checkbox"
+                        matRipple
+                        id="otherCheck"
+                        (change)="toggleCheckbox('other', $event)"
+                        formControlName="otherCheck"
+                      >
+                      </mat-checkbox>
+                      <h4
+                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                      >
+                        Other
+                      </h4>
+                    </div>
+                    <div class="cost-content px-1 pb-1">
+                      <div class="row no-margin-left font-italic small-text">
+                        This gives the requestor the ability to input
+                        non-standard expenses
+                      </div>
+                    </div>
                   </div>
                 </section>
               </form>
@@ -455,5 +598,4 @@
       </clr-tabs>
     </div>
   </div>
-
 </div>
