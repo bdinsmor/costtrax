@@ -7,6 +7,7 @@ import { NgxCurrencyModule } from '../core/directives/ngx-currency';
 import { PipesModule } from '../core/pipes/pipes.module';
 import { MaterialModule } from '../material.module';
 import { SharedModule } from '../shared';
+import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentSelectComponent } from './equipment-select.component';
 import { EquipmentComponent } from './equipment.component';
 import { EquipmentService } from './equipment.service';
@@ -22,7 +23,16 @@ import { EquipmentService } from './equipment.service';
     PipesModule
   ],
   providers: [EquipmentService],
-  declarations: [EquipmentComponent, EquipmentSelectComponent],
-  exports: [EquipmentComponent, EquipmentSelectComponent]
+  declarations: [
+    EquipmentComponent,
+    EquipmentDeleteDialogComponent,
+    EquipmentSelectComponent
+  ],
+  exports: [
+    EquipmentComponent,
+    EquipmentDeleteDialogComponent,
+    EquipmentSelectComponent
+  ],
+  entryComponents: [EquipmentDeleteDialogComponent]
 })
 export class EquipmentModule {}

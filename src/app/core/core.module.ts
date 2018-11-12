@@ -9,7 +9,6 @@ import { ToolbarNotificationsComponent } from '../core/toolbar-notifications/too
 import { ToolbarUserButtonComponent } from '../core/toolbar-user-button/toolbar-user-button.component';
 import { MaterialModule } from '../material.module';
 import { AuthenticationGuard } from './authentication/authentication.guard';
-import { AuthenticationService } from './authentication/authentication.service';
 import { UberAdminGuard } from './authentication/uberAdmin.guard';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { BreadcrumbService } from './breadcrumbs/breadcrumbs.service';
@@ -47,7 +46,6 @@ import { UtilsModule } from './utils/utils.module';
   ],
 
   providers: [
-    AuthenticationService,
     AuthenticationGuard,
     UberAdminGuard,
     BreadcrumbService,

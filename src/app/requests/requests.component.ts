@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthenticationService } from '../core';
 import { appAnimations } from '../core/animations';
 import { OneUpComparator, Request } from '../shared/model';
+import { RequestCloneDialogComponent } from './dialogs/request-clone-dialog.component';
+import { RequestDeleteDialogComponent } from './dialogs/request-delete-dialog.component';
 import { RequestsService } from './requests.service';
 
 @Component({
@@ -18,16 +20,10 @@ import { RequestsService } from './requests.service';
 export class RequestsComponent implements OnInit {
   private config: MatSnackBarConfig;
   duration = 3000;
-  _duplicateModal = false;
-  _duplicateWorking = false;
-  _confirmDeleteModal = false;
-  duplicatedRequestId: string;
-  duplicateSuccess = false;
+
   selectedItem: Request;
   selectedIndex = -1;
   onUpComparator = new OneUpComparator();
-  cloneTitle = 'Duplicating Request...';
-  duplicateError = false;
   @Input() projectId: string;
   @Input() items: Request[];
   @Input() submitRequests: boolean;
@@ -35,6 +31,7 @@ export class RequestsComponent implements OnInit {
   @Output() changed = new EventEmitter<any>();
 
   constructor(
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private changeDetector: ChangeDetectorRef,
     private route: ActivatedRoute,
@@ -52,9 +49,7 @@ export class RequestsComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-    this.duplicatedRequestId = null;
-  }
+  ngOnInit() {}
 
   openSnackBar(message: string, type: string, action: string) {
     this.config = { duration: this.duration };
@@ -66,84 +61,42 @@ export class RequestsComponent implements OnInit {
   }
 
   clone(request: Request) {
-    this.duplicateError = false;
-    this.duplicateSuccess = false;
-    this.cloneTitle = 'Duplicating Request...';
-    this._duplicateWorking = true;
     this.requestsService.clone(request).subscribe(
       (response: any) => {
         if (response) {
-          this._duplicateWorking = false;
-          this._duplicateModal = true;
-
-          this.cloneTitle = 'Request Duplicated!';
-          this.duplicatedRequestId = response.id;
-          this.duplicateSuccess = true;
-          this.changeDetector.detectChanges();
+          const dialogRef = this.dialog.open(RequestCloneDialogComponent, {});
+          dialogRef.afterClosed().subscribe(result => {
+            if (result && result.success) {
+              this.router.navigate(['./requests', response.id]);
+            } else {
+              this.router.routeReuseStrategy.shouldReuseRoute = function() {
+                return false;
+              };
+              this.router.navigate(['../projects', this.projectId]);
+            }
+          });
         }
       },
       error => {
-        this.duplicateSuccess = false;
-        this.duplicateError = true;
-        this._duplicateModal = false;
         this.changeDetector.detectChanges();
       }
     );
   }
 
-  delete(request: Request) {
-    this.requestsService
-      .deleteRequest(request.id)
-      .subscribe((response: any) => {
-        if (response) {
-          this._duplicateModal = true;
-          this.duplicatedRequestId = response.id;
-        }
-      });
-  }
-
-  cancelDelete() {
-    this.selectedItem = null;
-    this._confirmDeleteModal = false;
-  }
-
-  confirmDelete() {
-    this._confirmDeleteModal = false;
-    this.requestsService
-      .deleteRequest(this.selectedItem.id)
-      .subscribe((response: any) => {
-        this.openSnackBar('Request Deleted!', 'ok', 'OK');
-
-        this.changed.emit();
-      });
-
-    this._confirmDeleteModal = false;
+  removeRequest(request: Request) {
+    const dialogRef = this.dialog.open(RequestDeleteDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.requestsService
+          .deleteRequest(request.id)
+          .subscribe((response: any) => {
+            this.openSnackBar('Request Deleted!', 'ok', 'OK');
+            this.changed.emit();
+            this.changeDetector.detectChanges();
+          });
+      }
+    });
     this.changeDetector.detectChanges();
-  }
-
-  removeRequest(index: number, item: Request) {
-    this.selectedItem = item;
-    this.selectedIndex = index;
-    this._confirmDeleteModal = true;
-    // call delete and splice list
-  }
-
-  stay() {
-    this.duplicateError = false;
-    this.duplicatedRequestId = null;
-    this._duplicateModal = false;
-
-    this.router.routeReuseStrategy.shouldReuseRoute = function() {
-      return false;
-    };
-    this.router.navigate(['../projects', this.projectId]);
-  }
-
-  viewDuplicatedRequest() {
-    this.duplicateError = false;
-    if (this.duplicatedRequestId) {
-      this.router.navigate(['./requests', this.duplicatedRequestId]);
-    }
   }
 
   viewRequest(request: Request) {

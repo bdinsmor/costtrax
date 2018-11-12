@@ -8,6 +8,7 @@ import { NgxCurrencyModule } from '../core/directives/ngx-currency';
 import { PipesModule } from '../core/pipes/pipes.module';
 import { MaterialModule } from '../material.module';
 import { SharedModule } from '../shared';
+import { LaborDeleteDialogComponent } from './labor-delete-dialog.component';
 import { LaborComponent } from './labor.component';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { LaborComponent } from './labor.component';
     DirectivesModule,
     PipesModule
   ],
-  declarations: [LaborComponent],
-  exports: [LaborComponent]
+  declarations: [LaborComponent, LaborDeleteDialogComponent],
+  exports: [LaborComponent, LaborDeleteDialogComponent],
+  entryComponents: [LaborDeleteDialogComponent]
 })
 export class LaborModule {}

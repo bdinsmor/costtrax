@@ -23,11 +23,6 @@
     margin-left: 0 !important;
 }
 
-.mat-dialog-container {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
 .disabled-text {
     color: rgba(0, 0, 0, 0.38);
 }
@@ -343,4 +338,20 @@ button {
 
 .mat-checkbox-layout {
     margin-bottom: 3px !important;
+}
+
+.mat-dialog-container {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.mat-card {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.mat-card-content {
+    display: flex;
+    flex: 1;
 }

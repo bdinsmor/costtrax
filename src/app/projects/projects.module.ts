@@ -12,12 +12,15 @@ import { PipesModule } from '../core/pipes/pipes.module';
 import { EquipmentModule } from '../equipment/equipment.module';
 import { LaborModule } from '../labor/labor.module';
 import { LineItemsModule } from '../line-items/line-items.module';
+import { MaterialModule } from '../material.module';
 import { ProjectFormDialogComponent } from '../projects/project-form/project-form-dialog.component';
 import { ProjectsListComponent } from '../projects/project-list/projects-list.component';
 import { RequestsModule } from '../requests/requests.module';
 import { SharedModule } from '../shared';
 import { UsersModule } from '../users/users.module';
+import { ProjectCompleteDialogComponent } from './project-complete-dialog.component';
 import { ProjectFormComponent } from './project-form/project-form.component';
+import { ProjectRequestDialogComponent } from './project-request-dialog.component';
 import { ProjectsComponent } from './projects.component';
 import { ProjectsService } from './projects.service';
 
@@ -37,6 +40,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ProjectsComponent,
     ProjectsListComponent,
     ProjectFormComponent,
+    ProjectRequestDialogComponent,
+    ProjectCompleteDialogComponent,
     ProjectFormDialogComponent
   ],
   imports: [
@@ -49,6 +54,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     EquipmentModule,
     LaborModule,
     LineItemsModule,
+    MaterialModule,
     UsersModule,
     RequestsModule,
     ClarityModule,
@@ -58,6 +64,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   exports: [
     ProjectsComponent,
     ProjectsListComponent,
+    ProjectRequestDialogComponent,
+    ProjectCompleteDialogComponent,
     ProjectFormDialogComponent
   ],
   providers: [
@@ -68,6 +76,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   entryComponents: [
     ProjectFormComponent,
     ProjectsListComponent,
+    ProjectRequestDialogComponent,
+    ProjectCompleteDialogComponent,
     ProjectFormDialogComponent
   ]
 })

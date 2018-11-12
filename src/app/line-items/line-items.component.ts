@@ -8,8 +8,8 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { concat, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
@@ -32,6 +32,11 @@ import {
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
+import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
+import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
+import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
+import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
+import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 
 @Component({
   selector: 'app-line-items',
@@ -53,7 +58,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   signatureFormGroup: FormGroup;
   selectedItem: Item;
   selectedIndex: number;
-  _configurationModal = false;
   configurations: any;
   action: string;
   selected: any[];
@@ -95,15 +99,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   duration = 3000;
   sortActive = 'type';
   sortDirection = 'desc';
-  _modalOpen = false;
-  _editModalOpen = false;
-  _confirmDeleteModal = false;
-  _savedLaborModal = false;
-  _savedEquipmentModal = false;
-  _miscModelModal = false;
-  modalTitle = '';
-  modalSubmitLabel = '';
-  modalType = '';
+
   hasPending = false;
   equipmentFormGroup: FormGroup;
   changeFormGroup: FormGroup;
@@ -135,6 +131,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 */
 
   constructor(
+    public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private requestsService: RequestsService,
@@ -158,7 +155,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.subscription = this.authenticationService
       .getCreds()
       .subscribe(message => {
-        if (message) {
+        if (message && message.advantageId) {
           this.accountSynced =
             message.advantageId && message.advantageId !== '';
         } else {
@@ -173,9 +170,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.manageProject = false;
     this.canEdit = false;
     this.checkPermissions();
-    this.createApprovalForm();
     this.createEquipmentForm();
-    this.buildSavedEmployees();
     if (!this.itemList || !this.itemList.items) {
       this.itemList = new ItemList('', []);
     } else {
@@ -235,12 +230,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  buildSavedEmployees() {
-    this.savedEmployees$ = this.laborService.getRequestorEmployees(
-      this.project.id
-    );
-  }
-
   approveAll() {
     this.allApprove.emit({ itemType: this.itemType });
   }
@@ -254,58 +243,77 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   addFromSaved() {
-    this.savedModels$ = this.equipmentService.getRequestorModels(
-      this.project.id
-    );
-    if (this.itemType === 'labor') {
-      this._savedLaborModal = true;
-    } else if (
-      this.itemType === 'equipment.active' ||
-      this.itemType === 'equipment.standby' ||
-      this.itemType === 'equipment.rental'
-    ) {
-      this._savedEquipmentModal = true;
-    }
+    const dialogRef = this.dialog.open(AddSavedDialogComponent, {
+      width: '75vw',
+      data: {
+        type: this.itemType,
+        projectId: this.project.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.selected) {
+          this.selected = result.selected;
+          if (this.itemType !== 'labor') {
+            this.confirmAddSavedModels();
+          } else {
+            this.confirmAddSavedEmployees();
+          }
+        }
+      }
+    });
   }
 
   cancelSelectConfiguration() {
     this.selected = [];
     this.selectedIndex = -1;
-    this._configurationModal = false;
   }
 
-  confirmSelectConfiguration(configuration: any) {
-    this._configurationModal = false;
+  selectConfiguration(configurations: any[]) {
+    const dialogRef = this.dialog.open(ConfigurationDialogComponent, {
+      data: {
+        configurations: configurations
+      }
+    });
 
-    this.itemList.items[
-      this.selectedIndex
-    ].details.selectedConfiguration = JSON.parse(JSON.stringify(configuration));
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.configuration) {
+          this.itemList.items[
+            this.selectedIndex
+          ].details.selectedConfiguration = JSON.parse(
+            JSON.stringify(result.configuration)
+          );
 
-    if (this.itemType === 'equipment.active') {
-      this.itemList.items[this.selectedIndex].details.fhwa = +Number(
-        +this.itemList.items[this.selectedIndex].details.selectedConfiguration
-          .hourlyOwnershipCost +
-          +this.itemList.items[this.selectedIndex].details.selectedConfiguration
-            .hourlyOperatingCost
-      ).toFixed(2);
-      this.itemList.items[this.selectedIndex].details.method = +Number(
-        this.itemList.items[this.selectedIndex].details.fhwa * 1.046
-      ).toFixed(2);
-    } else if (this.itemType === 'equipment.standby') {
-      this.itemList.items[this.selectedIndex].details.fhwa = +Number(
-        +this.itemList.items[this.selectedIndex].details.selectedConfiguration
-          .hourlyOwnershipCost * 0.5
-      ).toFixed(2);
-      this.itemList.items[this.selectedIndex].details.method = +Number(
-        +this.itemList.items[this.selectedIndex].details.fhwa * 1.046
-      ).toFixed(2);
-    }
-    this.selected = [];
-    this.selectedIndex = -1;
-  }
-
-  cancelAddSavedModels() {
-    this._savedEquipmentModal = false;
+          if (this.itemType === 'equipment.active') {
+            this.itemList.items[this.selectedIndex].details.fhwa = +Number(
+              +this.itemList.items[this.selectedIndex].details
+                .selectedConfiguration.hourlyOwnershipCost +
+                +this.itemList.items[this.selectedIndex].details
+                  .selectedConfiguration.hourlyOperatingCost
+            ).toFixed(2);
+            this.itemList.items[this.selectedIndex].details.method = +Number(
+              this.itemList.items[this.selectedIndex].details.fhwa * 1.046
+            ).toFixed(2);
+          } else if (this.itemType === 'equipment.standby') {
+            this.itemList.items[this.selectedIndex].details.fhwa = +Number(
+              +this.itemList.items[this.selectedIndex].details
+                .selectedConfiguration.hourlyOwnershipCost * 0.5
+            ).toFixed(2);
+            this.itemList.items[this.selectedIndex].details.method = +Number(
+              +this.itemList.items[this.selectedIndex].details.fhwa * 1.046
+            ).toFixed(2);
+          }
+          this.selected = [];
+          this.selectedIndex = -1;
+        } else {
+          this.cancelSelectConfiguration();
+        }
+      } else {
+        this.cancelSelectConfiguration();
+      }
+    });
   }
 
   confirmAddSavedModels() {
@@ -327,7 +335,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.equipmentService
         .getRateData(this.project.state, selectedEquipment as Equipment[])
         .then((response: any) => {
-          this._savedEquipmentModal = false;
           const rentals = response.value as Equipment[];
           for (let z = 0; z < rentals.length; z++) {
             const e: Equipment = rentals[z];
@@ -363,21 +370,16 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             this.itemList.items = [...this.itemList.items, newItem];
           }
           this.changeDetector.detectChanges();
-          this._savedEquipmentModal = false;
         })
         .catch(error => {
           console.error('Caught error getting rates: ' + error);
-          this._savedEquipmentModal = false;
         });
     } else if (
       this.itemType === 'equipment.active' ||
       this.itemType === 'equipment.standby'
     ) {
-      this._savedEquipmentModal = false;
-
       for (let z = 0; z < selectedEquipment.length; z++) {
         const e: Equipment = selectedEquipment[z];
-
         const newItem = new Item({
           status: 'Draft',
           beingEdited: true,
@@ -389,6 +391,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             configurations: e.details.configurations,
             selectedConfiguration: e.details.selectedConfiguration,
             transportation: 0,
+            years: e.years,
             hours: 0,
             make: e.make,
             makeId: e.makeId,
@@ -422,7 +425,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.itemList.items = [...this.itemList.items, newItem];
       }
       this.changeDetector.detectChanges();
-      this._savedEquipmentModal = false;
     }
   }
 
@@ -490,17 +492,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       });
       newItem.beingEdited = true;
       this.itemList.items = [...this.itemList.items, newItem];
+      this.changeDetector.detectChanges();
     }
-
-    this._savedLaborModal = false;
-  }
-
-  cancelAddSavedEmployees() {
-    this._savedLaborModal = false;
-  }
-
-  cancelAddSavedEquipment() {
-    this._savedEquipmentModal = false;
   }
 
   makeNewSelectionChanged(event: any, item: Item) {
@@ -629,7 +622,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 if (configurations && configurations.values.length > 1) {
                   this.selectedItem = item;
                   this.selectedIndex = index;
-                  this._configurationModal = true;
+                  this.selectConfiguration(configurations);
                 } else if (
                   configurations &&
                   configurations.values.length === 1
@@ -674,7 +667,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           this.selectedItem = item;
           this.selectedIndex = index;
           this.selectedItem.details.configurations = configurations;
-          this._configurationModal = true;
+          this.selectConfiguration(configurations);
         } else if (configurations && configurations.values.length === 1) {
           item.details.selectedConfiguration = configurations.values[0];
           item.details.configurations = configurations;
@@ -1072,40 +1065,33 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     return f1 && f2 && f1.id === f2.id;
   }
 
-  cancelDelete() {
-    this.selectedItem = null;
-    this._confirmDeleteModal = false;
-  }
-
-  confirmDelete() {
-    if (!this.selectedItem.id) {
-      this._confirmDeleteModal = false;
-      this.selectedItem = null;
-      this.itemList.items.splice(this.selectedIndex, 1);
-    } else {
-      this._confirmDeleteModal = false;
-      this.requestsService.deleteLineItem(this.selectedItem.id).subscribe(
-        (response: any) => {
-          this.openSnackBar('Line Item Deleted!', 'ok', 'OK');
-          this.itemList.items.splice(this.selectedIndex, 1);
-          this.itemRemoved.emit(this.selectedItem);
-          this.changeDetector.detectChanges();
-        },
-        (error: any) => {
-          this.openSnackBar('Line Item NOT Deleted!', 'ok', 'OK');
-        }
-      );
-      // this.itemList.items.splice(this.selectedIndex, 1);
-    }
-    this._confirmDeleteModal = false;
-    this.changeDetector.detectChanges();
-  }
-
   removeLineItem(index: number, item: Item) {
     this.selectedItem = item;
     this.selectedIndex = index;
-    this._confirmDeleteModal = true;
-    // call delete and splice list
+    const dialogRef = this.dialog.open(LineItemDeleteDialogComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (!this.selectedItem.id) {
+          this.selectedItem = null;
+          this.itemList.items.splice(this.selectedIndex, 1);
+        } else {
+          this.requestsService.deleteLineItem(this.selectedItem.id).subscribe(
+            (response: any) => {
+              this.openSnackBar('Line Item Deleted!', 'ok', 'OK');
+              this.itemList.items.splice(this.selectedIndex, 1);
+              this.itemRemoved.emit(this.selectedItem);
+              this.changeDetector.detectChanges();
+            },
+            (error: any) => {
+              this.openSnackBar('Line Item NOT Deleted!', 'ok', 'OK');
+            }
+          );
+        }
+
+        this.changeDetector.detectChanges();
+      }
+    });
   }
 
   updateItemTotal(item: Item) {
@@ -1179,62 +1165,16 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       );
     }
   }
+  f;
 
   get amountChanged() {
     return +this.selectedItem.finalAmount - +this.selectedItem.amount;
-  }
-
-  createApprovalForm() {
-    this.changeFormGroup = new FormGroup({
-      reasonControl: new FormControl('', Validators.required),
-      ammountControl: new FormControl(this.submittedAmount, Validators.required)
-    });
   }
 
   createEquipmentForm() {
     this.equipmentFormGroup = new FormGroup({
       selectedMachineControl: new FormControl('')
     });
-  }
-
-  onWithChangesConfirm() {
-    const changes = {
-      finalAmount: this.selectedItem.finalAmount,
-      changeReason: this.changeFormGroup.value.reasonControl
-    };
-    this.selectedItem.status = 'ApprovedWithChange';
-    this.selectedItem.changeReason = this.changeFormGroup.value.reasonControl;
-    this.selectedItem.approvedOn = new Date();
-    this.requestsService
-      .approveLineItemWithChanges(this.selectedItem)
-      .subscribe(
-        (approveResponse: any) => {
-          this.openSnackBar('Line Item Approved With Changes', 'ok', 'OK');
-          this.itemChanged.emit(this.selectedItem);
-          this._modalOpen = false;
-          this.changeDetector.detectChanges();
-        },
-        (error: any) => {
-          this.openSnackBar('Line Item Did Not Save', 'error', 'OK');
-        }
-      );
-  }
-
-  onAsIsConfirm() {
-    this.selectedItem.status = 'ApprovedAsIs';
-    this.selectedItem.finalAmount = this.selectedItem.amount;
-    this.selectedItem.approvedOn = new Date();
-    this.requestsService.approveLineItemAsIs(this.selectedItem).subscribe(
-      (approveResponse: any) => {
-        this._modalOpen = false;
-        this.changeDetector.detectChanges();
-        this.openSnackBar('Line Item Approved!', 'ok', 'OK');
-        this.itemChanged.emit(this.selectedItem);
-      },
-      (error: any) => {
-        this.openSnackBar('Line Items Did Not Save', 'error', 'OK');
-      }
-    );
   }
 
   refreshPending() {
@@ -1247,48 +1187,81 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.hasPending = false;
   }
 
-  public cancel(): void {
-    this._modalOpen = false;
-  }
-
-  onSave(event: any) {
-    if (event) {
-      this.itemChanged.emit(event);
-    }
-    this._modalOpen = false;
-    this.selectedItem = null;
-  }
-
   editLineItem(index: number, it: Item) {
     it.beingEdited = !it.beingEdited;
   }
 
-  saveLineItemChanges(item: Item) {
-    if (item) {
-      this.itemChanged.emit(item);
-    }
-    this._editModalOpen = false;
-  }
-
-  onCancel(event: any) {
-    this.selectedItem = null;
-    this.cancel();
-  }
-
   approve(item: Item) {
     this.selectedItem = item;
-    this.modalTitle = 'Approve';
-    this.modalSubmitLabel = 'Approve';
-    this.modalType = 'ApprovedAsIs';
-    this._modalOpen = true;
+    const dialogRef = this.dialog.open(LineItemApproveDialogComponent, {
+      width: '80vw',
+      data: {
+        selectedItem: item,
+        modalType: 'ApprovedAsIs',
+        modalTitle: 'Approve',
+        modalSubmitLabel: 'Approve'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (item) {
+          this.selectedItem.status = 'Complete';
+          this.selectedItem.finalAmount = this.selectedItem.amount;
+          this.selectedItem.approvedOn = new Date();
+          this.requestsService.approveLineItemAsIs(this.selectedItem).subscribe(
+            (approveResponse: any) => {
+              this.changeDetector.detectChanges();
+              this.openSnackBar('Line Item Approved!', 'ok', 'OK');
+              this.itemChanged.emit(this.selectedItem);
+            },
+            (error: any) => {
+              this.openSnackBar('Line Items Did Not Save', 'error', 'OK');
+            }
+          );
+        }
+      }
+    });
   }
 
   approveWithChange(item: Item) {
     this.selectedItem = item;
-    this.modalTitle = 'Approve With Changes';
-    this.modalSubmitLabel = 'Approve';
-    this.modalType = 'ApprovedWithChange';
-    this._modalOpen = true;
+    const dialogRef = this.dialog.open(LineItemApproveDialogComponent, {
+      width: '80vw',
+      data: {
+        selectedItem: item,
+        modalType: 'ApprovedWithChange',
+        modalTitle: 'Approve With Changed',
+        modalSubmitLabel: 'Approve'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.changes) {
+          this.selectedItem.status = 'Complete';
+          this.selectedItem.changeReason = result.changes.changeReason;
+          this.selectedItem.finalAmount = result.changes.finalAmount;
+          this.selectedItem.approvedOn = new Date();
+          this.requestsService
+            .approveLineItemWithChanges(this.selectedItem)
+            .subscribe(
+              (approveResponse: any) => {
+                this.openSnackBar(
+                  'Line Item Approved With Changes',
+                  'ok',
+                  'OK'
+                );
+                this.itemChanged.emit(this.selectedItem);
+                this.changeDetector.detectChanges();
+              },
+              (error: any) => {
+                this.openSnackBar('Line Item Did Not Save', 'error', 'OK');
+              }
+            );
+        }
+      }
+    });
   }
   requestMoreInfo(item: Item) {
     item.status = 'RequestMoreInfo';
@@ -1297,19 +1270,29 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   addMiscEquipment() {
     this.selectedConfig = [];
     this.categoryChanged();
-    this._miscModelModal = true;
     this.categorySearch();
     this.sizeSearch();
     this.modelSearch();
     this.subtypeSearch();
-  }
+    const dialogRef = this.dialog.open(AddMiscDialogComponent, {
+      width: '80vw',
+      data: {
+        type: this.itemType,
+        projectId: this.project.id
+      }
+    });
 
-  cancelAddMiscModel() {
-    this._miscModelModal = false;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.miscEquipment = result.equipment;
+        if (result.configuration) {
+          this.confirmAddMiscModel(result.configuration);
+        }
+      }
+    });
   }
 
   confirmAddMiscModel(sc: any) {
-    this._miscModelModal = false;
     this.miscCategoryId = null;
     this.miscEquipment.details.configurations = JSON.parse(
       JSON.stringify(this.configurations)
@@ -1466,8 +1449,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.categoryId = event.item.categoryId;
       item.categoryName = event.item.categoryName;
       item.make = event.item.make;
-      item.dateDiscontinued = event.item.dateDiscontinued;
-      item.dateIntroduced = event.item.dateIntroduced;
+
       item.model = event.item.model;
       item.modelId = event.item.modelId;
       item.baseRental = event.item.baseRental;
@@ -1477,6 +1459,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.nationalAverages = event.item.nationalAverages;
       item.sizeClassName = event.item.sizeClassName;
       item.vin = event.item.vin;
+      item.dateDiscontinued = event.item.dateDiscontinued;
+      item.dateIntroduced = event.item.dateIntroduced;
       item.details = event.item.details;
       item.generateYears();
       this.miscEquipment = item;

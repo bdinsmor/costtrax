@@ -1,0 +1,58 @@
+.login-btn {
+    height: 2rem !important;
+    min-width: 4rem !important;
+}
+
+.no-border {
+    border: none !important;
+}
+
+input[type='date'],
+input[type='date']:not([readonly]):focus,
+input[type='datetime-local'],
+input[type='datetime-local']:not([readonly]):focus,
+input[type='email'],
+input[type='email']:not([readonly]):focus,
+input[type='number'],
+input[type='number']:not([readonly]):focus,
+input[type='password'],
+input[type='password']:not([readonly]):focus,
+input[type='tel'],
+input[type='tel']:not([readonly]):focus,
+input[type='text'],
+input[type='text']:not([readonly]):focus,
+input[type='time'],
+input[type='time']:not([readonly]):focus,
+input[type='url'],
+input[type='url']:not([readonly]):focus {
+    border: none !important;
+}
+
+input[type='date']:not([readonly]),
+input[type='datetime-local']:not([readonly]),
+input[type='email']:not([readonly]),
+input[type='number']:not([readonly]),
+input[type='password']:not([readonly]),
+input[type='tel']:not([readonly]),
+input[type='text']:not([readonly]),
+input[type='time']:not([readonly]),
+input[type='url']:not([readonly]) {
+    background: inherit !important;
+}
+
+.gray {
+    background-color: #f5f5f5;
+}
+
+svg {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    /* set height to pixels if you want angle to change with screen width */
+}
+
+.logo {
+    z-index: 5000;
+}

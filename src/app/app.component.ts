@@ -1,5 +1,5 @@
 import { animate, animateChild, group, query, sequence, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
@@ -51,14 +51,13 @@ const log = new Logger('App');
     ])
   ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   loggedIn = false;
   roles: String[];
   uberAdmin = false;
   loginForm: FormGroup;
   isLoading = false;
-  _syncAccountModal = false;
   private config: MatSnackBarConfig;
   duration = 3000;
 
@@ -73,19 +72,26 @@ export class AppComponent implements OnInit {
     return outlet.activatedRouteData.animation;
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   ngOnInit() {
     // Setup logger
     if (environment.production) {
       Logger.enableProductionMode();
     }
 
+    this.loggedIn = this.authService.isAuthenticated();
+
     this.subscription = this.authService.getCreds().subscribe(message => {
-      if (message) {
-        this.uberAdmin = message.uberAdmin;
+      if (message && message.userName) {
         this.loggedIn = true;
+        this.uberAdmin = message.uberAdmin;
       } else {
         this.uberAdmin = false;
         this.loggedIn = false;
+        console.log('LOGGED OUT!');
       }
     });
   }

@@ -15,7 +15,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
   activeAccounts$: Observable<Account[]>;
   archivedAccounts$: Observable<Account[]>;
   canCreateAccounts = false;
-  _accountModalOpen = false;
   private config: MatSnackBarConfig;
   duration = 3000;
 
@@ -44,20 +43,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
       if (result && result.success) {
         this.openSnackBar('Account was added', 'OK', 'OK');
         this.loadActiveAccounts();
-      }
-    });
-  }
-
-  createCancel() {
-    this._accountModalOpen = false;
-  }
-
-  saveAccount(event: any) {
-    console.log('event: ' + JSON.stringify(event, null, 2));
-    this.accountService.create(event).subscribe((res: any) => {
-      if (res) {
-        this.loadActiveAccounts();
-        this._accountModalOpen = false;
       }
     });
   }

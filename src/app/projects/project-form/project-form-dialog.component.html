@@ -1,5 +1,10 @@
-<div class="modal-body project-form">
-  <div [formGroup]="projectFormGroup">
+<mat-card class="px-2 project-form">
+  <h2 mat-dialog-title>NEW PROJECT</h2>
+  <mat-card-content
+    *ngIf="isLoaded"
+    style="max-height:40vh;width:100%;overflow:auto"
+    [formGroup]="projectFormGroup"
+  >
     <section class="form-block">
       <div class="form-group">
         <label for="selects_1">Select Account: </label>
@@ -56,7 +61,7 @@
         </div>
       </div>
 
-      <div class="form-group pt-2">
+      <div class="form-group pt-2 pr-2">
         <label for="formFields_8">Instructions:</label>
 
         <div class="row no-margin-left font-italic small-text">
@@ -71,7 +76,7 @@
         ></textarea>
       </div>
     </section>
-    <section class="form-group">
+    <section class="form-group pr-1">
       <app-user-list
         [users]="project.requestors"
         [projectId]="project.id"
@@ -80,7 +85,7 @@
         (changed)="refreshRequestors($event)"
       ></app-user-list>
     </section>
-    <section class="form-group">
+    <section class="form-group pr-1">
       <app-user-list
         [users]="project.users"
         [projectId]="project.id"
@@ -184,7 +189,7 @@
           </div>
         </div>
       -->
-      <div class="full-width column">
+      <div class="full-width column pr-1">
         <div class="checkbox">
           <input
             type="checkbox"
@@ -371,13 +376,13 @@
         </mat-card>
       </div>
     </section>
+  </mat-card-content>
+  <div mat-dialog-actions class="d-flex flex-row-reverse">
+    <button type="button" class="btn btn-primary" (click)="saveNew()">
+      <clr-icon shape="check"></clr-icon>&nbsp;Save Project
+    </button>
+    <button type="button" class="btn btn-outline" (click)="cancelCreate()">
+      Cancel
+    </button>
   </div>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline" (click)="cancelCreate()">
-    Cancel
-  </button>
-  <button type="button" class="btn btn-primary" (click)="saveNew()">
-    <clr-icon shape="check"></clr-icon>&nbsp;Save Project
-  </button>
-</div>
+</mat-card>

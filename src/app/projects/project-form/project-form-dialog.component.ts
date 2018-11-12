@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
@@ -79,8 +79,10 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     { label: 'Wisconsin', value: 'WI' },
     { label: 'Wyoming', value: 'WY' }
   ];
+  isLoaded = false;
 
   constructor(
+    public dialogRef: MatDialogRef<any>,
     public snackBar: MatSnackBar,
     private authService: AuthenticationService,
     private projectsService: ProjectsService,
@@ -114,6 +116,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
         this.firstAccount = accounts[0];
       }
       this.createProjectFormGroup();
+      this.isLoaded = true;
     });
   }
 
@@ -159,7 +162,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   }
 
   cancelCreate() {
-    this.cancel.emit();
+    this.dialogRef.close();
   }
 
   refreshRequestors(event) {
@@ -192,8 +195,8 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     };
     this.projectsService.save(projectData).subscribe(
       (response: any) => {
-        this.save.emit({ project: projectData });
         this.resetForm();
+        this.dialogRef.close({ success: true, project: projectData });
       },
       (error: any) => {
         this.openSnackBar('Project Did Not Save', 'error', 'OK');

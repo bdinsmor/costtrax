@@ -19,8 +19,6 @@ export class AccountListComponent implements OnInit {
   @Input()
   accounts: Account[];
   selectedAccount: Account;
-  _confirmArchiveModal = false;
-  _confirmDeleteModal = false;
   private config: MatSnackBarConfig;
   duration = 3000;
 
@@ -43,18 +41,15 @@ export class AccountListComponent implements OnInit {
 
   archiveAccount(account: Account) {
     this.selectedAccount = account;
-    this._confirmArchiveModal = true;
   }
 
   cancelArchiveAccount() {
     this.selectedAccount = null;
-    this._confirmArchiveModal = false;
   }
 
   confirmArchiveAccount() {
     this.accountService.archive(this.selectedAccount.id).subscribe(
       (response: any) => {
-        this._confirmArchiveModal = false;
         this.openSnackBar('Account marked COMPLETE!', 'ok', 'OK');
         this.router.navigate(['../accounts']);
       },
@@ -64,20 +59,9 @@ export class AccountListComponent implements OnInit {
     );
   }
 
-  cancelDeleteAccount() {
-    this.selectedAccount = null;
-    this._confirmDeleteModal = false;
-  }
-
-  removeAccount(account: Account) {
-    this.selectedAccount = account;
-    this._confirmDeleteModal = true;
-  }
-
   confirmDeleteAccount() {
     this.accountService.delete(this.selectedAccount.id).subscribe(
       (response: any) => {
-        this._confirmArchiveModal = false;
         this.openSnackBar('Account deleted!', 'ok', 'OK');
         this.router.navigate(['../accounts']);
       },

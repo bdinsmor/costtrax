@@ -1,7 +1,13 @@
 <div class="px-2 pt-2 mb-2 full-width">
   <section class="full-width d-flex flex-row align-items-center">
     <h3 class="pr-1 no-top-margin">Employees</h3>
-    <button type="button" class="btn btn-sm btn-primary" (click)="addEmployee()">Add Employee</button>
+    <button
+      type="button"
+      class="btn btn-sm btn-primary"
+      (click)="addEmployee()"
+    >
+      Add Employee
+    </button>
   </section>
 
   <clr-datagrid class="px-1">
@@ -11,80 +17,114 @@
     <clr-dg-column [clrDgField]="'rate'">Rate/Hr</clr-dg-column>
     <clr-dg-column [clrDgField]="'benefits'">Fringe Benefits</clr-dg-column>
     <clr-dg-column>Actions</clr-dg-column>
-    <clr-dg-row *clrDgItems="let item of items; let i=
-                  index;trackBy:
-                  trackByFn"
-      [clrDgItem]="item">
+    <clr-dg-row
+      *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
+      [clrDgItem]="item"
+    >
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <input class="full-width" type="text" (change)="employeeChanged(item)" [(ngModel)]="item.lastName"
-            [ngModelOptions]="{standalone: true}">
+          <input
+            class="full-width"
+            type="text"
+            (change)="employeeChanged(item)"
+            [(ngModel)]="item.lastName"
+            [ngModelOptions]="{ standalone: true }"
+          />
         </div>
-        <div *ngIf="!item.isDraft()">{{item.lastName}}</div>
+        <div *ngIf="!item.isDraft()">{{ item.lastName }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <input class="full-width" type="text" (change)="employeeChanged(item)" [(ngModel)]="item.firstName"
-            [ngModelOptions]="{standalone: true}">
+          <input
+            class="full-width"
+            type="text"
+            (change)="employeeChanged(item)"
+            [(ngModel)]="item.firstName"
+            [ngModelOptions]="{ standalone: true }"
+          />
         </div>
-        <div *ngIf="!item.isDraft()">{{item.firstName}}</div>
+        <div *ngIf="!item.isDraft()">{{ item.firstName }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <input class="full-width" type="text" (change)="employeeChanged(item)" [(ngModel)]="item.trade"
-            [ngModelOptions]="{standalone: true}">
+          <input
+            class="full-width"
+            type="text"
+            (change)="employeeChanged(item)"
+            [(ngModel)]="item.trade"
+            [ngModelOptions]="{ standalone: true }"
+          />
         </div>
-        <div *ngIf="!item.isDraft()">{{item.trade}}</div>
+        <div *ngIf="!item.isDraft()">{{ item.trade }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <input currencyMask class="full-width" type="text" (change)="employeeChanged(item)" [(ngModel)]="item.rate"
-            [ngModelOptions]="{standalone: true}">
+          <input
+            currencyMask
+            class="full-width"
+            type="text"
+            (change)="employeeChanged(item)"
+            [(ngModel)]="item.rate"
+            [ngModelOptions]="{ standalone: true }"
+          />
         </div>
-        <div *ngIf="!item.isDraft()">{{item.rate | currency}}</div>
+        <div *ngIf="!item.isDraft()">{{ item.rate | currency }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <input currencyMask class="full-width" type="text" (change)="employeeChanged(item)" [(ngModel)]="item.benefits"
-            [ngModelOptions]="{standalone: true}">
+          <input
+            currencyMask
+            class="full-width"
+            type="text"
+            (change)="employeeChanged(item)"
+            [(ngModel)]="item.benefits"
+            [ngModelOptions]="{ standalone: true }"
+          />
         </div>
-        <div *ngIf="!item.isDraft()">{{item.benefits | currency}}</div>
+        <div *ngIf="!item.isDraft()">{{ item.benefits | currency }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()" class="row justify-content-end">
-          <button class="ripple icon-button pr-1" matTooltip="Save" (click)="saveChanges(i, item)">
+          <button
+            class="ripple icon-button pr-1"
+            matTooltip="Save"
+            (click)="saveChanges(i, item)"
+          >
             <mat-icon color="accent">done</mat-icon>
           </button>
-          <button class="ripple icon-button" matTooltip="Remove" (click)="remove(i,item)">
+          <button
+            class="ripple icon-button"
+            matTooltip="Remove"
+            (click)="remove(i, item)"
+          >
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
         <div *ngIf="!item.isDraft()" class="row justify-content-end">
-          <button class="ripple icon-button pr-1" matTooltip="Edit" (click)="editItem(i, item)">
+          <button
+            class="ripple icon-30 icon-button pr-1"
+            matTooltip="Edit"
+            (click)="editItem(i, item)"
+          >
             <mat-icon color="accent">edit</mat-icon>
           </button>
-          <button class="ripple icon-button pr-1" matTooltip="Copy" (click)="copy(i, item)">
+          <button
+            class="ripple icon-30 icon-button pr-1"
+            matTooltip="Copy"
+            (click)="copy(i, item)"
+          >
             <mat-icon color="accent" svgIcon="duplicate"></mat-icon>
           </button>
-          <button class="ripple icon-button" matTooltip="Remove" (click)="remove(i,item)">
+          <button
+            class="ripple icon-30 icon-button"
+            matTooltip="Remove"
+            (click)="remove(i, item)"
+          >
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
-
       </clr-dg-cell>
-
-
     </clr-dg-row>
-    <clr-dg-footer *ngIf="items">{{items.length}} Items</clr-dg-footer>
+    <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
   </clr-datagrid>
 </div>
-<clr-modal class="fadeDown in" [(clrModalOpen)]="_confirmDeleteModal" [clrModalClosable]="false">
-  <h3 class="modal-title">Confirm Remove Employee</h3>
-  <div class="modal-body">
-    <p>Are you sure you want to remove this employee?</p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-danger" (click)="cancelRemoveEmployee()">Cancel</button>
-    <button type="button" class="btn btn-danger" (click)="confirmRemoveEmployee()">Remove Employee</button>
-  </div>
-</clr-modal>

@@ -4,11 +4,22 @@
       <h2 class="no-top-margin">Projects</h2>
       <div class="spacer"></div>
 
-      <button *ngIf="canCreateProjects" class="btn btn-primary" (click)="createProject()">
+      <button
+        *ngIf="canCreateProjects"
+        class="btn btn-primary"
+        (click)="createProject()"
+      >
         <clr-icon shape="add"></clr-icon>&nbsp;Project
       </button>
-      <button *ngIf="canSubmitRequests && requestableProjects && requestableProjects.length > 0" class="btn btn-primary"
-        (click)="createRequest()">
+      <button
+        *ngIf="
+          canSubmitRequests &&
+          requestableProjects &&
+          requestableProjects.length > 0
+        "
+        class="btn btn-primary"
+        (click)="createRequest()"
+      >
         <clr-icon shape="add"></clr-icon>&nbsp;Request
       </button>
     </div>
@@ -18,7 +29,7 @@
         <button clrTabLink class="align-items-center">
           <clr-icon shape="note"></clr-icon>
           Active Projects
-          <strong>({{(activeProjects$ | async)?.length}})</strong>
+          <strong>({{ (activeProjects$ | async)?.length }})</strong>
         </button>
         <clr-tab-content *clrIfActive>
           <app-projects-list [projects]="activeProjects$"> </app-projects-list>
@@ -28,40 +39,13 @@
         <button clrTabLink class="align-items-center">
           <clr-icon shape="tasks"></clr-icon>
           Archived Projects
-          <strong>({{(archivedProjects$ | async)?.length}})</strong>
+          <strong>({{ (archivedProjects$ | async)?.length }})</strong>
         </button>
         <clr-tab-content *clrIfActive>
-          <app-projects-list [projects]="archivedProjects$"> </app-projects-list>
+          <app-projects-list [projects]="archivedProjects$">
+          </app-projects-list>
         </clr-tab-content>
       </clr-tab>
     </clr-tabs>
-    <clr-modal [clrModalSize]="'xl'" class="fadeDown in" [(clrModalOpen)]="_projectModalOpen" [clrModalClosable]="false">
-      <h3 class="modal-title">New Project</h3>
-      <div class="modal-body">
-        <app-project-dialog-form (save)="projectSaved($event)" (cancel)="onProjectCancel()"></app-project-dialog-form>
-      </div>
-    </clr-modal>
-
-    <clr-modal [clrModalSize]="'lg'" class="fadeDown in" [(clrModalOpen)]="_requestModel" [clrModalClosable]="false">
-      <h2 class="modal-title ">NEW REQUEST</h2>
-      <div id="parent" class="modal-body vh-35 align-items-center">
-        <div [formGroup]="projectForm" class="px-1 row pb-1 align-items-center">
-          <h3 class="pr-1" for="selects_1">Select Project:</h3>
-
-          <div>
-            <select clrSelect formControlName="selectedProjectControl" required>
-              <option *ngFor="let choice of activeProjects$ | async" [value]="choice.id">{{choice.name}}</option>
-            </select>
-
-          </div>
-
-        </div>
-
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" type="button" (click)="cancelRequest()">Cancel</button>
-        <button class="btn btn-primary" type="button" [disabled]="!projectForm.valid" (click)="confirmCreateRequest()">Ok</button>
-      </div>
-    </clr-modal>
   </div>
 </div>
