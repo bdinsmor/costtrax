@@ -24,7 +24,8 @@
             class="ripple
                             icon-30 icon-button
                             pr-1"
-            matTooltip="Save"
+            matTooltip="Mark Inactive"
+            [disabled]="true"
             (click)="archiveAccount(item)"
           >
             <mat-icon color="accent">archive</mat-icon>
@@ -32,6 +33,7 @@
           <button
             class="ripple icon-button icon-30 pr-1"
             matTooltip="Remove"
+            [disabled]="true"
             (click)="removeAccount(item)"
           >
             <mat-icon color="warn">delete</mat-icon>
@@ -48,9 +50,9 @@
   [(clrModalOpen)]="_confirmArchiveModal"
   [clrModalClosable]="false"
 >
-  <h3 class="modal-title">Confirm Archive</h3>
+  <h3 class="modal-title">Confirm Account Inactivation</h3>
   <div class="modal-body">
-    <p>Are you sure you want to archive this account?</p>
+    <p>Are you sure you want inactivate this account?</p>
   </div>
   <div class="modal-footer">
     <button
@@ -65,7 +67,7 @@
       class="btn btn-primary"
       (click)="confirmArchiveAccount()"
     >
-      Mark Complete
+      Mark Inactive
     </button>
   </div>
 </clr-modal>

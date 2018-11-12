@@ -255,9 +255,10 @@
           <h5 *ngIf="itemType === 'equipment.active'" class="no-top-margin">Location: {{project.state}} | Ownership:
             100%
             | Operating: 100%</h5>
+            <h5 *ngIf="!accountSynced">Log in with your EQW credentials to access</h5>
           <div class="ml-0 row align-items-center">
             <div *ngIf="!printingInvoice && !editMode" class="align-items-center">
-              <button *ngIf="hasPending && manageRequests" [disabled]="!manageRequests" type="button" class="btn btn-sm
+              <button *ngIf="hasPending && manageRequests" [disabled]="!manageRequests || !accountSynced" type="button" class="btn btn-sm
                         btn-outline-primary"
                 (click)="approveAll()">
                 <clr-icon shape="check"></clr-icon>Approve All
@@ -265,19 +266,19 @@
               <button *ngIf="submitRequests && (itemType === 'equipment.active' ||
                         itemType === 'equipment.standby' || itemType ===
                         'equipment.rental')"
-                [disabled]="!submitRequests" type="button" class="btn btn-sm
+                [disabled]="!submitRequests || !accountSynced" type="button" class="btn btn-sm
                         btn-outline-primary"
                 (click)="addFromSaved()">
                 Add From Saved Models</button>
-              <button *ngIf="submitRequests && (itemType== 'equipment.active' ||
-                        itemType== 'equipment.standby' || itemType== 'equipment.rental')"
-                [disabled]="!submitRequests" type="button" class="btn btn-sm
+              <button *ngIf="submitRequests && (itemType === 'equipment.active' ||
+                        itemType === 'equipment.standby' || itemType === 'equipment.rental')"
+                [disabled]="!submitRequests || !accountSynced" type="button" class="btn btn-sm
                         btn-outline-primary"
                 (click)="addLineItems()">
                 Add New Model</button>
-              <button *ngIf="submitRequests && (itemType== 'equipment.active' ||
-                        itemType== 'equipment.standby' || itemType== 'equipment.rental')"
-                [disabled]="!submitRequests" type="button" class="btn btn-sm
+              <button *ngIf="submitRequests && (itemType === 'equipment.active' ||
+                        itemType === 'equipment.standby' || itemType === 'equipment.rental')"
+                [disabled]="!submitRequests || !accountSynced" type="button" class="btn btn-sm
                         btn-outline-primary"
                 (click)="addMiscEquipment()">
                 Add New Miscellaneous Model</button>
@@ -301,7 +302,7 @@
         </div>
         <div *ngIf="manageRequests" class="spacer"></div>
 
-        <div *ngIf="manageRequests && (itemType === 'equipment.active' ||
+        <div *ngIf="manageRequests && accountSynced && (itemType === 'equipment.active' ||
           itemType === 'equipment.standby' || itemType === 'equipment.rental')"
           class="row align-items-center">
           <h6 class="no-top-margin">powered by&nbsp;</h6>
@@ -475,7 +476,7 @@
         </clr-dg-row>
         <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}} Items</clr-dg-footer>
       </clr-datagrid>
-      <clr-datagrid *ngIf="itemType === 'equipment.active'">
+      <clr-datagrid *ngIf="itemType === 'equipment.active' && accountSynced">
         <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.make'">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.model'">Model</clr-dg-column>
@@ -516,11 +517,13 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" style="width:55px" *ngIf="!item.beingEdited">{{item.details.year}}</div>
-            <div class="padding-label-top" *ngIf="item.beingEdited"><input class="w-55" *ngIf="item.beingEdited"
-                [disabled]="!submitRequests
-                || !item.beingEdited" type="number" (change)="activeChanged(item)"
-                [(ngModel)]="item.details.year" [ngModelOptions]="{standalone:
-                true}"></div>
+            <div style="width: 125px" *ngIf="item.beingEdited">
+              <ng-select [disabled]="!item.details.modelId" [items]="item.details.years" dropdownPosition="top" appendTo="body" (change)="yearSelectionChanged(item,i)" bindLabel="year" bindValue="year"
+                placeholder="Year" clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true" [(ngModel)]="item.details.year"
+                [ngModelOptions]="{standalone: true}">
+              </ng-select>
+             
+              </div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" style="width:100px">{{item.details.sizeClassName}}</div>
@@ -732,7 +735,7 @@
         <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}}
           Items</clr-dg-footer>
       </clr-datagrid>
-      <clr-datagrid *ngIf="itemType === 'equipment.standby'">
+      <clr-datagrid *ngIf="itemType === 'equipment.standby' && accountSynced">
         <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.make'">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.model'">Model</clr-dg-column>
@@ -771,11 +774,13 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" style="width:55px" *ngIf="!item.beingEdited">{{item.details.year}}</div>
-            <div class="padding-label-top" *ngIf="item.beingEdited"><input class="w-55" *ngIf="item.beingEdited"
-                [disabled]="!submitRequests
-                  || !item.beingEdited" type="number" (change)="standbyChanged(item)"
-                [(ngModel)]="item.details.year" [ngModelOptions]="{standalone:
-                  true}"></div>
+           <div style="width: 125px" *ngIf="item.beingEdited">
+              <ng-select [disabled]="!item.details.modelId" [items]="item.details.years" dropdownPosition="top" appendTo="body" (change)="yearSelectionChanged(item,i)" bindLabel="year" bindValue="year"
+                placeholder="Year" clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true" [(ngModel)]="item.details.year"
+                [ngModelOptions]="{standalone: true}">
+              </ng-select>
+             
+              </div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" style="width:100px">{{item.details.sizeClassName}}</div>
@@ -876,7 +881,7 @@
           Items</clr-dg-footer>
       </clr-datagrid>
 
-      <clr-datagrid *ngIf="itemType === 'equipment.rental'">
+      <clr-datagrid *ngIf="itemType === 'equipment.rental' && accountSynced">
         <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
         <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
@@ -1063,7 +1068,7 @@
                     table-bordered table-striped comparison-table">
                   <thead>
                     <th>Terms</th>
-                    <th>{{item.details.numDays}} Day<span *ngIf="item.details.numDays === 1">s</span> Rental,<br />Time Conversion</th>
+                    <th>{{item.details.numDays}} Day Rental,<br />Time Conversion</th>
                     <th>User Supplied,<br />Invoice Amount</th>
                     <th>Rental Rate Blue Book,<br />Ownership Cost</th>
                     <th>Retail Rental,<br />State Average</th>

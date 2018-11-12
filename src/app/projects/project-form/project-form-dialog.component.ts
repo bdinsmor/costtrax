@@ -1,7 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { Account, Project } from '../../shared/model';
@@ -12,10 +12,12 @@ import { ProjectsService } from '../projects.service';
   templateUrl: './project-form-dialog.component.html',
   styleUrls: ['./project-form-dialog.component.scss']
 })
-export class ProjectFormDialogComponent implements OnInit {
+export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   accounts$: Observable<Account[]>;
   projectFormGroup: FormGroup;
   project: Project;
+  subscription: Subscription;
+  accountSynced = false;
   firstAccount: Account = new Account({});
   @Output()
   cancel = new EventEmitter();
@@ -82,10 +84,23 @@ export class ProjectFormDialogComponent implements OnInit {
     public snackBar: MatSnackBar,
     private authService: AuthenticationService,
     private projectsService: ProjectsService,
-    private formBuilder: FormBuilder
+    private authenticationService: AuthenticationService,
+    private formBuilder: FormBuilder,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.subscription = this.authenticationService
+      .getCreds()
+      .subscribe(message => {
+        if (message) {
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
+        } else {
+          this.accountSynced = false;
+        }
+        this.changeDetector.detectChanges();
+      });
     this.project = new Project({ id: '1' });
     this.project.users = [];
     this.project.requestors = [];
@@ -100,6 +115,10 @@ export class ProjectFormDialogComponent implements OnInit {
       }
       this.createProjectFormGroup();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   resetForm() {

@@ -1,12 +1,13 @@
 import { animate, keyframes, query, stagger, style, transition, trigger } from '@angular/animations';
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
+import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { ProjectsService } from '../../projects/projects.service';
 import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
@@ -69,14 +70,15 @@ import { RequestsService } from '../requests.service';
     ])
   ]
 })
-export class RequestDetailsComponent implements OnInit {
+export class RequestDetailsComponent implements OnInit, OnDestroy {
   private config: MatSnackBarConfig;
   duration = 3000;
+  subscription: Subscription;
   requestFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
   lineItemFormGroup: FormGroup;
   notesFormGroup: FormGroup;
-
+  accountSynced = false;
   project: Project;
   request: Request;
   lineItems: Map<String, Item[]>;
@@ -105,6 +107,7 @@ export class RequestDetailsComponent implements OnInit {
     private router: Router,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
+    private authenticationService: AuthenticationService,
     private breadcrumbService: BreadcrumbService,
     private _location: Location
   ) {}
@@ -114,6 +117,18 @@ export class RequestDetailsComponent implements OnInit {
       selectedProjectControl: new FormControl(''),
       notes: new FormControl('')
     });
+
+    this.subscription = this.authenticationService
+      .getCreds()
+      .subscribe(message => {
+        if (message) {
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
+        } else {
+          this.accountSynced = false;
+        }
+        this.changeDetector.detectChanges();
+      });
 
     this.signatureFormGroup = new FormGroup({
       signature: new FormControl('')
@@ -203,6 +218,10 @@ export class RequestDetailsComponent implements OnInit {
 
       this.editMode = true;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   checkDates(group: FormGroup) {

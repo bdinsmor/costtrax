@@ -96,9 +96,20 @@ export class EquipmentService {
     );
   }
 
-  getConfiguration(modelId: string): Observable<any> {
-    const url: string =
+  getConfiguration(
+    modelId: string,
+    year: string = '',
+    state: string = ''
+  ): Observable<any> {
+    let url: string =
       environment.serverUrl + '/equipment/configurations?modelId=' + modelId;
+    if (year && year !== '') {
+      url += '&year=' + year;
+    }
+    if (state && state !== '') {
+      url += '&state=' + state;
+    }
+
     return this.http.get(url).pipe(
       map((res: any) => {
         if (
@@ -369,15 +380,20 @@ export class EquipmentService {
       );
   }
 
-  getConfigurations(choices: Equipment[]): Promise<any> {
+  getConfigurations(choices: Equipment[], state: string = ''): Promise<any> {
     let promises: Promise<any>;
+
     promises = Promise.all(
       choices.map(async (choice: Equipment) =>
         this.http
           .get(
             environment.serverUrl +
               '/equipment/configurations?modelId=' +
-              choice.modelId
+              choice.modelId +
+              '&year=' +
+              choice.year +
+              '&state=' +
+              state
           )
           .toPromise()
           .then((res: any) => {
@@ -425,6 +441,8 @@ export class EquipmentService {
             choice.sizeClassName = res.sizeClassName;
             choice.subtypeId = res.subtypeId;
             choice.subtypeName = res.subtypeName;
+            choice.dateIntroduced = res.dateIntroduced;
+            choice.dateDiscontinued = res.dateDiscontinued;
             choice.classificationId = res.classificationId;
             choice.classificationName = res.classificationName;
             choice.categoryName = res.categoryName;

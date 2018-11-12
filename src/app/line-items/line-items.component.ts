@@ -11,7 +11,7 @@ import {
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import { concat, Observable, of, Subject } from 'rxjs';
+import { concat, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
@@ -66,27 +66,18 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   modelResults$: Observable<any>;
 
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
-  @Input()
-  itemList: ItemList;
   itemType: string;
-  @Input()
-  project: Project;
-  @Input()
-  requestId: string;
-  @Input()
-  draftMode: boolean;
-  @Input()
-  printingInvoice = false;
-  @Output()
-  itemsChanged = new EventEmitter<any>();
-  @Output()
-  itemChanged = new EventEmitter<Item>();
-  @Output()
-  itemRemoved = new EventEmitter<Item>();
-  @Output()
-  itemEdited = new EventEmitter<any>();
-  @Output()
-  allApprove = new EventEmitter<any>();
+  @Input() itemList: ItemList;
+  @Input() project: Project;
+  @Input() requestId: string;
+  @Input() draftMode: boolean;
+  @Input() printingInvoice = false;
+  @Output() itemsChanged = new EventEmitter<any>();
+  @Output() itemChanged = new EventEmitter<Item>();
+  @Output() itemRemoved = new EventEmitter<Item>();
+  @Output() itemEdited = new EventEmitter<any>();
+  @Output() allApprove = new EventEmitter<any>();
+
   beingEdited = false;
   machines$: Observable<Equipment[]>;
   machinesSearch$: Observable<Equipment[]>;
@@ -133,6 +124,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   modelLoading = false;
 
   itemTypeDisplay: string;
+
+  accountSynced = false;
+  subscription: Subscription;
   /*
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
@@ -150,7 +144,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     private laborService: LaborService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private authService: AuthenticationService
+    private authenticationService: AuthenticationService
   ) {
     this.matIconRegistry.addSvgIcon(
       'costtrax-check',
@@ -161,6 +155,18 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.subscription = this.authenticationService
+      .getCreds()
+      .subscribe(message => {
+        if (message) {
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
+        } else {
+          this.accountSynced = false;
+        }
+        this.changeDetector.detectChanges();
+      });
+
     this.savedEquipment = [];
     this.selected = [];
     this.manageRequests = false;
@@ -220,6 +226,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     if (this.modelInput$) {
       this.modelInput$.unsubscribe();
     }
+    this.subscription.unsubscribe();
   }
 
   getComps() {
@@ -589,7 +596,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     item.details.make = event.item.make;
     item.details.model = event.item.model;
     item.details.modelId = event.item.modelId;
-
+    item.details.dateIntroduced = event.item.dateIntroduced;
+    item.details.dateDiscontinued = event.item.dateDiscontinued;
+    item.generateYears();
     item.details.vin = event.item.vin;
     if (item && item.details) {
       if (item.type === 'equipment.rental') {
@@ -603,7 +612,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           )
           .subscribe((choice: Equipment) => {
             this.equipmentService
-              .getConfiguration(item.details.modelId)
+              .getConfiguration(
+                item.details.modelId,
+                item.details.year,
+                this.project.state
+              )
               .subscribe((configurations: any) => {
                 item.details.configurations = configurations;
                 item.details.year = choice.year;
@@ -633,41 +646,67 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         item.type === 'equipment.active' ||
         item.type === 'equipment.standby'
       ) {
-        this.equipmentService
-          .getConfiguration(item.details.modelId)
-          .subscribe((configurations: any) => {
-            if (configurations && configurations.values.length > 1) {
-              this.selectedItem = item;
-              this.selectedIndex = index;
-              this.selectedItem.details.configurations = configurations;
-              this._configurationModal = true;
-            } else if (configurations && configurations.values.length === 1) {
-              item.details.selectedConfiguration = configurations.values[0];
-              item.details.configurations = configurations;
-              if (this.itemType === 'equipment.active') {
-                item.details.fhwa = +Number(
-                  +item.details.selectedConfiguration.hourlyOwnershipCost +
-                    +item.details.selectedConfiguration.hourlyOperatingCost
-                ).toFixed(2);
-                item.details.method = +Number(
-                  item.details.fhwa * 1.046
-                ).toFixed(2);
-              } else if (this.itemType === 'equipment.standby') {
-                item.details.fhwa = +Number(
-                  +item.details.selectedConfiguration.hourlyOwnershipCost * 0.5
-                ).toFixed(2);
-                item.details.method = +Number(
-                  +item.details.fhwa * 1.046
-                ).toFixed(2);
-              } else {
-                item.resetSelectedConfiguration();
-              }
-            }
-            item.beingEdited = true;
-            this.changeDetector.detectChanges();
-          });
       }
     }
+  }
+
+
+
+  yearSelectionChanged(item: Item, index: number) {
+    if (!item.details.year || item.details.year === '') {
+      item.details.fhwa = 0;
+      item.resetSelectedConfiguration();
+      if (this.itemType === 'equipment.active') {
+        this.activeChanged(item);
+      } else if (this.itemType === 'equipment.standby') {
+        this.standbyChanged(item);
+      } else if (this.itemType === 'equipment.rental') {
+        this.rentalChanged(item);
+      }
+      return;
+    }
+    this.equipmentService
+      .getConfiguration(
+        item.details.modelId,
+        item.details.year,
+        this.project.state
+      )
+      .subscribe((configurations: any) => {
+        if (configurations && configurations.values.length > 1) {
+          this.selectedItem = item;
+          this.selectedIndex = index;
+          this.selectedItem.details.configurations = configurations;
+          this._configurationModal = true;
+        } else if (configurations && configurations.values.length === 1) {
+          item.details.selectedConfiguration = configurations.values[0];
+          item.details.configurations = configurations;
+          if (this.itemType === 'equipment.active') {
+            item.details.fhwa = +Number(
+              +item.details.selectedConfiguration.hourlyOwnershipCost +
+                +item.details.selectedConfiguration.hourlyOperatingCost
+            ).toFixed(2);
+            item.details.method = +Number(item.details.fhwa * 1.046).toFixed(2);
+          } else if (this.itemType === 'equipment.standby') {
+            item.details.fhwa = +Number(
+              +item.details.selectedConfiguration.hourlyOwnershipCost * 0.5
+            ).toFixed(2);
+            item.details.method = +Number(+item.details.fhwa * 1.046).toFixed(
+              2
+            );
+          } else {
+            item.resetSelectedConfiguration();
+          }
+        }
+        if (this.itemType === 'equipment.active') {
+          this.activeChanged(item);
+        } else if (this.itemType === 'equipment.standby') {
+          this.standbyChanged(item);
+        } else if (this.itemType === 'equipment.rental') {
+          this.rentalChanged(item);
+        }
+        item.beingEdited = true;
+        this.changeDetector.detectChanges();
+      });
   }
 
   addRow() {
@@ -707,7 +746,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           base: 0,
           operating: 0,
           transportation: 0,
-          year: new Date().getFullYear(),
+          year: '',
           configurations: null,
           selectedConfiguration: {
             hourlyOperatingCost: 0,
@@ -1410,18 +1449,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   standbyValueChanged(value: any) {}
-
-  maksNewSelectionChanged(event: any) {
-    if (this.miscEquipment && event.item) {
-      if (event.item.makeId !== this.miscEquipment.makeId) {
-        this.miscEquipment.makeId = event.item.makeId;
-        this.miscEquipment = new Equipment(this.miscEquipment);
-      }
-    } else if (this.miscEquipment) {
-      console.log('no selection - clear out!');
-      this.miscEquipment = new Equipment({});
-    }
-  }
 
   modelSelectionChanged(event: any) {
     const item: Equipment = this.miscEquipment;

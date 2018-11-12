@@ -88,45 +88,13 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
       });
       return;
     }
-    if (this.type === 'make') {
-      this.selected.emit({
-        type: this.type,
-        index: this.index,
-        item: this.selectedItem
-      });
-      return;
-    } else {
-      this.equipmentService
-        .getRateData('', [this.selectedItem] as Equipment[])
-        .then((response: any) => {
-          const assets = response.value as Equipment[];
-          if (assets && assets.length === 1) {
-            const choice = assets[0];
-            this.selectedItem.baseRental = choice.baseRental;
-            this.selectedItem.fhwa = choice.fhwa;
-            this.selectedItem.type = choice.type;
 
-            this.selected.emit({
-              type: this.type,
-              index: this.index,
-              item: this.selectedItem
-            });
-          } else {
-            this.selected.emit({
-              type: this.type,
-              index: this.index,
-              item: this.selectedItem
-            });
-          }
-        })
-        .catch(error => {
-          this.selected.emit({
-            type: this.type,
-            index: this.index,
-            item: this.selectedItem
-          });
-        });
-    }
+    this.selected.emit({
+      type: this.type,
+      index: this.index,
+      item: this.selectedItem
+    });
+    return;
   }
 
   makeSearch() {

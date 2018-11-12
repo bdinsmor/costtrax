@@ -293,6 +293,7 @@
                       <input
                         type="checkbox"
                         matRipple
+                        *ngIf="accountSynced"
                         id="equipmentCheck"
                         (change)="toggleCheckbox('equipment', $event)"
                         formControlName="equipmentCostsCheckbox"
@@ -300,7 +301,7 @@
                       <label for="equipmentCheck">Equipment Costs</label>
                     </div>
                     <mat-card
-                      *ngIf="project.equipmentCostsEnabled"
+                      *ngIf="project.equipmentCostsEnabled && accountSynced"
                       class="project-adjustment-section full-width mb-2"
                     >
                       <h4>ACTIVE ADJUSTMENTS</h4>

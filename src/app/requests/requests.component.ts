@@ -28,16 +28,11 @@ export class RequestsComponent implements OnInit {
   onUpComparator = new OneUpComparator();
   cloneTitle = 'Duplicating Request...';
   duplicateError = false;
-  @Input()
-  projectId: string;
-  @Input()
-  items: Request[];
-  @Input()
-  submitRequests: boolean;
-  @Output()
-  duplicated = new EventEmitter<any>();
-  @Output()
-  changed = new EventEmitter<any>();
+  @Input() projectId: string;
+  @Input() items: Request[];
+  @Input() submitRequests: boolean;
+  @Output() duplicated = new EventEmitter<any>();
+  @Output() changed = new EventEmitter<any>();
 
   constructor(
     public snackBar: MatSnackBar,
@@ -137,6 +132,10 @@ export class RequestsComponent implements OnInit {
     this.duplicateError = false;
     this.duplicatedRequestId = null;
     this._duplicateModal = false;
+
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {
+      return false;
+    };
     this.router.navigate(['../projects', this.projectId]);
   }
 

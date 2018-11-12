@@ -52,9 +52,13 @@ export class SyncDialogComponent implements OnInit {
       )
       .subscribe(
         (credentials: any) => {
-          this.authenticationService.setCreds(credentials.token);
+          if (credentials.error) {
+            this.error = credentials.error;
+          } else {
+            this.authenticationService.setCreds(credentials.token);
 
-          this.dialogRef.close({ success: true });
+            this.dialogRef.close({ success: true });
+          }
         },
         (error: Error) => {
           this.error = error.message;

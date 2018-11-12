@@ -9,9 +9,10 @@ import {
   Output,
 } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { concat, Observable, of, Subject } from 'rxjs';
+import { concat, Observable, of, Subject, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
+import { AuthenticationService } from '../core/authentication/authentication.service';
 import { Equipment } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { EquipmentService } from './equipment.service';
@@ -24,13 +25,12 @@ import { EquipmentService } from './equipment.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EquipmentComponent implements OnInit, OnDestroy {
-  @Input()
-  items: Equipment[];
-  @Input()
-  projectId: string;
+  @Input() items: Equipment[];
+  @Input() projectId: string;
+  @Output() changes = new EventEmitter<any>();
 
-  @Output()
-  changes = new EventEmitter<any>();
+  accountSynced = false;
+
   _configurationModal = false;
   _confirmDeleteModal = false;
 
@@ -57,14 +57,27 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   selected: any[];
   private config: MatSnackBarConfig;
   duration = 3000;
+  subscription: Subscription;
 
   constructor(
     public snackBar: MatSnackBar,
+    private authenticationService: AuthenticationService,
     private equipmentService: EquipmentService,
     private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.subscription = this.authenticationService
+      .getCreds()
+      .subscribe(message => {
+        if (message) {
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
+        } else {
+          this.accountSynced = false;
+        }
+        this.changeDetector.detectChanges();
+      });
     if (!this.items && this.projectId) {
       this.equipmentService.getRequestorModels(this.projectId).subscribe(
         (models: Equipment[]) => {
@@ -73,7 +86,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            "Could not load requestor's saved models for this project"
+            'Could not load requestor\'s saved models for this project'
           );
         }
       );
@@ -81,6 +94,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe();
     if (this.modelInput$) {
       this.modelInput$.unsubscribe();
     }

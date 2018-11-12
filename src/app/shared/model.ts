@@ -340,6 +340,15 @@ export class Item {
     };
   }
 
+  generateYears() {
+    const startYear = new Date(this.details.dateIntroduced).getFullYear();
+    const endYear = this.details.dateDiscontinued.getFullYear();
+    this.details.years = [];
+    for (let i = startYear; i <= endYear; i++) {
+      this.details.years.push({ year: i });
+    }
+  }
+
   hasId(): boolean {
     return this.id && this.id !== '';
   }
@@ -597,7 +606,10 @@ export class Item {
         const diff = Math.abs(
           this.details.endDate.getTime() - this.details.startDate.getTime()
         );
-        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        if(diffDays === 0) {
+          diffDays = 1;
+        }
         this.details.numDays = diffDays;
       }
 
@@ -905,11 +917,13 @@ export class Equipment {
   misc = false;
   configurations: any;
   selectedConfiguration: any;
-  year = new Date().getFullYear();
+  year = '';
   vin: string;
   status: string;
   description: string;
-
+  dateIntroduced: Date;
+  dateDiscontinued: Date;
+  years: any[];
   baseRental: number;
   fhwa: number;
   method: number;
@@ -933,6 +947,15 @@ export class Equipment {
   revert: any;
   beingEdited = false;
 
+  generateYears() {
+    const startYear = this.dateIntroduced.getFullYear();
+    const endYear = this.dateDiscontinued.getFullYear();
+    this.years = [];
+    //  for (let i = startYear; i <= endYear; i++) {
+    // this.years.push({ year: i });
+    // }
+  }
+
   constructor(m: any) {
     this.id = m.id || '';
     this.details = m.details || { id: '', serial: '' };
@@ -942,10 +965,9 @@ export class Equipment {
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.year =
-      Number(m.year) ||
-      Number(new Date(m.dateIntroduced).getFullYear) ||
-      new Date().getFullYear();
+    this.year = '';
+    this.dateIntroduced = new Date(m.dateIntroduced) || new Date();
+    this.dateDiscontinued = new Date(m.dateDiscontinued) || new Date();
 
     if (m.details) {
       this.vin = m.details.vin || m.details.serial || 0;
@@ -987,6 +1009,7 @@ export class Equipment {
 
     //  console.log('this details: ' + JSON.stringify(m, null, 2));
     this.calculateHourlyRates();
+    this.generateYears();
     this.display = this.make + ' ' + this.model;
   }
 
