@@ -1,6 +1,6 @@
-<mat-card>
+<mat-card class="pb-2">
   <h3 mat-dialog-title>Submit Request</h3>
-  <div class="modal-body">
+  <mat-card-content class="modal-body">
     <h3>Please sign this request:</h3>
     <form [formGroup]="signatureFormGroup" class="column full-width">
       <h6>Signature:</h6>
@@ -14,8 +14,8 @@
         />
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions class="d-flex flex-row-reverse">
+  </mat-card-content>
+  <div mat-dialog-actions class="d-flex pt-1 flex-row-reverse">
     <button
       type="button"
       class="btn btn-success"
@@ -23,7 +23,7 @@
         !signatureFormGroup.valid ||
         signatureFormGroup.get('signature').value === ''
       "
-      (click)="confirmSubmit()"
+      (click)="confirm()"
     >
       Submit
     </button>
