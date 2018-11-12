@@ -73,11 +73,11 @@
     </section>
     <section class="form-group">
       <app-user-list
-        [users]="project.users"
+        [users]="project.requestors"
         [projectId]="project.id"
         [newProject]="true"
         [type]="'REQUESTOR'"
-        (changed)="refreshUsers($event)"
+        (changed)="refreshRequestors($event)"
       ></app-user-list>
     </section>
     <section class="form-group">
@@ -91,98 +91,99 @@
     </section>
     <section class="form-group">
       <h4 class="project-heading pb-1">Allowable Costs</h4>
-      <div class="cost-section mb-1">
-        <div class="row no-margin-left cost-title full-width">
-          <mat-checkbox
-            type="checkbox"
-            matRipple
-            id="equipmentActiveCheck"
-            (change)="toggleCheckbox('equipment', $event)"
-            formControlName="equipmentCostsCheckbox"
-          >
-          </mat-checkbox>
-          <h4 class="pl-1 no-top-margin">Equipment, Active</h4>
-        </div>
-
-        <div class="cost-content">
-          The Shiba Inu is the smallest of the six original and distinct spitz
-          breeds of dog from Japan. A small, agile dog that copes very well with
-          mountainous terrain, the Shiba Inu was originally bred for hunting.
-        </div>
-      </div>
-
-      <div class="bordered mb-1">
-        <!-- standby -->
-        <div class="padded">
-          <div class="checkbox">
-            <input
+      <!--
+        <div class="cost-section mb-1">
+          <div class="row no-margin-left cost-title full-width">
+            <mat-checkbox
               type="checkbox"
               matRipple
-              id="equipmentStandbyCheck"
+              id="equipmentActiveCheck"
               (change)="toggleCheckbox('equipment', $event)"
               formControlName="equipmentCostsCheckbox"
-            />
-            <label for="equipmentCheck">Equipment, Standby</label>
+            >
+            </mat-checkbox>
+            <h4 class="pl-1 no-top-margin">Equipment, Active</h4>
+          </div>
+
+          <div class="cost-content">
+            <label>Formula:</label>
+
           </div>
         </div>
-      </div>
-      <div class="bordered mb-1">
-        <!-- rental -->
-        <div class="padded">
-          <div class="checkbox">
-            <input
-              type="checkbox"
-              matRipple
-              id="equipmentStandbyCheck"
-              (change)="toggleCheckbox('equipment', $event)"
-              formControlName="equipmentCostsCheckbox"
-            />
-            <label for="equipmentCheck">Equipment, Rental</label>
+
+        <div class="bordered mb-1">
+
+          <div class="padded">
+            <div class="checkbox">
+              <input
+                type="checkbox"
+                matRipple
+                id="equipmentStandbyCheck"
+                (change)="toggleCheckbox('equipment', $event)"
+                formControlName="equipmentCostsCheckbox"
+              />
+              <label for="equipmentCheck">Equipment, Standby</label>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="bordered mb-1">
-        <!-- labor -->
-        <div class="padded">
-          <div class="checkbox">
-            <input
-              type="checkbox"
-              id="laborCheck"
-              (change)="toggleCheckbox('labor', $event)"
-              formControlName="laborCostsCheckbox"
-            />
-            <label for="laborCheck">Labor</label>
+        <div class="bordered mb-1">
+
+          <div class="padded">
+            <div class="checkbox">
+              <input
+                type="checkbox"
+                matRipple
+                id="equipmentStandbyCheck"
+                (change)="toggleCheckbox('equipment', $event)"
+                formControlName="equipmentCostsCheckbox"
+              />
+              <label for="equipmentCheck">Equipment, Rental</label>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="bordered mb-1">
-        <!-- Subcontractor -->
-        <div class="padded">
-          <div class="checkbox">
-            <input
-              type="checkbox"
-              id="subcheck"
-              (change)="toggleCheckbox('subcontractor', $event)"
-              formControlName="subcontractorCostsCheckbox"
-            />
-            <label for="subcheck">Subcontractor Costs</label>
+        <div class="bordered mb-1">
+
+          <div class="padded">
+            <div class="checkbox">
+              <input
+                type="checkbox"
+                id="laborCheck"
+                (change)="toggleCheckbox('labor', $event)"
+                formControlName="laborCostsCheckbox"
+              />
+              <label for="laborCheck">Labor</label>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="bordered pb-1">
-        <!-- other -->
-        <div class="padded">
-          <div class="checkbox">
-            <input
-              type="checkbox"
-              id="othercheck"
-              (change)="toggleCheckbox('other', $event)"
-              formControlName="otherCostsCheckbox"
-            />
-            <label for="othercheck">Other Costs</label>
+        <div class="bordered mb-1">
+
+          <div class="padded">
+            <div class="checkbox">
+              <input
+                type="checkbox"
+                id="subcheck"
+                (change)="toggleCheckbox('subcontractor', $event)"
+                formControlName="subcontractorCostsCheckbox"
+              />
+              <label for="subcheck">Subcontractor Costs</label>
+            </div>
           </div>
         </div>
-      </div>
+        <div class="bordered pb-1">
+
+          <div class="padded">
+            <div class="checkbox">
+              <input
+                type="checkbox"
+                id="othercheck"
+                (change)="toggleCheckbox('other', $event)"
+                formControlName="otherCostsCheckbox"
+              />
+              <label for="othercheck">Other Costs</label>
+            </div>
+          </div>
+        </div>
+      -->
       <div class="full-width column">
         <div class="checkbox">
           <input

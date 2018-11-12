@@ -245,6 +245,7 @@ export class ProjectFormComponent implements OnInit {
     this.projectsService.getProject(this.project.id).subscribe((data: any) => {
       this.project = data;
       this.project.users = data.users;
+      this.project.requestors = data.requestors;
       this.changeDetector.markForCheck();
     });
   }
@@ -308,6 +309,7 @@ export class ProjectFormComponent implements OnInit {
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name),
       users: new FormControl(this.project.users),
+      requestors: new FormControl(this.project.requestors),
       zipcode: new FormControl(this.project.zipcode),
       state: new FormControl(this.project.state),
       laborSUT: new FormControl(this.project.adjustments.labor.sut),

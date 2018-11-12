@@ -88,6 +88,7 @@ export class ProjectFormDialogComponent implements OnInit {
   ngOnInit() {
     this.project = new Project({ id: '1' });
     this.project.users = [];
+    this.project.requestors = [];
     this.createProjectFormGroup();
     this.accounts$ = this.projectsService.getAccounts();
     this.projectsService.getAccounts().subscribe((accounts: Account[]) => {
@@ -142,7 +143,11 @@ export class ProjectFormDialogComponent implements OnInit {
     this.cancel.emit();
   }
 
-  refreshUsers(event): void {
+  refreshRequestors(event) {
+    this.project.requestors = event.users;
+  }
+
+  refreshUsers(event) {
     this.project.users = event.users;
   }
 
@@ -186,6 +191,12 @@ export class ProjectFormDialogComponent implements OnInit {
       u.push({
         email: this.project.users[i].email,
         roles: this.project.users[i].roles
+      });
+    }
+    for (let i = 0; i < this.project.requestors.length; i++) {
+      u.push({
+        email: this.project.requestors[i].email,
+        roles: this.project.requestors[i].roles
       });
     }
     return u;

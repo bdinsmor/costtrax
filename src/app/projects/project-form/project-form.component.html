@@ -133,12 +133,30 @@
         <clr-tab *ngIf="isUserAdmin">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="users"></clr-icon>
-            Users <strong>({{ project.users.length }})</strong>
+            Requestors <strong>({{ project.requestors.length }})</strong>
+          </button>
+          <clr-tab-content *clrIfActive>
+            <div class="px-2 full-width">
+              <app-user-list
+                [users]="project.requestors"
+                [projectId]="project.id"
+                [type]="'REQUESTOR'"
+                [newProject]="newProject"
+                (changed)="refreshUsers()"
+              ></app-user-list>
+            </div>
+          </clr-tab-content>
+        </clr-tab>
+        <clr-tab *ngIf="isUserAdmin">
+          <button clrTabLink class="align-items-center">
+            <clr-icon shape="users"></clr-icon>
+            Approvers & Observers <strong>({{ project.users.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
             <div class="px-2 full-width">
               <app-user-list
                 [users]="project.users"
+                [type]="'USERS'"
                 [projectId]="project.id"
                 [newProject]="newProject"
                 (changed)="refreshUsers()"
@@ -199,9 +217,7 @@
                   </div>
                 </section>
                 <section class="form-block">
-                  <h4 class="project-heading mb-1">
-                    ALLOWED COST TYPES &amp; ADJUSTMENTS
-                  </h4>
+                  <h4 class="project-heading mb-1">ALLOWABLE COSTS</h4>
                   <div class="full-width column">
                     <div class="checkbox">
                       <input

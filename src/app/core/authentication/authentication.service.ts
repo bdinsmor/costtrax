@@ -315,7 +315,6 @@ export class AuthenticationService {
     this._credentials = credentials || null;
 
     if (credentials) {
-      console.log('creds to set: ' + JSON.stringify(credentials, null, 2));
       const storage = remember ? localStorage : sessionStorage;
       storage.setItem(credentialsKey, JSON.stringify(credentials));
       this.sendCreds(credentials);

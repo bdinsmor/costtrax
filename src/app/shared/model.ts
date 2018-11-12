@@ -593,6 +593,14 @@ export class Item {
       this.fromSaved = data.fromSaved || false;
       this.details.startDate = new Date(data.details.startDate) || new Date();
       this.details.endDate = new Date(data.details.endDate) || new Date();
+      if (this.details.startDate && this.details.endDate) {
+        const diff = Math.abs(
+          this.details.endDate.getTime() - this.details.startDate.getTime()
+        );
+        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        this.details.numDays = diffDays;
+      }
+
       this.setDisplayType();
       this.setAmounts();
 
@@ -644,6 +652,8 @@ export class Project {
   otherCostsEnabled = true;
   subcontractorCostsEnabled = true;
   users: User[];
+  requestors: User[];
+  requestorJSON: any[];
   userJSON: any[];
   adjustments: Adjustments;
   draftRequests: Request[];
@@ -706,10 +716,15 @@ export class Project {
 
   buildUsers() {
     this.users = [];
+    this.requestors = [];
     // console.log('userJSON: ' + JSON.stringify(this.userJSON, null, 2));
     for (let i = 0; i < this.userJSON.length; i++) {
       const u = new User(this.userJSON[i]);
-      this.users.push(u);
+      if (u.containsRole('RequestSubmit')) {
+        this.requestors.push(u);
+      } else {
+        this.users.push(u);
+      }
     }
   }
 

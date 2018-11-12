@@ -1063,7 +1063,7 @@
                     table-bordered table-striped comparison-table">
                   <thead>
                     <th>Terms</th>
-                    <th>30 Day Rental,<br />Time Conversion</th>
+                    <th>{{item.details.numDays}} Day<span *ngIf="item.details.numDays === 1">s</span> Rental,<br />Time Conversion</th>
                     <th>User Supplied,<br />Invoice Amount</th>
                     <th>Rental Rate Blue Book,<br />Ownership Cost</th>
                     <th>Retail Rental,<br />State Average</th>
