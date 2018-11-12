@@ -20,7 +20,7 @@ import { RequestsService } from './requests.service';
 export class RequestsComponent implements OnInit {
   private config: MatSnackBarConfig;
   duration = 3000;
-
+  oneUpComparator = new OneUpComparator();
   selectedItem: Request;
   selectedIndex = -1;
   onUpComparator = new OneUpComparator();
