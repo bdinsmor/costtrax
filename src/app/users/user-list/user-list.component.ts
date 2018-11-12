@@ -163,7 +163,9 @@ export class UserListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        this.openSnackBar('Requestor Added', 'ok', 'OK');
+        if (!this.newProject) {
+          this.openSnackBar('Requestor Added', 'ok', 'OK');
+        }
         this.users.push(result.user);
         this.changed.emit({ users: this.users });
       }
@@ -181,7 +183,10 @@ export class UserListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        this.openSnackBar('Invite Sent', 'ok', 'OK');
+        if (!this.newProject) {
+          this.openSnackBar('Invite Sent', 'ok', 'OK');
+        }
+
         this.users.push(result.user);
         this.changed.emit({ users: this.users });
       }
