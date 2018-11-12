@@ -1,10 +1,15 @@
-<div class="modal-body project-form">
-  <div [formGroup]="projectFormGroup">
+<mat-card #formParent id="formParent" class="px-2 pb-1 project-form">
+  <h2 mat-dialog-title>NEW PROJECT</h2>
+  <mat-card-content
+    *ngIf="isLoaded"
+    style="max-height:40vh;width:100%;overflow:auto"
+    [formGroup]="projectFormGroup"
+  >
     <section class="form-block">
       <div class="form-group">
         <label for="selects_1">Select Account: </label>
         <div class="select d-flex w-50">
-          <select id="selects_1" formControlName="selectedAccount">
+          <select id="selects_1" formControlName="selectedAccount" required>
             <option
               *ngFor="let choice of (accounts$ | async)"
               [value]="choice.id"
@@ -23,6 +28,7 @@
               class="w-50"
               formControlName="projectName"
               placeholder="project name"
+              required
             />
           </div>
         </div>
@@ -36,12 +42,18 @@
                 type="text"
                 name="zipcode"
                 formControlName="zipcode"
+                required
                 placeholder="project zip code"
               />
             </div>
             <label class="required no-bottom-margin pr-1">State: </label>
             <div class="w-50">
-              <ng-select class="w-50" formControlName="state">
+              <ng-select
+                class="w-50"
+                formControlName="state"
+                appendTo="body"
+                required
+              >
                 <ng-option *ngFor="let state of states" [value]="state.value">{{
                   state.label
                 }}</ng-option>
@@ -56,7 +68,7 @@
         </div>
       </div>
 
-      <div class="form-group pt-2">
+      <div class="form-group pt-2 pr-2">
         <label for="formFields_8">Instructions:</label>
 
         <div class="row no-margin-left font-italic small-text">
@@ -71,7 +83,7 @@
         ></textarea>
       </div>
     </section>
-    <section class="form-group">
+    <section class="form-group pr-1">
       <app-user-list
         [users]="project.requestors"
         [projectId]="project.id"
@@ -80,7 +92,7 @@
         (changed)="refreshRequestors($event)"
       ></app-user-list>
     </section>
-    <section class="form-group">
+    <section class="form-group pr-1">
       <app-user-list
         [users]="project.users"
         [projectId]="project.id"
@@ -184,7 +196,7 @@
           </div>
         </div>
       -->
-      <div class="full-width column">
+      <div class="full-width column pr-1">
         <div class="checkbox">
           <input
             type="checkbox"
@@ -371,13 +383,18 @@
         </mat-card>
       </div>
     </section>
+  </mat-card-content>
+  <div mat-dialog-actions class="d-flex flex-row-reverse">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="saveNew()"
+      [disabled]="!projectFormGroup.valid"
+    >
+      <clr-icon shape="check"></clr-icon>&nbsp;Save Project
+    </button>
+    <button type="button" class="btn btn-outline" (click)="cancelCreate()">
+      Cancel
+    </button>
   </div>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline" (click)="cancelCreate()">
-    Cancel
-  </button>
-  <button type="button" class="btn btn-primary" (click)="saveNew()">
-    <clr-icon shape="check"></clr-icon>&nbsp;Save Project
-  </button>
-</div>
+</mat-card>

@@ -607,7 +607,7 @@ export class Item {
           this.details.endDate.getTime() - this.details.startDate.getTime()
         );
         let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-        if(diffDays === 0) {
+        if (diffDays === 0) {
           diffDays = 1;
         }
         this.details.numDays = diffDays;
@@ -743,7 +743,7 @@ export class Project {
   constructor(project: any) {
     {
       this.id = project.id || '';
-      this.zipcode = project.zipcode || 90210;
+      this.zipcode = project.zipcode || 30332;
       this.state = project.state || 'GA';
       this.active = project.active || true;
       this.name = project.name || project.projectName || '';
@@ -951,9 +951,9 @@ export class Equipment {
     const startYear = this.dateIntroduced.getFullYear();
     const endYear = this.dateDiscontinued.getFullYear();
     this.years = [];
-    //  for (let i = startYear; i <= endYear; i++) {
-    // this.years.push({ year: i });
-    // }
+    for (let i = startYear; i <= endYear; i++) {
+      this.years.push({ year: i });
+    }
   }
 
   constructor(m: any) {
@@ -965,7 +965,7 @@ export class Equipment {
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.year = '';
+    this.year = m.year || '';
     this.dateIntroduced = new Date(m.dateIntroduced) || new Date();
     this.dateDiscontinued = new Date(m.dateDiscontinued) || new Date();
 

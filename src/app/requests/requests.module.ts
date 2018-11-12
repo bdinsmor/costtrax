@@ -11,6 +11,10 @@ import { EquipmentService } from '../equipment/equipment.service';
 import { LineItemsModule } from '../line-items/line-items.module';
 import { ProjectsService } from '../projects/projects.service';
 import { SharedModule } from '../shared';
+import { RequestApproveDialogComponent } from './dialogs/request-approve-dialog.component';
+import { RequestCloneDialogComponent } from './dialogs/request-clone-dialog.component';
+import { RequestDeleteDialogComponent } from './dialogs/request-delete-dialog.component';
+import { RequestSubmitDialogComponent } from './dialogs/request-submit-dialog.component';
 import { RequestDetailsComponent } from './request-details/request-details.component';
 import { RequestsComponent } from './requests.component';
 import { RequestsService } from './requests.service';
@@ -27,7 +31,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
 };
 
 @NgModule({
-  declarations: [RequestsComponent, RequestDetailsComponent],
+  declarations: [
+    RequestsComponent,
+    RequestCloneDialogComponent,
+    RequestSubmitDialogComponent,
+    RequestApproveDialogComponent,
+    RequestDeleteDialogComponent,
+    RequestDetailsComponent
+  ],
   imports: [
     BrowserAnimationsModule,
     CoreModule,
@@ -37,7 +48,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemsModule,
     NgxCurrencyModule
   ],
-  exports: [RequestDetailsComponent, RequestsComponent],
+  exports: [
+    RequestDetailsComponent,
+    RequestCloneDialogComponent,
+    RequestSubmitDialogComponent,
+    RequestApproveDialogComponent,
+    RequestDeleteDialogComponent,
+    RequestsComponent
+  ],
   providers: [
     BreadcrumbService,
     RequestsService,
@@ -45,6 +63,13 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     EquipmentService,
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
-  entryComponents: [RequestsComponent, RequestDetailsComponent]
+  entryComponents: [
+    RequestsComponent,
+    RequestCloneDialogComponent,
+    RequestSubmitDialogComponent,
+    RequestApproveDialogComponent,
+    RequestDeleteDialogComponent,
+    RequestDetailsComponent
+  ]
 })
 export class RequestsModule {}

@@ -1,0 +1,28 @@
+<mat-card>
+  <h2 mat-dialog-title>NEW REQUEST</h2>
+  <div id="parent" class="modal-body vh-35 align-items-center">
+    <div [formGroup]="projectForm" class="px-1 row pb-1 align-items-center">
+      <h3 class="pr-1" for="selects_1">Select Project:</h3>
+      <div>
+        <select clrSelect formControlName="selectedProjectControl" required>
+          <option *ngFor="let choice of projects" [value]="choice.id">{{
+            choice.name
+          }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions class="d-flex flex-row-reverse">
+    <button
+      class="btn btn-primary"
+      type="button"
+      [disabled]="!projectForm.valid"
+      (click)="confirm()"
+    >
+      Ok
+    </button>
+    <button class="btn btn-warning-outline" type="button" (click)="cancel()">
+      Cancel
+    </button>
+  </div>
+</mat-card>

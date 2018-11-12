@@ -13,10 +13,14 @@ import { SharedModule } from '../shared';
 import { EquipmentModule } from './../equipment/equipment.module';
 import { EquipmentService } from './../equipment/equipment.service';
 import { LaborService } from './../labor/labor.service';
+import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
+import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
+import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
+import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
+import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 import { LineItemsComponent } from './line-items.component';
 
 // import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
-
 /** config angular i18n **/
 // registerLocaleData(en);
 
@@ -32,7 +36,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
 };
 
 @NgModule({
-  declarations: [LineItemsComponent],
+  declarations: [
+    LineItemsComponent,
+    LineItemDeleteDialogComponent,
+    AddSavedDialogComponent,
+    AddMiscDialogComponent,
+    ConfigurationDialogComponent,
+    LineItemApproveDialogComponent
+  ],
   imports: [
     BrowserAnimationsModule,
     CdkTableModule,
@@ -45,7 +56,14 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     CommentsModule
     // NgZorroAntdModule
   ],
-  exports: [LineItemsComponent],
+  exports: [
+    LineItemsComponent,
+    AddSavedDialogComponent,
+    LineItemDeleteDialogComponent,
+    AddMiscDialogComponent,
+    ConfigurationDialogComponent,
+    LineItemApproveDialogComponent
+  ],
   providers: [
     LaborService,
     EquipmentService,
@@ -53,6 +71,13 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     // { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
-  entryComponents: [LineItemsComponent]
+  entryComponents: [
+    LineItemsComponent,
+    LineItemDeleteDialogComponent,
+    AddSavedDialogComponent,
+    AddMiscDialogComponent,
+    ConfigurationDialogComponent,
+    LineItemApproveDialogComponent
+  ]
 })
 export class LineItemsModule {}

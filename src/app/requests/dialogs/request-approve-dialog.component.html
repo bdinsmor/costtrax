@@ -1,0 +1,14 @@
+<mat-card>
+  <h3 mat-dialog-title>Confirm Approval</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to approve all pending items?</p>
+  </div>
+  <div mat-dialog-actions class="d-flex flex-row-reverse">
+    <button type="button" class="btn btn-success" (click)="confirm()">
+      Approve
+    </button>
+    <button type="button" class="btn btn-outline-danger" (click)="cancel()">
+      Cancel
+    </button>
+  </div>
+</mat-card>

@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { Employee } from '../shared/model';
 import { appAnimations } from './../core/animations';
+import { LaborDeleteDialogComponent } from './labor-delete-dialog.component';
 import { LaborService } from './labor.service';
 
 @Component({
@@ -14,12 +15,9 @@ import { LaborService } from './labor.service';
   animations: appAnimations
 })
 export class LaborComponent implements OnInit {
-  @Input()
-  items: Employee[];
-  @Input()
-  projectId: string;
-  @Output()
-  changes = new EventEmitter<any>();
+  @Input() items: Employee[];
+  @Input() projectId: string;
+  @Output() changes = new EventEmitter<any>();
   submitRequests: boolean;
   selectedItem: Employee;
   selectedIndex = -1;
@@ -29,6 +27,7 @@ export class LaborComponent implements OnInit {
   duration = 3000;
 
   constructor(
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private changeDetector: ChangeDetectorRef,
     private laborService: LaborService,
@@ -112,46 +111,39 @@ export class LaborComponent implements OnInit {
     item.status = 'draft';
   }
 
-  confirmRemoveEmployee() {
-    if (!this.selectedItem) {
-      this._confirmDeleteModal = false;
-      return;
-    }
+  remove(index: number, item: Employee) {
+    this.selectedIndex = index;
+    this.selectedItem = item;
     if (
       (!this.selectedItem.id || this.selectedItem.id === '') &&
       this.selectedItem.isDraft()
     ) {
       this.items.splice(this.selectedIndex, 1);
-      this._confirmDeleteModal = false;
       return;
     }
     if (this.selectedItem.id) {
-      this.laborService
-        .deleteRequestorEmployee(this.projectId, this.selectedItem.id)
-        .subscribe(
-          (response: any) => {
-            this._confirmDeleteModal = false;
-            this.items.splice(this.selectedIndex, 1);
-            this.changeDetector.detectChanges();
-            this.openSnackBar('Employee Removed!', 'ok', 'OK');
-            this.changes.emit();
-          },
-          (error: any) => {
-            this.openSnackBar('Employee NOT removed', 'error', 'OK');
-          }
-        );
-      return;
+      const dialogRef = this.dialog.open(LaborDeleteDialogComponent, {});
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && result.success) {
+          this.laborService
+            .deleteRequestorEmployee(this.projectId, this.selectedItem.id)
+            .subscribe(
+              (response: any) => {
+                this._confirmDeleteModal = false;
+                this.items.splice(this.selectedIndex, 1);
+                this.changeDetector.detectChanges();
+                this.openSnackBar('Employee Removed!', 'ok', 'OK');
+                this.changes.emit();
+              },
+              (error: any) => {
+                this.openSnackBar('Employee NOT removed', 'error', 'OK');
+              }
+            );
+          this.changeDetector.detectChanges();
+        }
+      });
     }
-  }
-
-  cancelRemoveEmployee() {
-    this._confirmDeleteModal = false;
-  }
-
-  remove(index: number, item: Employee) {
-    this.selectedIndex = index;
-    this.selectedItem = item;
-    this._confirmDeleteModal = true;
   }
 
   copy(index: number, item: Employee) {

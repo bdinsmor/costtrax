@@ -3,16 +3,12 @@
     *ngIf="!newProject"
     class="full-width d-flex flex-row align-items-center"
   >
-    <h5 class="no-top-margin pr-1">USERS</h5>
-    <div class="spacer"></div>
-    <button
-      type="button"
-      (click)="inviteUser()"
-      class="btn btn-primary"
-      color="primary"
-    >
-      Invite User
-    </button>
+    <h5 *ngIf="newProject && type === 'REQUESTOR'" class="no-top-margin pr-1">
+      REQUESTORS
+    </h5>
+    <h5 *ngIf="newProject && type !== 'REQUESTOR'" class="no-top-margin pr-1">
+      APPROVERS & OBSERVERS
+    </h5>
   </section>
   <h5 *ngIf="newProject && type === 'REQUESTOR'" class="pt-2 pr-1">
     Who will be submitting requests for this project?
@@ -20,9 +16,22 @@
   <h5 *ngIf="newProject && type !== 'REQUESTOR'" class="pt-2 pr-1">
     Do you want to add any additional Approvers or Observers to this project?
   </h5>
-  <button type="button" class="btn btn-sm btn-primary" (click)="inviteUser()">
-    Add <span *ngIf="type === 'REQUESTOR'">Requestor</span
-    ><span *ngIf="type !== 'REQUESTOR'">User</span>
+  <button
+    type="button"
+    class="btn btn-sm btn-primary"
+    *ngIf="type === 'REQUESTOR'"
+    (click)="addRequestor()"
+  >
+    Add Requestor
+  </button>
+  <button
+    type="button"
+    class="btn btn-sm btn-primary"
+    *ngIf="type !== 'REQUESTOR'"
+    (click)="inviteUser()"
+  >
+    <span *ngIf="newProject">Add</span
+    ><span *ngIf="!newProject">Invite</span>&nbsp;User
   </button>
   <section
     *ngIf="newProject"
@@ -176,115 +185,3 @@
     </clr-datagrid>
   </div>
 </div>
-<clr-modal
-  [clrModalSize]="'md'"
-  class="fadeDown in"
-  [(clrModalOpen)]="_inviteUserModal"
-  [clrModalClosable]="false"
->
-  <h3 class="modal-title">
-    <span *ngIf="!newProject">Invite</span> <span *ngIf="newProject">Add</span>
-    <span *ngIf="type === 'REQUESTOR'">Requestor</span
-    ><span *ngIf="type !== 'REQUESTOR'">User</span>
-  </h3>
-  <div class="modal-body vh-40">
-    <form class="col-12" [formGroup]="emailForm">
-      <mat-form-field class="pass">
-        <input
-          class="full-width"
-          type="text"
-          matInput
-          formControlName="email"
-          autocomplete="email"
-          [placeholder]="'Email to invite'"
-        />
-        <mat-error
-          *ngIf="
-            !emailForm.controls.email.valid || emailForm.get('email').untouched
-          "
-        >
-          <span translate>Valid Email is required</span>
-        </mat-error>
-      </mat-form-field>
-      <div *ngIf="type !== 'REQUESTOR'">
-        <h6>Project Owner Roles</h6>
-        <div class="d-flex flex-column column col-12 pb-1 pt-1">
-          <div class="row">
-            <div class="col-4 pr-1">Project Admin</div>
-            <mat-slide-toggle
-              [(ngModel)]="newUser.projectAdmin"
-              [disabled]="newUser.isRequestor()"
-              [ngModelOptions]="{ standalone: true }"
-              (change)="roleChanged(newUser, 'ProjectAdmin')"
-            ></mat-slide-toggle>
-          </div>
-          <div class="row pt-1">
-            <div class="col-4 pr-1">Project Observer</div>
-            <mat-slide-toggle
-              [(ngModel)]="newUser.projectObserve"
-              [disabled]="newUser.isRequestor()"
-              [ngModelOptions]="{ standalone: true }"
-              (change)="roleChanged(newUser, 'ProjectObserve')"
-            ></mat-slide-toggle>
-          </div>
-          <div class="row pt-1">
-            <div class="col-4 pr-1">Manage Request</div>
-            <mat-slide-toggle
-              [(ngModel)]="newUser.requestManage"
-              [disabled]="newUser.isRequestor()"
-              [ngModelOptions]="{ standalone: true }"
-              (change)="roleChanged(newUser, 'RequestManage')"
-            ></mat-slide-toggle>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="cancelInvite()">
-      Cancel
-    </button>
-    <button
-      *ngIf="!newProject"
-      class="btn btn-primary"
-      (click)="sendInvite()"
-      [disabled]="emailForm.invalid"
-    >
-      <span>Send Invite</span>
-    </button>
-    <button
-      *ngIf="newProject"
-      class="btn btn-primary"
-      (click)="addUser()"
-      [disabled]="emailForm.invalid"
-    >
-      <span
-        >Add <span *ngIf="type === 'REQUESTOR'">Requestor</span
-        ><span *ngIf="type !== 'REQUESTOR'">User</span></span
-      >
-    </button>
-  </div>
-</clr-modal>
-
-<clr-modal
-  class="fadeDown in"
-  [(clrModalOpen)]="_confirmDeleteModal"
-  [clrModalClosable]="false"
->
-  <h3 class="modal-title">Confirm Delete User</h3>
-  <div class="modal-body">
-    <p>Are you sure you want to remove this user?</p>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-danger"
-      (click)="cancelDelete()"
-    >
-      Cancel
-    </button>
-    <button type="button" class="btn btn-danger" (click)="confirmDelete()">
-      Delete
-    </button>
-  </div>
-</clr-modal>

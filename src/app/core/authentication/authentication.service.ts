@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -33,7 +33,7 @@ const credentialsKey = 'credentials';
 @Injectable()
 export class AuthenticationService {
   private _credentials: Credentials | null;
-  private subject = new Subject<any>();
+  private subject = new BehaviorSubject<any>({});
 
   constructor(private http: HttpClient) {
     const savedCredentials =
@@ -41,6 +41,7 @@ export class AuthenticationService {
       localStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
+      this.sendCreds(this._credentials);
     }
   }
 
@@ -121,7 +122,7 @@ export class AuthenticationService {
    */
   logout(): Observable<boolean> {
     // Customize credentials invalidation here
-    this.setCredentials();
+    this.setCredentials(null);
 
     return of(true);
   }
@@ -135,9 +136,7 @@ export class AuthenticationService {
     }
     const loggedIn =
       !!this.credentials && this.isTokenExpired(this.credentials.token, 0);
-    if (loggedIn) {
-      this.sendCreds(this.credentials);
-    }
+    this.sendCreds(this.credentials);
     return loggedIn;
   }
 
@@ -299,10 +298,11 @@ export class AuthenticationService {
   }
 
   clearCreds() {
-    this.subject.next();
+    this.subject.next({});
   }
 
   getCreds(): Observable<any> {
+    this.isAuthenticated();
     return this.subject.asObservable();
   }
 

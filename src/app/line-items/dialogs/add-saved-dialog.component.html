@@ -1,0 +1,91 @@
+<mat-card class="pb-2">
+  <div *ngIf="type !== 'labor'">
+    <h3 mat-dialog-title>Add Saved Models</h3>
+    <div class="modal-body">
+      <clr-datagrid [(clrDgSelected)]="selected">
+        <clr-dg-column [clrDgField]="'id'">ID</clr-dg-column>
+        <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'year'">Year</clr-dg-column>
+        <clr-dg-column [clrDgField]="'sizeClassName'">Size Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'serial'">VIN</clr-dg-column>
+        <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
+        <clr-dg-row
+          *clrDgItems="
+            let item of (models | async);
+            let i = index;
+            trackBy: trackByFn
+          "
+          [clrDgItem]="item"
+        >
+          <clr-dg-cell>{{ item.details.id }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.make }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.model }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.year }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.sizeClassName }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.details.vin }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.description }}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer> </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+    <div mat-dialog-actions class="d-flex flex-row-reverse">
+      <button type="button" class="btn btn-primary" (click)="confirm()">
+        Add Selected
+      </button>
+      <button type="button" class="btn btn-outline-danger" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
+  <div *ngIf="type === 'labor'">
+    <h3 mat-dialog-title>Add Saved Employees</h3>
+    <div class="modal-body">
+      <clr-datagrid class="full-width" [(clrDgSelected)]="selected">
+        <clr-dg-column [clrDgField]="'lastName'"
+          >Last Name
+          <clr-dg-string-filter
+            [clrDgStringFilter]="lastNameFilter"
+          ></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgField]="'firstName'"
+          >First Name
+          <clr-dg-string-filter
+            [clrDgStringFilter]="firstNameFilter"
+          ></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgField]="'trade'"
+          >Trade/Class
+          <clr-dg-string-filter
+            [clrDgStringFilter]="tradeFilter"
+          ></clr-dg-string-filter>
+        </clr-dg-column>
+        <clr-dg-column [clrDgField]="'rate'">Rate/Hr</clr-dg-column>
+        <clr-dg-column [clrDgField]="'benefits'">Fringe Benefits</clr-dg-column>
+        <clr-dg-row
+          *clrDgItems="
+            let item of (employees | async);
+            let i = index;
+            trackBy: trackByFn
+          "
+          [clrDgItem]="item"
+          [(clrDgSelected)]="item.selected"
+        >
+          <clr-dg-cell>{{ item.lastName }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.firstName }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.trade }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.rate | currency }}</clr-dg-cell>
+          <clr-dg-cell>{{ item.benefits | currency }}</clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer> </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+    <div mat-dialog-actions class="d-flex flex-row-reverse">
+      <button type="button" class="btn btn-primary" (click)="confirm()">
+        Add Selected</button
+      ><button type="button" class="btn btn-outline-danger" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+  </div>
+</mat-card>

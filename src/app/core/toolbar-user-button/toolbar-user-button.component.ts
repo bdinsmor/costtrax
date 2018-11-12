@@ -27,7 +27,6 @@ export class ToolbarUserButtonComponent
   isOpen: boolean;
   userName: string;
   subscription: Subscription;
-  _syncAccountModal = false;
   loginForm: FormGroup;
   isLoading = false;
   accountSynced = false;
@@ -38,11 +37,18 @@ export class ToolbarUserButtonComponent
     private router: Router,
     private authenticationService: AuthenticationService,
     private cd: ChangeDetectorRef
-  ) {
+  ) {}
+
+  ngOnDestroy() {
+    // unsubscribe to ensure no memory leaks
+    this.subscription.unsubscribe();
+  }
+
+  ngOnInit() {
     this.subscription = this.authenticationService
       .getCreds()
       .subscribe(message => {
-        if (message) {
+        if (message && message.userName) {
           this.userName = message.userName;
           this.accountSynced =
             message.advantageId && message.advantageId !== '';
@@ -53,13 +59,6 @@ export class ToolbarUserButtonComponent
         this.cd.detectChanges();
       });
   }
-
-  ngOnDestroy() {
-    // unsubscribe to ensure no memory leaks
-    this.subscription.unsubscribe();
-  }
-
-  ngOnInit() {}
 
   logout() {
     this.toggleDropdown();

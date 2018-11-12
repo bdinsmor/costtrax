@@ -1,10 +1,12 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
 import { ProjectsService } from '../../projects/projects.service';
 import { User } from '../../shared/model';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { UserDialogComponent } from './user-dialog.component';
 
 @Component({
   selector: 'app-user-list',
@@ -34,8 +36,6 @@ export class UserListComponent implements OnInit {
 
   @Output() changed = new EventEmitter<any>();
 
-  _inviteUserModal = false;
-  _confirmDeleteModal = false;
   emailForm: FormGroup;
   emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
   projectAdmin = false;
@@ -52,7 +52,8 @@ export class UserListComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private projectsService: ProjectsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -94,34 +95,33 @@ export class UserListComponent implements OnInit {
     }
     this.selectedItem = item;
     this.selectedIndex = index;
-    this._confirmDeleteModal = true;
+    const dialogRef = this.dialog.open(UserDialogComponent, {
+      data: {
+        user: item
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.projectsService
+          .deleteUser(this.projectId, this.selectedItem.id)
+          .subscribe(
+            (response: any) => {
+              this.openSnackBar('User Removed', 'ok', 'OK');
+              this.changed.emit();
+              this.changeDetector.detectChanges();
+              this.selectedIndex = -1;
+              this.selectedItem = null;
+              this.buildUser();
+              this.buildForm();
+            },
+            (error: any) => {
+              this.openSnackBar('User NOT Removed!', 'ok', 'OK');
+            }
+          );
+        this.changeDetector.detectChanges();
+      }
+    });
     // call delete and splice list
-  }
-
-  cancelDelete() {
-    this.selectedItem = null;
-    this._confirmDeleteModal = false;
-  }
-
-  confirmDelete() {
-    this._confirmDeleteModal = false;
-    this.projectsService
-      .deleteUser(this.projectId, this.selectedItem.id)
-      .subscribe(
-        (response: any) => {
-          this.openSnackBar('User Removed', 'ok', 'OK');
-          this.changed.emit();
-          this.changeDetector.detectChanges();
-          this.selectedIndex = -1;
-          this.selectedItem = null;
-          this.buildUser();
-          this.buildForm();
-        },
-        (error: any) => {
-          this.openSnackBar('User NOT Removed!', 'ok', 'OK');
-        }
-      );
-    this.changeDetector.detectChanges();
   }
 
   editUser(user) {
@@ -153,47 +153,44 @@ export class UserListComponent implements OnInit {
   }
 
   addRequestor() {
-    this._inviteUserModal = true;
+    const dialogRef = this.dialog.open(UserFormComponent, {
+      width: '50vw',
+      data: {
+        type: 'REQUESTOR',
+        newProject: this.newProject,
+        projectId: this.projectId
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (!this.newProject) {
+          this.openSnackBar('Requestor Added', 'ok', 'OK');
+        }
+        this.users.push(result.user);
+        this.changed.emit({ users: this.users });
+      }
+    });
   }
 
   inviteUser() {
-    this._inviteUserModal = true;
-  }
-
-  cancelInvite() {
-    this._inviteUserModal = false;
-  }
-
-  addUser() {
-    this.newUser.email = this.emailForm.value.email;
-    if (this.type === 'REQUESTOR') {
-      this.newUser.addRole('RequestSubmit');
-    }
-    this.users.push(this.newUser);
-    this.changed.emit({ users: this.users });
-    this.buildForm();
-    this.buildUser();
-    this._inviteUserModal = false;
-  }
-
-  sendInvite() {
-    const invite = {
-      email: this.emailForm.value.email,
-      roles: this.newUser.roles
-    };
-
-    this.projectsService.inviteUser(this.projectId, invite).subscribe(
-      (response: any) => {
-        this._inviteUserModal = false;
-        this.buildUser();
-        this.buildForm();
-        this.openSnackBar('User Invite Sent', 'ok', 'OK');
-        this.changed.emit();
-      },
-      (error: any) => {
-        this.openSnackBar('Invite was NOT sent', 'error', 'OK');
+    const dialogRef = this.dialog.open(UserFormComponent, {
+      width: '50vw',
+      data: {
+        type: 'USER',
+        newProject: this.newProject,
+        projectId: this.projectId
       }
-    );
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (!this.newProject) {
+          this.openSnackBar('Invite Sent', 'ok', 'OK');
+        }
+
+        this.users.push(result.user);
+        this.changed.emit({ users: this.users });
+      }
+    });
   }
 
   openSnackBar(message: string, type: string, action: string) {

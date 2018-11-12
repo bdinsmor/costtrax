@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -9,6 +9,8 @@ import { appAnimations } from '../core/animations';
 import { BreadcrumbService } from '../core/breadcrumbs/breadcrumbs.service';
 import { RequestsService } from '../requests/requests.service';
 import { Account, Project } from '../shared/model';
+import { ProjectFormDialogComponent } from './project-form/project-form-dialog.component';
+import { ProjectRequestDialogComponent } from './project-request-dialog.component';
 import { ProjectsService } from './projects.service';
 
 @Component({
@@ -29,10 +31,10 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   projectForm: FormGroup;
   requestableProjects: Project[];
 
-  _projectModalOpen = false;
   _requestModel = false;
 
   constructor(
+    public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     public router: Router,
@@ -100,50 +102,40 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   projectSaved(event) {
-    this._projectModalOpen = false;
     this.openSnackBar(event.project.name + ' saved!', 'ok', 'OK');
     this.refreshProjects();
   }
 
   createProject() {
-    const selectedProjectId: string = this.projectForm.value
-      .selectedProjectControl;
-    if (selectedProjectId && selectedProjectId) {
-      this.requestsService
-        .grabRequestId(selectedProjectId)
-        .subscribe((data: any) => {
-          if (data && data.id && data.id !== '') {
-            this.router.navigate(['./requests', data.id]);
-          }
-        });
-    }
-    this._projectModalOpen = true;
-  }
+    const dialogRef = this.dialog.open(ProjectFormDialogComponent, {});
 
-  onProjectCancel() {
-    this._projectModalOpen = false;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.openSnackBar(result.project.name + ' saved!', 'ok', 'OK');
+        this.refreshProjects();
+      }
+    });
   }
 
   createRequest() {
-    this._requestModel = true;
-  }
+    const dialogRef = this.dialog.open(ProjectRequestDialogComponent, {
+      data: {
+        projects: this.requestableProjects
+      }
+    });
 
-  cancelRequest() {
-    this._requestModel = false;
-    this.createProjectForm();
-  }
-
-  confirmCreateRequest() {
-    const selectedProjectId: string = this.projectForm.value
-      .selectedProjectControl;
-    if (selectedProjectId && selectedProjectId) {
-      this.requestsService
-        .grabRequestId(selectedProjectId)
-        .subscribe((data: any) => {
-          if (data && data.id && data.id !== '') {
-            this.router.navigate(['./requests', data.id]);
-          }
-        });
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.projectId) {
+          this.requestsService
+            .grabRequestId(result.projectId)
+            .subscribe((data: any) => {
+              if (data && data.id && data.id !== '') {
+                this.router.navigate(['./requests', data.id]);
+              }
+            });
+        }
+      }
+    });
   }
 }

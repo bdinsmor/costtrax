@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { Account, Item, Project, User } from '../../shared/model';
 import { ProjectsService } from '../projects.service';
 import { RequestsService } from './../../requests/requests.service';
+import { ProjectCompleteDialogComponent } from './../project-complete-dialog.component';
 
 @Component({
   selector: 'app-project-form',
@@ -85,8 +86,6 @@ export class ProjectFormComponent implements OnInit {
   accounts$: Observable<Account[]>;
   canSubmitRequests = false;
   canManageRequests = false;
-  _requestModalOpen = false;
-  _confirmArchiveModal = false;
   requestId = null;
   newProject = false;
   inOverflow = true;
@@ -95,6 +94,7 @@ export class ProjectFormComponent implements OnInit {
   save = new EventEmitter();
 
   constructor(
+    public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
@@ -211,7 +211,6 @@ export class ProjectFormComponent implements OnInit {
     this.projectsService.updateProject(projectData).subscribe(
       (response: any) => {
         this.openSnackBar('Project Saved', 'ok', 'OK');
-        this._requestModalOpen = false;
       },
       (error: any) => {
         this.openSnackBar('Error Saving Project', 'error', 'OK');
@@ -250,42 +249,26 @@ export class ProjectFormComponent implements OnInit {
     });
   }
 
-  onRequestSubmit(event) {
-    if (event) {
-      this._requestModalOpen = false;
-    }
-  }
-
   onGetRequestId(event) {
     this.requestId = event.requestId;
   }
 
-  onCancel() {
-    if (this.requestId !== '') {
-      this.requestsService.deleteRequest(this.requestId);
-    }
-    this._requestModalOpen = false;
-  }
-
   completeProject() {
-    this._confirmArchiveModal = true;
-  }
+    const dialogRef = this.dialog.open(ProjectCompleteDialogComponent, {});
 
-  cancelCompleteProject() {
-    this._confirmArchiveModal = false;
-  }
-
-  confirmCompleteProject() {
-    this.projectsService.completeProject(this.project.id).subscribe(
-      (response: any) => {
-        this._confirmArchiveModal = false;
-        this.openSnackBar('Project marked COMPLETE!', 'ok', 'OK');
-        this.router.navigate(['../projects']);
-      },
-      (error: any) => {
-        this.openSnackBar('Error Completing Project', 'error', 'OK');
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.projectsService.completeProject(this.project.id).subscribe(
+          (response: any) => {
+            this.openSnackBar('Project marked COMPLETE!', 'ok', 'OK');
+            this.router.navigate(['../projects']);
+          },
+          (error: any) => {
+            this.openSnackBar('Error Completing Project', 'error', 'OK');
+          }
+        );
       }
-    );
+    });
   }
 
   createRequest() {

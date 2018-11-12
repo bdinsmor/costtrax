@@ -88,14 +88,24 @@
         <div *ngIf="!item.isDraft()" style="width:150px">{{ item.model }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div class="padding-label-top" *ngIf="item.isDraft()">
-          <input
-            class="full-width"
-            type="text"
-            (change)="modelChanged(item)"
+        <div *ngIf="item.isDraft()">
+          <ng-select
+            [disabled]="!item.modelId"
+            [items]="item.years"
+            dropdownPosition="top"
+            appendTo="body"
+            (change)="yearSelectionChanged(item, i)"
+            bindLabel="year"
+            bindValue="year"
+            placeholder="Year"
+            clearAllText="Clear"
+            [closeOnSelect]="true"
+            [clearable]="true"
+            [hideSelected]="true"
             [(ngModel)]="item.year"
             [ngModelOptions]="{ standalone: true }"
-          />
+          >
+          </ng-select>
         </div>
         <div *ngIf="!item.isDraft()">{{ item.year }}</div>
       </clr-dg-cell>
@@ -383,229 +393,3 @@
     <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
   </clr-datagrid>
 </div>
-
-<clr-modal
-  [clrModalSize]="'xl'"
-  class="fadeDown in"
-  [(clrModalOpen)]="_miscModelModal"
-  [clrModalClosable]="false"
->
-  <h3 class="modal-title">Add Miscellaneous Model</h3>
-  <div id="parent" class="modal-body vh-55">
-    <div
-      class="px-2 pb-2 full-width justify-content-center
-      align-items-center"
-    >
-      <div>
-        <h4 class="pb-1">Category:</h4>
-        <ng-select
-          [items]="categoryResults$ | async"
-          (change)="categoryChanged()"
-          bindLabel="categoryName"
-          bindValue="categoryId"
-          placeholder="Choose Category"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [(ngModel)]="miscCategoryId"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4 class="pb-1">Subtype:</h4>
-        <ng-select
-          [items]="subtypeResults$ | async"
-          [disabled]="!miscCategoryId"
-          (change)="subtypeChanged()"
-          bindLabel="subtypeName"
-          bindValue="subtypeId"
-          placeholder="Choose
-          subtype"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [(ngModel)]="miscSubtypeId"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4 class="pb-1">Size Class:</h4>
-        <ng-select
-          [items]="sizeResults$ | async"
-          [disabled]="!miscSubtypeId"
-          (change)="sizeChanged()"
-          bindLabel="sizeClassName"
-          bindValue="sizeClassId"
-          placeholder="Choose Size Class"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [(ngModel)]="miscSizeClassId"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4 class="pb-1">Model:</h4>
-        <ng-select
-          [items]="modelResults$ | async"
-          [disabled]="!miscSizeClassId"
-          bindLabel="model"
-          bindValue="modelId"
-          placeholder="Choose Model"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [loading]="modelLoading"
-          [typeahead]="modelInput$"
-          [(ngModel)]="miscModelId"
-          dropdownPosition="top"
-          (change)="modelSelected()"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4>Configuration:</h4>
-        <h6 class="disabled-text" *ngIf="!configurations">
-          No configurations found.
-        </h6>
-        <h6 *ngIf="configurations && configurations.values.length === 0">
-          No configurations found for this model.
-        </h6>
-        <clr-datagrid
-          *ngIf="configurations && configurations.values.length > 0"
-          class="datagrid-compact"
-          #projectAssetConfigGrid
-        >
-          <clr-dg-placeholder>No data found</clr-dg-placeholder>
-          <clr-dg-column
-            *ngFor="let column of configurations.columns"
-            [clrDgField]="column.name"
-            [clrDgSorted]="column.name === 'name'"
-          >
-            <div>{{ column.name }}</div>
-          </clr-dg-column>
-
-          <clr-dg-row
-            *clrDgItems="let configuration of configurations.values"
-            [clrDgItem]="configuration"
-          >
-            <button
-              type="button"
-              mat-icon-button
-              color="accent"
-              (click)="confirmAddMiscModel(configuration)"
-            >
-              <mat-icon color="accent">radio_button_unchecked</mat-icon>
-            </button>
-            <clr-dg-cell *ngFor="let column of configurations.columns">
-              <div>{{ configuration[column.name] }}</div>
-            </clr-dg-cell>
-          </clr-dg-row>
-        </clr-datagrid>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-danger"
-      (click)="cancelAddMiscModel()"
-    >
-      Cancel
-    </button>
-  </div>
-</clr-modal>
-
-<clr-modal
-  [clrModalSize]="'xl'"
-  class="fadeDown in"
-  [(clrModalOpen)]="_configurationModal"
-  [clrModalClosable]="false"
->
-  <h3 class="modal-title">Select Equipment Configuration</h3>
-  <div
-    id="parent"
-    class="modal-body vh-55 full-width justify-content-center
-  align-items-center"
-  >
-    <div
-      class="pb-1 justify-content-center
-          align-items-center"
-    >
-      <clr-datagrid
-        *ngIf="selectedItem && selectedItem.details.configurations"
-        class="datagrid-compact"
-        #configurationPopupGrid
-      >
-        <clr-dg-placeholder>No data found</clr-dg-placeholder>
-        <clr-dg-column></clr-dg-column>
-        <clr-dg-column
-          *ngFor="let column of selectedItem.details.configurations.columns"
-          [clrDgField]="column.name"
-          [clrDgSorted]="column.name === 'name'"
-        >
-          <div>{{ column.name }}</div>
-        </clr-dg-column>
-
-        <clr-dg-row
-          *clrDgItems="
-            let configuration of selectedItem.details.configurations.values
-          "
-          [clrDgItem]="configuration"
-        >
-          <clr-dg-cell>
-            <button
-              type="button"
-              mat-icon-button
-              color="accent"
-              (click)="confirmSelectConfiguration(configuration)"
-            >
-              <mat-icon color="accent">radio_button_unchecked</mat-icon>
-            </button>
-          </clr-dg-cell>
-          <clr-dg-cell
-            *ngFor="let column of selectedItem.details.configurations.columns"
-          >
-            <div>{{ configuration[column.name] }}</div>
-          </clr-dg-cell>
-        </clr-dg-row>
-      </clr-datagrid>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-danger"
-      (click)="cancelSelectConfiguration()"
-    >
-      Cancel
-    </button>
-  </div>
-</clr-modal>
-
-<clr-modal
-  class="fadeDown in"
-  [(clrModalOpen)]="_confirmDeleteModal"
-  [clrModalClosable]="false"
->
-  <h3 class="modal-title">Confirm Remove Model</h3>
-  <div class="modal-body">
-    <p>Are you sure you want to remove this model?</p>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-outline-danger"
-      (click)="cancelRemoveModel()"
-    >
-      Cancel
-    </button>
-    <button type="button" class="btn btn-danger" (click)="confirmRemoveModel()">
-      Remove
-    </button>
-  </div>
-</clr-modal>

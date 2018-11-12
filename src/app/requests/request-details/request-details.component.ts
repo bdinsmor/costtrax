@@ -2,7 +2,7 @@ import { animate, keyframes, query, stagger, style, transition, trigger } from '
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
@@ -11,7 +11,10 @@ import { AuthenticationService } from '../../core/authentication/authentication.
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { ProjectsService } from '../../projects/projects.service';
 import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
+import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
+import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
+import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
 
 @Component({
   selector: 'app-request-details',
@@ -84,10 +87,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   lineItems: Map<String, Item[]>;
   selectedItems: Item[];
   selectedItemType: string;
-  _confirmApproveAllModal = false;
-  _confirmApproveRequest = false;
-  _confirmSubmitModal = false;
-  _confirmCancelModel = false;
+
   canManageRequest = false;
   canSubmitRequest = false;
   canManageProject = false;
@@ -100,6 +100,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   machineChoice: string;
 
   constructor(
+    public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
@@ -319,34 +320,55 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
 
   notesChanged() {}
 
-  confirmCancel() {
-    this._confirmCancelModel = false;
-    if (this.request.id && this.request.id !== '') {
-      this.requestsService
-        .deleteRequest(this.request.id)
-        .subscribe((response: any) => {
-          this.openSnackBar('Request Deleted!', 'OK', 'OK');
-          this._location.back();
-        });
-    } else {
-      this.router.navigate(['/home']);
-    }
-  }
-
-  closeConfirmation() {
-    this._confirmCancelModel = false;
-  }
-
   cancelRequest() {
-    this._confirmCancelModel = true;
+    const dialogRef = this.dialog.open(RequestDeleteDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (this.request.id && this.request.id !== '') {
+          this.requestsService
+            .deleteRequest(this.request.id)
+            .subscribe((response: any) => {
+              this.openSnackBar('Request Deleted!', 'OK', 'OK');
+              this._location.back();
+            });
+        } else {
+          this.router.navigate(['/home']);
+        }
+      }
+    });
   }
 
   deleteRequest() {
-    this._confirmCancelModel = true;
+    this.cancelRequest();
   }
 
   submitRequest() {
-    this._confirmSubmitModal = true;
+    const dialogRef = this.dialog.open(RequestSubmitDialogComponent, {
+      width: '40vw'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.requestsService
+          .submitRequest(
+            this.request.id,
+            this.notesFormGroup.value.notes,
+            result.signature
+          )
+          .subscribe(
+            (response: any) => {
+              this.openSnackBar('Request Submitted', 'ok', 'OK');
+              if (this.project) {
+                this.router.navigate(['../projects', this.project.id]);
+              } else {
+                this.router.navigate(['../home']);
+              }
+            },
+            (error: any) => {
+              this.openSnackBar('Request Did Not Submit', 'error', 'OK');
+            }
+          );
+      }
+    });
   }
 
   save(notesValue, startDate, endDate) {
@@ -374,32 +396,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
           this.openSnackBar('Request Saved!', 'OK', 'OK');
         });
     }
-  }
-
-  cancelSubmit() {
-    this._confirmSubmitModal = false;
-  }
-
-  confirmSubmit() {
-    this.requestsService
-      .submitRequest(
-        this.request.id,
-        this.notesFormGroup.value.notes,
-        this.signatureFormGroup.value.signature
-      )
-      .subscribe(
-        (response: any) => {
-          this.openSnackBar('Request Submitted', 'ok', 'OK');
-          if (this.project) {
-            this.router.navigate(['../projects', this.project.id]);
-          } else {
-            this.router.navigate(['../home']);
-          }
-        },
-        (error: any) => {
-          this.openSnackBar('Request Did Not Submit', 'error', 'OK');
-        }
-      );
   }
 
   compareByValue(c1: Project, c2: Project): boolean {
@@ -550,29 +546,29 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   }
 
   approveRequest() {
-    this._confirmApproveRequest = true;
-  }
-
-  cancelApproveRequest() {
-    this._confirmApproveRequest = false;
-  }
-
-  confirmApproveRequest() {
-    this.requestsService.approve(this.request.id).subscribe(
-      (response: any) => {
-        this._confirmApproveRequest = false;
-        this.openSnackBar(' Request Approved', 'ok', 'OK');
-        this.refreshRequest();
-        this._confirmApproveRequest = false;
-      },
-      err => {
-        this.openSnackBar(
-          'An error occurred trying to approve request',
-          'ok',
-          'OK'
-        );
+    const dialogRef = this.dialog.open(RequestApproveDialogComponent, {
+      data: {
+        approveAll: false
       }
-    );
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.requestsService.approve(this.request.id).subscribe(
+          (response: any) => {
+            this.openSnackBar(' Request Approved', 'ok', 'OK');
+            this.refreshRequest();
+          },
+          err => {
+            this.openSnackBar(
+              'An error occurred trying to approve request',
+              'ok',
+              'OK'
+            );
+          }
+        );
+        this.changeDetector.detectChanges();
+      }
+    });
   }
 
   approveAll(event: any) {
@@ -588,29 +584,29 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       }
     }
     if (this.selectedItems && this.selectedItems.length > 0) {
-      this._confirmApproveAllModal = true;
-    }
-  }
-
-  cancelApproveAll() {
-    this._confirmApproveAllModal = false;
-  }
-
-  confirmApproveAll() {
-    this.requestsService
-      .approveLineItemsAsIs(this.selectedItems)
-      .then((response: any) => {
-        this._confirmApproveAllModal = false;
-        this.openSnackBar(
-          this.selectedItems.length + ' Line Items Approved',
-          'ok',
-          'OK'
-        );
-        this.refreshRequest();
-      })
-      .catch((error: any) => {
-        this._confirmApproveAllModal = false;
-        this.openSnackBar('Line Items Were NOT approved', 'error', 'OK');
+      const dialogRef = this.dialog.open(RequestApproveDialogComponent, {
+        data: {
+          approveAll: true
+        }
       });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && result.success) {
+          this.requestsService
+            .approveLineItemsAsIs(this.selectedItems)
+            .then((response: any) => {
+              this.openSnackBar(
+                this.selectedItems.length + ' Line Items Approved',
+                'ok',
+                'OK'
+              );
+              this.refreshRequest();
+            })
+            .catch((error: any) => {
+              this.openSnackBar('Line Items Were NOT approved', 'error', 'OK');
+            });
+          this.changeDetector.detectChanges();
+        }
+      });
+    }
   }
 }

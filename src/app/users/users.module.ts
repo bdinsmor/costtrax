@@ -6,6 +6,7 @@ import { ClarityModule } from '@clr/angular';
 
 import { MaterialModule } from '../material.module';
 import { UserFormComponent } from './user-form/user-form.component';
+import { UserDialogComponent } from './user-list/user-dialog.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UsersComponent } from './users.component';
 
@@ -18,7 +19,18 @@ import { UsersComponent } from './users.component';
     ClarityModule,
     MaterialModule
   ],
-  declarations: [UserListComponent, UserFormComponent, UsersComponent],
-  exports: [UserListComponent, UserFormComponent, UsersComponent]
+  declarations: [
+    UserListComponent,
+    UserDialogComponent,
+    UserFormComponent,
+    UsersComponent
+  ],
+  exports: [
+    UserListComponent,
+    UserFormComponent,
+    UserDialogComponent,
+    UsersComponent
+  ],
+  entryComponents: [UserFormComponent, UserDialogComponent]
 })
 export class UsersModule {}

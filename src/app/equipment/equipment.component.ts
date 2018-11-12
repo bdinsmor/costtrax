@@ -8,13 +8,15 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../core/authentication/authentication.service';
+import { AddMiscDialogComponent } from '../line-items/dialogs/add-misc-dialog.component';
+import { ConfigurationDialogComponent } from '../line-items/dialogs/configuration-dialog.component';
 import { Equipment } from '../shared/model';
 import { appAnimations } from './../core/animations';
+import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentService } from './equipment.service';
 
 @Component({
@@ -60,6 +62,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   subscription: Subscription;
 
   constructor(
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private equipmentService: EquipmentService,
@@ -167,7 +170,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
           } else {
             updatedItem.resetSelectedConfiguration();
           }
-
+          updatedItem.generateYears();
           this.items[event.index] = updatedItem;
           this.changeDetector.markForCheck();
         });
@@ -185,85 +188,18 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     this.changeDetector.markForCheck();
   }
 
-  modelSearch() {
-    this.modelResults$ = concat(
-      of([]), // default items
-      this.modelInput$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(() => (this.modelLoading = true)),
-        switchMap((term: string) =>
-          this.equipmentService
-            .getModelsForSizeId(term, this.miscSizeClassId)
-            .pipe(
-              catchError(() => of([])), // empty list on error
-              tap(() => (this.modelLoading = false))
-            )
-        )
-      )
-    );
-  }
-
-  categoryChanged() {
-    this.miscModelId = null;
-    this.miscSizeClassId = null;
-    this.miscSubtypeId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.subtypeSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  subtypeChanged() {
-    this.miscSizeClassId = null;
-    this.miscModelId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.sizeSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  sizeChanged() {
-    this.miscModelId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.modelSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  categorySearch() {
-    this.categoryResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getCategories()
-    );
-  }
-
-  subtypeSearch() {
-    this.subtypeResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getSubtypes(this.miscCategoryId)
-    );
-  }
-
-  sizeSearch() {
-    this.sizeResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getSizes(this.miscSubtypeId)
-    );
-  }
-
-  onSubtypeChange() {}
-
-  trackByFn(index: number, item: any) {
-    return index; // or item.id
-  }
-
   addMiscEquipment() {
-    this._miscModelModal = true;
-    this.categorySearch();
-    this.sizeSearch();
-    this.modelSearch();
-    this.subtypeSearch();
+    const dialogRef = this.dialog.open(AddMiscDialogComponent, {
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.configuration) {
+          this.confirmAddMiscModel(result.configuration);
+        }
+      }
+    });
   }
 
   cancelAddMiscModel() {
@@ -280,7 +216,57 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     }
     this.items = [...this.items, this.miscEquipment];
     this.miscCategoryId = null;
-    this.categoryChanged();
+  }
+
+  yearSelectionChanged(item: Equipment, index: number) {
+    if (!item.details.year || item.details.year === '') {
+      item.details.fhwa = 0;
+      item.resetSelectedConfiguration();
+
+      return;
+    }
+    this.equipmentService
+      .getConfiguration(item.details.modelId, item.details.year)
+      .subscribe((configurations: any) => {
+        if (configurations && configurations.values.length > 1) {
+          this.selectedItem = item;
+          this.selectedIndex = index;
+          this.selectedItem.details.configurations = configurations;
+          this.selectConfiguration(configurations);
+        } else if (configurations && configurations.values.length === 1) {
+          item.details.selectedConfiguration = configurations.values[0];
+          item.details.configurations = configurations;
+        }
+
+        item.beingEdited = true;
+        this.changeDetector.detectChanges();
+      });
+  }
+
+  selectConfiguration(configurations: any[]) {
+    const dialogRef = this.dialog.open(ConfigurationDialogComponent, {
+      data: {
+        configurations: configurations
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.configuration) {
+          this.selectedItem.details.selectedConfiguration = JSON.parse(
+            JSON.stringify(result.configuration)
+          );
+        } else {
+          this.cancelSelectConfiguration();
+        }
+      } else {
+        this.cancelSelectConfiguration();
+      }
+    });
+  }
+
+  trackByFn(index: number, item: any) {
+    return index; // or item.id
   }
 
   addModel() {
@@ -331,7 +317,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   confirmRemoveModel() {
     if (!this.selectedItem) {
-      this._confirmDeleteModal = false;
       return;
     }
     if (
@@ -339,30 +324,33 @@ export class EquipmentComponent implements OnInit, OnDestroy {
       this.selectedItem.isDraft()
     ) {
       this.items.splice(this.selectedIndex, 1);
-      this._confirmDeleteModal = false;
-      return;
-    }
-    if (this.selectedItem.id) {
-      this.equipmentService
-        .deleteRequestorModel(this.projectId, this.selectedItem.id)
-        .subscribe(
-          (response: any) => {
-            this._confirmDeleteModal = false;
-            this.items.splice(this.selectedIndex, 1);
-            this.changeDetector.detectChanges();
-            this.openSnackBar('Model Removed!', 'OK', 'OK');
-            this.changes.emit();
-          },
-          (error: any) => {
-            this.openSnackBar('Model NOT removed', 'error', 'OK');
-          }
-        );
-      return;
-    }
-  }
 
-  cancelRemoveModel() {
-    this._confirmDeleteModal = false;
+      return;
+    }
+
+    if (this.selectedItem.id) {
+      const dialogRef = this.dialog.open(EquipmentDeleteDialogComponent, {});
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && result.success) {
+          this.equipmentService
+            .deleteRequestorModel(this.projectId, this.selectedItem.id)
+            .subscribe(
+              (response: any) => {
+                this._confirmDeleteModal = false;
+                this.items.splice(this.selectedIndex, 1);
+                this.changeDetector.detectChanges();
+                this.openSnackBar('Model Removed!', 'ok', 'OK');
+                this.changes.emit();
+              },
+              (error: any) => {
+                this.openSnackBar('Model NOT removed', 'error', 'OK');
+              }
+            );
+          this.changeDetector.detectChanges();
+        }
+      });
+    }
   }
 
   remove(index: number, item: Equipment) {

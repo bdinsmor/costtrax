@@ -12,6 +12,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core';
+import { AuthenticationService } from './core/authentication/authentication.service';
 import { DirectivesModule } from './core/directives/directives';
 import { EquipmentModule } from './equipment/equipment.module';
 import { HomeModule } from './home/home.module';
@@ -19,6 +20,7 @@ import { LaborModule } from './labor/labor.module';
 import { LineItemsModule } from './line-items/line-items.module';
 import { LoginModule } from './login/login.module';
 import { MaterialModule } from './material.module';
+import { ProjectFormDialogComponent } from './projects/project-form/project-form-dialog.component';
 import { ProjectsModule } from './projects/projects.module';
 import { RequestsModule } from './requests/requests.module';
 import { SharedModule } from './shared';
@@ -53,6 +55,8 @@ import { SharedModule } from './shared';
       enabled: environment.production
     })
   ],
+  providers: [AuthenticationService],
+  entryComponents: [ProjectFormDialogComponent],
 
   bootstrap: [AppComponent]
 })
