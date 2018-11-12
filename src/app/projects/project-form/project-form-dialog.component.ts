@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 
@@ -231,10 +231,13 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   createProjectFormGroup() {
     this.projectFormGroup = new FormGroup({
-      projectName: new FormControl(this.project.name),
-      zipcode: new FormControl(this.project.zipcode),
-      state: new FormControl(this.project.state),
-      selectedAccount: new FormControl(this.firstAccount.id),
+      projectName: new FormControl(this.project.name, Validators.required),
+      zipcode: new FormControl(this.project.zipcode, Validators.required),
+      state: new FormControl(this.project.state, Validators.required),
+      selectedAccount: new FormControl(
+        this.firstAccount.id,
+        Validators.required
+      ),
       users: new FormControl(this.project.users),
       laborSUT: new FormControl(this.project.adjustments.labor.sut),
       laborFICA: new FormControl(this.project.adjustments.labor.fica),

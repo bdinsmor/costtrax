@@ -1,4 +1,4 @@
-<mat-card class="px-2 pb-1 project-form">
+<mat-card #formParent id="formParent" class="px-2 pb-1 project-form">
   <h2 mat-dialog-title>NEW PROJECT</h2>
   <mat-card-content
     *ngIf="isLoaded"
@@ -9,7 +9,7 @@
       <div class="form-group">
         <label for="selects_1">Select Account: </label>
         <div class="select d-flex w-50">
-          <select id="selects_1" formControlName="selectedAccount">
+          <select id="selects_1" formControlName="selectedAccount" required>
             <option
               *ngFor="let choice of (accounts$ | async)"
               [value]="choice.id"
@@ -28,6 +28,7 @@
               class="w-50"
               formControlName="projectName"
               placeholder="project name"
+              required
             />
           </div>
         </div>
@@ -41,12 +42,18 @@
                 type="text"
                 name="zipcode"
                 formControlName="zipcode"
+                required
                 placeholder="project zip code"
               />
             </div>
             <label class="required no-bottom-margin pr-1">State: </label>
             <div class="w-50">
-              <ng-select class="w-50" formControlName="state">
+              <ng-select
+                class="w-50"
+                formControlName="state"
+                appendTo="body"
+                required
+              >
                 <ng-option *ngFor="let state of states" [value]="state.value">{{
                   state.label
                 }}</ng-option>
@@ -378,7 +385,12 @@
     </section>
   </mat-card-content>
   <div mat-dialog-actions class="d-flex flex-row-reverse">
-    <button type="button" class="btn btn-primary" (click)="saveNew()">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="saveNew()"
+      [disabled]="!projectFormGroup.valid"
+    >
       <clr-icon shape="check"></clr-icon>&nbsp;Save Project
     </button>
     <button type="button" class="btn btn-outline" (click)="cancelCreate()">
