@@ -650,8 +650,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   yearSelectionChanged(item: Item, index: number) {
     if (!item.details.year || item.details.year === '') {
       item.details.fhwa = 0;
@@ -1390,10 +1388,14 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           modelId: this.miscEquipment.modelId,
           sizeClassName: this.miscEquipment.sizeClassName,
           year: this.miscEquipment.year,
+          dateIntroduced: this.miscEquipment.dateIntroduced,
+          dateDiscontinued: this.miscEquipment.dateDiscontinued,
+
           amount: 0,
           subtotal: 0
         }
       });
+      newItem.generateYears();
       newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
       newItem.details.configuration = this.miscEquipment.details.configurations;
 
@@ -1464,6 +1466,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.categoryId = event.item.categoryId;
       item.categoryName = event.item.categoryName;
       item.make = event.item.make;
+      item.dateDiscontinued = event.item.dateDiscontinued;
+      item.dateIntroduced = event.item.dateIntroduced;
       item.model = event.item.model;
       item.modelId = event.item.modelId;
       item.baseRental = event.item.baseRental;
@@ -1474,6 +1478,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.sizeClassName = event.item.sizeClassName;
       item.vin = event.item.vin;
       item.details = event.item.details;
+      item.generateYears();
       this.miscEquipment = item;
     }
   }
