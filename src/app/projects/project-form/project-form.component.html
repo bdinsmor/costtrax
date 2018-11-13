@@ -183,7 +183,7 @@
             <div class="content full-width px-2">
               <form class="full-width" [formGroup]="projectFormGroup">
                 <section class="form-block">
-                  <div class="form-block row align-items-center">
+                  <div class="row no-margin-left align-items-center">
                     <label class="no-bottom-margin" for="pr-1">Zip Code:</label>
                     <div class="pl-1 pr-2">
                       <input
@@ -206,11 +206,21 @@
                       </ng-select>
                     </div>
                   </div>
+                  <div class="row no-margin-left font-italic small-text">
+                    <i class="material-icons md-20 md-dark"> info </i
+                    >&nbsp;CostTrax uses zip code information to look up local
+                    rental rates when auditing submitted equipment costs
+                  </div>
                 </section>
 
                 <section class="form-block">
                   <div class="form-block">
                     <label for="formFields_8">Instructions:</label>
+                    <div class="row no-margin-left font-italic small-text">
+                      <i class="material-icons md-20 md-dark"> info </i
+                      >&nbsp;Include any relevant instructions or information
+                      for users submitting requests on this project.
+                    </div>
                     <textarea
                       id="formFields_8"
                       rows="3"
@@ -221,7 +231,7 @@
                 <section class="form-block">
                   <h4 class="project-heading pb-1">Allowable Costs</h4>
 
-                  <div class="cost-section mb-1">
+                  <div class="cost-section mb-1" *ngIf="accountSynced">
                     <div class="row no-margin-left cost-title full-width">
                       <mat-checkbox
                         type="checkbox"
@@ -310,6 +320,7 @@
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
                         <nz-input-number
+                          formControlName="activeMarkup"
                           [nzMin]="1"
                           [nzMax]="100"
                           [nzStep]="1"
@@ -331,7 +342,7 @@
                     </div>
                   </div>
 
-                  <div class="cost-section mb-1">
+                  <div class="cost-section mb-1" *ngIf="accountSynced">
                     <div class="row no-margin-left cost-title full-width">
                       <mat-checkbox
                         type="checkbox"
@@ -407,7 +418,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="cost-section mb-1">
+                  <div class="cost-section mb-1" *ngIf="accountSynced">
                     <div class="row no-margin-left cost-title full-width">
                       <mat-checkbox
                         type="checkbox"

@@ -263,6 +263,9 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   }
 
   createProjectFormGroup() {
+    console.log(
+      'activeMarkup: ' + this.project.adjustments.equipment.active.markup
+    );
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name, Validators.required),
       zipcode: new FormControl(this.project.zipcode, Validators.required),

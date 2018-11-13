@@ -100,7 +100,7 @@
   <section class="form-group">
     <h4 class="project-heading pb-1">Allowable Costs</h4>
 
-    <div class="cost-section mb-1">
+    <div class="cost-section mb-1" *ngIf="accountSynced">
       <div class="row no-margin-left cost-title full-width">
         <mat-checkbox
           type="checkbox"
@@ -201,7 +201,7 @@
       </div>
     </div>
 
-    <div class="cost-section mb-1">
+    <div class="cost-section mb-1" *ngIf="accountSynced">
       <div class="row no-margin-left cost-title full-width">
         <mat-checkbox
           type="checkbox"
@@ -271,7 +271,7 @@
         </div>
       </div>
     </div>
-    <div class="cost-section mb-1">
+    <div class="cost-section mb-1" *ngIf="accountSynced">
       <div class="row no-margin-left cost-title full-width">
         <mat-checkbox
           type="checkbox"

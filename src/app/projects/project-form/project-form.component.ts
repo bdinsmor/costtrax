@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
@@ -16,14 +16,14 @@ import { ProjectCompleteDialogComponent } from './../project-complete-dialog.com
   templateUrl: './project-form.component.html',
   styleUrls: ['./project-form.component.scss']
 })
-export class ProjectFormComponent implements OnInit {
+export class ProjectFormComponent implements OnInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthenticationService,
+    private authenticationService: AuthenticationService,
     private breadcrumbService: BreadcrumbService,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
@@ -103,12 +103,30 @@ export class ProjectFormComponent implements OnInit {
   requestId = null;
   newProject = false;
   inOverflow = true;
+  subscription: Subscription;
+  accountSynced = false;
 
   @Output() save = new EventEmitter();
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   ngOnInit() {
+    this.subscription = this.authenticationService
+      .getCreds()
+      .subscribe(message => {
+        if (message) {
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
+        } else {
+          this.accountSynced = false;
+        }
+        this.changeDetector.detectChanges();
+      });
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.projectsService.getProject(id).subscribe(r => {
@@ -344,10 +362,6 @@ export class ProjectFormComponent implements OnInit {
   }
 
   createProjectFormGroup() {
-    console.log(
-      'this.project.adjustments: ' +
-        JSON.stringify(this.project.adjustments, null, 2)
-    );
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name),
       users: new FormControl(this.project.users),
