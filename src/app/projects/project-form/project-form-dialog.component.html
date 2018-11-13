@@ -430,7 +430,11 @@
   </section>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="projectFormGroup">
-  <button type="button" class="btn btn-outline" (click)="cancelCreate()">
+  <button
+    type="button"
+    class="btn btn-warning-outline"
+    (click)="cancelCreate()"
+  >
     Cancel
   </button>
   <button
