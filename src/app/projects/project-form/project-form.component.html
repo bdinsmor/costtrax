@@ -106,6 +106,7 @@
             <app-requests
               [items]="project.pendingRequests"
               [projectId]="project.id"
+              [status]="'PENDING'"
               (duplicated)="refreshItems()"
               [submitRequests]="canSubmitRequests"
             ></app-requests>
@@ -125,6 +126,7 @@
             <app-requests
               [items]="project.completeRequests"
               [projectId]="project.id"
+              [status]="'COMPLETE'"
               (duplicated)="refreshItems()"
               [submitRequests]="canSubmitRequests"
             ></app-requests>
@@ -308,7 +310,6 @@
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
                         <nz-input-number
-                          formControlName="activeMarkup"
                           [nzMin]="1"
                           [nzMax]="100"
                           [nzStep]="1"

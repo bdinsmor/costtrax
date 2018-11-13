@@ -55,8 +55,10 @@
     <div *ngIf="!items || items.length === 0" class="full-width">
       <h2 class="smaller-gray-text">Please add requests</h2>
     </div>
-
-    <div class="full-width request-list" *ngIf="items && items.length !== 0">
+    <div
+      class="full-width request-list"
+      *ngIf="items && items.length !== 0 && status === 'PENDING'"
+    >
       <clr-datagrid>
         <clr-dg-column [clrDgField]="'oneUp'" [clrDgSortBy]="oneUpComparator"
           >Request #
@@ -69,6 +71,86 @@
         <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
         <clr-dg-column>Actions</clr-dg-column>
         <clr-dg-row
+          [clrDgItem]="item"
+          *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
+        >
+          <clr-dg-cell (click)="viewRequest(item)">{{
+            item.oneUp
+          }}</clr-dg-cell>
+          <clr-dg-cell (click)="viewRequest(item)"
+            >{{ item.startDate | date: 'shortDate' }}
+          </clr-dg-cell>
+          <clr-dg-cell (click)="viewRequest(item)"
+            >{{ item.endDate | date: 'shortDate' }}
+          </clr-dg-cell>
+          <clr-dg-cell (click)="viewRequest(item)">{{
+            item.totalItems
+          }}</clr-dg-cell>
+          <clr-dg-cell (click)="viewRequest(item)">{{
+            item.total | currency
+          }}</clr-dg-cell>
+          <clr-dg-cell (click)="viewRequest(item)"
+            >{{ item.age }}&nbsp;days</clr-dg-cell
+          >
+          <clr-dg-cell (click)="viewRequest(item)">{{
+            item.status
+          }}</clr-dg-cell>
+          <clr-dg-cell>
+            <div
+              class="row
+              justify-content-end"
+            >
+              <button
+                *ngIf="submitRequests"
+                class="ripple icon-button pr-1"
+                matTooltip="Clone Request"
+                (click)="clone(item)"
+              >
+                <mat-icon color="primary" svgIcon="duplicate"></mat-icon>
+              </button>
+              <button
+                *ngIf="submitRequests && item.isDraft()"
+                class="button-padding ripple icon-button pr-1"
+                matTooltip="Delete Request"
+                (click)="removeRequest(item)"
+              >
+                <mat-icon color="warn">delete</mat-icon>
+              </button>
+            </div>
+          </clr-dg-cell>
+        </clr-dg-row>
+        <clr-dg-footer>{{ items.length }} Items</clr-dg-footer>
+      </clr-datagrid>
+    </div>
+    <div
+      class="full-width request-list"
+      *ngIf="items && items.length !== 0 && status === 'COMPLETE'"
+    >
+      <clr-datagrid [(clrDgSelected)]="selectedRequests">
+        <clr-dg-action-bar>
+          <div class="btn-group">
+            <button
+              type="button"
+              class="btn btn-sm btn-primary"
+              (click)="export()"
+              [disabled]="!selectedRequests || selectedRequests.length === 0"
+            >
+              <clr-icon shape="coin-bag"></clr-icon> Export
+            </button>
+          </div>
+        </clr-dg-action-bar>
+        <clr-dg-column [clrDgField]="'oneUp'" [clrDgSortBy]="oneUpComparator"
+          >Request #
+        </clr-dg-column>
+        <clr-dg-column [clrDgField]="'startDate'">Start Date</clr-dg-column>
+        <clr-dg-column [clrDgField]="'endDate'">Stop Date</clr-dg-column>
+        <clr-dg-column [clrDgField]="'totalItems'"># Line Items</clr-dg-column>
+        <clr-dg-column [clrDgField]="'total'">Total $ Amount</clr-dg-column>
+        <clr-dg-column [clrDgField]="'age'">Age</clr-dg-column>
+        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
+        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-row
+          [clrDgItem]="item"
           *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
         >
           <clr-dg-cell (click)="viewRequest(item)">{{

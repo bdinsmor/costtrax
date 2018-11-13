@@ -29,9 +29,7 @@
     class="btn btn-sm btn-primary"
     *ngIf="type !== 'REQUESTOR'"
     (click)="inviteUser()"
-  >
-    <span *ngIf="newProject">Add</span
-    ><span *ngIf="!newProject">Invite</span>&nbsp;User
+  >Add User
   </button>
   <section
     *ngIf="newProject"

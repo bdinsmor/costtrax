@@ -344,6 +344,10 @@ export class ProjectFormComponent implements OnInit {
   }
 
   createProjectFormGroup() {
+    console.log(
+      'this.project.adjustments: ' +
+        JSON.stringify(this.project.adjustments, null, 2)
+    );
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name),
       users: new FormControl(this.project.users),

@@ -24,8 +24,10 @@ export class RequestsComponent implements OnInit {
   selectedItem: Request;
   selectedIndex = -1;
   onUpComparator = new OneUpComparator();
+  selectedRequests = [];
   @Input() projectId: string;
   @Input() items: Request[];
+  @Input() status: string;
   @Input() submitRequests: boolean;
   @Output() duplicated = new EventEmitter<any>();
   @Output() changed = new EventEmitter<any>();
@@ -58,6 +60,13 @@ export class RequestsComponent implements OnInit {
 
   trackByFn(index: number, item: any) {
     return index; // or item.id
+  }
+
+  export() {
+    const selectedIds = this.selectedRequests.map(request => {
+      return request.id;
+    });
+    console.log('selectedIds: ' + JSON.stringify(selectedIds, null, 2));
   }
 
   clone(request: Request) {
