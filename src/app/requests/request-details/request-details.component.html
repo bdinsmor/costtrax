@@ -202,7 +202,21 @@
     full-width"
   >
     <div *ngIf="request && request.id">
-      <h4>Recapitulation</h4>
+      <div class="row no-margin-left align-items-center">
+        <h4 class="no-top-margin pr-1">Recapitulation</h4>
+        <button
+          type="button"
+          *ngIf="
+            request.status.toLowerCase() === 'pending' &&
+            (canManageRequest || canManageProject)
+          "
+          (click)="approveRequest()"
+          class="btn btn-primary"
+          color="primary"
+        >
+          Approve Request
+        </button>
+      </div>
       <div class="full-width">
         <table id="invoice-table" class="table table-compact">
           <tbody>
