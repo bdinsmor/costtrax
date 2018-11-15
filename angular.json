@@ -24,10 +24,10 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
             "styles": [
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles/styles.scss",
               "./node_modules/@clr/icons/clr-icons.min.css",
-              "./node_modules/@clr/ui/clr-ui.min.css",
-              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
+              "./node_modules/@clr/ui/clr-ui.min.css"
             ],
             "scripts": ["./node_modules/@clr/icons/clr-icons.min.js"]
           },

@@ -6,6 +6,7 @@ import { GetByIdPipe } from './getById.pipe';
 import { HtmlToPlaintextPipe } from './htmlToPlaintext.pipe';
 import { KeysPipe } from './keys.pipe';
 import { PhonePipe } from './phone.pipe';
+import { RolePipe } from './role.pipe';
 import { TruncatePipe } from './truncate.pipe';
 
 @NgModule({
@@ -16,6 +17,7 @@ import { TruncatePipe } from './truncate.pipe';
     PhonePipe,
     HtmlToPlaintextPipe,
     FilterPipe,
+    RolePipe,
     CamelCaseToDashPipe
   ],
   imports: [],
@@ -24,6 +26,7 @@ import { TruncatePipe } from './truncate.pipe';
     TruncatePipe,
     GetByIdPipe,
     PhonePipe,
+    RolePipe,
     HtmlToPlaintextPipe,
     FilterPipe,
     CamelCaseToDashPipe

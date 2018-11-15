@@ -82,8 +82,6 @@ export class AppComponent implements OnInit, OnDestroy {
       Logger.enableProductionMode();
     }
 
-    this.loggedIn = this.authService.isAuthenticated();
-
     this.subscription = this.authService.getCreds().subscribe(message => {
       if (message && message.userName) {
         this.loggedIn = true;

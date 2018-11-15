@@ -29,7 +29,8 @@
     class="btn btn-sm btn-primary"
     *ngIf="type !== 'REQUESTOR'"
     (click)="inviteUser()"
-  >Add User
+  >
+    Add User
   </button>
   <section
     *ngIf="newProject"
@@ -115,7 +116,9 @@
         <clr-dg-cell>
           <div *ngIf="user.roles">
             <mat-chip-list>
-              <mat-chip *ngFor="let role of user.roles">{{ role }}</mat-chip>
+              <mat-chip *ngFor="let role of user.roles">{{
+                role | rolePrint
+              }}</mat-chip>
             </mat-chip-list>
           </div>
         </clr-dg-cell>
