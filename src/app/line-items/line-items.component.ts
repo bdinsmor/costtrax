@@ -6,13 +6,25 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -28,7 +40,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils,
+  Utils
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -559,6 +571,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     } else {
       item.details.sizeClassName = '';
       item.details.fhwa = 0;
+      item.details.year = '';
+      item.details.years = null;
+      item.details.modelId = null;
       item.resetSelectedConfiguration();
     }
   }
@@ -567,6 +582,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.details.makeId = item.details.makeId;
       item.details.sizeClassName = '';
       item.details.fhwa = 0;
+      item.details.year = '';
+      item.details.years = null;
+      item.details.modelId = null;
       item.resetSelectedConfiguration();
       return;
     }
@@ -662,6 +680,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.requestStartDate
       )
       .subscribe((configurations: any) => {
+        //  console.log('# of configs:  ' + configurations.values.length);
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
           this.selectedIndex = index;

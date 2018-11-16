@@ -78,12 +78,12 @@
         </div>
       </div>
       <div class="spacer"></div>
-      <h1
+      <h3
         class="px-1 row strong no-top-margin warning-label"
         *ngIf="!request.isComplete()"
       >
         {{ request.status.toUpperCase() }}
-      </h1>
+      </h3>
       <h1
         class="px-1 row strong no-top-margin cost-label"
         *ngIf="request.isComplete()"
@@ -120,7 +120,7 @@
         class="row mt-1"
       >
         <button
-          *ngIf="!printingInvoice && canSubmitRequest"
+          *ngIf="canSubmitRequest"
           [disabled]="
             signatureFormGroup.invalid ||
             notesFormGroup.hasError('notValid') ||
@@ -133,11 +133,11 @@
           btn-success mr-1"
           (click)="submitRequest()"
         >
-          Submit
+          Submit Request
         </button>
         <button
           type="button"
-          *ngIf="!printingInvoice && !request.id"
+          *ngIf="!request.id"
           class="btn
           btn-outline-danger ripple"
           matTooltip="Cancel Request"
@@ -148,7 +148,7 @@
         </button>
         <button
           type="button"
-          *ngIf="!printingInvoice && request.id && canSubmitRequest"
+          *ngIf="request.id && canSubmitRequest"
           class="btn
           btn-outline-danger ripple"
           matTooltip="Delete Request"
@@ -216,6 +216,22 @@
           color="primary"
         >
           Approve Request
+        </button>
+        <button
+          *ngIf="canSubmitRequest"
+          [disabled]="
+            signatureFormGroup.invalid ||
+            notesFormGroup.hasError('notValid') ||
+            !project ||
+            !request.hasLineItems() ||
+            !request.isDraft()
+          "
+          class="ripple
+                btn
+                btn-success mr-1"
+          (click)="submitRequest()"
+        >
+          Submit Request
         </button>
       </div>
       <div class="full-width">

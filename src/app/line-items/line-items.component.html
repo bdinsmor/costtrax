@@ -211,7 +211,7 @@
 
         <div *ngIf="item.status.toLowerCase() !== 'complete'"
           class="card-footer">
-          <div *ngIf="!printingInvoice && (item && item.beingEdited)" class="row
+          <div *ngIf="(item && item.beingEdited)" class="row
             full-width
             justify-content-end">
             <button class="icon-30 ripple icon-button"
@@ -226,7 +226,7 @@
             </button>
 
           </div>
-          <div *ngIf="!printingInvoice && (manageRequests &&
+          <div *ngIf="(manageRequests &&
             item.status.toLowerCase()=== 'pending')" class="row full-width
             justify-content-end">
             <button class="icon-30 ripple icon-button"
@@ -273,7 +273,7 @@
             itemType === 'equipment.standby' || itemType ===
             'equipment.rental')">Log in with your EQW credentials to access</h5>
           <div class="ml-0 row align-items-center">
-            <div *ngIf="!printingInvoice && !editMode"
+            <div *ngIf="!editMode"
               class="align-items-center">
               <button *ngIf="hasPending && manageRequests"
                 [disabled]="!manageRequests || !accountSynced" type="button"
@@ -467,7 +467,7 @@
             <div>{{item.details.amount | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="!printingInvoice && (submitRequests &&
+            <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')"
               class="row justify-content-end">
@@ -498,7 +498,7 @@
             </div>
 
 
-            <div *ngIf="!printingInvoice && (manageRequests &&
+            <div *ngIf="(manageRequests &&
               item.status.toLowerCase()===
               'pending')"
               class="row
@@ -640,7 +640,7 @@
 
 
           <clr-dg-cell>
-            <div *ngIf="!printingInvoice && (submitRequests &&
+            <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')"
               class="row padding-label-top justify-content-end">
@@ -671,7 +671,7 @@
             </div>
 
 
-            <div *ngIf="!printingInvoice && (manageRequests &&
+            <div *ngIf="(manageRequests &&
               item.status.toLowerCase()===
               'pending')"
               class="row padding-label-top
@@ -935,7 +935,7 @@
 
 
             <clr-dg-cell>
-              <div *ngIf="!printingInvoice && (submitRequests &&
+              <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')"
                 class="row padding-label-top justify-content-end">
@@ -967,7 +967,7 @@
               </div>
 
 
-              <div *ngIf="!printingInvoice && (manageRequests &&
+              <div *ngIf="(manageRequests &&
                 item.status.toLowerCase()===
                 'pending')"
                 class="row padding-label-top
@@ -1160,7 +1160,7 @@
 
 
             <clr-dg-cell>
-              <div *ngIf="!printingInvoice && (submitRequests &&
+              <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')"
                 class="row padding-label-top justify-content-end"
@@ -1200,7 +1200,7 @@
                 </div>
 
 
-                <div *ngIf="!printingInvoice && (manageRequests &&
+                <div *ngIf="(manageRequests &&
                   item.status.toLowerCase()===
                   'pending')"
                   class="row
@@ -1440,7 +1440,7 @@
 
               <clr-dg-cell>{{item.amount | currency}}</clr-dg-cell>
               <clr-dg-cell>
-                <div *ngIf="!printingInvoice && (submitRequests &&
+                <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')"
                   class="row justify-content-end">
@@ -1473,7 +1473,7 @@
                 </div>
 
 
-                <div *ngIf="!printingInvoice && (manageRequests &&
+                <div *ngIf="(manageRequests &&
                   item.status.toLowerCase()===
                   'pending')"
                   class="row
@@ -1557,7 +1557,7 @@
               </clr-dg-cell>
               <clr-dg-cell>{{item.amount | currency}}</clr-dg-cell>
               <clr-dg-cell>
-                <div *ngIf="!printingInvoice && (submitRequests &&
+                <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')"
                   class="row justify-content-end">
@@ -1590,7 +1590,7 @@
                 </div>
 
 
-                <div *ngIf="!printingInvoice && (manageRequests &&
+                <div *ngIf="(manageRequests &&
                   item.status.toLowerCase()===
                   'pending')"
                   class="row
@@ -1675,7 +1675,7 @@
                 <div style="width:100px">{{item.amount | currency}}</div>
               </clr-dg-cell>
               <clr-dg-cell>
-                <div *ngIf="!printingInvoice && (submitRequests &&
+                <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')"
                   class="row justify-content-end">
@@ -1708,7 +1708,7 @@
                 </div>
 
 
-                <div *ngIf="!printingInvoice && (manageRequests &&
+                <div *ngIf="(manageRequests &&
                   item.status.toLowerCase()===
                   'pending')"
                   class="row
