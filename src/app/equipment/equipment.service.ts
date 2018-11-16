@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -99,7 +100,8 @@ export class EquipmentService {
   getConfiguration(
     modelId: string,
     year: string = '',
-    state: string = ''
+    state: string = '',
+    startDate: string = ''
   ): Observable<any> {
     let url: string =
       environment.serverUrl + '/equipment/configurations?modelId=' + modelId;
@@ -108,6 +110,10 @@ export class EquipmentService {
     }
     if (state && state !== '') {
       url += '&state=' + state;
+    }
+    if (startDate && startDate !== '') {
+      const formattedStartDate = moment(startDate).format('YYYY-MM-DD');
+      url += '&date=' + formattedStartDate;
     }
 
     return this.http.get(url).pipe(
@@ -380,9 +386,12 @@ export class EquipmentService {
       );
   }
 
-  getConfigurations(choices: Equipment[], state: string = ''): Promise<any> {
+  getConfigurations(
+    choices: Equipment[],
+    state: string = '',
+    startDate: string = ''
+  ): Promise<any> {
     let promises: Promise<any>;
-
     promises = Promise.all(
       choices.map(async (choice: Equipment) =>
         this.http
@@ -398,9 +407,7 @@ export class EquipmentService {
           .toPromise()
           .then((res: any) => {
             choice.configurations = res[0].specs;
-            console.log(
-              'configs:  ' + JSON.stringify(choice.configurations, null, 2)
-            );
+
             return new Promise((resolve, reject) => {
               resolve(choice);
             });

@@ -6,25 +6,13 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig,
-  Sort
-} from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -40,7 +28,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils
+  Utils,
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -87,6 +75,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   @Input() project: Project;
   @Input() requestId: string;
   @Input() draftMode: boolean;
+  @Input() requestStartDate: string;
   @Input() printingInvoice = false;
   @Output() itemsChanged = new EventEmitter<any>();
   @Output() itemChanged = new EventEmitter<Item>();
@@ -616,7 +605,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               .getConfiguration(
                 item.details.modelId,
                 item.details.year,
-                this.project.state
+                this.project.state,
+                this.requestStartDate
               )
               .subscribe((configurations: any) => {
                 item.details.configurations = configurations;
@@ -668,7 +658,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       .getConfiguration(
         item.details.modelId,
         item.details.year,
-        this.project.state
+        this.project.state,
+        this.requestStartDate
       )
       .subscribe((configurations: any) => {
         if (configurations && configurations.values.length > 1) {
@@ -1417,7 +1408,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         (response: any) => {
           this.miscEquipment = response;
           this.equipmentService
-            .getConfiguration(response.modelId)
+            .getConfiguration(response.modelId, this.requestStartDate)
             .subscribe((configurations: any) => {
               this.configurations = configurations;
               if (configurations && configurations.values.length === 1) {
