@@ -135,6 +135,7 @@ export class UserListComponent implements OnInit {
 
   cancelRoleEdit(user: User) {
     user.resetRoles();
+    user.expanded = !user.expanded;
   }
 
   saveRoleEdit(user: User) {

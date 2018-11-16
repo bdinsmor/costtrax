@@ -125,19 +125,36 @@
         <clr-dg-cell>
           <div class="row justify-content-end">
             <button
-              *ngIf="type !== 'REQUESTOR'"
+              *ngIf="user.expanded && type !== 'REQUESTOR'"
+              class="ripple icon-30 icon-button mr-1"
+              matTooltip="Save"
+              (click)="saveRoleEdit(user)"
+            >
+              <mat-icon color="accent">done</mat-icon>
+            </button>
+            <button
+              *ngIf="!user.expanded && type !== 'REQUESTOR'"
               matTooltip="Edit"
-              class="ripple icon-30 icon-button pr-1"
+              class="ripple icon-30 icon-button mr-1"
               (click)="editUser(user)"
             >
               <mat-icon color="primary">edit</mat-icon>
             </button>
             <button
+              *ngIf="!user.expanded"
               class="ripple icon-30 icon-button"
               matTooltip="Remove"
               (click)="removeUser(i, user)"
             >
               <mat-icon color="warn">delete</mat-icon>
+            </button>
+            <button
+              *ngIf="user.expanded && type !== 'REQUESTOR'"
+              class="ripple icon-30 icon-button mr-1"
+              matTooltip="Cancel Edits"
+              (click)="cancelRoleEdit(user)"
+            >
+              <mat-icon color="warn">undo</mat-icon>
             </button>
           </div>
         </clr-dg-cell>

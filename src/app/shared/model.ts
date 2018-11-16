@@ -1,7 +1,4 @@
-import {
-  ClrDatagridComparatorInterface,
-  ClrDatagridStringFilterInterface
-} from '@clr/angular';
+import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
 import * as moment from 'moment';
 
 export interface Breadcrumb {

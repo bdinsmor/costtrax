@@ -479,17 +479,17 @@
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
                 icon-30 icon-button
-                pr-1"
+                mr-1"
                 matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30 pr-1"
+              <button class="ripple icon-button icon-30 mr-1"
                 *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                 Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30 pr-1"
+              <button class="ripple icon-button icon-30 mr-1"
                 *ngIf="!item.beingEdited || (item.beingEdited &&
                 item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -504,18 +504,18 @@
               class="row
               justify-content-end" style="min-width:150px">
               <button [disabled]="!manageRequests" class="icon-30 ripple
-                icon-button pr-1" color="accent"
+                icon-button mr-1" color="accent"
                 matTooltip="Approve As Is" (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
               <button [disabled]="!manageRequests" class="icon-30 ripple
-                icon-button pr-1" matTooltip="Approve With Change"
+                icon-button mr-1" matTooltip="Approve With Change"
                 (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
               <button [disabled]="!manageRequests" class="icon-30 ripple
-                icon-button pr-1" matTooltip="Request More Info"
+                icon-button mr-1" matTooltip="Request More Info"
                 (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
               </button>
