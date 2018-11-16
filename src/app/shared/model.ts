@@ -1,4 +1,7 @@
-import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
+import {
+  ClrDatagridComparatorInterface,
+  ClrDatagridStringFilterInterface
+} from '@clr/angular';
 import * as moment from 'moment';
 
 export interface Breadcrumb {
@@ -248,9 +251,6 @@ export class Activity {
 export class Adjustments {
   subcontractor: { markup: 0.1 };
   labor: {
-    fica: 0.0765;
-    fut: 0.068;
-    sut: 0.1227;
     markup: 0.1;
   };
   equipment: {
@@ -834,9 +834,6 @@ export class Project {
       material: { markup: 10 },
       other: { markup: 10 },
       labor: {
-        fica: 0.0765,
-        fut: 0.068,
-        sut: 0.1227,
         markup: 10
       },
       equipment: {
@@ -897,14 +894,8 @@ export class Project {
       }
       this.roles = project.roles;
       this.adjustments = project.adjustments || this.buildDefaultAdjustments();
-      /*this.laborFICA = 0.0765 * laborTotal;
-    this.laborFUT = 0.068 * laborTotal;
-    this.laborSUT = 0.1227 * laborTotal;*/
       if (!this.adjustments.labor) {
         this.adjustments.labor = {
-          fica: 0.0765,
-          fut: 0.068,
-          sut: 0.1227,
           markup: 10
         };
       }
@@ -915,15 +906,6 @@ export class Project {
         };
       }
 
-      if (project.laborFUT) {
-        this.adjustments.labor.fut = project.laborFUT;
-      }
-      if (project.laborSUT) {
-        this.adjustments.labor.sut = project.laborSUT;
-      }
-      if (project.laborFICA) {
-        this.adjustments.labor.fica = project.laborFICA;
-      }
       this.itemsPending = 0;
       this.itemsOverdue = 0;
 
@@ -1294,9 +1276,6 @@ export class Request {
   otherTotal = 0;
   otherMarkup = 0;
   subcontractorTotal = 0;
-  laborFUT = 0;
-  laborSUT = 0;
-  laborFICA = 0;
   laborSubtotal = 0;
   activeSubtotal = 0;
   standbySubtotal = 0;
@@ -1532,26 +1511,8 @@ export class Request {
       this.laborMarkup =
         Number(Number(this.project.adjustments.labor.markup) / 100) *
         laborTotal;
-      this.laborFICA = +Number(
-        this.project.adjustments.labor.fica * laborSubtotal
-      ).toFixed(2);
-      this.laborFUT = +Number(
-        this.project.adjustments.labor.fut * laborSubtotal
-      ).toFixed(2);
-      this.laborSUT = +Number(
-        this.project.adjustments.labor.sut * laborSubtotal
-      ).toFixed(2);
-    } else {
-      this.laborFICA = 0;
-      this.laborFUT = 0;
-      this.laborSUT = 0;
     }
-    laborTotal =
-      +laborSubtotal +
-      +this.laborBenefitsTotal +
-      +this.laborFICA +
-      +this.laborFUT +
-      +this.laborSUT;
+    laborTotal = +laborSubtotal + +this.laborBenefitsTotal;
 
     this.laborTotal = laborTotal + this.laborMarkup;
     this.subcontractorSubtotal = subcontractorTotal;
@@ -1575,7 +1536,7 @@ export class Request {
         Number(Number(this.project.adjustments.other.markup) / 100) *
         otherSubtotal;
     }
-    this.otherTotal = otherSubtotal + this.otherMarkup;
+    this.otherTotal = otherSubtotal; // + this.otherMarkup;
     this.materialSubtotal = materialTotal;
     if (
       this.project &&
@@ -1703,27 +1664,10 @@ export class Request {
       this.laborMarkup =
         Number(Number(this.project.adjustments.labor.markup) / 100) *
         laborSubtotal;
-      this.laborFICA = +Number(
-        this.project.adjustments.labor.fica * laborSubtotal
-      ).toFixed(2);
-      this.laborFUT = +Number(
-        this.project.adjustments.labor.fut * laborSubtotal
-      ).toFixed(2);
-      this.laborSUT = +Number(
-        this.project.adjustments.labor.sut * laborSubtotal
-      ).toFixed(2);
-    } else {
-      this.laborFICA = 0;
-      this.laborFUT = 0;
-      this.laborSUT = 0;
     }
+
     this.laborTotal =
-      laborSubtotal +
-      this.laborBenefitsTotal +
-      this.laborMarkup +
-      this.laborFICA +
-      this.laborFUT +
-      this.laborSUT;
+      laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
 
     this.subcontractorSubtotal = subcontractorTotal;
     if (

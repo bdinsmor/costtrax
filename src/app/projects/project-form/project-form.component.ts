@@ -368,9 +368,6 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       requestors: new FormControl(this.project.requestors),
       zipcode: new FormControl(this.project.zipcode),
       state: new FormControl(this.project.state),
-      laborSUT: new FormControl(this.project.adjustments.labor.sut),
-      laborFUT: new FormControl(this.project.adjustments.labor.fut),
-      laborFICA: new FormControl(this.project.adjustments.labor.fica),
       projectInstructions: new FormControl(this.project.description),
       activeFormula: new FormControl('FHWA'),
       activeMarkup: new FormControl(

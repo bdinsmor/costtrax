@@ -57,21 +57,17 @@
           *ngIf="canSubmitRequests"
           (click)="createRequest()"
           class="btn btn-primary"
-          color="primary"
-        >
+          color="primary">
           Create Request
         </button>
         <button
           type="button"
-          *ngIf="
-            canChangeSettings &&
-            (project.draftRequests &&
-              project.draftRequests.length === 0 &&
-              (project.pendingRequests && project.pendingRequests.length === 0))
-          "
+          *ngIf="canChangeSettings &&
+          (project.draftRequests &&
+          project.draftRequests.length === 0 &&
+          (project.pendingRequests && project.pendingRequests.length === 0))"
           (click)="completeProject()"
-          class="btn btn-success"
-        >
+          class="btn btn-success">
           Archive Project
         </button>
         <div class="spacer"></div>
@@ -88,15 +84,15 @@
             <app-requests
               [items]="project.draftRequests"
               [projectId]="project.id"
+              [status]="'DRAFT'"
               (changed)="refreshItems()"
               (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"
-            ></app-requests>
+              [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
         <clr-tab
-          *ngIf="project.pendingRequests && project.pendingRequests.length > 0"
-        >
+          *ngIf="project.pendingRequests && project.pendingRequests.length> 0"
+          >
           <button clrTabLink class="align-items-center">
             <clr-icon shape="tasks"></clr-icon>
             Pending Requests
@@ -108,15 +104,13 @@
               [projectId]="project.id"
               [status]="'PENDING'"
               (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"
-            ></app-requests>
+              [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
         <clr-tab
-          *ngIf="
-            project.completeRequests && project.completeRequests.length > 0
+          *ngIf="project.completeRequests && project.completeRequests.length> 0
           "
-        >
+          >
           <button clrTabLink class="align-items-center">
             <clr-icon shape="check"></clr-icon>
             Complete Requests
@@ -128,8 +122,7 @@
               [projectId]="project.id"
               [status]="'COMPLETE'"
               (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"
-            ></app-requests>
+              [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
         <clr-tab *ngIf="isUserAdmin">
@@ -144,8 +137,7 @@
                 [projectId]="project.id"
                 [type]="'REQUESTOR'"
                 [newProject]="newProject"
-                (changed)="refreshUsers()"
-              ></app-user-list>
+                (changed)="refreshUsers()"></app-user-list>
             </div>
           </clr-tab-content>
         </clr-tab>
@@ -161,8 +153,7 @@
                 [type]="'USERS'"
                 [projectId]="project.id"
                 [newProject]="newProject"
-                (changed)="refreshUsers()"
-              ></app-user-list>
+                (changed)="refreshUsers()"></app-user-list>
             </div>
           </clr-tab-content>
         </clr-tab>
@@ -185,30 +176,28 @@
                 <section class="form-block">
                   <div class="row no-margin-left align-items-center">
                     <label class="no-bottom-margin" for="pr-1">Zip Code:</label>
-                    <div class="pl-1 pr-2">
+                    <div class="pl-1 pr-1">
                       <input
                         type="text"
                         name="zipcode"
+                        size="7" maxlength="9"
                         formControlName="zipcode"
                         placeholder="project zip code"
-                      />
+                        />
                     </div>
-                    <label class="required no-bottom-margin pr-1"
-                      >State:
+                    <label class="required no-bottom-margin pr-1">State:
                     </label>
-                    <div class="w-50">
+                    <div class="w-25">
                       <ng-select class="full-width" formControlName="state">
                         <ng-option
                           *ngFor="let state of states"
-                          [value]="state.value"
-                          >{{ state.label }}</ng-option
-                        >
+                          [value]="state.value">{{ state.label }}</ng-option>
                       </ng-select>
                     </div>
                   </div>
                   <div class="row no-margin-left font-italic small-text">
-                    <i class="material-icons md-20 md-dark"> info </i
-                    >&nbsp;CostTrax uses zip code information to look up local
+                    <i class="material-icons md-20 md-dark"> info </i>&nbsp;CostTrax
+                    uses zip code information to look up local
                     rental rates when auditing submitted equipment costs
                   </div>
                 </section>
@@ -217,15 +206,14 @@
                   <div class="form-block">
                     <label for="formFields_8">Instructions:</label>
                     <div class="row no-margin-left font-italic small-text">
-                      <i class="material-icons md-20 md-dark"> info </i
-                      >&nbsp;Include any relevant instructions or information
+                      <i class="material-icons md-20 md-dark"> info </i>&nbsp;Include
+                      any relevant instructions or information
                       for users submitting requests on this project.
                     </div>
                     <textarea
                       id="formFields_8"
                       rows="3"
-                      formControlName="projectInstructions"
-                    ></textarea>
+                      formControlName="projectInstructions"></textarea>
                   </div>
                 </section>
                 <section class="form-block">
@@ -238,12 +226,11 @@
                         matRipple
                         id="activeCheck"
                         (change)="toggleCheckbox('equipment', $event)"
-                        formControlName="activeCheck"
-                      >
+                        formControlName="activeCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Equipment, Active
                       </h4>
                     </div>
@@ -260,8 +247,7 @@
                         [closeOnSelect]="true"
                         [hideSelected]="true"
                         appendTo="body"
-                        formControlName="activeFormula"
-                      >
+                        formControlName="activeFormula">
                       </ng-select>
                       <div class="row no-margin-left font-italic small-text">
                         (Rental Rate Blue Book Monthly Ownership
@@ -277,17 +263,15 @@
                             matRipple
                             id="activeRegionalCheck"
                             formControlName="activeRegionalCheck"
-                          />
-                          <label for="activeRegionalCheck"
-                            >Use regional adjustment</label
-                          >
+                            />
+                          <label for="activeRegionalCheck">Use regional
+                            adjustment</label>
                         </div>
                         <div
-                          class="row no-margin-left pb-1 w-50 align-items-center"
-                        >
-                          <label class="no-bottom-margin"
-                            >Reimbursable %, Ownership Cost:</label
-                          >
+                          class="row no-margin-left pb-1 w-50
+                          align-items-center">
+                          <label class="no-bottom-margin">Reimbursable %,
+                            Ownership Cost:</label>
                           <div class="spacer"></div>
                           <nz-input-number
                             formControlName="activeOwnershipCost"
@@ -295,15 +279,13 @@
                             [nzMax]="100"
                             [nzStep]="1"
                             [nzFormatter]="formatterPercent"
-                            [nzParser]="parserPercent"
-                          ></nz-input-number>
+                            [nzParser]="parserPercent"></nz-input-number>
                         </div>
                         <div
-                          class="row no-margin-left pb-1 w-50 align-items-center"
-                        >
-                          <label class="no-bottom-margin"
-                            >Reimbursable %, Operating Cost:</label
-                          >
+                          class="row no-margin-left pb-1 w-50
+                          align-items-center">
+                          <label class="no-bottom-margin">Reimbursable %,
+                            Operating Cost:</label>
                           <div class="spacer"></div>
                           <nz-input-number
                             formControlName="activeOperatingCost"
@@ -311,8 +293,7 @@
                             [nzMax]="100"
                             [nzStep]="1"
                             [nzFormatter]="formatterPercent"
-                            [nzParser]="parserPercent"
-                          ></nz-input-number>
+                            [nzParser]="parserPercent"></nz-input-number>
                         </div>
                       </div>
                     </div>
@@ -325,15 +306,13 @@
                           [nzMax]="100"
                           [nzStep]="1"
                           [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"
-                        ></nz-input-number>
+                          [nzParser]="parserPercent"></nz-input-number>
                         <div class="spacer"></div>
                         <div
                           class="row no-margin-left font-italic small-text"
-                          style="padding-right: 1rem"
-                        >
-                          <i class="material-icons md-20 md-dark"> info </i
-                          >&nbsp;Rate Adjustments will be applied anywhere rates
+                          style="padding-right: 1rem">
+                          <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
+                          Adjustments will be applied anywhere rates
                           are displayed<br />
                           in CostTrax. Markup applied to Totals and
                           Recapitulation only.
@@ -349,12 +328,11 @@
                         matRipple
                         id="standbyCheck"
                         (change)="toggleCheckbox('standby', $event)"
-                        formControlName="standbyCheck"
-                      >
+                        formControlName="standbyCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Equipment, Standby
                       </h4>
                     </div>
@@ -370,8 +348,7 @@
                         [closeOnSelect]="true"
                         [hideSelected]="true"
                         appendTo="body"
-                        formControlName="standbyFormula"
-                      >
+                        formControlName="standbyFormula">
                       </ng-select>
                       <div class="row no-margin-left font-italic small-text">
                         (Rental Rate Blue Book Monthly Ownership Cost/176)*0.5
@@ -386,10 +363,9 @@
                             matRipple
                             id="standbyRegionalCheck"
                             formControlName="standbyRegionalCheck"
-                          />
-                          <label for="standbyRegionalCheck"
-                            >Use regional adjustment</label
-                          >
+                            />
+                          <label for="standbyRegionalCheck">Use regional
+                            adjustment</label>
                         </div>
                       </div>
                     </div>
@@ -402,15 +378,13 @@
                           [nzMax]="100"
                           [nzStep]="1"
                           [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"
-                        ></nz-input-number>
+                          [nzParser]="parserPercent"></nz-input-number>
                         <div class="spacer"></div>
                         <div
                           class="row no-margin-left font-italic small-text"
-                          style="padding-right: 1rem"
-                        >
-                          <i class="material-icons md-20 md-dark"> info </i
-                          >&nbsp;Rate Adjustments will be applied anywhere rates
+                          style="padding-right: 1rem">
+                          <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
+                          Adjustments will be applied anywhere rates
                           are displayed<br />
                           in CostTrax. Markup applied to Totals and
                           Recapitulation only.
@@ -425,12 +399,11 @@
                         matRipple
                         id="rentalCheck"
                         (change)="toggleCheckbox('rental', $event)"
-                        formControlName="rentalCheck"
-                      >
+                        formControlName="rentalCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Equipment, Rental
                       </h4>
                     </div>
@@ -449,8 +422,7 @@
                           [nzMax]="100"
                           [nzStep]="1"
                           [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"
-                        ></nz-input-number>
+                          [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
@@ -461,12 +433,11 @@
                         matRipple
                         id="materialCheck"
                         (change)="toggleCheckbox('material', $event)"
-                        formControlName="materialCheck"
-                      >
+                        formControlName="materialCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Material
                       </h4>
                     </div>
@@ -485,8 +456,7 @@
                           [nzMax]="100"
                           [nzStep]="1"
                           [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"
-                        ></nz-input-number>
+                          [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
@@ -497,12 +467,11 @@
                         matRipple
                         id="laborCheck"
                         (change)="toggleCheckbox('labor', $event)"
-                        formControlName="laborCheck"
-                      >
+                        formControlName="laborCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Labor
                       </h4>
                     </div>
@@ -521,8 +490,7 @@
                           [nzMax]="100"
                           [nzStep]="1"
                           [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"
-                        ></nz-input-number>
+                          [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
@@ -533,12 +501,11 @@
                         matRipple
                         id="subcontractorCheck"
                         (change)="toggleCheckbox('subcontractor', $event)"
-                        formControlName="subcontractorCheck"
-                      >
+                        formControlName="subcontractorCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Subcontractor
                       </h4>
                     </div>
@@ -557,8 +524,7 @@
                           [nzMax]="100"
                           [nzStep]="1"
                           [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"
-                        ></nz-input-number>
+                          [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
@@ -569,12 +535,11 @@
                         matRipple
                         id="otherCheck"
                         (change)="toggleCheckbox('other', $event)"
-                        formControlName="otherCheck"
-                      >
+                        formControlName="otherCheck">
                       </mat-checkbox>
                       <h4
-                        class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                      >
+                        class="pl-1 no-top-margin no-bottom-margin
+                        align-items-center">
                         Other
                       </h4>
                     </div>
@@ -593,15 +558,13 @@
               <button
                 class="btn btn-primary"
                 (click)="saveProject()"
-                [disabled]="!projectFormGroup.dirty"
-              >
+                [disabled]="!projectFormGroup.dirty">
                 Save
               </button>
               <button
                 class="btn btn-outline-warning"
                 (click)="revertChanges()"
-                [disabled]="!projectFormGroup.dirty"
-              >
+                [disabled]="!projectFormGroup.dirty">
                 Cancel
               </button>
             </div>

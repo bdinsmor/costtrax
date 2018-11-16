@@ -6,13 +6,25 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -28,7 +40,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils,
+  Utils
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -485,9 +497,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           benefits: employee.benefits,
           time1: 0,
           time15: 0,
-          time2: 0,
-          fut: this.project.adjustments.labor.fut,
-          sut: this.project.adjustments.labor.sut
+          time2: 0
         }
       });
       newItem.beingEdited = true;
@@ -518,9 +528,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             time1: 0,
             time15: 0,
             time2: 0,
-            benefits: 0,
-            fut: this.project.adjustments.labor.fut,
-            sut: this.project.adjustments.labor.sut
+            benefits: 0
           }
         });
       } else if (
@@ -717,9 +725,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           time1: 0,
           time15: 0,
           time2: 0,
-          benefits: 0,
-          fut: this.project.adjustments.labor.fut,
-          sut: this.project.adjustments.labor.sut
+          benefits: 0
         }
       });
     } else if (
@@ -798,10 +804,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         +item.details.time2 + +item.details.time15 + +item.details.time1;
       const totalBennies = +item.details.benefits * totalHours;
       total += +totalBennies;
-    }
-    if (item.details.fut) {
-    }
-    if (item.details.sut) {
     }
 
     item.amount = total;
@@ -1165,7 +1167,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       );
     }
   }
-  f;
 
   get amountChanged() {
     return +this.selectedItem.finalAmount - +this.selectedItem.amount;
