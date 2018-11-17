@@ -37,9 +37,18 @@
 }
 
 .checkbox label {
-    font-size: 90% !important;
+    font-size: 80% !important;
 }
 
-.checkbox input[type=checkbox]:checked + label::before, .checkbox-inline input[type=checkbox]:checked + label::before {
+.checkbox input[type=checkbox]:checked + label::before,
+.checkbox-inline input[type=checkbox]:checked + label::before {
     background: #f44336 !important;
+}
+
+.cost-selection {
+    color: #f44336 !important;
+}
+
+.checkbox-padding {
+    padding-right: 0.516667rem !important;
 }

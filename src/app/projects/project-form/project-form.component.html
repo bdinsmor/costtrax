@@ -75,9 +75,11 @@
           Archive Project
         </button>
         <div class="spacer"></div>
-        <section class="row align-items-center pr-1">
-          <h6 class="no-top-margin">View Project Total Costs for:&nbsp;</h6>
-          <div class="checkbox" *ngIf="canSubmitRequests">
+        <section class="row align-items-center cost-selection pr-1">
+          <h6 class="no-top-margin cost-selection">
+            View Project Total Costs for:&nbsp;
+          </h6>
+          <div class="checkbox checkbox-padding" *ngIf="canSubmitRequests">
             <input
               type="checkbox"
               [(ngModel)]="draftCosts"
@@ -87,7 +89,7 @@
             />
             <label for="check1" class="no-bottom-margin">Draft</label>
           </div>
-          <div class="checkbox">
+          <div class="checkbox checkbox-padding">
             <input
               type="checkbox"
               [(ngModel)]="pendingCosts"
@@ -97,7 +99,7 @@
             />
             <label for="check2" class="no-bottom-margin">Pending</label>
           </div>
-          <div class="checkbox">
+          <div class="checkbox checkbox-padding">
             <input
               type="checkbox"
               id="check3"
