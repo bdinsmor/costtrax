@@ -75,10 +75,8 @@
           Archive Project
         </button>
         <div class="spacer"></div>
-        <section class="row align-items-center cost-selection pr-1">
-          <h6 class="no-top-margin cost-selection">
-            View Project Total Costs for:&nbsp;
-          </h6>
+        <section class="row align-items-center pr-1">
+          <h5 class="no-top-margin">View Project Total Costs for:&nbsp;</h5>
           <div class="checkbox checkbox-padding" *ngIf="canSubmitRequests">
             <input
               type="checkbox"
@@ -87,7 +85,12 @@
               id="check1"
               checked
             />
-            <label for="check1" class="no-bottom-margin">Draft</label>
+            <label
+              for="check1"
+              class="no-bottom-margin"
+              [class.cost-selection]="draftCosts"
+              >DRAFT</label
+            >
           </div>
           <div class="checkbox checkbox-padding">
             <input
@@ -97,7 +100,12 @@
               id="check2"
               checked
             />
-            <label for="check2" class="no-bottom-margin">Pending</label>
+            <label
+              for="check2"
+              class="no-bottom-margin"
+              [class.cost-selection]="pendingCosts"
+              >PENDING</label
+            >
           </div>
           <div class="checkbox checkbox-padding">
             <input
@@ -107,7 +115,12 @@
               [(ngModel)]="completeCosts"
               checked
             />
-            <label for="check3" class="no-bottom-margin">Complete</label>
+            <label
+              for="check3"
+              class="no-bottom-margin"
+              [class.cost-selection]="completeCosts"
+              >COMPLETE</label
+            >
           </div>
         </section>
       </div>

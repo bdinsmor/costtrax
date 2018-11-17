@@ -37,18 +37,24 @@
 }
 
 .checkbox label {
-    font-size: 80% !important;
+    font-size: 75% !important;
+    font-weight: 500;
 }
 
 .checkbox input[type=checkbox]:checked + label::before,
 .checkbox-inline input[type=checkbox]:checked + label::before {
-    background: #f44336 !important;
+    background: #003d79 !important;
 }
 
 .cost-selection {
-    color: #f44336 !important;
+    color: #003d79 !important;
 }
 
 .checkbox-padding {
-    padding-right: 0.516667rem !important;
+    padding-right: .516667rem !important;
+}
+
+.card-header {
+    color: inherit !important;
+    border-radius: 4px !important;
 }
