@@ -11,8 +11,7 @@ import {
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -1280,11 +1279,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   addMiscEquipment() {
     this.selectedConfig = [];
-    this.categoryChanged();
-    this.categorySearch();
-    this.sizeSearch();
-    this.modelSearch();
-    this.subtypeSearch();
+
     const dialogRef = this.dialog.open(AddMiscDialogComponent, {
       width: '80vw',
       data: {
@@ -1295,19 +1290,22 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        this.miscEquipment = result.equipment;
         if (result.configuration) {
-          this.confirmAddMiscModel(result.configuration);
+          this.confirmAddMiscModel(
+            result.equipment,
+            result.configuration,
+            result.configurations
+          );
         }
       }
     });
   }
 
-  confirmAddMiscModel(sc: any) {
+  confirmAddMiscModel(equipment: any, sc: any, configs: any) {
     this.miscCategoryId = null;
-    this.miscEquipment.details.configurations = JSON.parse(
-      JSON.stringify(this.configurations)
-    );
+    this.miscEquipment = equipment;
+    this.miscEquipment.misc = true;
+    this.miscEquipment.details.configurations = configs;
     this.miscEquipment.details.selectedConfiguration = sc;
 
     if (this.itemType === 'equipment.rental') {
@@ -1417,132 +1415,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.selected = [];
     this.selectedConfig = null;
     this.miscEquipment = null;
-  }
-
-  modelChanged(item: Equipment) {}
-
-  modelSelected() {
-    if (this.miscModelId) {
-      this.equipmentService.getModelDetails(this.miscModelId).subscribe(
-        (response: any) => {
-          this.miscEquipment = response;
-          this.equipmentService
-            .getConfiguration(response.modelId, this.requestStartDate)
-            .subscribe((configurations: any) => {
-              this.configurations = configurations;
-              if (configurations && configurations.values.length === 1) {
-                this.selectedConfig = configurations.values[0];
-              }
-
-              this.changeDetector.detectChanges();
-            });
-        },
-        (error: any) => {
-          console.error('Caught error trying to load misc choice: ' + error);
-        }
-      );
-    }
-  }
-
-  standbyValueChanged(value: any) {}
-
-  modelSelectionChanged(event: any) {
-    const item: Equipment = this.miscEquipment;
-    if (item) {
-      item.subtypeId = event.item.subtypeId;
-      item.classificationId = event.item.classificationId;
-      item.classificationName = event.item.classificationName;
-      item.display = event.item.display;
-      item.sizeClassId = event.item.sizeClassId;
-      item.description = event.item.description;
-      item.subtypeName = event.item.subtypeName;
-      item.subtypeId = event.item.subtypeId;
-      item.categoryId = event.item.categoryId;
-      item.categoryName = event.item.categoryName;
-      item.make = event.item.make;
-
-      item.model = event.item.model;
-      item.modelId = event.item.modelId;
-      item.baseRental = event.item.baseRental;
-      item.configurations = event.item.configurations;
-      item.selectedConfiguration = event.item.selectedConfiguration;
-      item.rentalHouseRates = event.item.rentalHouseRates;
-      item.nationalAverages = event.item.nationalAverages;
-      item.sizeClassName = event.item.sizeClassName;
-      item.vin = event.item.vin;
-      item.dateDiscontinued = event.item.dateDiscontinued;
-      item.dateIntroduced = event.item.dateIntroduced;
-      item.details = event.item.details;
-      item.generateYears();
-      this.miscEquipment = item;
-    }
-  }
-
-  modelSearch() {
-    this.modelResults$ = concat(
-      of([]), // default items
-      this.modelInput$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(() => (this.modelLoading = true)),
-        switchMap((term: string) =>
-          this.equipmentService
-            .getModelsForSizeId(term, this.miscSizeClassId)
-            .pipe(
-              catchError(() => of([])), // empty list on error
-              tap(() => (this.modelLoading = false))
-            )
-        )
-      )
-    );
-  }
-
-  categoryChanged() {
-    this.miscModelId = null;
-    this.miscSizeClassId = null;
-    this.miscSubtypeId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.subtypeSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  subtypeChanged() {
-    this.miscSizeClassId = null;
-    this.miscModelId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.sizeSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  sizeChanged() {
-    this.miscModelId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.modelSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  categorySearch() {
-    this.categoryResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getCategories()
-    );
-  }
-
-  subtypeSearch() {
-    this.subtypeResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getSubtypes(this.miscCategoryId)
-    );
-  }
-
-  sizeSearch() {
-    this.sizeResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getSizes(this.miscSubtypeId)
-    );
   }
 }
 

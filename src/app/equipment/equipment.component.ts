@@ -228,7 +228,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   }
 
   confirmAddMiscModel(equipment: any, sc: any, configs: any) {
-    const miscEquipment = new Equipment(equipment);
+    const miscEquipment = equipment as Equipment;
     miscEquipment.misc = true;
     miscEquipment.status = 'draft';
     if (configs) {
