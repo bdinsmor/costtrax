@@ -190,6 +190,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   addMiscEquipment() {
     const dialogRef = this.dialog.open(AddMiscDialogComponent, {
+      width: '80vw',
       data: {}
     });
 
