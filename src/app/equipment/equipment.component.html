@@ -31,24 +31,30 @@
   </section>
 
   <clr-datagrid class="px-1" *ngIf="accountSynced">
-    <clr-dg-column [clrDgField]="'id'">ID</clr-dg-column>
-    <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
-    <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
-    <clr-dg-column [clrDgField]="'year'">Year</clr-dg-column>
-    <clr-dg-column [clrDgField]="'sizeClassName'">Size Class</clr-dg-column>
-    <clr-dg-column [clrDgField]="'serial'">Serial</clr-dg-column>
+    <clr-dg-column [clrDgField]="'id'" style="width:50px">ID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'make'" style="width:200px"
+      >Make</clr-dg-column
+    >
+    <clr-dg-column [clrDgField]="'model'" style="width:200px"
+      >Model</clr-dg-column
+    >
+    <clr-dg-column [clrDgField]="'year'" style="width:150px"
+      >Year</clr-dg-column
+    >
+    <clr-dg-column [clrDgField]="'sizeClassName'" style="width:200px"
+      >Size Class</clr-dg-column
+    >
+    <clr-dg-column [clrDgField]="'serial'" style="width:200px"
+      >Serial</clr-dg-column
+    >
     <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
-    <clr-dg-column>Actions</clr-dg-column>
+    <clr-dg-column style="width:80px">Actions</clr-dg-column>
     <clr-dg-row
       *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
       [clrDgItem]="item"
     >
       <clr-dg-cell>
-        <div
-          class="padding-label-top"
-          *ngIf="item.isDraft()"
-          style="width:50px"
-        >
+        <div class="padding-label-top" *ngIf="item.isDraft()">
           <input
             class="full-width"
             type="text"
@@ -57,27 +63,25 @@
             [ngModelOptions]="{ standalone: true }"
           />
         </div>
-        <div *ngIf="!item.isDraft()" style="width:50px">
+        <div *ngIf="!item.isDraft()">
           {{ item.details ? item.details.id : '' }}
         </div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div *ngIf="item.isDraft()" style="width:150px">
+        <div *ngIf="item.isDraft()">
           <app-equipment-select
             type="make"
             [index]="i"
-            style="width:150px"
             (selected)="makeSelectionChanged($event)"
             [initialEquipment]="item"
           ></app-equipment-select>
         </div>
-        <div *ngIf="!item.isDraft()" style="width:150px">{{ item.make }}</div>
+        <div *ngIf="!item.isDraft()">{{ item.make }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div *ngIf="item.isDraft()" style="width:150px">
+        <div *ngIf="item.isDraft()">
           <app-equipment-select
             [makeId]="item.makeId"
-            style="width:150px"
             [index]="i"
             (selected)="modelSelectionChanged($event)"
             [initialEquipment]="item"
@@ -85,7 +89,7 @@
             type="model"
           ></app-equipment-select>
         </div>
-        <div *ngIf="!item.isDraft()" style="width:150px">{{ item.model }}</div>
+        <div *ngIf="!item.isDraft()">{{ item.model }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
@@ -110,16 +114,10 @@
         <div *ngIf="!item.isDraft()">{{ item.year }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div
-          class="padding-label-top"
-          style="width:100px"
-          *ngIf="item.isDraft()"
-        >
+        <div class="padding-label-top" *ngIf="item.isDraft()">
           {{ item.sizeClassName }}
         </div>
-        <div *ngIf="!item.isDraft()" style="width:100px">
-          {{ item.sizeClassName }}
-        </div>
+        <div *ngIf="!item.isDraft()">{{ item.sizeClassName }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div
@@ -187,7 +185,10 @@
           </button>
         </div>
       </clr-dg-cell>
-      <ng-container ngProjectAs="clr-dg-row-detail">
+      <ng-container
+        ngProjectAs="clr-dg-row-detail"
+        *ngIf="item.modelId && item.year"
+      >
         <clr-dg-row-detail *clrIfExpanded>
           <div>
             <h5>Model Configuration</h5>

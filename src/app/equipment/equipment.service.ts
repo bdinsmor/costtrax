@@ -161,8 +161,11 @@ export class EquipmentService {
   }
 
   getCategories(): Observable<Equipment[]> {
+    const manufacturer = 'Miscellaneous';
     const url: string =
-      environment.serverUrl + '/equipment/categories?category=*';
+      environment.serverUrl +
+      '/equipment/categories?category=*&manufacturer=' +
+      manufacturer;
     return this.http.get(url).pipe(
       map((res: any) => {
         if (res === 'Query not covered at this time') {

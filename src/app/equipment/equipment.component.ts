@@ -142,7 +142,17 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         this.items[event.index] = new Equipment(item);
       } else {
         this.items[event.index] = new Equipment({});
+        this.items[event.index].sizeClassName = '';
+        this.items[event.index].year = null;
+        this.items[event.index].years = null;
+        this.items[event.index].modelId = null;
       }
+    } else {
+      this.items[event.index] = new Equipment({});
+      this.items[event.index].sizeClassName = '';
+      this.items[event.index].year = null;
+      this.items[event.index].years = null;
+      this.items[event.index].modelId = null;
     }
   }
 
@@ -171,9 +181,16 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             updatedItem.resetSelectedConfiguration();
           }
           updatedItem.generateYears();
+          updatedItem.year = null;
           this.items[event.index] = updatedItem;
           this.changeDetector.markForCheck();
         });
+    } else {
+      console.log('cleared model!!');
+      this.items[event.index].sizeClassName = '';
+      this.items[event.index].year = null;
+      this.items[event.index].years = null;
+      this.items[event.index].modelId = null;
     }
   }
 
@@ -357,7 +374,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   remove(index: number, item: Equipment) {
     this.selectedIndex = index;
     this.selectedItem = item;
-    this._confirmDeleteModal = true;
+    this.confirmRemoveModel();
   }
 
   copy(index: number, item: Equipment) {}
