@@ -17,8 +17,9 @@ export class AddMiscDialogComponent implements OnInit {
   configurations: any[];
   miscCategoryId: string;
   miscSubtypeId: string;
-  miscSizeClassId: string;
+  miscSizeClass: any;
   miscModelId: string;
+  miscModel: string;
   miscEquipment: Equipment;
   selected = [];
   showConfigurations = false;
@@ -54,20 +55,10 @@ export class AddMiscDialogComponent implements OnInit {
     });
   }
 
-  modelSearch() {
-    this.modelResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getCategories()
-    );
-    this.modelResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getModelsForSizeId('*', this.miscSizeClassId)
-    );
-  }
-
   categoryChanged() {
-    this.miscModelId = null;
-    this.miscSizeClassId = null;
+    this.miscModel = null;
+    this.miscSizeClass = null;
+    this.miscModel = null;
     this.miscSubtypeId = null;
     this.configurations = null;
     this.selected = [];
@@ -75,18 +66,18 @@ export class AddMiscDialogComponent implements OnInit {
   }
 
   subtypeChanged() {
-    this.miscSizeClassId = null;
-    this.miscModelId = null;
+    this.miscSizeClass = null;
+    this.miscModel = null;
+    this.miscModel = null;
     this.configurations = null;
     this.selected = [];
     this.sizeSearch();
   }
 
   sizeChanged() {
-    this.miscModelId = null;
     this.configurations = null;
     this.selected = [];
-    this.modelSearch();
+    this.modelSelected();
   }
 
   categorySearch() {
@@ -120,7 +111,9 @@ export class AddMiscDialogComponent implements OnInit {
     if (this.miscModelId) {
       this.equipmentService.getModelDetails(this.miscModelId).subscribe(
         (response: any) => {
+          console.log('model details: ' + JSON.stringify(response, null, 2));
           this.miscEquipment = response;
+          this.miscModel = this.miscEquipment.model;
           this.equipmentService
             .getConfiguration(response.modelId)
             .subscribe((configurations: any) => {

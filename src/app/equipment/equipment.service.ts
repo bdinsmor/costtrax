@@ -219,6 +219,7 @@ export class EquipmentService {
         if (res === 'Query not covered at this time') {
           return [];
         }
+
         let r: Equipment[] = [];
         for (const machine of res) {
           r.push(new Equipment(machine));
