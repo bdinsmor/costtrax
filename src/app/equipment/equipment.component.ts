@@ -186,7 +186,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
           this.changeDetector.markForCheck();
         });
     } else {
-      console.log('cleared model!!');
       this.items[event.index].sizeClassName = '';
       this.items[event.index].year = null;
       this.items[event.index].years = null;
@@ -214,7 +213,11 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (result.configuration) {
-          this.confirmAddMiscModel(result.configuration);
+          this.confirmAddMiscModel(
+            result.equipment,
+            result.configuration,
+            result.configurations
+          );
         }
       }
     });
@@ -224,15 +227,17 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     this._miscModelModal = false;
   }
 
-  confirmAddMiscModel(sc: any) {
-    this._miscModelModal = false;
-    this.miscEquipment.misc = true;
-    this.miscEquipment.status = 'draft';
-    if (this.selected) {
-      this.miscEquipment.details.configurations = this.configurations;
-      this.miscEquipment.details.selectedConfiguration = sc;
+  confirmAddMiscModel(equipment: any, sc: any, configs: any) {
+    const miscEquipment = new Equipment(equipment);
+    miscEquipment.misc = true;
+    miscEquipment.status = 'draft';
+    if (configs) {
+      miscEquipment.details.configurations = configs;
+      miscEquipment.details.selectedConfiguration = sc;
     }
-    this.items = [...this.items, this.miscEquipment];
+    console.log('adding misc');
+    this.items = [...this.items, miscEquipment];
+    this.changeDetector.detectChanges();
     this.miscCategoryId = null;
   }
 

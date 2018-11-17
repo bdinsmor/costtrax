@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { concat, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { EmployeeFirstNameFilter, EmployeeLastNameFilter, EmployeeTradeFilter, Equipment } from './../../shared/model';
@@ -50,6 +49,7 @@ export class AddMiscDialogComponent implements OnInit {
     this.dialogRef.close({
       success: true,
       configuration: configuration,
+      configurations: this.configurations,
       equipment: this.miscEquipment
     });
   }
@@ -57,19 +57,11 @@ export class AddMiscDialogComponent implements OnInit {
   modelSearch() {
     this.modelResults$ = concat(
       of([]), // default items
-      this.modelInput$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(() => (this.modelLoading = true)),
-        switchMap((term: string) =>
-          this.equipmentService
-            .getModelsForSizeId(term, this.miscSizeClassId)
-            .pipe(
-              catchError(() => of([])), // empty list on error
-              tap(() => (this.modelLoading = false))
-            )
-        )
-      )
+      this.equipmentService.getCategories()
+    );
+    this.modelResults$ = concat(
+      of([]), // default items
+      this.equipmentService.getModelsForSizeId('*', this.miscSizeClassId)
     );
   }
 

@@ -244,7 +244,8 @@ export class EquipmentService {
       addedParam = true;
       url = url + '?model=' + term.toLowerCase();
     } else {
-      return of([]);
+      addedParam = true;
+      url = url + '?model=*';
     }
     if (sizeId && sizeId !== '') {
       if (addedParam) {
