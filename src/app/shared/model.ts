@@ -1557,7 +1557,7 @@ export class Request {
     ) {
       this.laborMarkup =
         Number(Number(this.project.adjustments.labor.markup) / 100) *
-        laborTotal;
+        laborSubtotal;
     }
     laborTotal = +laborSubtotal + +this.laborBenefitsTotal;
 

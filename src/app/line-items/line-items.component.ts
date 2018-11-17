@@ -6,25 +6,13 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig,
-  Sort
-} from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -40,7 +28,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils
+  Utils,
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -574,6 +562,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.details.year = '';
       item.details.years = null;
       item.details.modelId = null;
+      item.details.hours = 0;
+      item.details.amount = 0;
+      item.amount = 0;
+      item.details.transportation = 0;
       item.resetSelectedConfiguration();
     }
   }
@@ -585,6 +577,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.details.year = '';
       item.details.years = null;
       item.details.modelId = null;
+      item.details.hours = 0;
+      item.details.amount = 0;
+      item.amount = 0;
+      item.details.transportation = 0;
       item.resetSelectedConfiguration();
       return;
     }
@@ -662,6 +658,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   yearSelectionChanged(item: Item, index: number) {
     if (!item.details.year || item.details.year === '') {
       item.details.fhwa = 0;
+      item.details.hours = 0;
+      item.details.amount = 0;
+      item.amount = 0;
+      item.details.transportation = 0;
       item.resetSelectedConfiguration();
       if (this.itemType === 'equipment.active') {
         this.activeChanged(item);

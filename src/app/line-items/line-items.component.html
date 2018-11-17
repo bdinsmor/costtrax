@@ -363,16 +363,16 @@
 
       <clr-datagrid *ngIf="itemType === 'labor'">
         <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.employee.lastName'">Last Name</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.employee.firstName'">First Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.lastName'" style="width:150px">Last Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.firstName'" style="width:150px">First Name</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.trade'">Trade/Class</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.rate'">Hourly Rate</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time1'">Time x 1.0</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time15'">Time x 1.5</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time2'">Time x 2.0</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.rate'" style="width:125px">Hourly Rate</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time1'" style="width:125px">Time x 1.0</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time15'" style="width:125px">Time x 1.5</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time2'" style="width:125px">Time x 2.0</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.benefits'">Fringe Benefits</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
-        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-column></clr-dg-column>
         <clr-dg-row *clrDgItems="let item of itemList.items; let i=
           index;trackBy:
           trackByFn"
@@ -528,20 +528,18 @@
         <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}} Items</clr-dg-footer>
       </clr-datagrid>
       <clr-datagrid *ngIf="itemType === 'equipment.active' && accountSynced">
-        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.make'">Make</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.model'">Model</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.year'">Year</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.sizeClassName'">Size Class</clr-dg-column>
-        <clr-dg-column
-          [clrDgField]="'details.selectedConfiguration.hourlyOwnershipCost'">Ownership</clr-dg-column>
-        <clr-dg-column
-          [clrDgField]="'details.selectedConfiguration.hourlyOperatingCost'">Operating</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.hours'">Hours</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.fhwa'">FHWA</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.transportation'">Transport</clr-dg-column>
-        <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
-        <clr-dg-column>Actions</clr-dg-column>
+        <clr-dg-column [clrDgField]="'status'" style="width:125px">Status</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.sizeClassName'" style="width:125px">Size Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.selectedConfiguration.hourlyOwnershipCost'" style="width:150px">Ownership</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.selectedConfiguration.hourlyOperatingCost'" style="width:150px">Operating</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.fhwa'" style="width:150px">Standby</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.transportation'" style="width:150px">Transport</clr-dg-column>
+        <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
+        <clr-dg-column ></clr-dg-column>
         <clr-dg-row class="align-items-center" *clrDgItems="let item of
           itemList.items; let i=
           index;trackBy:
@@ -550,7 +548,7 @@
           <clr-dg-cell>
             <div *ngIf="manageRequests && item.rateVerified()"
               class="padding-label-top row pl-1"
-              style="width:125px;padding-left: 0 !important">
+              style="padding-left: 0 !important">
               <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
             </div>
             <div *ngIf="!manageRequests || !item.rateVerified()"
@@ -559,28 +557,28 @@
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited" style="width:150px">
+            <div *ngIf="item.beingEdited">
               <app-equipment-select type="make" [index]="i"
                 [initialValue]="item"
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
-            <div class="padding-label-top" style="width:150px"
+            <div class="padding-label-top"
               *ngIf="!item.beingEdited">{{item.details.make}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited" style="width:150px">
+            <div *ngIf="item.beingEdited">
               <app-equipment-select [makeId]="item.details.makeId"
                 [initialValue]="item" [index]="i"
                 (selected)="modelNewSelectionChanged($event,item,i)"
                 [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
             </div>
-            <div class="padding-label-top" style="width:150px"
+            <div class="padding-label-top"
               *ngIf="!item.beingEdited">{{item.details.model}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:55px"
+            <div class="padding-label-top"
               *ngIf="!item.beingEdited">{{item.details.year}}</div>
-            <div style="width: 125px" *ngIf="item.beingEdited">
+            <div *ngIf="item.beingEdited">
               <ng-select [disabled]="!item.details.modelId"
                 [items]="item.details.years" dropdownPosition="top"
                 appendTo="body" (change)="yearSelectionChanged(item,i)"
@@ -594,14 +592,14 @@
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:100px">{{item.details.sizeClassName}}</div>
+            <div class="padding-label-top">{{item.details.sizeClassName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:100px">{{item.details.selectedConfiguration.hourlyOwnershipCost
+            <div class="padding-label-top">{{item.details.selectedConfiguration.hourlyOwnershipCost
               | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:100px">{{item.details.selectedConfiguration.hourlyOperatingCost
+            <div class="padding-label-top">{{item.details.selectedConfiguration.hourlyOperatingCost
               | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -610,32 +608,32 @@
                 '.1-2'}}
               </div>
               <input *ngIf="item.beingEdited" [disabled]="!submitRequests
-                || !item.beingEdited" type="number"
-                class="w-55" (change)="activeChanged(item)"
+                || !item.beingEdited" type="number" style="width:55px"
+                (change)="activeChanged(item)"
                 [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone:
                 true}">
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:100px">{{item.details.fhwa
+            <div class="padding-label-top">{{item.details.fhwa
               | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
 
-            <div class="padding-label-top" style="width:100px"
+            <div class="padding-label-top"
               *ngIf="!item.beingEdited">{{item.details.transportation
               | currency}}
             </div>
             <div class="padding-label-top" *ngIf="item.beingEdited">
-              <input type="text" [disabled]="!submitRequests
-                || !item.beingEdited" currencyMask (blur)="activeChanged(item)"
+              <input type="text" [disabled]="!submitRequests 
+                || !item.beingEdited" currencyMask style="width:100px" (blur)="activeChanged(item)"
                 (keypress)="activeChanged(item)"
-                [(ngModel)]="item.details.transportation" style="width:100px"
+                [(ngModel)]="item.details.transportation"
                 [ngModelOptions]="{standalone: true}">
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top">{{item.amount | currency}}</div>
+            <div class="padding-label-top" style="width:100px">{{item.amount | currency}}</div>
           </clr-dg-cell>
 
 
@@ -675,7 +673,7 @@
               item.status.toLowerCase()===
               'pending')"
               class="row padding-label-top
-              justify-content-end" style="min-width:150px">
+              justify-content-end">
               <button class="icon-30 ripple icon-button pr-1"
                 [disabled]="!manageRequests" color="primary" matTooltip="Approve
                 As Is"
@@ -696,7 +694,7 @@
             </div>
 
           </clr-dg-cell>
-          <ng-container ngProjectAs="clr-dg-row-detail">
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item && item.details.modelId && item.details.year && item.details.selectedConfiguration">
             <clr-dg-row-detail *clrIfExpanded>
               <div *ngIf="manageRequests">
                 <h6>Rate Verification: Hourly Ownership & Operating Cost</h6>
@@ -830,24 +828,24 @@
             Items</clr-dg-footer>
         </clr-datagrid>
         <clr-datagrid *ngIf="itemType === 'equipment.standby' && accountSynced">
-          <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.make'">Make</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.model'">Model</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.year'">Year</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.sizeClassName'">Size Class</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.ownership'">Ownership</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.hours'">Hours</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.fhwa'">Standby</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.transportation'">Transport</clr-dg-column>
-          <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
-          <clr-dg-column>Actions</clr-dg-column>
+          <clr-dg-column [clrDgField]="'status'" style="width:125px">Status</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.year'"  style="width:125px">Year</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.sizeClassName'" style="width:175px">Size Class</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.ownership'" style="width:150px">Ownership</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.hours'"  style="width:55px">Hours</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.fhwa'" style="width:150px">Standby</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.transportation'" style="width:150px">Transport</clr-dg-column>
+          <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
+          <clr-dg-column></clr-dg-column>
           <clr-dg-row *clrDgItems="let item of itemList.items; let i=
             index;trackBy:
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
               <div *ngIf="manageRequests && item.rateVerified()"
-                class="padding-label-top row pl-1" style="width:125px;">
+                class="padding-label-top row pl-1">
                 <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
               </div>
               <div *ngIf="!manageRequests || !item.rateVerified()"
@@ -856,28 +854,28 @@
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div *ngIf="item.beingEdited" style="width:150px">
+              <div *ngIf="item.beingEdited">
                 <app-equipment-select type="make" [index]="i"
                   [initialValue]="item"
                   (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
               </div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.make}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div *ngIf="item.beingEdited" style="width:150px">
+              <div *ngIf="item.beingEdited">
                 <app-equipment-select [makeId]="item.details.makeId"
                   [initialValue]="item" [index]="i"
                   (selected)="modelNewSelectionChanged($event,item,i)"
                   [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
               </div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.model}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:55px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.year}}</div>
-              <div style="width: 125px" *ngIf="item.beingEdited">
+              <div *ngIf="item.beingEdited">
                 <ng-select [disabled]="!item.details.modelId"
                   [items]="item.details.years" dropdownPosition="top"
                   appendTo="body" (change)="yearSelectionChanged(item,i)"
@@ -891,10 +889,10 @@
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:100px">{{item.details.sizeClassName}}</div>
+              <div class="padding-label-top">{{item.details.sizeClassName}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:100px">{{item.details.selectedConfiguration.hourlyOwnershipCost
+              <div class="padding-label-top">{{item.details.selectedConfiguration.hourlyOwnershipCost
                 | currency}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
@@ -903,34 +901,32 @@
                   '.1-2'}}
                 </div>
                 <input *ngIf="item.beingEdited" [disabled]="!submitRequests
-                  || !item.beingEdited" type="number"
-                  class="w-55" (change)="standbyChanged(item)"
+                  || !item.beingEdited" type="number" style="width:55px" (change)="standbyChanged(item)"
                   [(ngModel)]="item.details.hours"
                   [ngModelOptions]="{standalone: true}">
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:100px">{{item.details.fhwa
+              <div class="padding-label-top">{{item.details.fhwa
                 | currency}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
 
-              <div class="padding-label-top" style="width:100px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.transportation
                 | currency}}
               </div>
-              <div *ngIf="item.beingEdited" class="padding-label-top"
-                style="width:100px">
+              <div *ngIf="item.beingEdited" class="padding-label-top">
                 <input type="text" [disabled]="!submitRequests
-                  || !item.beingEdited" currencyMask style="width:100px"
-                  (blur)="standbyChanged(item)"
+                  || !item.beingEdited" currencyMask
+                  (blur)="standbyChanged(item)" style="width:100px"
                   (keypress)="standbyChanged(item)"
                   [(ngModel)]="item.details.transportation"
                   [ngModelOptions]="{standalone: true}">
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top">{{item.amount | currency}}</div>
+              <div class="padding-label-top" style="width:100px">{{item.amount | currency}}</div>
             </clr-dg-cell>
 
 
@@ -971,7 +967,7 @@
                 item.status.toLowerCase()===
                 'pending')"
                 class="row padding-label-top
-                justify-content-end" style="min-width:150px">
+                justify-content-end">
                 <button class="icon-30 ripple icon-button pr-1"
                   [disabled]="!manageRequests" color="primary"
                   matTooltip="Approve
@@ -1003,26 +999,26 @@
         </clr-datagrid>
 
         <clr-datagrid *ngIf="itemType === 'equipment.rental' && accountSynced">
-          <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
-          <clr-dg-column [clrDgField]="'make'">Make</clr-dg-column>
-          <clr-dg-column [clrDgField]="'model'">Model</clr-dg-column>
-          <clr-dg-column [clrDgField]="'sizeClassName'">Subtype & Size</clr-dg-column>
-          <clr-dg-column [clrDgField]="'startDate'">Rental
+          <clr-dg-column [clrDgField]="'status'" style="width:125px">Status</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.sizeClassName'" style="width:175px">Subtype</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.startDate'" style="width:150px">Rental
             Start</clr-dg-column>
-          <clr-dg-column [clrDgField]="'endDate'">Rental End</clr-dg-column>
-          <clr-dg-column [clrDgField]="'invoice'">Invoice Amount</clr-dg-column>
-          <clr-dg-column [clrDgField]="'transportation'">Transport</clr-dg-column>
-          <clr-dg-column [clrDgField]="'operating'">Operating</clr-dg-column>
-          <clr-dg-column [clrDgField]="'hours'">Hours</clr-dg-column>
-          <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
-          <clr-dg-column>Actions</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.endDate'" style="width:150px" >Rental End</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.invoice'" style="width:150px">Invoice Amount</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.transportation'" style="width:125px">Transport</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.operating'" style="width:125px" >Operating</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.amount'" style="width:100px">Total</clr-dg-column>
+          <clr-dg-column></clr-dg-column>
           <clr-dg-row *clrDgItems="let item of itemList.items; let i=
             index;trackBy:
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
               <div *ngIf="manageRequests" class="padding-label-top row pl-1"
-                style="width:125px;padding-left: 0 !important">
+                style="padding-left: 0 !important">
                 <mat-icon class="icon" *ngIf="item.rateVerified()"
                   svgIcon="costtrax-check"></mat-icon>
                 <mat-icon class="icon" *ngIf="!item.rateVerified()"
@@ -1035,33 +1031,33 @@
             </clr-dg-cell>
             <clr-dg-cell>
 
-              <div *ngIf="item.beingEdited" style="width:150px">
+              <div *ngIf="item.beingEdited">
                 <app-equipment-select type="make" [index]="i"
                   [initialValue]="item"
                   (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
               </div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top" 
                 *ngIf="!item.beingEdited">{{item.details.make}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div *ngIf="item.beingEdited" style="width:150px">
+              <div *ngIf="item.beingEdited" >
                 <app-equipment-select [makeId]="item.details.makeId"
                   [initialValue]="item" [index]="i"
                   (selected)="modelNewSelectionChanged($event,item,i)"
                   [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
               </div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top" 
                 *ngIf="!item.beingEdited">{{item.details.model}}</div>
             </clr-dg-cell>
 
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:150px">{{item.details.subtype}}
+              <div class="padding-label-top" >{{item.details.subtype}}
                 {{item.details.sizeClassName}}
               </div>
             </clr-dg-cell>
             <clr-dg-cell [class.no-padding-top]="item.beingEdited">
               <div *ngIf="item.beingEdited">
-                <mat-form-field style="width:100px" [floatLabel]="'never'">
+                <mat-form-field [floatLabel]="'never'" style="width:125px">
                   <input class="line-item-font-size" matInput
                     [(ngModel)]="item.details.startDate" autocomplete="off"
                     [ngModelOptions]="{standalone: true}"
@@ -1071,16 +1067,15 @@
                 </mat-form-field>
 
               </div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.startDate
                 | date: 'M/dd/yy'}}</div>
             </clr-dg-cell>
             <clr-dg-cell [class.no-padding-top]="item.beingEdited">
               <div *ngIf="item.beingEdited">
-                <mat-form-field style="width:100px" [floatLabel]="'never'">
+                <mat-form-field [floatLabel]="'never'"  style="width:125px">
                   <input class="line-item-font-size" matInput
                     [min]="item.details.startDate" autocomplete="off"
-                    [max]="maxDate"
                     [(ngModel)]="item.details.endDate"
                     [ngModelOptions]="{standalone: true}"
                     [matDatepicker]="endPicker"
@@ -1089,51 +1084,51 @@
                   <mat-datepicker #endPicker></mat-datepicker>
                 </mat-form-field>
               </div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.endDate
                 | date: 'M/dd/yy'}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.invoice
                 | currency}}</div>
-              <div class="padding-label-top" style="width:150px"
+              <div class="padding-label-top"
                 *ngIf="item.beingEdited">
                 <input type="text" [disabled]="!submitRequests
-                  || !item.beingEdited" currencyMask
+                  || !item.beingEdited" currencyMask style="width:100px"
                   (blur)="rentalChanged(item)" (keypress)="rentalChanged(item)"
                   [(ngModel)]="item.details.invoice"
-                  [ngModelOptions]="{standalone: true}" class="w-100p">
+                  [ngModelOptions]="{standalone: true}">
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
 
-              <div class="padding-label-top" style="width:100px"
+              <div class="padding-label-top" 
                 *ngIf="!item.beingEdited">{{item.details.transportation
                 | currency}}
               </div>
-              <div class="padding-label-top" style="width:100px"
+              <div class="padding-label-top" 
                 *ngIf="item.beingEdited">
                 <input type="text" [disabled]="!submitRequests
-                  || !item.beingEdited" currencyMask
+                  || !item.beingEdited" currencyMask style="width:100px"
                   (blur)="rentalChanged(item)" (keypress)="rentalChanged(item)"
                   [(ngModel)]="item.details.transportation"
-                  [ngModelOptions]="{standalone: true}" class="w-100p">
+                  [ngModelOptions]="{standalone: true}">
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:100px"
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.invoice_operating
                 | currency}}</div>
-              <div class="padding-label-top" style="width:100px"
+              <div class="padding-label-top"
                 *ngIf="item.beingEdited">
                 <input type="text" [disabled]="!submitRequests
-                  || !item.beingEdited" currencyMask
+                  || !item.beingEdited" currencyMask style="width:100px"
                   (blur)="rentalChanged(item)"
                   [(ngModel)]="item.details.invoice_operating"
                   (keypress)="rentalChanged(item)"
                   [ngModelOptions]="{standalone:
-                  true}" class="w-100p">
+                  true}">
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
@@ -1143,7 +1138,7 @@
                 </div>
                 <div class="padding-label-top" *ngIf="item.beingEdited">
                   <input [disabled]="!submitRequests
-                    || !item.beingEdited" type="number" class="w-55"
+                    || !item.beingEdited" type="number" style="width:55px"
                     (change)="rentalChanged(item)"
                     [(ngModel)]="item.details.hours"
                     [ngModelOptions]="{standalone: true}">
@@ -1154,7 +1149,7 @@
 
 
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:100px">{{item.amount |
+              <div class="padding-label-top">{{item.amount |
                 currency}}</div>
             </clr-dg-cell>
 
@@ -1163,8 +1158,7 @@
               <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')"
-                class="row padding-label-top justify-content-end"
-                style="width:100px">
+                class="row padding-label-top justify-content-end">
                 <button *ngIf="item.isDraft() || item.beingEdited"
                   [class.ripple]="item && item.details.startDate &&
                   item.details.endDate && (item.details.endDate >=
@@ -1204,7 +1198,7 @@
                   item.status.toLowerCase()===
                   'pending')"
                   class="row
-                  justify-content-end" style="min-width:150px">
+                  justify-content-end">
                   <button class="icon-30 ripple icon-button pr-1"
                     [disabled]="!manageRequests" color="primary"
                     matTooltip="Approve
@@ -1373,11 +1367,11 @@
           <clr-datagrid *ngIf="itemType === 'material'">
             <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
             <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
-            <clr-dg-column [clrDgField]="'details.units'">Units</clr-dg-column>
+            <clr-dg-column [clrDgField]="'details.units'" style="width:55px">Units</clr-dg-column>
             <clr-dg-column [clrDgField]="'details.unitCost'">Cost Per Unit</clr-dg-column>
             <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
             <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
-            <clr-dg-column>Actions</clr-dg-column>
+            <clr-dg-column></clr-dg-column>
             <clr-dg-row *clrDgItems="let item of itemList.items; let i=
               index;trackBy:
               trackByFn"
@@ -1514,7 +1508,7 @@
             <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
             <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
             <clr-dg-column [clrDgField]="'amount'">Amount</clr-dg-column>
-            <clr-dg-column>Actions</clr-dg-column>
+            <clr-dg-column></clr-dg-column>
             <clr-dg-row *clrDgItems="let item of itemList.items; let i=
               index;trackBy:
               trackByFn"
@@ -1631,7 +1625,7 @@
             <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
             <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
             <clr-dg-column [clrDgField]="'amount'">Amount</clr-dg-column>
-            <clr-dg-column>Actions</clr-dg-column>
+            <clr-dg-column></clr-dg-column>
             <clr-dg-row *clrDgItems="let item of itemList.items; let i=
               index;trackBy:
               trackByFn"
