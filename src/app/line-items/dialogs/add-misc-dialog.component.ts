@@ -127,6 +127,8 @@ export class AddMiscDialogComponent implements OnInit {
               this.configurations = configurations;
               if (configurations && configurations.values.length === 1) {
                 this.selected = configurations.values[0];
+                this.confirm(this.selected);
+                return;
               } else {
                 this.showConfigurations = true;
               }

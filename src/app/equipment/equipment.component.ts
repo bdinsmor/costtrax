@@ -235,7 +235,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
       miscEquipment.details.configurations = configs;
       miscEquipment.details.selectedConfiguration = sc;
     }
-    console.log('adding misc');
+
     this.items = [...this.items, miscEquipment];
     this.changeDetector.detectChanges();
     this.miscCategoryId = null;
