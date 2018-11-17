@@ -693,6 +693,55 @@ export class Project {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  calculateCosts(includeDraft, includePending, includeComplete) {
+    let total = 0;
+    let laborTotal = 0;
+    let equipmentTotal = 0;
+    let materialTotal = 0;
+    let subcontractorTotal = 0;
+    let otherTotal = 0;
+
+    if (includeDraft) {
+      for (let i = 0; i < this.draftRequests.length; i++) {
+        const r = this.draftRequests[i];
+        total += +r.total;
+        laborTotal += +r.laborTotal;
+        equipmentTotal += +r.equipmentTotal;
+        materialTotal += +r.materialTotal;
+        subcontractorTotal += +r.subcontractorTotal;
+        otherTotal += +r.otherTotal;
+      }
+    }
+    if (includePending) {
+      for (let i = 0; i < this.pendingRequests.length; i++) {
+        const r = this.pendingRequests[i];
+        total += +r.total;
+        laborTotal += +r.laborTotal;
+        equipmentTotal += +r.equipmentTotal;
+        materialTotal += +r.materialTotal;
+        subcontractorTotal += +r.subcontractorTotal;
+        otherTotal += +r.otherTotal;
+      }
+    }
+    if (includeComplete) {
+      for (let i = 0; i < this.completeRequests.length; i++) {
+        const r = this.completeRequests[i];
+        total += +r.total;
+        laborTotal += +r.laborTotal;
+        equipmentTotal += +r.equipmentTotal;
+        materialTotal += +r.materialTotal;
+        subcontractorTotal += +r.subcontractorTotal;
+        otherTotal += +r.otherTotal;
+      }
+    }
+    this.total = total;
+    this.subcontractorTotal = subcontractorTotal;
+    this.laborTotal = laborTotal;
+    this.materialTotal = materialTotal;
+    this.otherTotal = otherTotal;
+    this.equipmentTotal = equipmentTotal;
+  }
+
   buildRequests(requestJSON: any) {
     this.requestJSON = requestJSON;
     this.draftRequests = [];
@@ -706,6 +755,7 @@ export class Project {
     let otherTotal = 0;
     for (let i = 0; i < requestJSON.length; i++) {
       const r = new Request(requestJSON[i]);
+
       total += +r.total;
       laborTotal += +r.laborTotal;
       equipmentTotal += +r.equipmentTotal;
@@ -1551,12 +1601,12 @@ export class Request {
 
   buildLineItems() {
     let total = 0;
-    let equipmentTotal = 0;
+    const equipmentTotal = 0;
     let activeTotal = 0;
     let standbyTotal = 0;
     let rentalTotal = 0;
     let otherSubtotal = 0;
-    let laborTotal = 0;
+    const laborTotal = 0;
     let laborSubtotal = 0;
     let laborBenefits = 0;
     let subcontractorTotal = 0;
@@ -1618,87 +1668,89 @@ export class Request {
 
     if (this.lineItemTotals) {
       this.totalItems = this.lineItemTotals.count;
-      total = this.lineItemTotals.amount;
-      equipmentTotal = this.lineItemTotals.equipment || 0;
-      laborTotal = this.lineItemTotals.labor || 0;
-      materialTotal = this.lineItemTotals.material || 0;
-      otherSubtotal = this.lineItemTotals.other || 0;
-      subcontractorTotal = this.lineItemTotals.subcontractor || 0;
-    }
+      this.total = this.lineItemTotals.amount;
+      this.equipmentTotal = this.lineItemTotals.equipment || 0;
+      this.laborTotal = this.lineItemTotals.labor || 0;
+      this.materialTotal = this.lineItemTotals.material || 0;
+      this.otherTotal = this.lineItemTotals.other || 0;
+      this.subcontractorTotal = this.lineItemTotals.subcontractor || 0;
+    } else {
+      this.activeSubtotal = activeTotal;
+      if (this.project && this.project.adjustments) {
+        this.activeMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.active.markup) / 100
+          ) * activeTotal;
+        this.standbySubtotal = standbyTotal;
+        this.standbyMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.standby.markup) / 100
+          ) * standbyTotal;
+        this.rentalSubtotal = rentalTotal;
+        this.rentalMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.rental.markup) / 100
+          ) * rentalTotal;
+      }
 
-    this.activeSubtotal = activeTotal;
-    if (this.project && this.project.adjustments) {
-      this.activeMarkup =
-        Number(Number(this.project.adjustments.equipment.active.markup) / 100) *
-        activeTotal;
-      this.standbySubtotal = standbyTotal;
-      this.standbyMarkup =
-        Number(
-          Number(this.project.adjustments.equipment.standby.markup) / 100
-        ) * standbyTotal;
-      this.rentalSubtotal = rentalTotal;
-      this.rentalMarkup =
-        Number(Number(this.project.adjustments.equipment.rental.markup) / 100) *
-        rentalTotal;
-    }
+      this.equipmentTotal =
+        this.activeSubtotal +
+        this.activeMarkup +
+        this.standbyMarkup +
+        this.standbySubtotal +
+        this.rentalMarkup +
+        this.rentalSubtotal;
 
-    this.equipmentTotal =
-      this.activeSubtotal +
-      this.activeMarkup +
-      this.standbyMarkup +
-      this.standbySubtotal +
-      this.rentalMarkup +
-      this.rentalSubtotal;
+      this.laborSubtotal = laborSubtotal;
+      this.laborBenefitsTotal = laborBenefits;
 
-    this.laborSubtotal = laborSubtotal;
-    this.laborBenefitsTotal = laborBenefits;
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.labor
+      ) {
+        this.laborMarkup =
+          Number(Number(this.project.adjustments.labor.markup) / 100) *
+          laborSubtotal;
+      }
 
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.labor
-    ) {
-      this.laborMarkup =
-        Number(Number(this.project.adjustments.labor.markup) / 100) *
-        laborSubtotal;
-    }
+      this.laborTotal =
+        laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
 
-    this.laborTotal =
-      laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
-
-    this.subcontractorSubtotal = subcontractorTotal;
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.subcontractor
-    ) {
-      this.subcontractorMarkup =
-        Number(Number(this.project.adjustments.subcontractor.markup / 100)) *
-        subcontractorTotal;
+      this.subcontractorSubtotal = subcontractorTotal;
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.subcontractor
+      ) {
+        this.subcontractorMarkup =
+          Number(Number(this.project.adjustments.subcontractor.markup / 100)) *
+          subcontractorTotal;
+      }
+      this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
+      this.materialSubtotal = materialTotal;
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.material
+      ) {
+        this.materialMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.material.markup / 100)
+          ) * materialTotal;
+      }
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.other
+      ) {
+        this.otherMarkup =
+          Number(Number(this.project.adjustments.other.markup / 100)) *
+          otherSubtotal;
+      }
+      this.otherTotal = otherSubtotal + this.otherMarkup;
+      this.materialTotal = materialTotal + this.materialMarkup;
     }
-    this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
-    this.materialSubtotal = materialTotal;
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.material
-    ) {
-      this.materialMarkup =
-        Number(
-          Number(this.project.adjustments.equipment.material.markup / 100)
-        ) * materialTotal;
-    }
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.other
-    ) {
-      this.otherMarkup =
-        Number(Number(this.project.adjustments.other.markup / 100)) *
-        otherSubtotal;
-    }
-    this.otherTotal = otherSubtotal + this.otherMarkup;
-    this.materialTotal = materialTotal + this.materialMarkup;
     this.total =
       this.materialTotal +
       this.subcontractorTotal +
@@ -1713,7 +1765,7 @@ export class Request {
     this.itemsByType.sort((a, b) =>
       a.sortOrder < b.sortOrder ? -1 : a.sortOrder > b.sortOrder ? 1 : 0
     );
-    // console.log('tp: ' + JSON.stringify(this.itemsByType, null, 2));
+
     //  console.log('Request Map: \n' + JSON.stringify(byType.size, null, 2));
   }
 

@@ -32,6 +32,10 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   private config: MatSnackBarConfig;
   duration = 3000;
   items: any;
+  draftCosts = true;
+  pendingCosts = true;
+  completeCosts = true;
+
   states = [
     { label: 'Alabama', value: 'AL' },
     { label: 'Alaska', value: 'AK' },
@@ -149,6 +153,14 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     }
 
     this.accounts$ = this.projectsService.getAccounts();
+  }
+
+  calculateCosts() {
+    this.project.calculateCosts(
+      this.draftCosts,
+      this.pendingCosts,
+      this.completeCosts
+    );
   }
 
   checkPermissions() {
