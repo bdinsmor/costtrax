@@ -1,4 +1,7 @@
-import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
+import {
+  ClrDatagridComparatorInterface,
+  ClrDatagridStringFilterInterface
+} from '@clr/angular';
 import * as moment from 'moment';
 
 export interface Breadcrumb {
@@ -350,6 +353,30 @@ export class Item {
     }
   }
 
+  buildRentalDates() {
+    if (this.details.dateRange && this.details.dateRange.length > 0) {
+      this.details.startDate = this.details.dateRange[0];
+      this.details.endDate = this.details.dateRange[1];
+    }
+  }
+
+  buildDateRange() {
+    if (
+      (!this.details.dateRange || this.details.dateRange.length < 2) &&
+      (this.details.startDate &&
+        this.details.startDate !== '' &&
+        this.details.endDate)
+    ) {
+      if (this.details.startDate && this.details.startDate !== null) {
+        
+        this.details.dateRange = [this.details.startDate, this.details.endDate];
+        console.log(
+          'date range: ' + JSON.stringify(this.details.dateRange, null, 2)
+        );
+      }
+    }
+  }
+
   hasId(): boolean {
     return this.id && this.id !== '';
   }
@@ -573,12 +600,7 @@ export class Item {
       if (!data.details) {
         data.details = {};
       }
-      if (data.details.startDate) {
-        // console.log('details start Date: ' + data.details.startDate);
-      }
-      if (data.details.endDate) {
-        // console.log('details end Date: ' + data.details.endDate);
-      }
+      
 
       this.id = data.id || '';
       this.editMode = data.editMode || false;
@@ -601,8 +623,18 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.fromSaved = data.fromSaved || false;
-      this.details.startDate = new Date(data.details.startDate) || new Date();
-      this.details.endDate = new Date(data.details.endDate) || new Date();
+      this.buildRentalDates();
+
+      if (this.details.startDate) {
+        this.details.startDate = new Date(data.details.startDate);
+      } else {
+        this.details.startDate = new Date();
+      }
+      if (this.details.endDate) {
+        this.details.endDate = new Date(data.details.endDate);
+      } else {
+        this.details.endDate = new Date();
+      }
       if (this.details.startDate && this.details.endDate) {
         const diff = Math.abs(
           this.details.endDate.getTime() - this.details.startDate.getTime()
@@ -613,6 +645,7 @@ export class Item {
         }
         this.details.numDays = diffDays;
       }
+      this.buildDateRange();
 
       this.setDisplayType();
       this.setAmounts();

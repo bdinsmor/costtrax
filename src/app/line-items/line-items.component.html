@@ -363,13 +363,19 @@
 
       <clr-datagrid *ngIf="itemType === 'labor'">
         <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.employee.lastName'" style="width:150px">Last Name</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.employee.firstName'" style="width:150px">First Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.lastName'"
+          style="width:150px">Last Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.firstName'"
+          style="width:150px">First Name</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.trade'">Trade/Class</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.rate'" style="width:125px">Hourly Rate</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time1'" style="width:125px">Time x 1.0</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time15'" style="width:125px">Time x 1.5</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time2'" style="width:125px">Time x 2.0</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.rate'" style="width:125px">Hourly
+          Rate</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time1'" style="width:125px">Time x
+          1.0</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time15'" style="width:125px">Time
+          x 1.5</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.time2'" style="width:125px">Time x
+          2.0</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.benefits'">Fringe Benefits</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
         <clr-dg-column></clr-dg-column>
@@ -532,14 +538,20 @@
         <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.sizeClassName'" style="width:125px">Size Class</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.selectedConfiguration.hourlyOwnershipCost'" style="width:150px">Ownership</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.selectedConfiguration.hourlyOperatingCost'" style="width:150px">Operating</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.sizeClassName'"
+          style="width:125px">Size Class</clr-dg-column>
+        <clr-dg-column
+          [clrDgField]="'details.selectedConfiguration.hourlyOwnershipCost'"
+          style="width:150px">Ownership</clr-dg-column>
+        <clr-dg-column
+          [clrDgField]="'details.selectedConfiguration.hourlyOperatingCost'"
+          style="width:150px">Operating</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.fhwa'" style="width:150px">Standby</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.transportation'" style="width:150px">Transport</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.transportation'"
+          style="width:150px">Transport</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
-        <clr-dg-column ></clr-dg-column>
+        <clr-dg-column></clr-dg-column>
         <clr-dg-row class="align-items-center" *clrDgItems="let item of
           itemList.items; let i=
           index;trackBy:
@@ -625,15 +637,17 @@
               | currency}}
             </div>
             <div class="padding-label-top" *ngIf="item.beingEdited">
-              <input type="text" [disabled]="!submitRequests 
-                || !item.beingEdited" currencyMask style="width:100px" (blur)="activeChanged(item)"
+              <input type="text" [disabled]="!submitRequests
+                || !item.beingEdited" currencyMask style="width:100px"
+                (blur)="activeChanged(item)"
                 (keypress)="activeChanged(item)"
                 [(ngModel)]="item.details.transportation"
                 [ngModelOptions]="{standalone: true}">
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:100px">{{item.amount | currency}}</div>
+            <div class="padding-label-top" style="width:100px">{{item.amount |
+              currency}}</div>
           </clr-dg-cell>
 
 
@@ -694,7 +708,9 @@
             </div>
 
           </clr-dg-cell>
-          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item && item.details.modelId && item.details.year && item.details.selectedConfiguration">
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item &&
+            item.details.modelId && item.details.year &&
+            item.details.selectedConfiguration">
             <clr-dg-row-detail *clrIfExpanded>
               <div *ngIf="manageRequests">
                 <h6>Rate Verification: Hourly Ownership & Operating Cost</h6>
@@ -831,12 +847,14 @@
           <clr-dg-column [clrDgField]="'status'" style="width:125px">Status</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.year'"  style="width:125px">Year</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.sizeClassName'" style="width:175px">Size Class</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.sizeClassName'"
+            style="width:175px">Size Class</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.ownership'" style="width:150px">Ownership</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.hours'"  style="width:55px">Hours</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.fhwa'" style="width:150px">Standby</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.transportation'" style="width:150px">Transport</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.transportation'"
+            style="width:150px">Transport</clr-dg-column>
           <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
           <clr-dg-column></clr-dg-column>
           <clr-dg-row *clrDgItems="let item of itemList.items; let i=
@@ -901,7 +919,8 @@
                   '.1-2'}}
                 </div>
                 <input *ngIf="item.beingEdited" [disabled]="!submitRequests
-                  || !item.beingEdited" type="number" style="width:55px" (change)="standbyChanged(item)"
+                  || !item.beingEdited" type="number" style="width:55px"
+                  (change)="standbyChanged(item)"
                   [(ngModel)]="item.details.hours"
                   [ngModelOptions]="{standalone: true}">
               </div>
@@ -926,7 +945,8 @@
               </div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div class="padding-label-top" style="width:100px">{{item.amount | currency}}</div>
+              <div class="padding-label-top" style="width:100px">{{item.amount |
+                currency}}</div>
             </clr-dg-cell>
 
 
@@ -1002,13 +1022,16 @@
           <clr-dg-column [clrDgField]="'status'" style="width:125px">Status</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.sizeClassName'" style="width:175px">Subtype</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.startDate'" style="width:150px">Rental
-            Start</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.endDate'" style="width:150px" >Rental End</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.invoice'" style="width:150px">Invoice Amount</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.transportation'" style="width:125px">Transport</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.operating'" style="width:125px" >Operating</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.sizeClassName'"
+            style="width:175px">Subtype</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.dateRange'" style="width:250px">Rental
+            Dates</clr-dg-column>
+
+          <clr-dg-column [clrDgField]="'details.invoice'" style="width:150px">Invoice
+            Amount</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.transportation'"
+            style="width:125px">Transport</clr-dg-column>
+          <clr-dg-column [clrDgField]="'details.operating'" style="width:125px">Operating</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.amount'" style="width:100px">Total</clr-dg-column>
           <clr-dg-column></clr-dg-column>
@@ -1036,58 +1059,36 @@
                   [initialValue]="item"
                   (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
               </div>
-              <div class="padding-label-top" 
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.make}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
-              <div *ngIf="item.beingEdited" >
+              <div *ngIf="item.beingEdited">
                 <app-equipment-select [makeId]="item.details.makeId"
                   [initialValue]="item" [index]="i"
                   (selected)="modelNewSelectionChanged($event,item,i)"
                   [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
               </div>
-              <div class="padding-label-top" 
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.model}}</div>
             </clr-dg-cell>
 
             <clr-dg-cell>
-              <div class="padding-label-top" >{{item.details.subtype}}
+              <div class="padding-label-top">{{item.details.subtype}}
                 {{item.details.sizeClassName}}
               </div>
             </clr-dg-cell>
-            <clr-dg-cell [class.no-padding-top]="item.beingEdited">
+            <clr-dg-cell>
               <div *ngIf="item.beingEdited">
-                <mat-form-field [floatLabel]="'never'" style="width:125px">
-                  <input class="line-item-font-size" matInput
-                    [(ngModel)]="item.details.startDate" autocomplete="off"
-                    [ngModelOptions]="{standalone: true}"
-                    [matDatepicker]="picker" placeholder="Start Date">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+                <nz-range-picker [(ngModel)]="item.details.dateRange"
+                  [nzFormat]="dateFormat"
+                  (ngModelChange)="dateRangeChanged(item)"></nz-range-picker>
+              </div>
+              <div class="padding-label-top"
+                *ngIf="!item.beingEdited">{{item.details.dateRange
+                | dates: 'M/dd/yy'}}</div>
+            </clr-dg-cell>
 
-              </div>
-              <div class="padding-label-top"
-                *ngIf="!item.beingEdited">{{item.details.startDate
-                | date: 'M/dd/yy'}}</div>
-            </clr-dg-cell>
-            <clr-dg-cell [class.no-padding-top]="item.beingEdited">
-              <div *ngIf="item.beingEdited">
-                <mat-form-field [floatLabel]="'never'"  style="width:125px">
-                  <input class="line-item-font-size" matInput
-                    [min]="item.details.startDate" autocomplete="off"
-                    [(ngModel)]="item.details.endDate"
-                    [ngModelOptions]="{standalone: true}"
-                    [matDatepicker]="endPicker"
-                    placeholder="End Date">
-                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-                  <mat-datepicker #endPicker></mat-datepicker>
-                </mat-form-field>
-              </div>
-              <div class="padding-label-top"
-                *ngIf="!item.beingEdited">{{item.details.endDate
-                | date: 'M/dd/yy'}}</div>
-            </clr-dg-cell>
             <clr-dg-cell>
               <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.invoice
@@ -1103,11 +1104,11 @@
             </clr-dg-cell>
             <clr-dg-cell>
 
-              <div class="padding-label-top" 
+              <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.transportation
                 | currency}}
               </div>
-              <div class="padding-label-top" 
+              <div class="padding-label-top"
                 *ngIf="item.beingEdited">
                 <input type="text" [disabled]="!submitRequests
                   || !item.beingEdited" currencyMask style="width:100px"

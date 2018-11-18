@@ -1,72 +1,81 @@
 .red {
-    color: rgba(255, 0, 0, 0.77) !important;
-    font-weight: bold;
+  color: rgba(255, 0, 0, 0.77) !important;
+  font-weight: bold;
 }
 
 .action-buttons {
-    display: flex;
-    position: relative;
+  display: flex;
+  position: relative;
 }
 
 .machine-edit {
-    padding-top: 8px;
+  padding-top: 8px;
+}
+
+nz-date-picker,
+nz-month-picker,
+nz-range-picker,
+nz-week-picker {
+  margin: 0 8px 12px 0;
 }
 
 clr-dg-row {
-    transition: background-color .5s ease;
+  transition: background-color 0.5s ease;
 }
 
+.pts-1 {
+}
 .small-text {
-    font-size: 75%;
-    font-weight: bold;
+  font-size: 75%;
+  font-weight: bold;
 }
 
 .rate-icon {
-    height: 16px !important;
-    width: 16px !important;
+  height: 16px !important;
+  width: 16px !important;
 }
 
 .big-text {
-    font-size: 150%;
+  font-size: 150%;
 }
 
 .right {
-    text-align: right !important;
+  text-align: right !important;
 }
 
 .comparison-table {
-    padding: 2px;
+  padding: 2px;
 }
 
 .comparison-table td {
-    vertical-align: middle !important;
+  vertical-align: middle !important;
 }
 
 .red {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 
 .green {
-    color: green;
-    font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 
 .no-border,
 .no-border * {
-    background: inherit !important;
-    border: none !important;
+  background: inherit !important;
+  border: none !important;
 }
 
 #invoice-table td.left:first-child,
 #invoice-table th.left:first-child {
-    padding-left: 0 !important;
+  padding-left: 0 !important;
 }
 
 .no-padding-top {
-    padding-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 .line-item-font-size {
-    font-size: 13px !important;
+  font-size: 13px !important;
 }

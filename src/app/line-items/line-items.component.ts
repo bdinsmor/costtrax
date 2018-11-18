@@ -6,10 +6,16 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, Subject, Subscription } from 'rxjs';
 
@@ -27,7 +33,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils,
+  Utils
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -67,9 +73,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   subtypeResults$: Observable<any>;
   sizeResults$: Observable<any>;
   modelResults$: Observable<any>;
-
+  dateRange: any;
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
   itemType: string;
+  dateFormat = 'M/dd/yy';
   @Input() itemList: ItemList;
   @Input() project: Project;
   @Input() requestId: string;
@@ -227,6 +234,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   getComps() {
     if (this.itemType !== 'equipment.rental') {
       return;
+    }
+  }
+
+  dateRangeChanged(item: Item) {
+    if (item && item.details.dateRange && item.details.dateRange.length > 0) {
+      item.details.startDate = item.details.dateRange[0];
+      item.details.endDate = item.details.dateRange[1];
     }
   }
 

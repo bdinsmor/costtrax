@@ -8,6 +8,7 @@ import { KeysPipe } from './keys.pipe';
 import { PhonePipe } from './phone.pipe';
 import { RolePipe } from './role.pipe';
 import { TruncatePipe } from './truncate.pipe';
+import { DatesPipe } from './dates.pipe';
 
 @NgModule({
   declarations: [
@@ -18,11 +19,13 @@ import { TruncatePipe } from './truncate.pipe';
     HtmlToPlaintextPipe,
     FilterPipe,
     RolePipe,
+    DatesPipe,
     CamelCaseToDashPipe
   ],
   imports: [],
   exports: [
     KeysPipe,
+    DatesPipe,
     TruncatePipe,
     GetByIdPipe,
     PhonePipe,

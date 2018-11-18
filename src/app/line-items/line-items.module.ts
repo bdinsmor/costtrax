@@ -5,7 +5,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommentsModule } from '../comments/comments.module';
 import { DirectivesModule } from '../core/directives/directives';
 import { NgxCurrencyModule } from '../core/directives/ngx-currency';
-import { CURRENCY_MASK_CONFIG, CurrencyMaskConfig } from '../core/directives/ngx-currency/src/currency-mask.config';
+import {
+  CURRENCY_MASK_CONFIG,
+  CurrencyMaskConfig
+} from '../core/directives/ngx-currency/src/currency-mask.config';
 import { PipesModule } from '../core/pipes/pipes.module';
 import { MaterialModule } from '../material.module';
 import { ProjectsService } from '../projects/projects.service';
@@ -19,10 +22,11 @@ import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.com
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 import { LineItemsComponent } from './line-items.component';
-
-// import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
+import en from '@angular/common/locales/en';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
+import { registerLocaleData } from '@angular/common';
 /** config angular i18n **/
-// registerLocaleData(en);
+registerLocaleData(en);
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
@@ -53,8 +57,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DirectivesModule,
     PipesModule,
     EquipmentModule,
-    CommentsModule
-    // NgZorroAntdModule
+    CommentsModule,
+    NgZorroAntdModule
   ],
   exports: [
     LineItemsComponent,
