@@ -368,11 +368,7 @@ export class Item {
         this.details.endDate)
     ) {
       if (this.details.startDate && this.details.startDate !== null) {
-        
         this.details.dateRange = [this.details.startDate, this.details.endDate];
-        console.log(
-          'date range: ' + JSON.stringify(this.details.dateRange, null, 2)
-        );
       }
     }
   }

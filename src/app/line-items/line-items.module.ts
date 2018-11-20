@@ -72,7 +72,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LaborService,
     EquipmentService,
     ProjectsService,
-    // { provide: NZ_I18N, useValue: en_US },
+    { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [
