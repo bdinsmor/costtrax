@@ -24,6 +24,7 @@ import { ProjectFormDialogComponent } from './projects/project-form/project-form
 import { ProjectsModule } from './projects/projects.module';
 import { RequestsModule } from './requests/requests.module';
 import { SharedModule } from './shared';
+import { NZ_I18N, NgZorroAntdModule, en_US } from 'ng-zorro-antd';
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,6 +43,7 @@ import { SharedModule } from './shared';
     TextMaskModule,
     RequestsModule,
     LineItemsModule,
+    NgZorroAntdModule,
     ProjectsModule,
     AccountsModule,
     AppRoutingModule,
@@ -55,7 +57,7 @@ import { SharedModule } from './shared';
       enabled: environment.production
     })
   ],
-  providers: [AuthenticationService],
+  providers: [AuthenticationService, { provide: NZ_I18N, useValue: en_US }],
   entryComponents: [ProjectFormDialogComponent],
 
   bootstrap: [AppComponent]
