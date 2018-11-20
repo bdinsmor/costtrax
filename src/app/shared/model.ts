@@ -1,7 +1,4 @@
-import {
-  ClrDatagridComparatorInterface,
-  ClrDatagridStringFilterInterface
-} from '@clr/angular';
+import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
 import * as moment from 'moment';
 
 export interface Breadcrumb {
@@ -596,8 +593,6 @@ export class Item {
       if (!data.details) {
         data.details = {};
       }
-      
-
       this.id = data.id || '';
       this.editMode = data.editMode || false;
       this.editDetails = data.editDetails || {};
@@ -619,7 +614,7 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.fromSaved = data.fromSaved || false;
-      this.buildRentalDates();
+      // this.buildRentalDates();
 
       if (this.details.startDate) {
         this.details.startDate = new Date(data.details.startDate);

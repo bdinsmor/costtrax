@@ -8,7 +8,9 @@
         <select id="selects_1" formControlName="selectedAccount" required>
           <option
             *ngFor="let choice of (accounts$ | async)"
-            [value]="choice.id">{{ choice.organization }}</option>
+            [value]="choice.id"
+            >{{ choice.organization }}</option
+          >
         </select>
       </div>
     </div>
@@ -23,7 +25,7 @@
             formControlName="projectName"
             placeholder="project name"
             required
-            />
+          />
         </div>
       </div>
     </div>
@@ -40,7 +42,7 @@
               size="9"
               maxlength="9"
               placeholder="project zip code"
-              />
+            />
           </div>
           <label class="required no-bottom-margin pr-1">State: </label>
           <div class="w-50">
@@ -48,10 +50,11 @@
               class="w-50"
               formControlName="state"
               appendTo="body"
-              required>
+              required
+            >
               <ng-option *ngFor="let state of states" [value]="state.value">{{
                 state.label
-                }}</ng-option>
+              }}</ng-option>
             </ng-select>
           </div>
         </div>
@@ -74,7 +77,8 @@
       <textarea
         id="formFields_8"
         rows="3"
-        formControlName="projectInstructions"></textarea>
+        formControlName="projectInstructions"
+      ></textarea>
     </div>
   </section>
   <section class="form-group pr-1">
@@ -83,7 +87,8 @@
       [projectId]="project.id"
       [newProject]="true"
       [type]="'REQUESTOR'"
-      (changed)="refreshRequestors($event)"></app-user-list>
+      (changed)="refreshRequestors($event)"
+    ></app-user-list>
   </section>
   <section class="form-group pr-1">
     <app-user-list
@@ -91,7 +96,8 @@
       [projectId]="project.id"
       [newProject]="true"
       [type]="'USER'"
-      (changed)="refreshUsers($event)"></app-user-list>
+      (changed)="refreshUsers($event)"
+    ></app-user-list>
   </section>
   <section class="form-group">
     <h4 class="project-heading pb-1">Allowable Costs</h4>
@@ -103,7 +109,8 @@
           matRipple
           id="activeCheck"
           (change)="toggleCheckbox('equipment', $event)"
-          formControlName="activeCheck">
+          formControlName="activeCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Equipment, Active
@@ -122,7 +129,8 @@
           [closeOnSelect]="true"
           [hideSelected]="true"
           appendTo="body"
-          formControlName="activeFormula">
+          formControlName="activeFormula"
+        >
         </ng-select>
         <div class="row no-margin-left font-italic small-text">
           (Rental Rate Blue Book Monthly Ownership Cost/176)+(Rental Rate Blue
@@ -138,11 +146,13 @@
               matRipple
               id="activeRegionalCheck"
               formControlName="activeRegionalCheck"
-              />
+            />
             <label for="activeRegionalCheck">Use regional adjustment</label>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
-            <label class="no-bottom-margin">Reimbursable %, Ownership Cost:</label>
+            <label class="no-bottom-margin"
+              >Reimbursable %, Ownership Cost:</label
+            >
             <div class="spacer"></div>
             <nz-input-number
               formControlName="activeOwnershipCost"
@@ -150,10 +160,13 @@
               [nzMax]="100"
               [nzStep]="1"
               [nzFormatter]="formatterPercent"
-              [nzParser]="parserPercent"></nz-input-number>
+              [nzParser]="parserPercent"
+            ></nz-input-number>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
-            <label class="no-bottom-margin">Reimbursable %, Operating Cost:</label>
+            <label class="no-bottom-margin"
+              >Reimbursable %, Operating Cost:</label
+            >
             <div class="spacer"></div>
             <nz-input-number
               formControlName="activeOperatingCost"
@@ -161,7 +174,8 @@
               [nzMax]="100"
               [nzStep]="1"
               [nzFormatter]="formatterPercent"
-              [nzParser]="parserPercent"></nz-input-number>
+              [nzParser]="parserPercent"
+            ></nz-input-number>
           </div>
         </div>
       </div>
@@ -174,11 +188,13 @@
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+            [nzParser]="parserPercent"
+          ></nz-input-number>
           <div class="spacer"></div>
           <div
             class="row no-margin-left font-italic small-text"
-            style="padding-right: 1rem">
+            style="padding-right: 1rem"
+          >
             <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
             Adjustments will be applied anywhere rates are displayed<br />
             in CostTrax. Markup applied to Totals and Recapitulation only.
@@ -194,7 +210,8 @@
           matRipple
           id="standbyCheck"
           (change)="toggleCheckbox('standby', $event)"
-          formControlName="standbyCheck">
+          formControlName="standbyCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Equipment, Standby
@@ -212,7 +229,8 @@
           [closeOnSelect]="true"
           [hideSelected]="true"
           appendTo="body"
-          formControlName="standbyFormula">
+          formControlName="standbyFormula"
+        >
         </ng-select>
         <div class="row no-margin-left font-italic small-text">
           (Rental Rate Blue Book Monthly Ownership Cost/176)*0.5
@@ -227,7 +245,7 @@
               matRipple
               id="standbyRegionalCheck"
               formControlName="standbyRegionalCheck"
-              />
+            />
             <label for="standbyRegionalCheck">Use regional adjustment</label>
           </div>
         </div>
@@ -241,11 +259,13 @@
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+            [nzParser]="parserPercent"
+          ></nz-input-number>
           <div class="spacer"></div>
           <div
             class="row no-margin-left font-italic small-text"
-            style="padding-right: 1rem">
+            style="padding-right: 1rem"
+          >
             <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
             Adjustments will be applied anywhere rates are displayed<br />
             in CostTrax. Markup applied to Totals and Recapitulation only.
@@ -260,7 +280,8 @@
           matRipple
           id="rentalCheck"
           (change)="toggleCheckbox('rental', $event)"
-          formControlName="rentalCheck">
+          formControlName="rentalCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Equipment, Rental
@@ -281,7 +302,8 @@
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
@@ -292,7 +314,8 @@
           matRipple
           id="materialCheck"
           (change)="toggleCheckbox('material', $event)"
-          formControlName="materialCheck">
+          formControlName="materialCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Material
@@ -313,7 +336,8 @@
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
@@ -324,7 +348,8 @@
           matRipple
           id="laborCheck"
           (change)="toggleCheckbox('labor', $event)"
-          formControlName="laborCheck">
+          formControlName="laborCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Labor
@@ -345,7 +370,8 @@
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
@@ -356,7 +382,8 @@
           matRipple
           id="subcontractorCheck"
           (change)="toggleCheckbox('subcontractor', $event)"
-          formControlName="subcontractorCheck">
+          formControlName="subcontractorCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Subcontractor
@@ -377,7 +404,8 @@
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
@@ -388,7 +416,8 @@
           matRipple
           id="otherCheck"
           (change)="toggleCheckbox('other', $event)"
-          formControlName="otherCheck">
+          formControlName="otherCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Other
@@ -406,7 +435,8 @@
   <button
     type="button"
     class="btn btn-warning-outline"
-    (click)="cancelCreate()">
+    (click)="cancelCreate()"
+  >
     Cancel
   </button>
   <button
@@ -414,7 +444,8 @@
     class="btn btn-primary"
     (click)="saveNew()"
     cdkFocusInitial
-    [disabled]="!projectFormGroup.valid">
+    [disabled]="!projectFormGroup.valid"
+  >
     <clr-icon shape="check"></clr-icon>&nbsp;Save Project
   </button>
 </mat-dialog-actions>
