@@ -7,7 +7,9 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Equipment } from '../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EquipmentService {
   data: Equipment[];
 

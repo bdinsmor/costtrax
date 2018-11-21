@@ -571,7 +571,7 @@
           <clr-dg-cell>
             <div *ngIf="item.beingEdited">
               <app-equipment-select type="make" [index]="i"
-                [initialValue]="item"
+                [initialValue]="item" cdkFocusInitial
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
             <div class="padding-label-top"
@@ -874,7 +874,7 @@
             <clr-dg-cell>
               <div *ngIf="item.beingEdited">
                 <app-equipment-select type="make" [index]="i"
-                  [initialValue]="item"
+                  [initialValue]="item" cdkFocusInitial
                   (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
               </div>
               <div class="padding-label-top"
@@ -1024,12 +1024,12 @@
           <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.sizeClassName'"
             style="width:175px">Subtype</clr-dg-column>
-         <!-- <clr-dg-column [clrDgField]="'details.dateRange'" style="width:250px">Rental
-            Dates</clr-dg-column>-->
-            <clr-dg-column [clrDgField]="'details.startDate'" style="width:150px">Rental
+          <clr-dg-column [clrDgField]="'details.dateRangeStr'" [clrDgSortBy]="dateRangeComparator" style="width:250px">Rental
+            Dates</clr-dg-column>
+          <!--  <clr-dg-column [clrDgField]="'details.startDate'" style="width:150px">Rental
               Start</clr-dg-column>
             <clr-dg-column [clrDgField]="'details.endDate'" style="width:150px">Rental End</clr-dg-column>
-
+          -->
 
           <clr-dg-column [clrDgField]="'details.invoice'" style="width:150px">Invoice
             Amount</clr-dg-column>
@@ -1060,7 +1060,7 @@
 
               <div *ngIf="item.beingEdited">
                 <app-equipment-select type="make" [index]="i"
-                  [initialValue]="item"
+                  [initialValue]="item" cdkFocusInitial
                   (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
               </div>
               <div class="padding-label-top"
@@ -1082,17 +1082,16 @@
                 {{item.details.sizeClassName}}
               </div>
             </clr-dg-cell>
-           <!-- <clr-dg-cell>
-              <div *ngIf="item.beingEdited">
-                <nz-range-picker [(ngModel)]="item.details.dateRange"
-                  [nzFormat]="dateFormat"
-                  (ngModelChange)="dateRangeChanged(item)"></nz-range-picker>
+            <clr-dg-cell>
+              <div class="padding-label-top" *ngIf="item.beingEdited">
+                <input class="w-85" type="text" bsDaterangepicker [bsConfig]="bsConfig" (ngModelChange)="dateRangeChanged(item)" [(ngModel)]="item.details.dateRange">
+                
               </div>
               <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.dateRange
                 | dates: 'M/dd/yy'}}</div>
-            </clr-dg-cell>-->
-            <clr-dg-cell [class.no-padding-top]="item.beingEdited">
+            </clr-dg-cell>
+           <!-- <clr-dg-cell [class.no-padding-top]="item.beingEdited">
               <div *ngIf="item.beingEdited">
                 <mat-form-field [floatLabel]="'never'" style="width:125px">
                   <input class="line-item-font-size" matInput [(ngModel)]="item.details.startDate" autocomplete="off" [ngModelOptions]="{standalone: true}"
@@ -1108,7 +1107,7 @@
             <clr-dg-cell [class.no-padding-top]="item.beingEdited">
               <div *ngIf="item.beingEdited">
                 <mat-form-field [floatLabel]="'never'" style="width:125px">
-                  <input class="line-item-font-size" matInput [min]="item.details.endDate" autocomplete="off" [(ngModel)]="item.details.endDate"
+                  <input class="line-item-font-size" matInput [min]="item.details.startDate" autocomplete="off" [(ngModel)]="item.details.endDate"
                     [ngModelOptions]="{standalone: true}" [matDatepicker]="endPicker" placeholder="End Date">
                   <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
                   <mat-datepicker #endPicker></mat-datepicker>
@@ -1116,7 +1115,7 @@
               </div>
               <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.endDate
                 | date: 'M/dd/yy'}}</div>
-            </clr-dg-cell>
+            </clr-dg-cell>-->
 
 
             <clr-dg-cell>

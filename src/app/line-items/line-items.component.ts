@@ -6,17 +6,13 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig,
-  Sort
-} from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
 import { Observable, Subject, Subscription } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
@@ -33,7 +29,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils
+  Utils,
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -43,6 +39,30 @@ import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.com
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 
+class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
+  compare(a: Item, b: Item) {
+    const d1 = new Date(a.details.startDate);
+    const d2 = new Date(b.details.startDate);
+
+    // Check if the dates are equal
+    const same = d1.getTime() === d2.getTime();
+    if (same) {
+      return 0;
+    }
+
+    // Check if the first is greater than second
+    if (d1 > d2) {
+      console.log(d1 + ' is greater than ' + d2);
+      return 1;
+    }
+
+    // Check if the first is less than second
+    if (d1 < d2) {
+      console.log(d1 + ' is less than ' + d2);
+      return -1;
+    }
+  }
+}
 @Component({
   selector: 'app-line-items',
   templateUrl: './line-items.component.html',
@@ -51,6 +71,7 @@ import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog
   animations: appAnimations
 })
 export class LineItemsComponent implements OnInit, OnDestroy {
+  public dateRangeComparator = new ItemDateRangeComparator();
   lastNameFilter = new EmployeeLastNameFilter();
   firstNameFilter = new EmployeeFirstNameFilter();
   tradeFilter = new EmployeeTradeFilter();
@@ -77,6 +98,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
   itemType: string;
   dateFormat = 'M/dd/yy';
+  colorTheme = 'theme-dark-blue';
+
+  bsConfig: Partial<BsDatepickerConfig>;
   @Input() itemList: ItemList;
   @Input() project: Project;
   @Input() requestId: string;
@@ -159,6 +183,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
     this.subscription = this.authenticationService
       .getCreds()
       .subscribe(message => {
@@ -238,6 +263,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   dateRangeChanged(item: Item) {
+    console.log('date range changed');
     if (item && item.details.dateRange && item.details.dateRange.length > 0) {
       item.details.startDate = item.details.dateRange[0];
       item.details.endDate = item.details.dateRange[1];

@@ -1,6 +1,8 @@
 import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
 import * as moment from 'moment';
 
+import { DatesPipe } from '../core/pipes/dates.pipe';
+
 export interface Breadcrumb {
   id: string;
   path: string;
@@ -367,7 +369,16 @@ export class Item {
       if (this.details.startDate && this.details.startDate !== null) {
         this.details.dateRange = [this.details.startDate, this.details.endDate];
       }
+    } else {
+      this.details.dateRange = [
+        new Date(this.details.startDate),
+        new Date(this.details.endDate)
+      ];
     }
+    this.details.dateRangeStr = new DatesPipe().transform(
+      this.details.dateRange
+    );
+    console.log('dateRangeStr: ' + this.details.dateRangeStr);
   }
 
   hasId(): boolean {
@@ -614,7 +625,7 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.fromSaved = data.fromSaved || false;
-      // this.buildRentalDates();
+      this.buildRentalDates();
 
       if (this.details.startDate) {
         this.details.startDate = new Date(data.details.startDate);
@@ -1329,6 +1340,7 @@ export class Request {
   requestDate: Date;
   startDate: Date;
   endDate: Date;
+  dateRange: Date[];
   signatures: Signatures;
   total: number;
   messages: number;
@@ -1371,6 +1383,14 @@ export class Request {
         (this.status.toLowerCase() === 'new' ||
           this.status.toLowerCase() === 'draft'))
     );
+  }
+
+  buildDateRange() {
+    if (!this.startDate && !this.endDate) {
+      this.startDate = new Date();
+      this.endDate = new Date();
+    }
+    this.dateRange = [this.startDate, this.endDate];
   }
 
   isPending(): boolean {
@@ -1821,7 +1841,7 @@ export class Request {
       }
       this.notes = request.notes || '';
 
-      let sd = request.startDate || request.createdOn || request.start;
+      let sd = request.startDate || request.start;
       if (sd && sd !== '') {
         sd = moment(sd, 'YYYY-MM-DD');
         this.startDate = new Date(sd);
@@ -1843,7 +1863,7 @@ export class Request {
       this.items = request.items || request.lineItems || [];
       this.lineItemTotals = request.lineItemTotals;
       this.buildLineItems();
-
+      this.buildDateRange();
       this.sortLineItemsByAge();
     }
   }

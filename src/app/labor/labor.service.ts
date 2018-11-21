@@ -6,7 +6,9 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Employee } from '../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LaborService {
   constructor(private http: HttpClient) {}
 

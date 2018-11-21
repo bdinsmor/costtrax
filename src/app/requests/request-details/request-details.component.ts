@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/ngx-bootstrap-datepicker';
 import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
@@ -99,6 +100,10 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   machineChoices: Equipment[];
   machineChoice: string;
 
+  colorTheme = 'theme-dark-blue';
+
+  bsConfig: Partial<BsDatepickerConfig>;
+
   constructor(
     public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
@@ -114,6 +119,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
     this.requestFormGroup = new FormGroup({
       selectedProjectControl: new FormControl(''),
       notes: new FormControl('')
@@ -146,23 +152,15 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
               this.request = r;
               this.request.calculateTotals();
               this.editMode = false;
-              this.notesFormGroup = this.formBuilder.group(
-                {
-                  notes: new FormControl(r.notes),
-                  startDate: new FormControl(r.startDate, Validators.required),
-                  endDate: new FormControl(r.endDate, Validators.required)
-                },
-                { validator: this.checkDates }
-              );
+              this.notesFormGroup = this.formBuilder.group({
+                notes: new FormControl(r.notes),
+                dateRange: new FormControl(r.dateRange, Validators.required)
+              });
 
               this.notesFormGroup.valueChanges
-                .pipe(auditTime(1000))
+                .pipe(auditTime(750))
                 .subscribe((formData: any) => {
-                  this.save(
-                    formData.notes,
-                    formData.startDate,
-                    formData.endDate
-                  );
+                  this.save(formData.notes, formData.dateRange);
                 });
 
               this.breadcrumbService.addProject(p.id, p.name);
@@ -223,13 +221,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  checkDates(group: FormGroup) {
-    if (group.controls.endDate.value < group.controls.startDate.value) {
-      return { notValid: true };
-    }
-    return null;
   }
 
   captureScreen() {
@@ -371,17 +362,17 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  save(notesValue, startDate, endDate) {
+  save(notesValue, dateRange) {
     if (
       this.request.id &&
       this.request.id !== '' &&
       (this.notesFormGroup && !this.notesFormGroup.hasError('notValid'))
     ) {
       this.request.notes = notesValue;
-      this.request.startDate = new Date(startDate);
-      this.request.endDate = new Date(endDate);
+      this.request.startDate = new Date(dateRange[0]);
+      this.request.endDate = new Date(dateRange[1]);
       this.requestsService.update(this.request).subscribe((response: any) => {
-        // this.openSnackBar('Request Saved!', 'OK', 'OK');
+        //  this.openSnackBar('Request Saved!', 'OK', 'OK');
       });
     } else {
       console.log('request not saved, error on form');

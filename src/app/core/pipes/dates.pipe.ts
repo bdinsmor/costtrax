@@ -1,11 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'dates' })
 export class DatesPipe implements PipeTransform {
-  transform(values: string[], args: string): any {
+  transform(values: string[], args: string = null): any {
     let dateDisplay = '';
-    let dateFormat = 'MM-dd-yyyy';
+    let dateFormat = 'MM/dd/yyyy';
     if (!values && values.length < 2) {
       return values;
     }

@@ -10,7 +10,6 @@ import { SharedModule } from '../shared';
 import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentSelectComponent } from './equipment-select.component';
 import { EquipmentComponent } from './equipment.component';
-import { EquipmentService } from './equipment.service';
 
 @NgModule({
   imports: [
@@ -22,7 +21,6 @@ import { EquipmentService } from './equipment.service';
     DirectivesModule,
     PipesModule
   ],
-  providers: [EquipmentService],
   declarations: [
     EquipmentComponent,
     EquipmentDeleteDialogComponent,

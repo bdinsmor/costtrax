@@ -3,57 +3,36 @@
   <div id="invoice-contents" *ngIf="request" class="px-2 card-header">
     <div *ngIf="!editMode" class="full-width row" [formGroup]="notesFormGroup">
       <div class="column w-30 pl-2">
-        <h1 class="project-label no-top-margin">{{ project.name }}</h1>
-        <h3 class="project-label">
-          <span class="section-label">Request: </span>
-          <span *ngIf="request.oneUp">{{ request.oneUp }}</span>
-          <span *ngIf="!request.oneUp">NEW REQUEST</span>
-        </h3>
-        <div class="row pt-1 no-row-margins" style="max-height:75px">
-          <div class="form-group">
-            <mat-form-field *ngIf="canSubmitRequest && request.isDraft()">
-              <input
-                matInput
-                autocomplete="off"
-                formControlName="startDate"
-                [matDatepicker]="startDatePicker"
-                placeholder="Start Date"
-                required
-                />
-              <mat-datepicker-toggle
-                matSuffix
-                [for]="startDatePicker"></mat-datepicker-toggle>
-              <mat-datepicker #startDatePicker></mat-datepicker>
-            </mat-form-field>
-            <div *ngIf="!canSubmitRequest || !request.isDraft()">
-              {{ request.startDate | date: 'M/dd/yy' }}
-            </div>
-          </div>
-          <div class="form-group">
-            <mat-form-field
-              *ngIf="canSubmitRequest && request.isDraft()"
-              class="pl-2">
-              <input
-                matInput
-                formControlName="endDate"
-                autocomplete="off"
-                [matDatepicker]="endDatePicker"
-                placeholder="End Date"
-                required
-                />
-              <mat-datepicker-toggle
-                matSuffix
-                [for]="endDatePicker"></mat-datepicker-toggle>
-              <mat-datepicker #endDatePicker></mat-datepicker>
-            </mat-form-field>
-            <div *ngIf="!canSubmitRequest || !request.isDraft()" class="pl-2">
-              {{ request.endDate | date: 'M/dd/yy' }}
-            </div>
+        <div class="row no-row-margins">
+          <h1 class="project-label no-top-margin">{{ project.name }}</h1>
+        </div>
+        <div class="row no-row-margins">
+          <h3 class="row-details pr-1">Request:</h3>
+          <div>
+            <h3 *ngIf="request.oneUp">{{ request.oneUp }}</h3>
+            <h3 *ngIf="!request.oneUp">NEW REQUEST</h3>
           </div>
         </div>
+        <div class="row no-row-margins align-items-start pt-1">
+          <h3 class="no-top-margin row-details pr-1">Dates:</h3>
 
-        <small class="warning-label" *ngIf="notesFormGroup.hasError('notValid')">End
-          Date must be after Start Date</small>
+          <div>
+            <input
+              *ngIf="canSubmitRequest && request.isDraft()"
+              type="text"
+              bsDaterangepicker
+              [bsConfig]="bsConfig"
+              placement="right"
+              formControlName="dateRange"
+            />
+            <h3
+              class="no-top-margin row-details"
+              *ngIf="!canSubmitRequest || !request.isDraft()"
+            >
+              {{ request.dateRange | dates: 'MM/dd/yy' }}
+            </h3>
+          </div>
+        </div>
       </div>
       <div class="spacer"></div>
       <div *ngIf="request && project" class="column w-25 align-items-center">
@@ -63,16 +42,26 @@
           <textarea
             *ngIf="canSubmitRequest && request.isDraft()"
             (change)="notesChanged()"
-            class="full-width"
+            class="full-width muted-text"
+            style="padding-top:6px;margin-top: 6px"
             id="request_notes"
             rows="3"
-            formControlName="notes"></textarea>
-          <div *ngIf="request.notes && request.notes !== '' && !canSubmitRequest
-            || !request.isDraft()">
+            formControlName="notes"
+          ></textarea>
+          <div
+            *ngIf="
+              (request.notes && request.notes !== '' && !canSubmitRequest) ||
+              !request.isDraft()
+            "
+          >
             {{ request.notes }}
           </div>
-          <div *ngIf="!request.notes && request.notes === '' &&
-            !canSubmitRequest || !request.isDraft()">
+          <div
+            *ngIf="
+              (!request.notes && request.notes === '' && !canSubmitRequest) ||
+              !request.isDraft()
+            "
+          >
             <h5 class="muted-text">No Notes Provided</h5>
           </div>
         </div>
@@ -80,44 +69,59 @@
       <div class="spacer"></div>
       <h3
         class="px-1 row strong no-top-margin warning-label"
-        *ngIf="!request.isComplete()">
+        *ngIf="!request.isComplete()"
+      >
         {{ request.status.toUpperCase() }}
       </h3>
       <h1
         class="px-1 row strong no-top-margin cost-label"
-        *ngIf="request.isComplete()">
+        *ngIf="request.isComplete()"
+      >
         APPROVED
       </h1>
     </div>
 
     <div class="px-1">
       <div
-        *ngIf="request &&
-        request.status.toLowerCase() !== 'draft' &&
-        (canManageRequest || canManageProject)"class="row mt-1">
+        *ngIf="
+          request &&
+          request.status.toLowerCase() !== 'draft' &&
+          (canManageRequest || canManageProject)
+        "
+        class="row mt-1"
+      >
         <button
           type="button"
           *ngIf="request.status.toLowerCase() === 'pending'"
           (click)="approveRequest()"
           class="btn btn-primary"
-          color="primary">
+          color="primary"
+        >
           Approve Request
         </button>
       </div>
       <div
-        *ngIf="request &&
-        (request.status.toLowerCase() === 'new' ||
-        request.status.toLowerCase() === 'draft')"class="row mt-1">
+        *ngIf="
+          request &&
+          (request.status.toLowerCase() === 'new' ||
+            request.status.toLowerCase() === 'draft')
+        "
+        class="row mt-1"
+      >
         <button
           *ngIf="canSubmitRequest"
-          [disabled]="signatureFormGroup.invalid ||
-          notesFormGroup.hasError('notValid') ||
-          !project ||
-          !request.hasLineItems() ||
-          !request.isDraft()"class="ripple
+          [disabled]="
+            signatureFormGroup.invalid ||
+            notesFormGroup.hasError('notValid') ||
+            !project ||
+            !request.hasLineItems() ||
+            !request.isDraft()
+          "
+          class="ripple
           btn
           btn-success mr-1"
-          (click)="submitRequest()">
+          (click)="submitRequest()"
+        >
           Submit Request
         </button>
         <button
@@ -126,7 +130,8 @@
           class="btn
           btn-outline-danger ripple"
           matTooltip="Cancel Request"
-          (click)="cancelRequest()">
+          (click)="cancelRequest()"
+        >
           <mat-icon class="hidden-md-up">clear</mat-icon>
           <span class="hidden-sm-down">Cancel</span>
         </button>
@@ -136,17 +141,21 @@
           class="btn
           btn-outline-danger ripple"
           matTooltip="Delete Request"
-          (click)="deleteRequest()">
+          (click)="deleteRequest()"
+        >
           <mat-icon class="hidden-md-up">clear</mat-icon>
           <span class="hidden-sm-down">Delete</span>
         </button>
         <button
           type="button"
           *ngIf="canManageRequest || canManageProject"
-          [disabled]="!canManageRequest || request.status.toLowerCase() ===
-          'complete'"(click)="approveRequest()"
+          [disabled]="
+            !canManageRequest || request.status.toLowerCase() === 'complete'
+          "
+          (click)="approveRequest()"
           class="btn btn-primary"
-          color="primary">
+          color="primary"
+        >
           Approve Request
         </button>
         <!--
@@ -159,7 +168,8 @@
   <div
     *ngIf="request"
     class="px-1 pt-1 full-width
-    line-items">
+    line-items"
+  >
     <div *ngFor="let listType of request.itemsByType">
       <app-line-items
         (allApprove)="approveAll($event)"
@@ -170,7 +180,8 @@
         [requestStartDate]="request.startDate"
         (itemsChanged)="itemsChanged($event)"
         [requestId]="request.id"
-        [project]="project"></app-line-items>
+        [project]="project"
+      ></app-line-items>
     </div>
   </div>
 
@@ -178,28 +189,37 @@
     *ngIf="request && project"
     class="hidden-sm-down d-flex mt-1 mb-4
     flex-row justify-content-around
-    full-width">
+    full-width"
+  >
     <div *ngIf="request && request.id">
       <div class="row no-margin-left align-items-center">
         <h4 class="no-top-margin pr-1">Recapitulation</h4>
         <button
           type="button"
-          *ngIf="request.status.toLowerCase() === 'pending' &&
-          (canManageRequest || canManageProject)"(click)="approveRequest()"
+          *ngIf="
+            request.status.toLowerCase() === 'pending' &&
+            (canManageRequest || canManageProject)
+          "
+          (click)="approveRequest()"
           class="btn btn-primary"
-          color="primary">
+          color="primary"
+        >
           Approve Request
         </button>
         <button
           *ngIf="canSubmitRequest"
-          [disabled]="signatureFormGroup.invalid ||
-          notesFormGroup.hasError('notValid') ||
-          !project ||
-          !request.hasLineItems() ||
-          !request.isDraft()"class="ripple
+          [disabled]="
+            signatureFormGroup.invalid ||
+            notesFormGroup.hasError('notValid') ||
+            !project ||
+            !request.hasLineItems() ||
+            !request.isDraft()
+          "
+          class="ripple
           btn
           btn-success mr-1"
-          (click)="submitRequest()">
+          (click)="submitRequest()"
+        >
           Submit Request
         </button>
       </div>
@@ -245,7 +265,7 @@
             <tr *ngIf="project.equipmentCostsEnabled">
               <td class="left">
                 Active Markup ({{
-                project.adjustments.equipment.active.markup
+                  project.adjustments.equipment.active.markup
                 }}%)
               </td>
               <td class="left">{{ request.activeMarkup | currency }}</td>
@@ -259,7 +279,7 @@
             <tr *ngIf="project.equipmentCostsEnabled">
               <td class="left">
                 Standby Markup ({{
-                project.adjustments.equipment.standby.markup
+                  project.adjustments.equipment.standby.markup
                 }}%)
               </td>
               <td class="left">{{ request.standbyMarkup | currency }}</td>
@@ -273,7 +293,7 @@
             <tr *ngIf="project.equipmentCostsEnabled">
               <td class="left">
                 Rental Markup ({{
-                project.adjustments.equipment.rental.markup
+                  project.adjustments.equipment.rental.markup
                 }}%)
               </td>
               <td class="left">{{ request.rentalMarkup | currency }}</td>
@@ -324,7 +344,7 @@
             <tr *ngIf="project.subcontractorCostsEnabled">
               <td class="left">
                 Subcontractor Markup ({{
-                project.adjustments.subcontractor.markup
+                  project.adjustments.subcontractor.markup
                 }}%)
               </td>
               <td class="left">{{ request.subcontractorMarkup | currency }}</td>
