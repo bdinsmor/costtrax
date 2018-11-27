@@ -512,7 +512,9 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       const items: Item[] = this.request.getItemsForType(t.value);
       if (
         this.canSubmitRequest ||
-        (this.canManageRequest && items && items.length > 0)
+        ((this.canManageProject || this.canManageRequest) &&
+          items &&
+          items.length > 0)
       ) {
         const il = new ItemList(t.value, items);
         itemTypeList.push(il);
