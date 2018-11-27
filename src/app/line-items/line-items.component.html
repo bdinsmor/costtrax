@@ -550,7 +550,7 @@
         <clr-dg-column [clrDgField]="'details.transportation'"
           style="width:150px">Transport</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
-        <clr-dg-column></clr-dg-column>
+        <clr-dg-column style="width:150px"></clr-dg-column>
         <clr-dg-row class="align-items-center" *clrDgItems="let item of
           itemList.items; let i=
           index;trackBy:
@@ -853,7 +853,7 @@
           <clr-dg-column [clrDgField]="'details.transportation'"
             style="width:150px">Transport</clr-dg-column>
           <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
-          <clr-dg-column></clr-dg-column>
+          <clr-dg-column style="width:150px"></clr-dg-column>
           <clr-dg-row *clrDgItems="let item of itemList.items; let i=
             index;trackBy:
             trackByFn"
@@ -1221,7 +1221,7 @@
                 <div *ngIf="(manageRequests &&
                   item.status.toLowerCase()===
                   'pending')"
-                  class="row
+                  class="row padding-label-top
                   justify-content-end">
                   <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" color="primary"
