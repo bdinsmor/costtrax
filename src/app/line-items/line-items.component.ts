@@ -1091,10 +1091,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.submitRequests = true;
       }
 
-      if (r === 'RequestManage' || r === 'ProjectAdmin') {
+      if (r === 'RequestManage') {
         this.manageRequests = true;
       }
-      if (r === 'ProjectManage' || r === 'ProjectAdmin') {
+      if (r === 'ProjectAdmin') {
         this.manageProject = true;
       }
     }

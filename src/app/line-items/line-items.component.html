@@ -330,9 +330,9 @@
             </div>
           </div>
         </div>
-        <div *ngIf="manageRequests" class="spacer"></div>
+        <div *ngIf="manageRequests || manageProject" class="spacer"></div>
 
-        <div *ngIf="manageRequests && accountSynced && (itemType ===
+        <div *ngIf="(manageRequests  || manageProject) && accountSynced && (itemType ===
           'equipment.active' ||
           itemType === 'equipment.standby' || itemType === 'equipment.rental')"
           class="row align-items-center">
@@ -478,8 +478,7 @@
               'complete')"
               class="row justify-content-end">
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                icon-30 icon-button
-                pr-1"
+                icon-30 icon-button"
                 matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
@@ -489,13 +488,13 @@
                 matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30 mr-1"
+              <button class="ripple icon-button icon-30"
                 *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                 Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30 mr-1"
+              <button class="ripple icon-button icon-30"
                 *ngIf="!item.beingEdited || (item.beingEdited &&
                 item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -508,20 +507,20 @@
               item.status.toLowerCase()===
               'pending')"
               class="row
-              justify-content-end" style="min-width:150px">
+              justify-content-end">
               <button [disabled]="!manageRequests" class="icon-30 ripple
-                icon-button mr-1" color="accent"
+                icon-button" color="accent"
                 matTooltip="Approve As Is" (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
               <button [disabled]="!manageRequests" class="icon-30 ripple
-                icon-button mr-1" matTooltip="Approve With Change"
+                icon-button" matTooltip="Approve With Change"
                 (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
               <button [disabled]="!manageRequests" class="icon-30 ripple
-                icon-button mr-1" matTooltip="Request More Info"
+                icon-button" matTooltip="Request More Info"
                 (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
               </button>
@@ -558,12 +557,12 @@
           trackByFn"
           [clrDgItem]="item">
           <clr-dg-cell>
-            <div *ngIf="manageRequests && item.rateVerified()"
+            <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
               class="padding-label-top row pl-1"
               style="padding-left: 0 !important">
               <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
             </div>
-            <div *ngIf="!manageRequests || !item.rateVerified()"
+            <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
               class="padding-label-top row pl-1">
               {{item.status}}
             </div>
@@ -657,24 +656,22 @@
               'complete')"
               class="row padding-label-top justify-content-end">
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                icon-30 icon-button
-                pr-1"
+                icon-30 icon-button"
                 matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                icon-30 icon-button
-                pr-1"
+                icon-30 icon-button"
                 matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30 pr-1"
+              <button class="ripple icon-button icon-30"
                 *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                 Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30 pr-1"
+              <button class="ripple icon-button icon-30"
                 *ngIf="!item.beingEdited || (item.beingEdited &&
                 item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -688,19 +685,19 @@
               'pending')"
               class="row padding-label-top
               justify-content-end">
-              <button class="icon-30 ripple icon-button pr-1"
+              <button class="icon-30 ripple icon-button"
                 [disabled]="!manageRequests" color="primary" matTooltip="Approve
                 As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button class="icon-30 ripple icon-button pr-1"
+              <button class="icon-30 ripple icon-button"
                 [disabled]="!manageRequests" matTooltip="Approve With Change"
                 (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button pr-1"
+              <button class="icon-30 ripple icon-button"
                 [disabled]="!manageRequests" matTooltip="Request More Info"
                 (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
@@ -712,7 +709,7 @@
             item.details.modelId && item.details.year &&
             item.details.selectedConfiguration">
             <clr-dg-row-detail *clrIfExpanded>
-              <div *ngIf="manageRequests">
+              <div *ngIf="(manageRequests || manageProject)">
                 <h6>Rate Verification: Hourly Ownership & Operating Cost</h6>
                 <table id="invoice-table" class="table table-compact
                   table-bordered table-striped comparison-table">
@@ -862,11 +859,11 @@
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
-              <div *ngIf="manageRequests && item.rateVerified()"
+              <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
                 class="padding-label-top row pl-1">
                 <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
               </div>
-              <div *ngIf="!manageRequests || !item.rateVerified()"
+              <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
                 class="padding-label-top row pl-1">
                 {{item.status}}
               </div>
@@ -956,25 +953,23 @@
                 'complete')"
                 class="row padding-label-top justify-content-end">
                 <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                  icon-30 icon-button
-                  pr-1"
+                  icon-30 icon-button"
                   matTooltip="Save" (click)="saveChanges(i, item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button *ngIf="!item.isDraft() && !item.beingEdited"
                   class="ripple
-                  icon-30 icon-button
-                  pr-1"
+                  icon-30 icon-button"
                   matTooltip="Edit" (click)="editItem(i, item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
-                <button class="ripple icon-button icon-30 pr-1"
+                <button class="ripple icon-button icon-30"
                   *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                   Edits"
                   (click)="revertEdits(i,item)">
                   <mat-icon color="accent">undo</mat-icon>
                 </button>
-                <button class="ripple icon-button icon-30 pr-1"
+                <button class="ripple icon-button icon-30"
                   *ngIf="!item.beingEdited || (item.beingEdited &&
                   item.isDraft())"
                   matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -988,7 +983,7 @@
                 'pending')"
                 class="row padding-label-top
                 justify-content-end">
-                <button class="icon-30 ripple icon-button pr-1"
+                <button class="icon-30 ripple icon-button"
                   [disabled]="!manageRequests" color="primary"
                   matTooltip="Approve
                   As Is"
@@ -996,12 +991,12 @@
                   <mat-icon color="primary">done</mat-icon>
                 </button>
 
-                <button class="icon-30 ripple icon-button pr-1"
+                <button class="icon-30 ripple icon-button"
                   [disabled]="!manageRequests" matTooltip="Approve With Change"
                   (click)="approveWithChange(item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
-                <button class="icon-30 ripple icon-button pr-1"
+                <button class="icon-30 ripple icon-button"
                   [disabled]="!manageRequests" matTooltip="Request More Info"
                   (click)="requestMoreInfo(item)">
                   <mat-icon color="warn">info</mat-icon>
@@ -1038,13 +1033,13 @@
           <clr-dg-column [clrDgField]="'details.operating'" style="width:125px">Operating</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.amount'" style="width:100px">Total</clr-dg-column>
-          <clr-dg-column></clr-dg-column>
+          <clr-dg-column style="width:150px"></clr-dg-column>
           <clr-dg-row *clrDgItems="let item of itemList.items; let i=
             index;trackBy:
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
-              <div *ngIf="manageRequests" class="padding-label-top row pl-1"
+              <div *ngIf="(manageRequests || manageProject)" class="padding-label-top row pl-1"
                 style="padding-left: 0 !important">
                 <mat-icon class="icon" *ngIf="item.rateVerified()"
                   svgIcon="costtrax-check"></mat-icon>
@@ -1052,7 +1047,7 @@
                   color="warn">priority_high</mat-icon>
                 {{item.status}}
               </div>
-              <div *ngIf="!manageRequests" class="padding-label-top row pl-1">
+              <div *ngIf="!manageRequests && !manageProject" class="padding-label-top row pl-1">
                 {{item.status}}
               </div>
             </clr-dg-cell>
@@ -1193,7 +1188,7 @@
                   [class.ripple]="item && item.details.startDate &&
                   item.details.endDate && (item.details.endDate >=
                   item.details.startDate)"
-                  class="icon-30 icon-button pr-1" matTooltip="Save"
+                  class="icon-30 icon-button" matTooltip="Save"
                   [disabled]="!item || !item.details.startDate ||
                   !item.details.endDate || item.details.endDate
                   <item.details.startDate"
@@ -1204,18 +1199,17 @@
                   </button>
                   <button *ngIf="!item.isDraft() && !item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Edit" (click)="editItem(i, item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                     (click)="revertEdits(i,item)">
                     <mat-icon color="accent">undo</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                     matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -1229,7 +1223,7 @@
                   'pending')"
                   class="row
                   justify-content-end">
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" color="primary"
                     matTooltip="Approve
                     As Is"
@@ -1237,13 +1231,13 @@
                     <mat-icon color="primary">done</mat-icon>
                   </button>
 
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Approve With
                     Change"
                     (click)="approveWithChange(item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Request More Info"
                     (click)="requestMoreInfo(item)">
                     <mat-icon color="warn">info</mat-icon>
@@ -1252,7 +1246,7 @@
 
               </clr-dg-cell>
               <ng-container ngProjectAs="clr-dg-row-detail"
-                *ngIf="manageRequests">
+                *ngIf="manageRequests || manageProject">
                 <clr-dg-row-detail *clrIfExpanded>
                   <div>
                     <h6>Rate Verification: Rental Cost</h6>
@@ -1470,25 +1464,23 @@
                   class="row justify-content-end">
                   <button *ngIf="item.isDraft() || item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Save" (click)="saveChanges(i, item)">
                     <mat-icon color="accent">done</mat-icon>
                   </button>
                   <button *ngIf="!item.isDraft() && !item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Edit" (click)="editItem(i, item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                     (click)="revertEdits(i,item)">
                     <mat-icon color="accent">undo</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                     matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -1502,20 +1494,20 @@
                   'pending')"
                   class="row
                   justify-content-end" style="min-width:150px">
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" color="primary"
                     matTooltip="Approve
                     As Is"
                     (click)="approve(item)">
                     <mat-icon color="primary">done</mat-icon>
                   </button>
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Approve With
                     Change"
                     (click)="approveWithChange(item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Request More
                     Info"
                     (click)="requestMoreInfo(item)">
@@ -1587,25 +1579,23 @@
                   class="row justify-content-end">
                   <button *ngIf="item.isDraft() || item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Save" (click)="saveChanges(i, item)">
                     <mat-icon color="accent">done</mat-icon>
                   </button>
                   <button *ngIf="!item.isDraft() && !item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Edit" (click)="editItem(i, item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                     (click)="revertEdits(i,item)">
                     <mat-icon color="accent">undo</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                     matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -1619,7 +1609,7 @@
                   'pending')"
                   class="row
                   justify-content-end" style="min-width:150px">
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" color="primary"
                     matTooltip="Approve
                     As Is"
@@ -1627,13 +1617,13 @@
                     <mat-icon color="primary">done</mat-icon>
                   </button>
 
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Approve With
                     Change"
                     (click)="approveWithChange(item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Request More
                     Info"
                     (click)="requestMoreInfo(item)">
@@ -1705,25 +1695,23 @@
                   class="row justify-content-end">
                   <button *ngIf="item.isDraft() || item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Save" (click)="saveChanges(i, item)">
                     <mat-icon color="accent">done</mat-icon>
                   </button>
                   <button *ngIf="!item.isDraft() && !item.beingEdited"
                     class="ripple
-                    icon-30 icon-button
-                    pr-1"
+                    icon-30 icon-button"
                     matTooltip="Edit" (click)="editItem(i, item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                     (click)="revertEdits(i,item)">
                     <mat-icon color="accent">undo</mat-icon>
                   </button>
-                  <button class="ripple icon-button icon-30 pr-1"
+                  <button class="ripple icon-button icon-30"
                     *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                     matTooltip="Remove" (click)="removeLineItem(i,item)">
@@ -1737,7 +1725,7 @@
                   'pending')"
                   class="row
                   justify-content-end" style="min-width:150px">
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" color="primary"
                     matTooltip="Approve
                     As Is"
@@ -1745,13 +1733,13 @@
                     <mat-icon color="primary">done</mat-icon>
                   </button>
 
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Approve With
                     Change"
                     (click)="approveWithChange(item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="icon-30 ripple icon-button pr-1"
+                  <button class="icon-30 ripple icon-button"
                     [disabled]="!manageRequests" matTooltip="Request More
                     Info"
                     (click)="requestMoreInfo(item)">

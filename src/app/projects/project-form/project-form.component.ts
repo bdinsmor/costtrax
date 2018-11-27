@@ -163,6 +163,18 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  findState(abbr: string) {
+    if (!abbr || abbr === '') {
+      return '';
+    }
+    const st = this.states.find((s: any) => s.value === abbr.toUpperCase());
+    if (st) {
+      return st.label;
+    } else {
+      return '';
+    }
+  }
+
   checkPermissions() {
     this.canSubmitRequests = false;
     this.canManageRequests = false;

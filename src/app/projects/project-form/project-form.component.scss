@@ -36,11 +36,6 @@
     padding-left: 4px !important;
 }
 
-.checkbox label {
-    font-size: 75% !important;
-    font-weight: 500;
-}
-
 .checkbox input[type=checkbox]:checked + label::before,
 .checkbox-inline input[type=checkbox]:checked + label::before {
     background: #003d79 !important;

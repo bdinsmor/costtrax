@@ -148,7 +148,7 @@
             *ngIf="
               request &&
               request.status.toLowerCase() !== 'draft' &&
-              (canManageRequest || canManageProject)
+              canManageRequest
             "
             class="row mt-1 mx-auto no-row-margins"
           >
@@ -209,7 +209,7 @@
             </button>
             <button
               type="button"
-              *ngIf="canManageRequest || canManageProject"
+              *ngIf="canManageRequest"
               [disabled]="
                 !canManageRequest || request.status.toLowerCase() === 'complete'
               "
@@ -259,10 +259,7 @@
         <h4 class="no-top-margin pr-1">Recapitulation</h4>
         <button
           type="button"
-          *ngIf="
-            request.status.toLowerCase() === 'pending' &&
-            (canManageRequest || canManageProject)
-          "
+          *ngIf="request.status.toLowerCase() === 'pending' && canManageRequest"
           (click)="approveRequest()"
           class="btn btn-primary"
           color="primary"
