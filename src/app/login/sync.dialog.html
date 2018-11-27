@@ -1,88 +1,90 @@
-<div class="container full-height mt-5">
-  <div class="row full-height justify-content-center align-items-center">
-    <form class="col-6 full-height" [formGroup]="loginForm" novalidate>
-      <div class="login-box card no-border header-bg">
-        <div
-          class="header header-6  align-items-center justify-content-center pb-5 pt-5"
-        >
-          <img
-            class="logo"
-            alt="logo"
-            width="350"
-            src="../assets/img/costtrax.png"
-          />
-        </div>
-        <div class="px-2 pt-2 form-bg">
-          <h3 class="pb-1 no-top-margin">Advantage Login</h3>
-          <div class="full-width">
-            <mat-form-field class="full-width">
-              <input
-                matInput
-                placeholder="Advantage Email"
-                type="email"
-                formControlName="email"
-                required
-              />
-              <mat-error
-                *ngIf="
-                  loginForm.get('email').hasError('email') &&
-                  !loginForm.get('email').hasError('required')
-                "
-              >
-                Please enter a <strong>valid email address</strong>
-              </mat-error>
-              <mat-error *ngIf="loginForm.get('email').hasError('required')">
-                Email is <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="full-width pt-1">
-            <mat-form-field class="fw">
-              <input
-                class="full-width"
-                type="password"
-                matInput
-                formControlName="password"
-                autocomplete="current-password"
-                [placeholder]="'Password'"
-                required
-              />
-              <mat-error
-                *ngIf="
-                  !loginForm.get('password').valid ||
-                  loginForm.get('password').untouched
-                "
-              >
-                <span translate>Password is <strong>required</strong> </span>
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="login-error" [hidden]="!error || isLoading">
-            Email or password incorrect.
-          </div>
-          <br />
-
-          <div class="footer d-flex row justify-content-center pb-2">
-            <button
-              class="btn btn-warning ripple login-btn"
-              (click)="cancelSync()"
-            >
-              <span>Cancel</span>
-            </button>
-            <button
-              class="btn btn-primary ripple btn-dark login-btn"
-              (click)="syncLogin()"
-              [disabled]="loginForm.invalid || isLoading"
-            >
-              <app-loader
-                class="inline-loader"
-                [isLoading]="isLoading"
-              ></app-loader>
-              <span>Login</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
+<form [formGroup]="loginForm" (submit)="syncLogin()" novalidate>
+  <div mat-dialog-title>
+    <div
+      class="header header-6 align-items-center justify-content-center pb-5 pt-5"
+    >
+      <img
+        class="logo"
+        alt="logo"
+        width="350"
+        src="../assets/img/costtrax.png"
+      />
+    </div>
   </div>
-</div>
+  <mat-dialog-content
+    class="full-height mt-1 align-items-center justify-content-center"
+  >
+    <div
+      class="center-block full-height justify-content-center align-items-center"
+    >
+      <div class="px-2 align-items-center justify-content-center">
+        <h2 class="pb-1 no-top-margin">EquipmentWatch Login</h2>
+        <div class="full-width">
+          <mat-form-field class="full-width">
+            <input
+              matInput
+              placeholder="EquipmentWatch Email"
+              type="email"
+              formControlName="email"
+              required
+            />
+            <mat-error
+              *ngIf="
+                loginForm.get('email').hasError('email') &&
+                !loginForm.get('email').hasError('required')
+              "
+            >
+              Please enter a <strong>valid email address</strong>
+            </mat-error>
+            <mat-error *ngIf="loginForm.get('email').hasError('required')">
+              Email is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="full-width pt-1">
+          <mat-form-field class="fw">
+            <input
+              class="full-width"
+              type="password"
+              matInput
+              formControlName="password"
+              autocomplete="current-password"
+              [placeholder]="'Password'"
+              required
+            />
+            <mat-error
+              *ngIf="
+                !loginForm.get('password').valid ||
+                loginForm.get('password').untouched
+              "
+            >
+              <span translate>Password is <strong>required</strong> </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="login-error" [hidden]="!error || isLoading">
+          Email or password incorrect.
+        </div>
+        <br />
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="mt-2">
+    <button
+      type="button"
+      class="btn btn-warning-outline ripple login-btn"
+      (click)="cancelSync()"
+    >
+      <span>Cancel</span>
+    </button>
+    <button
+      class="btn btn-primary ripple btn-dark login-btn"
+      type="submit"
+      cdkFocusInitial
+      [disabled]="loginForm.invalid || isLoading"
+    >
+      <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+      <span>Login</span>
+    </button>
+  </mat-dialog-actions>
+</form>

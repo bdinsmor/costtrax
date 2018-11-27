@@ -1,129 +1,138 @@
-<mat-card>
-  <h3 mat-dialog-title>Add Miscellaneous Model</h3>
-  <div id="parent" class="modal-body vh-55">
-    <div
-      class="px-2 pb-2 full-width justify-content-center
+<h3 mat-dialog-title>Add Miscellaneous Model</h3>
+<mat-dialog-content>
+  <div
+    class="px-2 pb-2 full-width justify-content-center
             align-items-center"
-    >
-      <div>
-        <h4 class="pb-1">Category:</h4>
-        <ng-select
-          [items]="categoryResults$ | async"
-          (change)="categoryChanged()"
-          bindLabel="categoryName"
-          bindValue="categoryId"
-          placeholder="Choose Category"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [(ngModel)]="miscCategoryId"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4 class="pb-1">Subtype:</h4>
-        <ng-select
-          [items]="subtypeResults$ | async"
-          [disabled]="!miscCategoryId"
-          (change)="subtypeChanged()"
-          bindLabel="subtypeName"
-          bindValue="subtypeId"
-          placeholder="Choose
+  >
+    <div>
+      <h4 class="pb-1">Category:</h4>
+      <ng-select
+        [items]="categoryResults$ | async"
+        (change)="categoryChanged()"
+        bindLabel="categoryName"
+        bindValue="categoryId"
+        placeholder="Choose Category"
+        clearAllText="Clear"
+        [closeOnSelect]="true"
+        [hideSelected]="true"
+        [(ngModel)]="miscCategoryId"
+        [ngModelOptions]="{ standalone: true }"
+      >
+      </ng-select>
+    </div>
+    <div>
+      <h4 class="pb-1">Subtype:</h4>
+      <ng-select
+        [items]="subtypeResults$ | async"
+        [disabled]="!miscCategoryId"
+        (change)="subtypeChanged()"
+        bindLabel="subtypeName"
+        bindValue="subtypeId"
+        placeholder="Choose
                 subtype"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [(ngModel)]="miscSubtypeId"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4 class="pb-1">Size Class:</h4>
-        <ng-select
-          [items]="sizeResults$ | async"
-          [disabled]="!miscSubtypeId"
-          (change)="sizeChanged()"
-          bindLabel="sizeClassName"
-          bindValue="sizeClassId"
-          placeholder="Choose Size Class"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [(ngModel)]="miscSizeClassId"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
+        clearAllText="Clear"
+        [closeOnSelect]="true"
+        [hideSelected]="true"
+        [(ngModel)]="miscSubtypeId"
+        [ngModelOptions]="{ standalone: true }"
+      >
+      </ng-select>
+    </div>
+    <div>
+      <h4 class="pb-1">Size Class:</h4>
+      <ng-select
+        [items]="sizeResults$ | async"
+        [disabled]="!miscSubtypeId"
+        (change)="sizeChanged()"
+        bindLabel="model"
+        bindValue="modelId"
+        clearAllText="Clear"
+        groupBy="sizeClassName"
+        placeholder="Choose Size Class"
+        clearAllText="Clear"
+        [closeOnSelect]="true"
+        [hideSelected]="true"
+        [(ngModel)]="miscModelId"
+        [ngModelOptions]="{ standalone: true }"
+      >
+      </ng-select>
+    </div>
+    <div>
+      <!--
         <h4 class="pb-1">Model:</h4>
-        <ng-select
-          [items]="modelResults$ | async"
-          [disabled]="!miscSizeClassId"
-          bindLabel="model"
-          bindValue="modelId"
-          placeholder="Choose Model"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          [loading]="modelLoading"
-          [typeahead]="modelInput$"
-          [(ngModel)]="miscModelId"
-          (change)="modelSelected()"
-          dropdownPosition="top"
-          [ngModelOptions]="{ standalone: true }"
-        >
-        </ng-select>
-      </div>
-      <div>
-        <h4 class="pb-1">Configuration:</h4>
-        <h6 class="disabled-text" *ngIf="!configurations">
-          No configurations found.
-        </h6>
-        <h6 *ngIf="configurations && configurations.values.length === 0">
-          No configurations found for this model.
-        </h6>
-        <clr-datagrid
-          *ngIf="configurations && configurations.values.length > 0"
-          class="datagrid-compact"
-          #lineItemConfigurationGrid
-        >
-          <clr-dg-placeholder>No data found</clr-dg-placeholder>
-          <clr-dg-column></clr-dg-column>
-          <clr-dg-column
-            *ngFor="let column of configurations.columns"
-            [clrDgField]="column.name"
-            [clrDgSorted]="column.name === 'name'"
-          >
-            <div>{{ column.name }}</div>
-          </clr-dg-column>
+        <h4 class="pb-1" *ngIf="miscModel">{{ miscModel }}</h4>
 
-          <clr-dg-row
-            *clrDgItems="let configuration of configurations.values"
-            [clrDgItem]="configuration"
+          <ng-select
+            [items]="modelResults$ | async"
+            [disabled]="!miscSizeClassId"
+            bindLabel="model"
+            bindValue="modelId"
+            placeholder="Choose Model"
+            clearAllText="Clear"
+            [closeOnSelect]="true"
+            [hideSelected]="true"
+            [loading]="modelLoading"
+            [typeahead]="modelInput$"
+            [(ngModel)]="miscModelId"
+            (change)="modelSelected()"
+            dropdownPosition="top"
+            [ngModelOptions]="{ standalone: true }"
           >
-            <clr-dg-cell
-              ><button
-                type="button"
-                mat-icon-button
-                color="accent"
-                (click)="confirm(configuration)"
-              >
-                <mat-icon color="accent">radio_button_unchecked</mat-icon>
-              </button>
-            </clr-dg-cell>
-            <clr-dg-cell *ngFor="let column of configurations.columns"
-              >{{ configuration[column.name] }}
-            </clr-dg-cell>
-          </clr-dg-row>
-        </clr-datagrid>
-      </div>
+          </ng-select>
+      -->
+    </div>
+    <div>
+      <h4 class="pb-1">Configuration:</h4>
+      <h6 class="disabled-text" *ngIf="!configurations">
+        No configurations found.
+      </h6>
+      <h6 *ngIf="configurations && configurations.values.length === 0">
+        No configurations found for this model.
+      </h6>
+      <clr-datagrid
+        *ngIf="configurations && configurations.values.length > 0"
+        class="datagrid-compact"
+        #lineItemConfigurationGrid
+      >
+        <clr-dg-placeholder>No data found</clr-dg-placeholder>
+        <clr-dg-column></clr-dg-column>
+        <clr-dg-column
+          *ngFor="let column of configurations.columns"
+          [clrDgField]="column.name"
+          [clrDgSorted]="column.name === 'name'"
+        >
+          <div>{{ column.name }}</div>
+        </clr-dg-column>
+
+        <clr-dg-row
+          *clrDgItems="let configuration of configurations.values"
+          [clrDgItem]="configuration"
+        >
+          <clr-dg-cell
+            ><button
+              type="button"
+              mat-icon-button
+              color="accent"
+              (click)="confirm(configuration)"
+            >
+              <mat-icon color="accent">radio_button_unchecked</mat-icon>
+            </button>
+          </clr-dg-cell>
+          <clr-dg-cell *ngFor="let column of configurations.columns"
+            >{{ configuration[column.name] }}
+          </clr-dg-cell>
+        </clr-dg-row>
+      </clr-datagrid>
     </div>
   </div>
-  <div mat-dialog-actions class="full-width row flex-wrap flex-row-reverse">
-    <button type="button" class="btn btn-outline-danger" (click)="cancel()">
-      Cancel
-    </button>
-  </div>
-</mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    type="button"
+    cdkFocusInitial
+    class="btn btn-outline-danger"
+    (click)="cancel()"
+  >
+    Cancel
+  </button>
+</mat-dialog-actions>

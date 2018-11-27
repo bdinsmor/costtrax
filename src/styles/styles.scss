@@ -1,3 +1,31 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core;
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$v7-primary: mat-palette($mat-indigo);
+$v7-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$v7-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($v7-theme);
+
 // Variables
 @import 'variables/theme';
 @import 'partials/reset';
@@ -9,6 +37,15 @@
 // @import '~@ng-select/ng-select/themes/material.theme.css';
 .no-bottom-margin {
     margin-bottom: 0 !important;
+}
+
+.ant-calendar-picker-input {
+    height: 36px !important;
+}
+
+.w-85,
+.width-85 {
+    width: 85% !important;
 }
 
 .w-150 {
@@ -72,7 +109,7 @@ select:-moz-focusring {
 }
 
 .readonly-label {
-    padding-top: .3rem;
+    padding-top: 0.3rem;
 }
 
 .no-top-margin {
@@ -84,8 +121,8 @@ select:-moz-focusring {
 }
 
 .btn-dark {
-    border-color: #1A3A4E !important;
-    background-color: #1A3A4E !important;
+    border-color: #1a3a4e !important;
+    background-color: #1a3a4e !important;
 }
 
 .btn-light {
@@ -95,6 +132,7 @@ select:-moz-focusring {
 
 .ng-dropdown-panel {
     width: auto !important;
+    min-width: 300px !important;
 }
 
 .no-padding {
@@ -106,7 +144,7 @@ select:-moz-focusring {
 }
 
 .content-area {
-    padding: .1em !important;
+    padding: 0.1em !important;
 }
 
 .datagrid-scroll-wrapper {
@@ -121,7 +159,7 @@ select:-moz-focusring {
     outline: none;
     border: none !important;
     background: inherit;
-    transition: background .65s ease, border-radius .35s ease;
+    transition: background 0.65s ease, border-radius 0.35s ease;
 }
 
 .icon-button:focus,
@@ -140,7 +178,7 @@ select:-moz-focusring {
 }
 
 .padding-label-top {
-    padding-top: .4rem !important;
+    padding-top: 0.4rem !important;
 }
 
 .vh-55 {
@@ -275,7 +313,7 @@ button {
 }
 
 .datagrid .datagrid-expandable-caret {
-    padding-top: .6rem !important;
+    padding-top: 0.6rem !important;
 }
 
 .ng-select .ng-select-container .ng-value-container .ng-input > input {
@@ -340,11 +378,6 @@ button {
     margin-bottom: 3px !important;
 }
 
-.mat-dialog-container {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
 .mat-card {
     display: flex;
     flex-direction: column;
@@ -354,4 +387,9 @@ button {
 .mat-card-content {
     display: flex;
     flex: 1;
+}
+
+body,
+html {
+    font-family: Metropolis, 'Avenir Next', 'Helvetica Neue', Arial, sans-serif !important;
 }

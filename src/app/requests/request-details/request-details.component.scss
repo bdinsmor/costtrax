@@ -3,11 +3,15 @@
 }
 
 .section-label {
-    font-weight: 900;
+    font-weight: 500;
 }
 
 .cost-label {
     color: #003d79;
+}
+
+.card-header {
+    border-radius: 4px;
 }
 
 .project-section {
@@ -26,11 +30,61 @@
     color: #003d79;
 }
 
+.muted-text {
+    color: rgba(0, 0, 0, 0.56);
+}
+
 .warning-label {
     color: #f44336;
+}
+
+.row-label {
+    width: 160px !important;
 }
 
 .no-row-margins {
     margin-left: 0 !important;
     margin-right: 0 !important;
+}
+
+.no-row-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.pending {
+    background: #E9984C;
+    border-radius: 4px;
+}
+
+.complete {
+    background: #218838;
+    border-radius: 4px;
+}
+
+#invoice-contents {
+    z-index: 5000;
+}
+
+.requestor-complete {
+    background: red;
+    border-radius: 4px;
+}
+
+.light-text {
+    color: #EEE !important;
+}
+
+.totals-table table, tr, td {
+    border-collapse: collapse;
+}
+
+.totals-table {
+    border: none !important;
+    background: inherit !important;
+    font-size: 12px !important;
+}
+
+.small-top-padding {
+    padding-top: 8px !important;
 }

@@ -34,11 +34,13 @@ export class PasswordMatcher implements ErrorStateMatcher {
 })
 export class LoginComponent implements OnInit {
   version: string = environment.version;
+  mode = 'login';
   error: string;
   passwordError: string;
   loginForm: FormGroup;
   isLoading = false;
   changePassword = false;
+  forgotPassword = false;
 
   matcher = new PasswordMatcher();
 
@@ -53,6 +55,43 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.changePassword = false;
     this.authenticationService.logout();
+  }
+
+  forgetPassword() {
+    // this.createForgetPasswordForm();
+    this.mode = 'forgot';
+    this.createForgetPasswordForm();
+  }
+
+  cancelForgot() {
+    this.mode = 'login';
+    this.createForm();
+  }
+
+  submitForgot() {
+    this.isLoading = true;
+    this.authenticationService
+      .forgotPassword(this.loginForm.value)
+      .pipe(
+        finalize(() => {
+          this.loginForm.markAsPristine();
+          this.isLoading = false;
+        })
+      )
+      .subscribe(
+        credentials => {
+          log.debug(`${credentials.email} successfully forgot password`);
+          this.router.navigate(['/'], { replaceUrl: true });
+        },
+        (error: Error) => {
+          if (error instanceof Error403) {
+            this.createChangePasswordForm();
+            this.changePassword = true;
+          }
+          log.debug(`login error: ${error.message}`);
+          this.error = error.message;
+        }
+      );
   }
 
   updatePassword() {
@@ -75,6 +114,15 @@ export class LoginComponent implements OnInit {
           this.passwordError = error;
         }
       );
+  }
+
+  private createForgetPasswordForm() {
+    this.loginForm = this.formBuilder.group({
+      email: [
+        this.loginForm.get('email').value,
+        [Validators.required, Validators.email]
+      ]
+    });
   }
 
   private createChangePasswordForm() {
@@ -118,7 +166,7 @@ export class LoginComponent implements OnInit {
         (error: Error) => {
           if (error instanceof Error403) {
             this.createChangePasswordForm();
-            this.changePassword = true;
+            this.mode = 'change';
           }
           log.debug(`login error: ${error.message}`);
           this.error = error.message;

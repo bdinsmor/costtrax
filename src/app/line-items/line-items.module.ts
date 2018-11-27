@@ -1,6 +1,9 @@
 import { CdkTableModule } from '@angular/cdk/table';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { CommentsModule } from '../comments/comments.module';
 import { DirectivesModule } from '../core/directives/directives';
@@ -8,11 +11,8 @@ import { NgxCurrencyModule } from '../core/directives/ngx-currency';
 import { CURRENCY_MASK_CONFIG, CurrencyMaskConfig } from '../core/directives/ngx-currency/src/currency-mask.config';
 import { PipesModule } from '../core/pipes/pipes.module';
 import { MaterialModule } from '../material.module';
-import { ProjectsService } from '../projects/projects.service';
 import { SharedModule } from '../shared';
 import { EquipmentModule } from './../equipment/equipment.module';
-import { EquipmentService } from './../equipment/equipment.service';
-import { LaborService } from './../labor/labor.service';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
@@ -20,9 +20,8 @@ import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dial
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 import { LineItemsComponent } from './line-items.component';
 
-// import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 /** config angular i18n **/
-// registerLocaleData(en);
+registerLocaleData(en);
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
@@ -53,8 +52,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DirectivesModule,
     PipesModule,
     EquipmentModule,
-    CommentsModule
-    // NgZorroAntdModule
+    CommentsModule,
+    BsDatepickerModule.forRoot()
   ],
   exports: [
     LineItemsComponent,
@@ -65,10 +64,6 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemApproveDialogComponent
   ],
   providers: [
-    LaborService,
-    EquipmentService,
-    ProjectsService,
-    // { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [

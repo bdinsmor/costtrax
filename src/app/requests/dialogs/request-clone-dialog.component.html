@@ -1,14 +1,17 @@
-<mat-card>
-  <h3 mat-dialog-title>Request Duplicated</h3>
-  <div class="modal-body">
-    <p>Would you like to go to the duplicated request?</p>
-  </div>
-  <div mat-dialog-actions class="d-flex flex-row-reverse">
-    <button type="button" class="btn btn-primary" (click)="confirm()">
-      Yes
-    </button>
-    <button type="button" class="btn btn-outline-warning" (click)="cancel()">
-      Stay
-    </button>
-  </div>
-</mat-card>
+<h3 mat-dialog-title>Request Duplicated</h3>
+<mat-dialog-content>
+  <p>Would you like to go to the duplicated request?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    type="button"
+    cdkFocusInitial
+    class="btn btn-primary"
+    (click)="confirm()"
+  >
+    Yes
+  </button>
+  <button type="button" class="btn btn-outline-warning" (click)="cancel()">
+    Stay
+  </button>
+</mat-dialog-actions>

@@ -6,7 +6,9 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Account, Item, Project, Request } from '../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class RequestsService {
   foldersArr: any;
   filtersArr: any;
@@ -111,6 +113,7 @@ export class RequestsService {
       start: request.startDate,
       end: request.endDate
     };
+
     return this.http
       .put(environment.serverUrl + '/request/' + request.id, updates)
       .pipe(

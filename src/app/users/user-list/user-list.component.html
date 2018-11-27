@@ -18,7 +18,7 @@
   </h5>
   <button
     type="button"
-    class="btn btn-sm btn-primary"
+    class="btn btn-sm btn-primary mt-1"
     *ngIf="type === 'REQUESTOR'"
     (click)="addRequestor()"
   >
@@ -26,12 +26,11 @@
   </button>
   <button
     type="button"
-    class="btn btn-sm btn-primary"
+    class="btn btn-sm btn-primary mt-1"
     *ngIf="type !== 'REQUESTOR'"
     (click)="inviteUser()"
   >
-    <span *ngIf="newProject">Add</span
-    ><span *ngIf="!newProject">Invite</span>&nbsp;User
+    Add User
   </button>
   <section
     *ngIf="newProject"
@@ -117,26 +116,45 @@
         <clr-dg-cell>
           <div *ngIf="user.roles">
             <mat-chip-list>
-              <mat-chip *ngFor="let role of user.roles">{{ role }}</mat-chip>
+              <mat-chip *ngFor="let role of user.roles">{{
+                role | rolePrint
+              }}</mat-chip>
             </mat-chip-list>
           </div>
         </clr-dg-cell>
         <clr-dg-cell>
           <div class="row justify-content-end">
             <button
-              *ngIf="type !== 'REQUESTOR'"
+              *ngIf="user.expanded && type !== 'REQUESTOR'"
+              class="ripple icon-30 icon-button mr-1"
+              matTooltip="Save"
+              (click)="saveRoleEdit(user)"
+            >
+              <mat-icon color="accent">done</mat-icon>
+            </button>
+            <button
+              *ngIf="!user.expanded && type !== 'REQUESTOR'"
               matTooltip="Edit"
-              class="ripple icon-30 icon-button pr-1"
+              class="ripple icon-30 icon-button mr-1"
               (click)="editUser(user)"
             >
               <mat-icon color="primary">edit</mat-icon>
             </button>
             <button
+              *ngIf="!user.expanded"
               class="ripple icon-30 icon-button"
               matTooltip="Remove"
               (click)="removeUser(i, user)"
             >
               <mat-icon color="warn">delete</mat-icon>
+            </button>
+            <button
+              *ngIf="user.expanded && type !== 'REQUESTOR'"
+              class="ripple icon-30 icon-button mr-1"
+              matTooltip="Cancel Edits"
+              (click)="cancelRoleEdit(user)"
+            >
+              <mat-icon color="warn">undo</mat-icon>
             </button>
           </div>
         </clr-dg-cell>
@@ -145,7 +163,7 @@
           *ngIf="type !== 'REQUESTOR'"
         >
           <clr-dg-row-detail *clrIfExpanded="user.expanded">
-            <div class="d-flex flex-column col-12">
+            <div class="d-flex flex-column col-12 pb-2">
               <!-- need to set ngModel to user based roles -->
 
               <h6>Project Owner Roles</h6>

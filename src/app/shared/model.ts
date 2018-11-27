@@ -1,6 +1,8 @@
 import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
 import * as moment from 'moment';
 
+import { DatesPipe } from '../core/pipes/dates.pipe';
+
 export interface Breadcrumb {
   id: string;
   path: string;
@@ -248,13 +250,14 @@ export class Activity {
 export class Adjustments {
   subcontractor: { markup: 0.1 };
   labor: {
-    fica: 0.0765;
-    fut: 0.068;
-    sut: 0.1227;
     markup: 0.1;
   };
   equipment: {
-    active: { markup: 0.1 };
+    active: {
+      ownership: 1;
+      operating: 1;
+      markup: 0.1;
+    };
     standby: { markup: 0.1 };
     rental: { markup: 0.1 };
   };
@@ -341,12 +344,51 @@ export class Item {
   }
 
   generateYears() {
-    const startYear = new Date(this.details.dateIntroduced).getFullYear();
-    const endYear = this.details.dateDiscontinued.getFullYear();
+    if (!this.details.dateIntroduced) {
+      this.details.dateIntroduced = moment().toDate();
+    }
+    if (!this.details.dateDiscontinued) {
+      this.details.dateDiscontinued = moment().toDate();
+    }
+    let startYear = moment(this.details.dateIntroduced)
+      .toDate()
+      .getFullYear();
+    const endYear = moment(this.details.dateDiscontinued)
+      .toDate()
+      .getFullYear();
+    startYear = Math.max(startYear, endYear - 29);
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.details.years.push({ year: i });
     }
+  }
+
+  buildRentalDates() {
+    if (this.details.dateRange && this.details.dateRange.length > 0) {
+      this.details.startDate = this.details.dateRange[0];
+      this.details.endDate = this.details.dateRange[1];
+    }
+  }
+
+  buildDateRange() {
+    if (
+      (!this.details.dateRange || this.details.dateRange.length < 2) &&
+      (this.details.startDate &&
+        this.details.startDate !== '' &&
+        this.details.endDate)
+    ) {
+      if (this.details.startDate && this.details.startDate !== null) {
+        this.details.dateRange = [this.details.startDate, this.details.endDate];
+      }
+    } else {
+      this.details.dateRange = [
+        new Date(this.details.startDate),
+        new Date(this.details.endDate)
+      ];
+    }
+    this.details.dateRangeStr = new DatesPipe().transform(
+      this.details.dateRange
+    );
   }
 
   hasId(): boolean {
@@ -572,13 +614,6 @@ export class Item {
       if (!data.details) {
         data.details = {};
       }
-      if (data.details.startDate) {
-        // console.log('details start Date: ' + data.details.startDate);
-      }
-      if (data.details.endDate) {
-        // console.log('details end Date: ' + data.details.endDate);
-      }
-
       this.id = data.id || '';
       this.editMode = data.editMode || false;
       this.editDetails = data.editDetails || {};
@@ -600,8 +635,18 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.fromSaved = data.fromSaved || false;
-      this.details.startDate = new Date(data.details.startDate) || new Date();
-      this.details.endDate = new Date(data.details.endDate) || new Date();
+      this.buildRentalDates();
+
+      if (this.details.startDate) {
+        this.details.startDate = new Date(data.details.startDate);
+      } else {
+        this.details.startDate = new Date();
+      }
+      if (this.details.endDate) {
+        this.details.endDate = new Date(data.details.endDate);
+      } else {
+        this.details.endDate = new Date();
+      }
       if (this.details.startDate && this.details.endDate) {
         const diff = Math.abs(
           this.details.endDate.getTime() - this.details.startDate.getTime()
@@ -612,6 +657,7 @@ export class Item {
         }
         this.details.numDays = diffDays;
       }
+      this.buildDateRange();
 
       this.setDisplayType();
       this.setAmounts();
@@ -660,6 +706,9 @@ export class Project {
   numContractors: number;
   materialCostsEnabled = true;
   equipmentCostsEnabled = true;
+  activeCostsEnabled = true;
+  standbyCostsEnabled = true;
+  rentalCostsEnabled = true;
   laborCostsEnabled = true;
   otherCostsEnabled = true;
   subcontractorCostsEnabled = true;
@@ -667,7 +716,7 @@ export class Project {
   requestors: User[];
   requestorJSON: any[];
   userJSON: any[];
-  adjustments: Adjustments;
+  adjustments: any;
   draftRequests: Request[];
   pendingRequests: Request[];
   completeRequests: Request[];
@@ -689,6 +738,54 @@ export class Project {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  calculateCosts(includeDraft, includePending, includeComplete) {
+    let total = 0;
+    let laborTotal = 0;
+    let equipmentTotal = 0;
+    let materialTotal = 0;
+    let subcontractorTotal = 0;
+    let otherTotal = 0;
+    if (includeDraft) {
+      for (let i = 0; i < this.draftRequests.length; i++) {
+        const r = this.draftRequests[i];
+        total += +r.total;
+        laborTotal += +r.laborTotal;
+        equipmentTotal += +r.equipmentTotal;
+        materialTotal += +r.materialTotal;
+        subcontractorTotal += +r.subcontractorTotal;
+        otherTotal += +r.otherTotal;
+      }
+    }
+    if (includePending) {
+      for (let i = 0; i < this.pendingRequests.length; i++) {
+        const r = this.pendingRequests[i];
+        total += +r.total;
+        laborTotal += +r.laborTotal;
+        equipmentTotal += +r.equipmentTotal;
+        materialTotal += +r.materialTotal;
+        subcontractorTotal += +r.subcontractorTotal;
+        otherTotal += +r.otherTotal;
+      }
+    }
+    if (includeComplete) {
+      for (let i = 0; i < this.completeRequests.length; i++) {
+        const r = this.completeRequests[i];
+        total += +r.total;
+        laborTotal += +r.laborTotal;
+        equipmentTotal += +r.equipmentTotal;
+        materialTotal += +r.materialTotal;
+        subcontractorTotal += +r.subcontractorTotal;
+        otherTotal += +r.otherTotal;
+      }
+    }
+    this.total = total;
+    this.subcontractorTotal = subcontractorTotal;
+    this.laborTotal = laborTotal;
+    this.materialTotal = materialTotal;
+    this.otherTotal = otherTotal;
+    this.equipmentTotal = equipmentTotal;
+  }
+
   buildRequests(requestJSON: any) {
     this.requestJSON = requestJSON;
     this.draftRequests = [];
@@ -702,6 +799,7 @@ export class Project {
     let otherTotal = 0;
     for (let i = 0; i < requestJSON.length; i++) {
       const r = new Request(requestJSON[i]);
+
       total += +r.total;
       laborTotal += +r.laborTotal;
       equipmentTotal += +r.equipmentTotal;
@@ -729,7 +827,6 @@ export class Project {
   buildUsers() {
     this.users = [];
     this.requestors = [];
-    // console.log('userJSON: ' + JSON.stringify(this.userJSON, null, 2));
     for (let i = 0; i < this.userJSON.length; i++) {
       const u = new User(this.userJSON[i]);
       if (u.containsRole('RequestSubmit')) {
@@ -738,6 +835,108 @@ export class Project {
         this.users.push(u);
       }
     }
+  }
+
+  checkAdjustments() {
+    if (!this.adjustments) {
+      return this.buildDefaultAdjustments();
+    }
+    if (
+      this.adjustments.equipment.active &&
+      !this.adjustments.equipment.active.operating
+    ) {
+      this.adjustments.equipment.active.operating = 100;
+    }
+    if (
+      this.adjustments.equipment.active &&
+      !this.adjustments.equipment.active.ownership
+    ) {
+      this.adjustments.equipment.active.ownership = 100;
+    }
+
+    if (
+      this.adjustments.subcontractor &&
+      this.adjustments.subcontractor.markup &&
+      Number(this.adjustments.subcontractor.markup) < 1
+    ) {
+      this.adjustments.subcontractor.markup =
+        this.adjustments.subcontractor.markup * 100;
+    } else {
+      this.adjustments.subcontractor = { markup: 10 };
+    }
+    if (
+      this.adjustments.other &&
+      this.adjustments.other.markup &&
+      Number(this.adjustments.other.markup) < 1
+    ) {
+      this.adjustments.other.markup = this.adjustments.other.markup * 100;
+    } else {
+      this.adjustments.other = { markup: 10 };
+    }
+    if (
+      this.adjustments.material &&
+      this.adjustments.material.markup &&
+      Number(this.adjustments.material.markup) < 1
+    ) {
+      this.adjustments.material.markup = this.adjustments.material.markup * 100;
+    } else {
+      this.adjustments.material = { markup: 10 };
+    }
+    if (
+      this.adjustments.equipment &&
+      this.adjustments.equipment.active &&
+      this.adjustments.equipment.active.markup &&
+      Number(this.adjustments.equipment.active.markup) < 1
+    ) {
+      this.adjustments.equipment.active.markup =
+        this.adjustments.equipment.active.markup * 100;
+    }
+    if (
+      this.adjustments.equipment &&
+      this.adjustments.equipment.standby &&
+      this.adjustments.equipment.standby.markup &&
+      Number(this.adjustments.equipment.standby.markup) < 1
+    ) {
+      this.adjustments.equipment.standby.markup =
+        this.adjustments.equipment.standby.markup * 100;
+    }
+    if (
+      this.adjustments.equipment &&
+      this.adjustments.equipment.rental &&
+      this.adjustments.equipment.rental.markup &&
+      Number(this.adjustments.equipment.rental.markup) < 1
+    ) {
+      this.adjustments.equipment.rental.markup =
+        this.adjustments.equipment.rental.markup * 100;
+    }
+    if (
+      this.adjustments.labor &&
+      this.adjustments.labor.markup &&
+      Number(this.adjustments.labor.markup) < 1
+    ) {
+      this.adjustments.labor.markup = this.adjustments.labor.markup * 100;
+    }
+  }
+
+  buildDefaultAdjustments() {
+    return {
+      subcontractor: { markup: 10 },
+      material: { markup: 10 },
+      other: { markup: 10 },
+      labor: {
+        markup: 10
+      },
+      equipment: {
+        active: {
+          regionalAdjustmentsEnabled: true,
+          operating: 100,
+          ownership: 100,
+          markup: 10
+        },
+        standby: { regionalAdjustmentsEnabled: true, markup: 10 },
+        rental: { markup: 10 }
+      }
+    };
   }
 
   constructor(project: any) {
@@ -762,17 +961,21 @@ export class Project {
       this.itemsPending = project.itemsPending || 0;
       this.itemsOverdue = project.itemsOverdue || 0;
       this.materialCostsEnabled =
-        project.materialCostsEnabled || project.materialCostsCheckbox || true;
-      this.equipmentCostsEnabled =
-        project.equipmentCostsEnabled || project.equipmentCostsCheckbox || true;
+        project.materialCostsEnabled || project.materialCheck || true;
+      this.activeCostsEnabled =
+        project.activeCostsEnabled || project.activeCheck || true;
+      this.standbyCostsEnabled =
+        project.standbyCostsEnabled || project.standbyCheck || true;
+      this.rentalCostsEnabled =
+        project.rentalCostsEnabled || project.rentalCheck || true;
       this.subcontractorCostsEnabled =
         project.subcontractorCostsEnabled ||
         project.subcontractorCostsCheckbox ||
         true;
       this.laborCostsEnabled =
-        project.laborCostsEnabled || project.laborCostsCheckbox || true;
+        project.laborCostsEnabled || project.laborCheck || true;
       this.otherCostsEnabled =
-        project.otherCostsEnabled || project.otherCostsCheckbox || true;
+        project.otherCostsEnabled || project.otherCheck || true;
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
         this.account = new Account({ id: project.accountId });
@@ -780,48 +983,19 @@ export class Project {
         this.account = project.account || new Account({});
       }
       this.roles = project.roles;
-      this.adjustments = project.adjustments || {
-        subcontractor: { markup: 0.1 },
-        material: { markup: 0.1 },
-        labor: {
-          fica: 0.0765,
-          fut: 0.068,
-          sut: 0.1227,
-          markup: 0.1
-        },
-        equipment: {
-          active: { markup: 0.1 },
-          standby: { markup: 0.1 },
-          rental: { markup: 0.1 }
-        }
-      };
-      /*this.laborFICA = 0.0765 * laborTotal;
-    this.laborFUT = 0.068 * laborTotal;
-    this.laborSUT = 0.1227 * laborTotal;*/
+      this.adjustments = project.adjustments || this.buildDefaultAdjustments();
       if (!this.adjustments.labor) {
         this.adjustments.labor = {
-          fica: 0.0765,
-          fut: 0.068,
-          sut: 0.1227,
-          markup: 0.1
+          markup: 10
         };
       }
 
       if (!this.adjustments.equipment.rental) {
         this.adjustments.equipment.rental = {
-          markup: 0.1
+          markup: 10
         };
       }
 
-      if (project.laborFUT) {
-        this.adjustments.labor.fut = project.laborFUT;
-      }
-      if (project.laborSUT) {
-        this.adjustments.labor.sut = project.laborSUT;
-      }
-      if (project.laborFICA) {
-        this.adjustments.labor.fica = project.laborFICA;
-      }
       this.itemsPending = 0;
       this.itemsOverdue = 0;
 
@@ -838,6 +1012,7 @@ export class Project {
       if (project.overdueRequests) {
         this.itemsOverdue = project.overdueRequests;
       }
+      this.checkAdjustments();
       this.buildUsers();
       const today = new Date();
       const diff = Math.abs(today.getTime() - this.createdOn.getTime());
@@ -881,7 +1056,6 @@ export class Account {
 
   constructor(a: any) {
     {
-      //  console.log(a.organization + ' ' + JSON.stringify(a, null, 2));
       this.id = a.id || '';
       this.organization = a.organization || '';
       this.accountName = a.accountName || this.organization || '';
@@ -948,8 +1122,9 @@ export class Equipment {
   beingEdited = false;
 
   generateYears() {
-    const startYear = this.dateIntroduced.getFullYear();
+    let startYear = this.dateIntroduced.getFullYear();
     const endYear = this.dateDiscontinued.getFullYear();
+    startYear = Math.max(startYear, endYear - 29);
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
@@ -958,21 +1133,26 @@ export class Equipment {
 
   constructor(m: any) {
     this.id = m.id || '';
-    this.details = m.details || { id: '', serial: '' };
+    this.details = m.details || { id: '', serial: '', year: 2018 };
     this.guid = m.guid || '';
     this.make = m.make || m.manufacturerName || '';
     this.makeId = m.makeId || m.manufacturerId || '';
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.year = m.year || '';
-    this.dateIntroduced = new Date(m.dateIntroduced) || new Date();
-    this.dateDiscontinued = new Date(m.dateDiscontinued) || new Date();
+
+    this.dateIntroduced =
+      moment(m.dateIntroduced || new Date()).toDate() || new Date();
+    this.dateDiscontinued = moment(m.dateDiscontinued).toDate() || new Date();
 
     if (m.details) {
       this.vin = m.details.vin || m.details.serial || 0;
+      if (m.details.year) {
+        this.year = m.details.year || '';
+      }
     } else {
       this.vin = m.vin || m.serial || 0;
+      this.year = m.year || '';
     }
 
     if (this.details && !this.details.selectedConfiguration) {
@@ -1007,7 +1187,6 @@ export class Equipment {
       this.type = m.type || this.model;
     }
 
-    //  console.log('this details: ' + JSON.stringify(m, null, 2));
     this.calculateHourlyRates();
     this.generateYears();
     this.display = this.make + ' ' + this.model;
@@ -1067,7 +1246,6 @@ export class Equipment {
   }
 
   buildRates(duration: number = 1) {
-    // console.log('national averages: ' + JSON.stringify(this.details, null, 2));
     if (
       this.type === 'equipment.rental' &&
       this.nationalAverages &&
@@ -1173,6 +1351,7 @@ export class Request {
   requestDate: Date;
   startDate: Date;
   endDate: Date;
+  dateRange: Date[];
   signatures: Signatures;
   total: number;
   messages: number;
@@ -1189,10 +1368,8 @@ export class Request {
   materialTotal = 0;
   laborTotal = 0;
   otherTotal = 0;
+  otherMarkup = 0;
   subcontractorTotal = 0;
-  laborFUT = 0;
-  laborSUT = 0;
-  laborFICA = 0;
   laborSubtotal = 0;
   activeSubtotal = 0;
   standbySubtotal = 0;
@@ -1217,6 +1394,14 @@ export class Request {
         (this.status.toLowerCase() === 'new' ||
           this.status.toLowerCase() === 'draft'))
     );
+  }
+
+  buildDateRange() {
+    if (!this.startDate && !this.endDate) {
+      this.startDate = new Date();
+      this.endDate = new Date();
+    }
+    this.dateRange = [this.startDate, this.endDate];
   }
 
   isPending(): boolean {
@@ -1332,13 +1517,13 @@ export class Request {
   }
 
   calculateTotals() {
-    let total = 0;
+    const total = 0;
     const equipmentTotal = 0;
     let materialTotal = 0;
     let activeTotal = 0;
     let standbyTotal = 0;
     let rentalTotal = 0;
-    let otherTotal = 0;
+    let otherSubtotal = 0;
     let laborTotal = 0;
     let laborSubtotal = 0;
     let laborBenefits = 0;
@@ -1350,16 +1535,12 @@ export class Request {
       for (let j = 0; j < items.length; j++) {
         const currentItem: Item = items[j];
         let lt = 0;
-        //   console.log('number of line items: ' + this.items.length);
         if (currentItem.status.toLowerCase() === 'complete') {
-          total += Number(currentItem.finalAmount);
           lt = +currentItem.finalAmount;
         } else {
           if (currentItem.type === 'labor') {
-            total += Number(currentItem.subtotal);
             lt = +currentItem.subtotal;
           } else {
-            total += Number(currentItem.amount);
             lt = +currentItem.amount;
           }
         }
@@ -1370,7 +1551,7 @@ export class Request {
         } else if (currentItem.type === 'equipment.standby') {
           standbyTotal += Number(lt);
         } else if (currentItem.type === 'other') {
-          otherTotal += Number(lt);
+          otherSubtotal += Number(lt);
         } else if (currentItem.type === 'material') {
           materialTotal += Number(lt);
         } else if (currentItem.type === 'subcontractor') {
@@ -1382,21 +1563,31 @@ export class Request {
               +currentItem.details.time2 +
               +currentItem.details.time15 +
               +currentItem.details.time1;
-            // console.log('totalHours: ' + totalHours);
             const totalBennies = +currentItem.details.benefits * totalHours;
-
-            // console.log('totalBennies: ' + totalBennies);
             laborBenefits += +totalBennies;
           }
         }
       }
     }
     this.activeSubtotal = activeTotal;
-    this.activeMarkup = 0.1 * activeTotal;
-    this.standbySubtotal = standbyTotal;
-    this.standbyMarkup = 0.1 * standbyTotal;
-    this.rentalSubtotal = rentalTotal;
-    this.rentalMarkup = 0.1 * rentalTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.equipment
+    ) {
+      this.activeMarkup =
+        Number(Number(this.project.adjustments.equipment.active.markup) / 100) *
+        activeTotal;
+      this.standbySubtotal = standbyTotal;
+      this.standbyMarkup =
+        Number(
+          Number(this.project.adjustments.equipment.standby.markup) / 100
+        ) * standbyTotal;
+      this.rentalSubtotal = rentalTotal;
+      this.rentalMarkup =
+        Number(Number(this.project.adjustments.equipment.rental.markup) / 100) *
+        rentalTotal;
+    }
     this.equipmentTotal =
       this.activeSubtotal +
       this.activeMarkup +
@@ -1404,7 +1595,6 @@ export class Request {
       this.standbySubtotal +
       this.rentalMarkup +
       this.rentalSubtotal;
-    this.otherTotal = otherTotal;
     this.laborSubtotal = laborSubtotal;
     this.laborBenefitsTotal = laborBenefits;
 
@@ -1413,47 +1603,63 @@ export class Request {
       this.project.adjustments &&
       this.project.adjustments.labor
     ) {
-      this.laborFICA = +Number(
-        this.project.adjustments.labor.fica * laborSubtotal
-      ).toFixed(2);
-      this.laborFUT = +Number(
-        this.project.adjustments.labor.fut * laborSubtotal
-      ).toFixed(2);
-      this.laborSUT = +Number(
-        this.project.adjustments.labor.sut * laborSubtotal
-      ).toFixed(2);
-    } else {
-      this.laborFICA = 0;
-      this.laborFUT = 0;
-      this.laborSUT = 0;
+      this.laborMarkup =
+        Number(Number(this.project.adjustments.labor.markup) / 100) *
+        laborSubtotal;
     }
-    laborTotal =
-      +laborSubtotal +
-      +this.laborBenefitsTotal +
-      +this.laborFICA +
-      +this.laborFUT +
-      +this.laborSUT;
+    laborTotal = +laborSubtotal + +this.laborBenefitsTotal;
 
-    this.laborMarkup = 0.1 * laborTotal;
     this.laborTotal = laborTotal + this.laborMarkup;
     this.subcontractorSubtotal = subcontractorTotal;
-    this.subcontractorMarkup = 0.1 * subcontractorTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.subcontractor
+    ) {
+      this.subcontractorMarkup =
+        Number(Number(this.project.adjustments.subcontractor.markup) / 100) *
+        subcontractorTotal;
+    }
     this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
+
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.other
+    ) {
+      this.otherMarkup =
+        Number(Number(this.project.adjustments.other.markup) / 100) *
+        otherSubtotal;
+    }
+    this.otherTotal = otherSubtotal; // + this.otherMarkup;
     this.materialSubtotal = materialTotal;
-    this.materialMarkup = 0.1 * materialTotal;
+    if (
+      this.project &&
+      this.project.adjustments &&
+      this.project.adjustments.material
+    ) {
+      this.materialMarkup =
+        Number(Number(this.project.adjustments.material.markup) / 100) *
+        materialTotal;
+    }
     this.materialTotal = materialTotal + this.materialMarkup;
 
-    this.total = total;
+    this.total =
+      this.materialTotal +
+      this.laborTotal +
+      this.otherTotal +
+      this.subcontractorTotal +
+      this.equipmentTotal;
   }
 
   buildLineItems() {
     let total = 0;
-    let equipmentTotal = 0;
+    const equipmentTotal = 0;
     let activeTotal = 0;
     let standbyTotal = 0;
     let rentalTotal = 0;
-    let otherTotal = 0;
-    let laborTotal = 0;
+    let otherSubtotal = 0;
+    const laborTotal = 0;
     let laborSubtotal = 0;
     let laborBenefits = 0;
     let subcontractorTotal = 0;
@@ -1491,7 +1697,7 @@ export class Request {
       } else if (currentItem.type === 'equipment.standby') {
         standbyTotal += Number(lt);
       } else if (currentItem.type === 'other') {
-        otherTotal += Number(lt);
+        otherSubtotal += Number(lt);
       } else if (currentItem.type === 'material') {
         materialTotal += Number(lt);
       } else if (currentItem.type === 'subcontractor') {
@@ -1503,10 +1709,7 @@ export class Request {
             +currentItem.details.time2 +
             +currentItem.details.time15 +
             +currentItem.details.time1;
-          // console.log('totalHours: ' + totalHours);
           const totalBennies = +currentItem.details.benefits * totalHours;
-
-          // console.log('totalBennies: ' + totalBennies);
           laborBenefits += +totalBennies;
         }
       }
@@ -1515,64 +1718,89 @@ export class Request {
 
     if (this.lineItemTotals) {
       this.totalItems = this.lineItemTotals.count;
-      total = this.lineItemTotals.amount;
-      equipmentTotal = this.lineItemTotals.equipment || 0;
-      laborTotal = this.lineItemTotals.labor || 0;
-      materialTotal = this.lineItemTotals.material || 0;
-      otherTotal = this.lineItemTotals.other || 0;
-      subcontractorTotal = this.lineItemTotals.subcontractor || 0;
-    }
-
-    this.activeSubtotal = activeTotal;
-    this.activeMarkup = 0.1 * activeTotal;
-    this.standbySubtotal = standbyTotal;
-    this.standbyMarkup = 0.1 * standbyTotal;
-    this.rentalSubtotal = rentalTotal;
-    this.rentalMarkup = 0.1 * rentalTotal;
-    this.equipmentTotal =
-      this.activeSubtotal +
-      this.activeMarkup +
-      this.standbyMarkup +
-      this.standbySubtotal +
-      this.rentalMarkup +
-      this.rentalSubtotal;
-    this.otherTotal = otherTotal;
-    this.laborSubtotal = laborSubtotal;
-    this.laborBenefitsTotal = laborBenefits;
-    this.laborMarkup = 0.1 * laborSubtotal;
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.labor
-    ) {
-      this.laborFICA = +Number(
-        this.project.adjustments.labor.fica * laborSubtotal
-      ).toFixed(2);
-      this.laborFUT = +Number(
-        this.project.adjustments.labor.fut * laborSubtotal
-      ).toFixed(2);
-      this.laborSUT = +Number(
-        this.project.adjustments.labor.sut * laborSubtotal
-      ).toFixed(2);
+      this.total = this.lineItemTotals.amount;
+      this.equipmentTotal = this.lineItemTotals.equipment || 0;
+      this.laborTotal = this.lineItemTotals.labor || 0;
+      this.materialTotal = this.lineItemTotals.material || 0;
+      this.otherTotal = this.lineItemTotals.other || 0;
+      this.subcontractorTotal = this.lineItemTotals.subcontractor || 0;
     } else {
-      this.laborFICA = 0;
-      this.laborFUT = 0;
-      this.laborSUT = 0;
-    }
-    this.laborTotal =
-      laborSubtotal +
-      this.laborBenefitsTotal +
-      this.laborMarkup +
-      this.laborFICA +
-      this.laborFUT +
-      this.laborSUT;
+      this.activeSubtotal = activeTotal;
+      if (this.project && this.project.adjustments) {
+        this.activeMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.active.markup) / 100
+          ) * activeTotal;
+        this.standbySubtotal = standbyTotal;
+        this.standbyMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.standby.markup) / 100
+          ) * standbyTotal;
+        this.rentalSubtotal = rentalTotal;
+        this.rentalMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.rental.markup) / 100
+          ) * rentalTotal;
+      }
 
-    this.subcontractorSubtotal = subcontractorTotal;
-    this.subcontractorMarkup = 0.1 * subcontractorTotal;
-    this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
-    this.materialSubtotal = materialTotal;
-    this.materialMarkup = 0.1 * materialTotal;
-    this.materialTotal = materialTotal + this.materialMarkup;
+      this.equipmentTotal =
+        this.activeSubtotal +
+        this.activeMarkup +
+        this.standbyMarkup +
+        this.standbySubtotal +
+        this.rentalMarkup +
+        this.rentalSubtotal;
+
+      this.laborSubtotal = laborSubtotal;
+      this.laborBenefitsTotal = laborBenefits;
+
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.labor
+      ) {
+        this.laborMarkup =
+          Number(Number(this.project.adjustments.labor.markup) / 100) *
+          laborSubtotal;
+      }
+
+      this.laborTotal =
+        laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
+
+      this.subcontractorSubtotal = subcontractorTotal;
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.subcontractor
+      ) {
+        this.subcontractorMarkup =
+          Number(Number(this.project.adjustments.subcontractor.markup / 100)) *
+          subcontractorTotal;
+      }
+      this.subcontractorTotal = subcontractorTotal + this.subcontractorMarkup;
+      this.materialSubtotal = materialTotal;
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.material
+      ) {
+        this.materialMarkup =
+          Number(
+            Number(this.project.adjustments.equipment.material.markup / 100)
+          ) * materialTotal;
+      }
+      if (
+        this.project &&
+        this.project.adjustments &&
+        this.project.adjustments.other
+      ) {
+        this.otherMarkup =
+          Number(Number(this.project.adjustments.other.markup / 100)) *
+          otherSubtotal;
+      }
+      this.otherTotal = otherSubtotal + this.otherMarkup;
+      this.materialTotal = materialTotal + this.materialMarkup;
+    }
     this.total =
       this.materialTotal +
       this.subcontractorTotal +
@@ -1587,8 +1815,6 @@ export class Request {
     this.itemsByType.sort((a, b) =>
       a.sortOrder < b.sortOrder ? -1 : a.sortOrder > b.sortOrder ? 1 : 0
     );
-    // console.log('tp: ' + JSON.stringify(this.itemsByType, null, 2));
-    //  console.log('Request Map: \n' + JSON.stringify(byType.size, null, 2));
   }
 
   getItemsForType(type: string) {
@@ -1619,7 +1845,7 @@ export class Request {
       }
       this.notes = request.notes || '';
 
-      let sd = request.startDate || request.createdOn || request.start;
+      let sd = request.startDate || request.start;
       if (sd && sd !== '') {
         sd = moment(sd, 'YYYY-MM-DD');
         this.startDate = new Date(sd);
@@ -1641,7 +1867,7 @@ export class Request {
       this.items = request.items || request.lineItems || [];
       this.lineItemTotals = request.lineItemTotals;
       this.buildLineItems();
-
+      this.buildDateRange();
       this.sortLineItemsByAge();
     }
   }

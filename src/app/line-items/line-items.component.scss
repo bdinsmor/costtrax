@@ -12,9 +12,18 @@
     padding-top: 8px;
 }
 
-clr-dg-row {
-    transition: background-color .5s ease;
+nz-date-picker,
+nz-month-picker,
+nz-range-picker,
+nz-week-picker {
+    margin: 0 8px 12px 0;
 }
+
+clr-dg-row {
+    transition: background-color 0.5s ease;
+}
+
+.pts-1 {}
 
 .small-text {
     font-size: 75%;

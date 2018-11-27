@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
@@ -16,10 +16,26 @@ import { ProjectCompleteDialogComponent } from './../project-complete-dialog.com
   templateUrl: './project-form.component.html',
   styleUrls: ['./project-form.component.scss']
 })
-export class ProjectFormComponent implements OnInit {
+export class ProjectFormComponent implements OnInit, OnDestroy {
+  constructor(
+    public dialog: MatDialog,
+    private changeDetector: ChangeDetectorRef,
+    public snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private breadcrumbService: BreadcrumbService,
+    private requestsService: RequestsService,
+    private projectsService: ProjectsService,
+    private formBuilder: FormBuilder
+  ) {}
   private config: MatSnackBarConfig;
   duration = 3000;
   items: any;
+  draftCosts = true;
+  pendingCosts = true;
+  completeCosts = true;
+
   states = [
     { label: 'Alabama', value: 'AL' },
     { label: 'Alaska', value: 'AK' },
@@ -73,6 +89,8 @@ export class ProjectFormComponent implements OnInit {
     { label: 'Wisconsin', value: 'WI' },
     { label: 'Wyoming', value: 'WY' }
   ];
+  activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
+  standbyFormulas = [{ name: '50OWNER', label: '50% Ownership Cost' }];
   projectFormGroup: FormGroup;
   action: string;
   project: Project;
@@ -89,24 +107,30 @@ export class ProjectFormComponent implements OnInit {
   requestId = null;
   newProject = false;
   inOverflow = true;
+  subscription: Subscription;
+  accountSynced = false;
 
-  @Output()
-  save = new EventEmitter();
+  @Output() save = new EventEmitter();
+  formatterPercent = value => `${value} %`;
+  parserPercent = value => value.replace(' %', '');
 
-  constructor(
-    public dialog: MatDialog,
-    private changeDetector: ChangeDetectorRef,
-    public snackBar: MatSnackBar,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthenticationService,
-    private breadcrumbService: BreadcrumbService,
-    private requestsService: RequestsService,
-    private projectsService: ProjectsService,
-    private formBuilder: FormBuilder
-  ) {}
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   ngOnInit() {
+    this.subscription = this.authenticationService
+      .getCreds()
+      .subscribe(message => {
+        if (message) {
+          this.accountSynced =
+            message.advantageId && message.advantageId !== '';
+        } else {
+          this.accountSynced = false;
+        }
+        this.changeDetector.detectChanges();
+      });
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.projectsService.getProject(id).subscribe(r => {
@@ -131,6 +155,26 @@ export class ProjectFormComponent implements OnInit {
     this.accounts$ = this.projectsService.getAccounts();
   }
 
+  calculateCosts() {
+    this.project.calculateCosts(
+      this.draftCosts,
+      this.pendingCosts,
+      this.completeCosts
+    );
+  }
+
+  findState(abbr: string) {
+    if (!abbr || abbr === '') {
+      return '';
+    }
+    const st = this.states.find((s: any) => s.value === abbr.toUpperCase());
+    if (st) {
+      return st.label;
+    } else {
+      return '';
+    }
+  }
+
   checkPermissions() {
     this.canSubmitRequests = false;
     this.canManageRequests = false;
@@ -145,9 +189,11 @@ export class ProjectFormComponent implements OnInit {
       }
       if (role === 'RequestManage') {
         this.canManageRequests = true;
+        this.draftCosts = false;
       }
       if (role === 'ProjectAdmin') {
         this.canChangeSettings = true;
+        this.draftCosts = false;
         this.isUserAdmin = true;
       }
     }
@@ -191,6 +237,7 @@ export class ProjectFormComponent implements OnInit {
 
   saveProject() {
     const formData: any = this.projectFormGroup.value;
+
     const formProject = new Project(formData);
     const projectData: any = {
       id: this.project.id,
@@ -202,12 +249,64 @@ export class ProjectFormComponent implements OnInit {
       description: formProject.description,
       paymentTerms: this.project.paymentTerms,
       materialCostsEnabled: formProject.materialCostsEnabled,
-      equipmentCostsEnabled: formProject.equipmentCostsEnabled,
+      activeCostsEnabled: formProject.activeCostsEnabled,
+      rentalCostsEnabled: formProject.rentalCostsEnabled,
+      standbyCostsEnabled: formProject.standbyCostsEnabled,
       laborCostsEnabled: formProject.laborCostsEnabled,
       otherCostsEnabled: formProject.otherCostsEnabled,
       subcontractorCostsEnabled: formProject.subcontractorCostsEnabled,
       adjustments: formProject.adjustments
     };
+
+    projectData.adjustments.equipment = {
+      active: {
+        regionalAdjustmentsEnabled: formData.activeRegionalCheck,
+        markup: formData.activeMarkup || 10,
+        ownership: formData.activeOwnershipCost || 100,
+        operating: formData.activeOperatingCost || 100
+      },
+      standby: {
+        regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
+        markup: formData.standbyMarkup || 10
+      },
+      rental: { markup: formData.rentalMarkup || 10 }
+    };
+    projectData.adjustments.material.markup = formData.materialMarkup || 10;
+    projectData.adjustments.other.markup = formData.otherMarkup || 10;
+    projectData.adjustments.subcontractor.markup =
+      formData.subcontractorMarkup || 10;
+    projectData.adjustments.labor.markup = formData.laborMarkup || 10;
+    /*
+    activeFormula: new FormControl('FHWA'),
+      activeMarkup: new FormControl(
+        this.project.adjustments.equipment.active.markup
+      ),
+      standbyFormula: new FormControl('50OWNER'),
+      standbyMarkup: new FormControl(
+        this.project.adjustments.equipment.standby.markup
+      ),
+      activeRegionalCheck: new FormControl(
+        this.project.adjustments.equipment.active.regionalAdjustmentsEnabled
+      ),
+      standbyRegionalCheck: new FormControl(
+        this.project.adjustments.equipment.standby.regionalAdjustmentsEnabled
+      ),
+      rentalMarkup: new FormControl(
+        this.project.adjustments.equipment.rental.markup
+      ),
+      activeOwnershipCost: new FormControl(
+        this.project.adjustments.equipment.active.ownership
+      ),
+      activeOperatingCost: new FormControl(
+        this.project.adjustments.equipment.active.operating
+      ),
+      laborMarkup: new FormControl(this.project.adjustments.labor.markup),
+      subcontractorMarkup: new FormControl(
+        this.project.adjustments.subcontractor.markup
+      ),
+      materialMarkup: new FormControl(this.project.adjustments.material.markup),
+      otherMarkup: new FormControl(this.project.adjustments.other.markup), */
+
     this.projectsService.updateProject(projectData).subscribe(
       (response: any) => {
         this.openSnackBar('Project Saved', 'ok', 'OK');
@@ -295,17 +394,43 @@ export class ProjectFormComponent implements OnInit {
       requestors: new FormControl(this.project.requestors),
       zipcode: new FormControl(this.project.zipcode),
       state: new FormControl(this.project.state),
-      laborSUT: new FormControl(this.project.adjustments.labor.sut),
-      laborFUT: new FormControl(this.project.adjustments.labor.fut),
-      laborFICA: new FormControl(this.project.adjustments.labor.fica),
       projectInstructions: new FormControl(this.project.description),
-      equipmentCostsCheckbox: new FormControl(
-        this.project.equipmentCostsEnabled
+      activeFormula: new FormControl('FHWA'),
+      activeMarkup: new FormControl(
+        this.project.adjustments.equipment.active.markup
       ),
-      laborCostsCheckbox: new FormControl(this.project.laborCostsEnabled),
-      materialCostsCheckbox: new FormControl(this.project.materialCostsEnabled),
-      otherCostsCheckbox: new FormControl(this.project.otherCostsEnabled),
-      subcontractorCostsCheckbox: new FormControl(
+      standbyFormula: new FormControl('50OWNER'),
+      standbyMarkup: new FormControl(
+        this.project.adjustments.equipment.standby.markup
+      ),
+      activeRegionalCheck: new FormControl(
+        this.project.adjustments.equipment.active.regionalAdjustmentsEnabled
+      ),
+      standbyRegionalCheck: new FormControl(
+        this.project.adjustments.equipment.standby.regionalAdjustmentsEnabled
+      ),
+      rentalMarkup: new FormControl(
+        this.project.adjustments.equipment.rental.markup
+      ),
+      activeOwnershipCost: new FormControl(
+        this.project.adjustments.equipment.active.ownership
+      ),
+      activeOperatingCost: new FormControl(
+        this.project.adjustments.equipment.active.operating
+      ),
+      laborMarkup: new FormControl(this.project.adjustments.labor.markup),
+      subcontractorMarkup: new FormControl(
+        this.project.adjustments.subcontractor.markup
+      ),
+      materialMarkup: new FormControl(this.project.adjustments.material.markup),
+      otherMarkup: new FormControl(this.project.adjustments.other.markup),
+      activeCheck: new FormControl(this.project.activeCostsEnabled),
+      standbyCheck: new FormControl(this.project.standbyCostsEnabled),
+      rentalCheck: new FormControl(this.project.rentalCostsEnabled),
+      laborCheck: new FormControl(this.project.laborCostsEnabled),
+      materialCheck: new FormControl(this.project.materialCostsEnabled),
+      otherCheck: new FormControl(this.project.otherCostsEnabled),
+      subcontractorCheck: new FormControl(
         this.project.subcontractorCostsEnabled
       )
     });

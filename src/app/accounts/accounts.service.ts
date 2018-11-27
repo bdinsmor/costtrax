@@ -6,7 +6,9 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Account } from '../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AccountService {
   constructor(private http: HttpClient) {}
 

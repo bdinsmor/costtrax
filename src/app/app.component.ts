@@ -3,12 +3,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 
-import { Subscription } from '../../node_modules/rxjs';
+import { Subscription, timer } from '../../node_modules/rxjs';
 import { environment } from '../environments/environment';
 import { AccountService } from './accounts/accounts.service';
 import { Logger } from './core';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { SyncDialogComponent } from './login/sync.dialog';
+import { debounce } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 const log = new Logger('App');
 
@@ -60,13 +62,16 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoading = false;
   private config: MatSnackBarConfig;
   duration = 3000;
+  debouncedExample: Observable<any>;
 
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private authService: AuthenticationService,
     private accountService: AccountService
-  ) {}
+  ) {
+    this.debouncedExample = this.authService.getCreds().pipe(debounce(() => timer(250)));
+  }
 
   getRouteAnimation(outlet) {
     return outlet.activatedRouteData.animation;
@@ -82,9 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
       Logger.enableProductionMode();
     }
 
-    this.loggedIn = this.authService.isAuthenticated();
-
-    this.subscription = this.authService.getCreds().subscribe(message => {
+    this.subscription = this.debouncedExample.subscribe(message => {
       if (message && message.userName) {
         this.loggedIn = true;
         this.uberAdmin = message.uberAdmin;
@@ -98,7 +101,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   syncAccounts() {
     const dialogRef = this.dialog.open(SyncDialogComponent, {
-      disableClose: true
+      width: '40vw'
     });
 
     dialogRef.afterClosed().subscribe(result => {});

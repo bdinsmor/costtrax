@@ -1,23 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Equipment } from '../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EquipmentService {
   data: Equipment[];
 
   constructor(private http: HttpClient) {}
 
   saveRequestorModel(projectId: string, item: Equipment): Observable<any> {
-    const details = {
-      id: item.details.id,
-      vin: item.details.vin
-    };
-
+    item.details.year = item.year;
     if (item.id) {
       return this.http.put(
         environment.serverUrl + '/project/' + projectId + '/models/' + item.id,
@@ -99,7 +98,8 @@ export class EquipmentService {
   getConfiguration(
     modelId: string,
     year: string = '',
-    state: string = ''
+    state: string = '',
+    startDate: string = ''
   ): Observable<any> {
     let url: string =
       environment.serverUrl + '/equipment/configurations?modelId=' + modelId;
@@ -108,6 +108,10 @@ export class EquipmentService {
     }
     if (state && state !== '') {
       url += '&state=' + state;
+    }
+    if (startDate && startDate !== '') {
+      const formattedStartDate = moment(startDate).format('YYYY-MM-DD');
+      url += '&date=' + formattedStartDate;
     }
 
     return this.http.get(url).pipe(
@@ -155,8 +159,11 @@ export class EquipmentService {
   }
 
   getCategories(): Observable<Equipment[]> {
+    const manufacturer = 'Miscellaneous';
     const url: string =
-      environment.serverUrl + '/equipment/categories?category=*';
+      environment.serverUrl +
+      '/equipment/categories?category=*&manufacturer=' +
+      manufacturer;
     return this.http.get(url).pipe(
       map((res: any) => {
         if (res === 'Query not covered at this time') {
@@ -210,6 +217,7 @@ export class EquipmentService {
         if (res === 'Query not covered at this time') {
           return [];
         }
+
         let r: Equipment[] = [];
         for (const machine of res) {
           r.push(new Equipment(machine));
@@ -235,7 +243,8 @@ export class EquipmentService {
       addedParam = true;
       url = url + '?model=' + term.toLowerCase();
     } else {
-      return of([]);
+      addedParam = true;
+      url = url + '?model=*';
     }
     if (sizeId && sizeId !== '') {
       if (addedParam) {
@@ -380,9 +389,12 @@ export class EquipmentService {
       );
   }
 
-  getConfigurations(choices: Equipment[], state: string = ''): Promise<any> {
+  getConfigurations(
+    choices: Equipment[],
+    state: string = '',
+    startDate: string = ''
+  ): Promise<any> {
     let promises: Promise<any>;
-
     promises = Promise.all(
       choices.map(async (choice: Equipment) =>
         this.http
@@ -398,9 +410,7 @@ export class EquipmentService {
           .toPromise()
           .then((res: any) => {
             choice.configurations = res[0].specs;
-            console.log(
-              'configs:  ' + JSON.stringify(choice.configurations, null, 2)
-            );
+
             return new Promise((resolve, reject) => {
               resolve(choice);
             });

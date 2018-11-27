@@ -142,7 +142,17 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         this.items[event.index] = new Equipment(item);
       } else {
         this.items[event.index] = new Equipment({});
+        this.items[event.index].sizeClassName = '';
+        this.items[event.index].year = null;
+        this.items[event.index].years = null;
+        this.items[event.index].modelId = null;
       }
+    } else {
+      this.items[event.index] = new Equipment({});
+      this.items[event.index].sizeClassName = '';
+      this.items[event.index].year = null;
+      this.items[event.index].years = null;
+      this.items[event.index].modelId = null;
     }
   }
 
@@ -171,9 +181,15 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             updatedItem.resetSelectedConfiguration();
           }
           updatedItem.generateYears();
+          updatedItem.details.year = null;
           this.items[event.index] = updatedItem;
           this.changeDetector.markForCheck();
         });
+    } else {
+      this.items[event.index].sizeClassName = '';
+      this.items[event.index].details.year = null;
+      this.items[event.index].years = null;
+      this.items[event.index].modelId = null;
     }
   }
 
@@ -190,13 +206,18 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   addMiscEquipment() {
     const dialogRef = this.dialog.open(AddMiscDialogComponent, {
+      width: '80vw',
       data: {}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (result.configuration) {
-          this.confirmAddMiscModel(result.configuration);
+          this.confirmAddMiscModel(
+            result.equipment,
+            result.configuration,
+            result.configurations
+          );
         }
       }
     });
@@ -206,27 +227,29 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     this._miscModelModal = false;
   }
 
-  confirmAddMiscModel(sc: any) {
-    this._miscModelModal = false;
-    this.miscEquipment.misc = true;
-    this.miscEquipment.status = 'draft';
-    if (this.selected) {
-      this.miscEquipment.details.configurations = this.configurations;
-      this.miscEquipment.details.selectedConfiguration = sc;
+  confirmAddMiscModel(equipment: any, sc: any, configs: any) {
+    const miscEquipment = equipment as Equipment;
+    miscEquipment.misc = true;
+    miscEquipment.status = 'draft';
+    if (configs) {
+      miscEquipment.details.configurations = configs;
+      miscEquipment.details.selectedConfiguration = sc;
     }
-    this.items = [...this.items, this.miscEquipment];
+
+    this.items = [...this.items, miscEquipment];
+    this.changeDetector.detectChanges();
     this.miscCategoryId = null;
   }
 
   yearSelectionChanged(item: Equipment, index: number) {
-    if (!item.details.year || item.details.year === '') {
+    if (!item.year || item.year === '') {
       item.details.fhwa = 0;
       item.resetSelectedConfiguration();
-
       return;
     }
+
     this.equipmentService
-      .getConfiguration(item.details.modelId, item.details.year)
+      .getConfiguration(item.modelId, item.year)
       .subscribe((configurations: any) => {
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
@@ -356,7 +379,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   remove(index: number, item: Equipment) {
     this.selectedIndex = index;
     this.selectedItem = item;
-    this._confirmDeleteModal = true;
+    this.confirmRemoveModel();
   }
 
   copy(index: number, item: Equipment) {}

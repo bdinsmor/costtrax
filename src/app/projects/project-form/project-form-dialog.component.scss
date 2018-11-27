@@ -18,13 +18,19 @@
     padding-bottom: 3px;
 }
 
+.bold-label {
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.54);
+    margin-bottom: 0 !important;
+}
+
 .cost-title {
     color: rgba(0, 0, 0, 0.54);
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    padding-left: 4px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding-left: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .cost-section {

@@ -3,7 +3,9 @@ import { Observable, Subject } from 'rxjs';
 
 import { Breadcrumb } from '../../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class BreadcrumbService {
   private subject = new Subject<any>();
   private crumbs: Breadcrumb[];

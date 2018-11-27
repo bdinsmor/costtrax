@@ -1,14 +1,17 @@
-<mat-card>
-  <h3 mat-dialog-title>Project Completion Confirmation</h3>
-  <div class="modal-body">
-    <p>Are you sure you want to mark this project as complete?</p>
-  </div>
-  <div mat-dialog-actions class="d-flex flex-row-reverse">
-    <button type="button" class="btn btn-success" (click)="confirm()">
-      Mark Complete
-    </button>
-    <button type="button" class="btn btn-outline-danger" (click)="cancel()">
-      Cancel
-    </button>
-  </div>
-</mat-card>
+<h3 mat-dialog-title>Project Completion Confirmation</h3>
+<mat-dialog-content>
+  <p>Are you sure you want to mark this project as complete?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-outline-danger" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    cdkFocusInitial
+    class="btn btn-success"
+    (click)="confirm()"
+  >
+    Mark Complete
+  </button>
+</mat-dialog-actions>

@@ -1,14 +1,17 @@
-<mat-card>
-  <h3 mat-dialog-title>Confirm Delete Employee</h3>
-  <div class="modal-body">
-    <p>Are you sure you want to remove this employee?</p>
-  </div>
-  <div mat-dialog-actions class="d-flex flex-row-reverse">
-    <button type="button" class="btn btn-danger" (click)="confirm()">
-      Delete
-    </button>
-    <button type="button" class="btn btn-outline-danger" (click)="cancel()">
-      Cancel
-    </button>
-  </div>
-</mat-card>
+<h3 mat-dialog-title>Confirm Delete Employee</h3>
+<mat-dialog-content>
+  <p>Are you sure you want to remove this employee?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-outline-danger" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    cdkFocusInitial
+    class="btn btn-danger"
+    (click)="confirm()"
+  >
+    Delete
+  </button>
+</mat-dialog-actions>

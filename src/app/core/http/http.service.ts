@@ -106,7 +106,6 @@ export class HttpService extends HttpClient {
         this.router.navigate(['/login']);
         throw new Error401(String(res.status));
       } else if (res.status === 403) {
-        console.log('res.status: ' + res.status);
         throw new Error403(String(res.status));
       } else {
         throw new Error(res.statusText);

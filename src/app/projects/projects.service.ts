@@ -6,7 +6,9 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Account, Project } from '../shared/model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ProjectsService {
   onFilterChanged: Subject<any> = new Subject();
   projects: Project[] = [];

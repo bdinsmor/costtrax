@@ -17,7 +17,6 @@ export class UberAdminGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    console.log('checking uber...');
     return true;
     // return this.authenticationService.isUberAdmin();
   }

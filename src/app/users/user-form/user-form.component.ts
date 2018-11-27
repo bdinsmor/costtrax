@@ -30,7 +30,6 @@ export class UserFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('data: ' + JSON.stringify(this.data, null, 2));
     this.newUser = new User({});
     this.newProject = this.data.newProject;
     this.type = this.data.type;

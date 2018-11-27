@@ -12,7 +12,6 @@ import { AccountsModule } from './accounts/accounts.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core';
-import { AuthenticationService } from './core/authentication/authentication.service';
 import { DirectivesModule } from './core/directives/directives';
 import { EquipmentModule } from './equipment/equipment.module';
 import { HomeModule } from './home/home.module';
@@ -55,7 +54,6 @@ import { SharedModule } from './shared';
       enabled: environment.production
     })
   ],
-  providers: [AuthenticationService],
   entryComponents: [ProjectFormDialogComponent],
 
   bootstrap: [AppComponent]

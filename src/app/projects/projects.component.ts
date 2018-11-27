@@ -119,6 +119,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   createRequest() {
     const dialogRef = this.dialog.open(ProjectRequestDialogComponent, {
+      width: '40vw',
       data: {
         projects: this.requestableProjects
       }

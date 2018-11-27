@@ -1,10 +1,12 @@
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 
 import { CoreModule } from '../core';
-import { BreadcrumbService } from '../core/breadcrumbs/breadcrumbs.service';
 import { DirectivesModule } from '../core/directives/directives';
 import { NgxCurrencyModule } from '../core/directives/ngx-currency';
 import { CURRENCY_MASK_CONFIG, CurrencyMaskConfig } from '../core/directives/ngx-currency/src/currency-mask.config';
@@ -22,7 +24,6 @@ import { ProjectCompleteDialogComponent } from './project-complete-dialog.compon
 import { ProjectFormComponent } from './project-form/project-form.component';
 import { ProjectRequestDialogComponent } from './project-request-dialog.component';
 import { ProjectsComponent } from './projects.component';
-import { ProjectsService } from './projects.service';
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
@@ -35,6 +36,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   decimal: '.'
 };
 
+registerLocaleData(en);
+
 @NgModule({
   declarations: [
     ProjectsComponent,
@@ -46,6 +49,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   ],
   imports: [
     CoreModule,
+    NgZorroAntdModule,
     BrowserAnimationsModule,
     RouterModule,
     SharedModule,
@@ -69,8 +73,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     ProjectFormDialogComponent
   ],
   providers: [
-    BreadcrumbService,
-    ProjectsService,
+    { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [

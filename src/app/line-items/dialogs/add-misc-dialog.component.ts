@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { concat, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { EmployeeFirstNameFilter, EmployeeLastNameFilter, EmployeeTradeFilter, Equipment } from './../../shared/model';
@@ -18,8 +17,9 @@ export class AddMiscDialogComponent implements OnInit {
   configurations: any[];
   miscCategoryId: string;
   miscSubtypeId: string;
-  miscSizeClassId: string;
+  miscSizeClass: any;
   miscModelId: string;
+  miscModel: string;
   miscEquipment: Equipment;
   selected = [];
   showConfigurations = false;
@@ -50,32 +50,15 @@ export class AddMiscDialogComponent implements OnInit {
     this.dialogRef.close({
       success: true,
       configuration: configuration,
+      configurations: this.configurations,
       equipment: this.miscEquipment
     });
   }
 
-  modelSearch() {
-    this.modelResults$ = concat(
-      of([]), // default items
-      this.modelInput$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(() => (this.modelLoading = true)),
-        switchMap((term: string) =>
-          this.equipmentService
-            .getModelsForSizeId(term, this.miscSizeClassId)
-            .pipe(
-              catchError(() => of([])), // empty list on error
-              tap(() => (this.modelLoading = false))
-            )
-        )
-      )
-    );
-  }
-
   categoryChanged() {
-    this.miscModelId = null;
-    this.miscSizeClassId = null;
+    this.miscModel = null;
+    this.miscSizeClass = null;
+    this.miscModel = null;
     this.miscSubtypeId = null;
     this.configurations = null;
     this.selected = [];
@@ -83,18 +66,18 @@ export class AddMiscDialogComponent implements OnInit {
   }
 
   subtypeChanged() {
-    this.miscSizeClassId = null;
-    this.miscModelId = null;
+    this.miscSizeClass = null;
+    this.miscModel = null;
+    this.miscModel = null;
     this.configurations = null;
     this.selected = [];
     this.sizeSearch();
   }
 
   sizeChanged() {
-    this.miscModelId = null;
     this.configurations = null;
     this.selected = [];
-    this.modelSearch();
+    this.modelSelected();
   }
 
   categorySearch() {
@@ -129,12 +112,15 @@ export class AddMiscDialogComponent implements OnInit {
       this.equipmentService.getModelDetails(this.miscModelId).subscribe(
         (response: any) => {
           this.miscEquipment = response;
+          this.miscModel = this.miscEquipment.model;
           this.equipmentService
             .getConfiguration(response.modelId)
             .subscribe((configurations: any) => {
               this.configurations = configurations;
               if (configurations && configurations.values.length === 1) {
                 this.selected = configurations.values[0];
+                this.confirm(this.selected);
+                return;
               } else {
                 this.showConfigurations = true;
               }

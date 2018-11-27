@@ -21,7 +21,6 @@ export class LineItemApproveDialogComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('data: ' + JSON.stringify(this.data, null, 2));
     this.selectedItem = this.data.selectedItem;
     this.modalType = this.data.modalType;
     this.modalSubmitLabel = this.data.modalSubmitLabel;

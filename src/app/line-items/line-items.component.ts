@@ -11,8 +11,9 @@ import {
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import { concat, Observable, of, Subject, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -38,6 +39,28 @@ import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.com
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 
+class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
+  compare(a: Item, b: Item) {
+    const d1 = new Date(a.details.startDate);
+    const d2 = new Date(b.details.startDate);
+
+    // Check if the dates are equal
+    const same = d1.getTime() === d2.getTime();
+    if (same) {
+      return 0;
+    }
+
+    // Check if the first is greater than second
+    if (d1 > d2) {
+      return 1;
+    }
+
+    // Check if the first is less than second
+    if (d1 < d2) {
+      return -1;
+    }
+  }
+}
 @Component({
   selector: 'app-line-items',
   templateUrl: './line-items.component.html',
@@ -46,6 +69,7 @@ import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog
   animations: appAnimations
 })
 export class LineItemsComponent implements OnInit, OnDestroy {
+  public dateRangeComparator = new ItemDateRangeComparator();
   lastNameFilter = new EmployeeLastNameFilter();
   firstNameFilter = new EmployeeFirstNameFilter();
   tradeFilter = new EmployeeTradeFilter();
@@ -68,13 +92,18 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   subtypeResults$: Observable<any>;
   sizeResults$: Observable<any>;
   modelResults$: Observable<any>;
-
+  dateRange: any;
   compareFn: ((f1: any, f2: any) => boolean) | null = this.compareByValue;
   itemType: string;
+  dateFormat = 'M/dd/yy';
+  colorTheme = 'theme-dark-blue';
+
+  bsConfig: Partial<BsDatepickerConfig>;
   @Input() itemList: ItemList;
   @Input() project: Project;
   @Input() requestId: string;
   @Input() draftMode: boolean;
+  @Input() requestStartDate: string;
   @Input() printingInvoice = false;
   @Output() itemsChanged = new EventEmitter<any>();
   @Output() itemChanged = new EventEmitter<Item>();
@@ -152,6 +181,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
     this.subscription = this.authenticationService
       .getCreds()
       .subscribe(message => {
@@ -227,6 +257,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   getComps() {
     if (this.itemType !== 'equipment.rental') {
       return;
+    }
+  }
+
+  dateRangeChanged(item: Item) {
+    if (item && item.details.dateRange && item.details.dateRange.length > 0) {
+      item.details.startDate = item.details.dateRange[0];
+      item.details.endDate = item.details.dateRange[1];
     }
   }
 
@@ -485,9 +522,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           benefits: employee.benefits,
           time1: 0,
           time15: 0,
-          time2: 0,
-          fut: this.project.adjustments.labor.fut,
-          sut: this.project.adjustments.labor.sut
+          time2: 0
         }
       });
       newItem.beingEdited = true;
@@ -518,9 +553,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             time1: 0,
             time15: 0,
             time2: 0,
-            benefits: 0,
-            fut: this.project.adjustments.labor.fut,
-            sut: this.project.adjustments.labor.sut
+            benefits: 0
           }
         });
       } else if (
@@ -562,6 +595,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     } else {
       item.details.sizeClassName = '';
       item.details.fhwa = 0;
+      item.details.year = '';
+      item.details.years = null;
+      item.details.modelId = null;
+      item.details.hours = 0;
+      item.details.amount = 0;
+      item.amount = 0;
+      item.details.transportation = 0;
       item.resetSelectedConfiguration();
     }
   }
@@ -570,6 +610,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.details.makeId = item.details.makeId;
       item.details.sizeClassName = '';
       item.details.fhwa = 0;
+      item.details.year = '';
+      item.details.years = null;
+      item.details.modelId = null;
+      item.details.hours = 0;
+      item.details.amount = 0;
+      item.amount = 0;
+      item.details.transportation = 0;
       item.resetSelectedConfiguration();
       return;
     }
@@ -592,6 +639,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     item.details.dateIntroduced = event.item.dateIntroduced;
     item.details.dateDiscontinued = event.item.dateDiscontinued;
     item.generateYears();
+    if (item.details.years && item.details.years.length === 1) {
+      item.details.year = item.details.years[0].year;
+    }
     item.details.vin = event.item.vin;
     if (item && item.details) {
       if (item.type === 'equipment.rental') {
@@ -608,7 +658,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               .getConfiguration(
                 item.details.modelId,
                 item.details.year,
-                this.project.state
+                this.project.state,
+                this.requestStartDate
               )
               .subscribe((configurations: any) => {
                 item.details.configurations = configurations;
@@ -646,6 +697,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   yearSelectionChanged(item: Item, index: number) {
     if (!item.details.year || item.details.year === '') {
       item.details.fhwa = 0;
+      item.details.hours = 0;
+      item.details.amount = 0;
+      item.amount = 0;
+      item.details.transportation = 0;
       item.resetSelectedConfiguration();
       if (this.itemType === 'equipment.active') {
         this.activeChanged(item);
@@ -660,9 +715,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       .getConfiguration(
         item.details.modelId,
         item.details.year,
-        this.project.state
+        this.project.state,
+        this.requestStartDate
       )
       .subscribe((configurations: any) => {
+        //  console.log('# of configs:  ' + configurations.values.length);
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
           this.selectedIndex = index;
@@ -717,9 +774,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           time1: 0,
           time15: 0,
           time2: 0,
-          benefits: 0,
-          fut: this.project.adjustments.labor.fut,
-          sut: this.project.adjustments.labor.sut
+          benefits: 0
         }
       });
     } else if (
@@ -798,10 +853,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         +item.details.time2 + +item.details.time15 + +item.details.time1;
       const totalBennies = +item.details.benefits * totalHours;
       total += +totalBennies;
-    }
-    if (item.details.fut) {
-    }
-    if (item.details.sut) {
     }
 
     item.amount = total;
@@ -1040,10 +1091,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.submitRequests = true;
       }
 
-      if (r === 'RequestManage' || r === 'ProjectAdmin') {
+      if (r === 'RequestManage') {
         this.manageRequests = true;
       }
-      if (r === 'ProjectManage' || r === 'ProjectAdmin') {
+      if (r === 'ProjectAdmin') {
         this.manageProject = true;
       }
     }
@@ -1103,8 +1154,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.otherChanged(item);
     } else if (item.type === 'subcontractor') {
       this.subcontractorChanged(item);
-    } else if (item.type === 'rental') {
-      this.laborChanged(item);
+    } else if (item.type === 'equipment.rental') {
+      this.rentalChanged(item);
+    } else if (item.type === 'equipment.active') {
+      this.activeChanged(item);
+    } else if (item.type === 'equipment.standby') {
+      this.standbyChanged(item);
     }
   }
 
@@ -1165,7 +1220,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       );
     }
   }
-  f;
 
   get amountChanged() {
     return +this.selectedItem.finalAmount - +this.selectedItem.amount;
@@ -1269,11 +1323,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   addMiscEquipment() {
     this.selectedConfig = [];
-    this.categoryChanged();
-    this.categorySearch();
-    this.sizeSearch();
-    this.modelSearch();
-    this.subtypeSearch();
+
     const dialogRef = this.dialog.open(AddMiscDialogComponent, {
       width: '80vw',
       data: {
@@ -1284,19 +1334,22 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        this.miscEquipment = result.equipment;
         if (result.configuration) {
-          this.confirmAddMiscModel(result.configuration);
+          this.confirmAddMiscModel(
+            result.equipment,
+            result.configuration,
+            result.configurations
+          );
         }
       }
     });
   }
 
-  confirmAddMiscModel(sc: any) {
+  confirmAddMiscModel(equipment: any, sc: any, configs: any) {
     this.miscCategoryId = null;
-    this.miscEquipment.details.configurations = JSON.parse(
-      JSON.stringify(this.configurations)
-    );
+    this.miscEquipment = equipment;
+    this.miscEquipment.misc = true;
+    this.miscEquipment.details.configurations = configs;
     this.miscEquipment.details.selectedConfiguration = sc;
 
     if (this.itemType === 'equipment.rental') {
@@ -1340,6 +1393,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               rentalHouseRates: this.miscEquipment.rentalHouseRates
             }
           });
+          newItem.generateYears();
           newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
           newItem.details.configuration = this.miscEquipment.details.configurations;
           // need to set base rate that is different than invoice amount - right now i only
@@ -1379,6 +1433,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         }
       });
       newItem.generateYears();
+      if (newItem.details.years && newItem.details.years.length === 1) {
+        newItem.details.year = newItem.details.years[0].year;
+      }
       newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
       newItem.details.configuration = this.miscEquipment.details.configurations;
 
@@ -1406,132 +1463,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.selected = [];
     this.selectedConfig = null;
     this.miscEquipment = null;
-  }
-
-  modelChanged(item: Equipment) {}
-
-  modelSelected() {
-    if (this.miscModelId) {
-      this.equipmentService.getModelDetails(this.miscModelId).subscribe(
-        (response: any) => {
-          this.miscEquipment = response;
-          this.equipmentService
-            .getConfiguration(response.modelId)
-            .subscribe((configurations: any) => {
-              this.configurations = configurations;
-              if (configurations && configurations.values.length === 1) {
-                this.selectedConfig = configurations.values[0];
-              }
-
-              this.changeDetector.detectChanges();
-            });
-        },
-        (error: any) => {
-          console.error('Caught error trying to load misc choice: ' + error);
-        }
-      );
-    }
-  }
-
-  standbyValueChanged(value: any) {}
-
-  modelSelectionChanged(event: any) {
-    const item: Equipment = this.miscEquipment;
-    if (item) {
-      item.subtypeId = event.item.subtypeId;
-      item.classificationId = event.item.classificationId;
-      item.classificationName = event.item.classificationName;
-      item.display = event.item.display;
-      item.sizeClassId = event.item.sizeClassId;
-      item.description = event.item.description;
-      item.subtypeName = event.item.subtypeName;
-      item.subtypeId = event.item.subtypeId;
-      item.categoryId = event.item.categoryId;
-      item.categoryName = event.item.categoryName;
-      item.make = event.item.make;
-
-      item.model = event.item.model;
-      item.modelId = event.item.modelId;
-      item.baseRental = event.item.baseRental;
-      item.configurations = event.item.configurations;
-      item.selectedConfiguration = event.item.selectedConfiguration;
-      item.rentalHouseRates = event.item.rentalHouseRates;
-      item.nationalAverages = event.item.nationalAverages;
-      item.sizeClassName = event.item.sizeClassName;
-      item.vin = event.item.vin;
-      item.dateDiscontinued = event.item.dateDiscontinued;
-      item.dateIntroduced = event.item.dateIntroduced;
-      item.details = event.item.details;
-      item.generateYears();
-      this.miscEquipment = item;
-    }
-  }
-
-  modelSearch() {
-    this.modelResults$ = concat(
-      of([]), // default items
-      this.modelInput$.pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(() => (this.modelLoading = true)),
-        switchMap((term: string) =>
-          this.equipmentService
-            .getModelsForSizeId(term, this.miscSizeClassId)
-            .pipe(
-              catchError(() => of([])), // empty list on error
-              tap(() => (this.modelLoading = false))
-            )
-        )
-      )
-    );
-  }
-
-  categoryChanged() {
-    this.miscModelId = null;
-    this.miscSizeClassId = null;
-    this.miscSubtypeId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.subtypeSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  subtypeChanged() {
-    this.miscSizeClassId = null;
-    this.miscModelId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.sizeSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  sizeChanged() {
-    this.miscModelId = null;
-    this.configurations = null;
-    this.selected = [];
-    this.modelSearch();
-    this.changeDetector.detectChanges();
-  }
-
-  categorySearch() {
-    this.categoryResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getCategories()
-    );
-  }
-
-  subtypeSearch() {
-    this.subtypeResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getSubtypes(this.miscCategoryId)
-    );
-  }
-
-  sizeSearch() {
-    this.sizeResults$ = concat(
-      of([]), // default items
-      this.equipmentService.getSizes(this.miscSubtypeId)
-    );
   }
 }
 

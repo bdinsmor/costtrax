@@ -1,34 +1,32 @@
-<mat-card class="pb-2">
-  <h3 mat-dialog-title>Submit Request</h3>
-  <mat-card-content class="modal-body">
-    <h3>Please sign this request:</h3>
-    <form [formGroup]="signatureFormGroup" class="column full-width">
-      <h6>Signature:</h6>
-      <div class="full-width mt-1">
-        <input
-          class="full-width"
-          type="text"
-          formControlName="signature"
-          placeholder="Signature,
+<h3 mat-dialog-title>Submit Request</h3>
+<mat-dialog-content>
+  <h3>Please sign this request:</h3>
+  <form [formGroup]="signatureFormGroup" class="column full-width">
+    <h6>Signature:</h6>
+    <div class="full-width mt-1">
+      <input
+        class="full-width"
+        type="text"
+        formControlName="signature"
+        placeholder="Signature,
                           Contractor"
-        />
-      </div>
-    </form>
-  </mat-card-content>
-  <div mat-dialog-actions class="d-flex pt-1 flex-row-reverse">
-    <button
-      type="button"
-      class="btn btn-success"
-      [disabled]="
-        !signatureFormGroup.valid ||
-        signatureFormGroup.get('signature').value === ''
-      "
-      (click)="confirm()"
-    >
-      Submit
-    </button>
-    <button type="button" class="btn btn-outline" (click)="cancel()">
-      Cancel
-    </button>
-  </div>
-</mat-card>
+      />
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-outline" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-success"
+    [disabled]="
+      !signatureFormGroup.valid ||
+      signatureFormGroup.get('signature').value === ''
+    "
+    (click)="confirm()"
+  >
+    Submit
+  </button>
+</mat-dialog-actions>
