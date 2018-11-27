@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/ngx-bootstrap-datepicker';
 import { Observable, Subscription } from 'rxjs';
@@ -13,6 +14,7 @@ import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { ProjectsService } from '../../projects/projects.service';
 import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
+import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
 import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
@@ -105,6 +107,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   bsConfig: Partial<BsDatepickerConfig>;
 
   constructor(
+    private titleService: Title,
     public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
@@ -162,7 +165,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
                 .subscribe((formData: any) => {
                   this.save(formData.notes, formData.dateRange);
                 });
-
+              this.titleService.setTitle('Request ' + r.oneUp + ': ' + p.name);
               this.breadcrumbService.addProject(p.id, p.name);
               this.breadcrumbService.addRequest(r.id, r.oneUp);
               this.checkPermissions();
@@ -310,6 +313,14 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   }
 
   notesChanged() {}
+
+  viewRecapitulation() {
+    const dialogRef = this.dialog.open(RequestRecapitulationDialogComponent, {
+      width: '95vw',
+      data: { project: this.project, request: this.request }
+    });
+    dialogRef.afterClosed().subscribe(result => {});
+  }
 
   cancelRequest() {
     const dialogRef = this.dialog.open(RequestDeleteDialogComponent, {});

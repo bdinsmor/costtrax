@@ -378,7 +378,6 @@ export class Item {
     this.details.dateRangeStr = new DatesPipe().transform(
       this.details.dateRange
     );
-    console.log('dateRangeStr: ' + this.details.dateRangeStr);
   }
 
   hasId(): boolean {
@@ -735,7 +734,6 @@ export class Project {
     let materialTotal = 0;
     let subcontractorTotal = 0;
     let otherTotal = 0;
-
     if (includeDraft) {
       for (let i = 0; i < this.draftRequests.length; i++) {
         const r = this.draftRequests[i];
@@ -1115,8 +1113,9 @@ export class Equipment {
   beingEdited = false;
 
   generateYears() {
-    const startYear = this.dateIntroduced.getFullYear();
+    let startYear = this.dateIntroduced.getFullYear();
     const endYear = this.dateDiscontinued.getFullYear();
+    startYear = Math.max(startYear, endYear - 29);
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
@@ -1125,21 +1124,25 @@ export class Equipment {
 
   constructor(m: any) {
     this.id = m.id || '';
-    this.details = m.details || { id: '', serial: '' };
+    this.details = m.details || { id: '', serial: '', year: 2018 };
     this.guid = m.guid || '';
     this.make = m.make || m.manufacturerName || '';
     this.makeId = m.makeId || m.manufacturerId || '';
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.year = m.year || '';
+
     this.dateIntroduced = new Date(m.dateIntroduced) || new Date();
     this.dateDiscontinued = new Date(m.dateDiscontinued) || new Date();
 
     if (m.details) {
       this.vin = m.details.vin || m.details.serial || 0;
+      if (m.details.year) {
+        this.year = m.details.year || '';
+      }
     } else {
       this.vin = m.vin || m.serial || 0;
+      this.year = m.year || '';
     }
 
     if (this.details && !this.details.selectedConfiguration) {
@@ -1506,7 +1509,7 @@ export class Request {
   }
 
   calculateTotals() {
-    let total = 0;
+    const total = 0;
     const equipmentTotal = 0;
     let materialTotal = 0;
     let activeTotal = 0;
@@ -1524,16 +1527,12 @@ export class Request {
       for (let j = 0; j < items.length; j++) {
         const currentItem: Item = items[j];
         let lt = 0;
-        //   console.log('number of line items: ' + this.items.length);
         if (currentItem.status.toLowerCase() === 'complete') {
-          total += Number(currentItem.finalAmount);
           lt = +currentItem.finalAmount;
         } else {
           if (currentItem.type === 'labor') {
-            total += Number(currentItem.subtotal);
             lt = +currentItem.subtotal;
           } else {
-            total += Number(currentItem.amount);
             lt = +currentItem.amount;
           }
         }
@@ -1640,7 +1639,12 @@ export class Request {
     }
     this.materialTotal = materialTotal + this.materialMarkup;
 
-    this.total = total;
+    this.total =
+      this.materialTotal +
+      this.laborTotal +
+      this.otherTotal +
+      this.subcontractorTotal +
+      this.equipmentTotal;
   }
 
   buildLineItems() {

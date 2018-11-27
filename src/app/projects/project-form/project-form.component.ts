@@ -177,9 +177,11 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       }
       if (role === 'RequestManage') {
         this.canManageRequests = true;
+        this.draftCosts = false;
       }
       if (role === 'ProjectAdmin') {
         this.canChangeSettings = true;
+        this.draftCosts = false;
         this.isUserAdmin = true;
       }
     }

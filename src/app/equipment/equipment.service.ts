@@ -16,11 +16,7 @@ export class EquipmentService {
   constructor(private http: HttpClient) {}
 
   saveRequestorModel(projectId: string, item: Equipment): Observable<any> {
-    const details = {
-      id: item.details.id,
-      vin: item.details.vin
-    };
-
+    item.details.year = item.year;
     if (item.id) {
       return this.http.put(
         environment.serverUrl + '/project/' + projectId + '/models/' + item.id,

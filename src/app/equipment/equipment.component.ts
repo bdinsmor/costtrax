@@ -181,13 +181,13 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             updatedItem.resetSelectedConfiguration();
           }
           updatedItem.generateYears();
-          updatedItem.year = null;
+          updatedItem.details.year = null;
           this.items[event.index] = updatedItem;
           this.changeDetector.markForCheck();
         });
     } else {
       this.items[event.index].sizeClassName = '';
-      this.items[event.index].year = null;
+      this.items[event.index].details.year = null;
       this.items[event.index].years = null;
       this.items[event.index].modelId = null;
     }
@@ -242,14 +242,14 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   }
 
   yearSelectionChanged(item: Equipment, index: number) {
-    if (!item.details.year || item.details.year === '') {
+    if (!item.year || item.year === '') {
       item.details.fhwa = 0;
       item.resetSelectedConfiguration();
-
       return;
     }
+
     this.equipmentService
-      .getConfiguration(item.details.modelId, item.details.year)
+      .getConfiguration(item.modelId, item.year)
       .subscribe((configurations: any) => {
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;

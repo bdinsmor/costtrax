@@ -95,6 +95,19 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
 
+  findState(abbr: string) {
+    if (!abbr || abbr === '') {
+      return '';
+    }
+
+    const st = this.states.find((s: any) => s.value === abbr.toUpperCase());
+    if (st) {
+      return st.label;
+    } else {
+      return '';
+    }
+  }
+
   ngOnInit() {
     this.subscription = this.authenticationService
       .getCreds()
@@ -263,9 +276,6 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   }
 
   createProjectFormGroup() {
-    console.log(
-      'activeMarkup: ' + this.project.adjustments.equipment.active.markup
-    );
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name, Validators.required),
       zipcode: new FormControl(this.project.zipcode, Validators.required),

@@ -12,10 +12,12 @@ import { SharedModule } from '../shared';
 import { RequestApproveDialogComponent } from './dialogs/request-approve-dialog.component';
 import { RequestCloneDialogComponent } from './dialogs/request-clone-dialog.component';
 import { RequestDeleteDialogComponent } from './dialogs/request-delete-dialog.component';
+import { RequestRecapitulationDialogComponent } from './dialogs/request-recapitulation-dialog.component';
 import { RequestSubmitDialogComponent } from './dialogs/request-submit-dialog.component';
 import { RequestDetailsComponent } from './request-details/request-details.component';
 import { RequestsComponent } from './requests.component';
 
+// import HeadroomModule
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
   allowNegative: true,
@@ -34,6 +36,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     RequestSubmitDialogComponent,
     RequestApproveDialogComponent,
     RequestDeleteDialogComponent,
+    RequestRecapitulationDialogComponent,
     RequestDetailsComponent
   ],
   imports: [
@@ -52,6 +55,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     RequestSubmitDialogComponent,
     RequestApproveDialogComponent,
     RequestDeleteDialogComponent,
+    RequestRecapitulationDialogComponent,
     RequestsComponent
   ],
   providers: [
@@ -59,6 +63,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   ],
   entryComponents: [
     RequestsComponent,
+    RequestRecapitulationDialogComponent,
     RequestCloneDialogComponent,
     RequestSubmitDialogComponent,
     RequestApproveDialogComponent,

@@ -1,20 +1,40 @@
 <div class="px-1 full-width">
   <app-breadcrumbs></app-breadcrumbs>
-  <div id="invoice-contents" *ngIf="request" class="px-2 card-header">
-    <div *ngIf="!editMode" class="full-width row" [formGroup]="notesFormGroup">
-      <div class="column w-30 pl-2">
+  <div id="invoice-contents" *ngIf="request" class="card-header no-row-padding">
+    <div
+      *ngIf="!editMode"
+      class="col-12 px-1 full-width row"
+      [formGroup]="notesFormGroup"
+    >
+      <div
+        [class.pending]="!request.isComplete()"
+        [class.requestor-complete]="canSubmitRequest && request.isComplete()"
+        [class.complete]="
+          (canManageProject || canManageRequest) && request.isComplete()
+        "
+        class="col-1 full-height row no-row-margins text-center"
+      >
+        <h4 class="strong mx-auto light-text" *ngIf="!request.isComplete()">
+          {{ request.status.toUpperCase() }}
+        </h4>
+
+        <h6 class="strong mx-auto light-text" *ngIf="request.isComplete()">
+          APPROVED
+        </h6>
+      </div>
+      <div class="col-7 column pl-2">
         <div class="row no-row-margins">
-          <h1 class="project-label no-top-margin">{{ project.name }}</h1>
+          <h2 class="strong project-label no-top-margin">{{ project.name }}</h2>
         </div>
-        <div class="row no-row-margins">
-          <h3 class="row-details pr-1">Request:</h3>
+        <div class="row no-row-margins pt-1">
+          <h3 class="no-top-margin row-details pr-1 strong">Request:</h3>
           <div>
-            <h3 *ngIf="request.oneUp">{{ request.oneUp }}</h3>
-            <h3 *ngIf="!request.oneUp">NEW REQUEST</h3>
+            <h3 class="no-top-margin" *ngIf="request.oneUp">
+              {{ request.oneUp }}
+            </h3>
+            <h3 class="no-top-margin" *ngIf="!request.oneUp">NEW REQUEST</h3>
           </div>
-        </div>
-        <div class="row no-row-margins align-items-start pt-1">
-          <h3 class="no-top-margin row-details pr-1">Dates:</h3>
+          <h3 class="no-top-margin strong row-details px-1">Dates:</h3>
 
           <div>
             <input
@@ -33,135 +53,178 @@
             </h3>
           </div>
         </div>
-      </div>
-      <div class="spacer"></div>
-      <div *ngIf="request && project" class="column w-25 align-items-center">
-        <h3 class="no-top-margin row-details pt-1">Notes</h3>
+        <div *ngIf="request && project" class="column align-items-center">
+          <h3 class="no-top-margin strong row-details pt-1">Notes:</h3>
 
-        <div class="full-width">
-          <textarea
-            *ngIf="canSubmitRequest && request.isDraft()"
-            (change)="notesChanged()"
-            class="full-width muted-text"
-            style="padding-top:6px;margin-top: 6px"
-            id="request_notes"
-            rows="3"
-            formControlName="notes"
-          ></textarea>
-          <div
-            *ngIf="
-              (request.notes && request.notes !== '' && !canSubmitRequest) ||
-              !request.isDraft()
-            "
-          >
-            {{ request.notes }}
-          </div>
-          <div
-            *ngIf="
-              (!request.notes && request.notes === '' && !canSubmitRequest) ||
-              !request.isDraft()
-            "
-          >
-            <h5 class="muted-text">No Notes Provided</h5>
+          <div class="full-width">
+            <textarea
+              *ngIf="canSubmitRequest && request.isDraft()"
+              (change)="notesChanged()"
+              class="full-width muted-text"
+              style="padding-top:6px;margin-top: 6px"
+              id="request_notes"
+              rows="3"
+              formControlName="notes"
+            ></textarea>
+            <div
+              *ngIf="
+                (request.notes && request.notes !== '' && !canSubmitRequest) ||
+                !request.isDraft()
+              "
+            >
+              {{ request.notes }}
+            </div>
+            <div
+              *ngIf="
+                (!request.notes || request.notes === '') &&
+                (!canSubmitRequest || !request.isDraft())
+              "
+            >
+              <h5 class="muted-text">No Notes Provided</h5>
+            </div>
           </div>
         </div>
       </div>
       <div class="spacer"></div>
-      <h3
-        class="px-1 row strong no-top-margin warning-label"
-        *ngIf="!request.isComplete()"
-      >
-        {{ request.status.toUpperCase() }}
-      </h3>
-      <h1
-        class="px-1 row strong no-top-margin cost-label"
-        *ngIf="request.isComplete()"
-      >
-        APPROVED
-      </h1>
-    </div>
-
-    <div class="px-1">
-      <div
-        *ngIf="
-          request &&
-          request.status.toLowerCase() !== 'draft' &&
-          (canManageRequest || canManageProject)
-        "
-        class="row mt-1"
-      >
-        <button
-          type="button"
-          *ngIf="request.status.toLowerCase() === 'pending'"
-          (click)="approveRequest()"
-          class="btn btn-primary"
-          color="primary"
+      <div class="col-4 column pl-3">
+        <table
+          id="totals-table"
+          cellspacing="0"
+          cellpadding="0"
+          class="table  totals-table table-compact"
         >
-          Approve Request
-        </button>
-      </div>
-      <div
-        *ngIf="
-          request &&
-          (request.status.toLowerCase() === 'new' ||
-            request.status.toLowerCase() === 'draft')
-        "
-        class="row mt-1"
-      >
-        <button
-          *ngIf="canSubmitRequest"
-          [disabled]="
-            signatureFormGroup.invalid ||
-            notesFormGroup.hasError('notValid') ||
-            !project ||
-            !request.hasLineItems() ||
-            !request.isDraft()
-          "
-          class="ripple
-          btn
-          btn-success mr-1"
-          (click)="submitRequest()"
-        >
-          Submit Request
-        </button>
-        <button
-          type="button"
-          *ngIf="!request.id"
-          class="btn
-          btn-outline-danger ripple"
-          matTooltip="Cancel Request"
-          (click)="cancelRequest()"
-        >
-          <mat-icon class="hidden-md-up">clear</mat-icon>
-          <span class="hidden-sm-down">Cancel</span>
-        </button>
-        <button
-          type="button"
-          *ngIf="request.id && canSubmitRequest"
-          class="btn
-          btn-outline-danger ripple"
-          matTooltip="Delete Request"
-          (click)="deleteRequest()"
-        >
-          <mat-icon class="hidden-md-up">clear</mat-icon>
-          <span class="hidden-sm-down">Delete</span>
-        </button>
-        <button
-          type="button"
-          *ngIf="canManageRequest || canManageProject"
-          [disabled]="
-            !canManageRequest || request.status.toLowerCase() === 'complete'
-          "
-          (click)="approveRequest()"
-          class="btn btn-primary"
-          color="primary"
-        >
-          Approve Request
-        </button>
-        <!--
-          <div class="spacer"></div>
-          <button *ngIf="!printingInvoice" class="btn btn-link" (click)="captureScreen()">Print to PDF</button>
-        -->
+          <tbody>
+            <tr *ngIf="project.laborCostsEnabled">
+              <td class="left">Labor Total</td>
+              <td class="left">{{ request.laborTotal | currency }}</td>
+              <td></td>
+            </tr>
+            <tr *ngIf="project.equipmentCostsEnabled">
+              <td class="left">Equipment Total</td>
+              <td class="left">{{ request.equipmentTotal | currency }}</td>
+              <td></td>
+            </tr>
+            <tr *ngIf="project.materialCostsEnabled">
+              <td class="left">Materials Total</td>
+              <td class="left">{{ request.materialTotal | currency }}</td>
+              <td></td>
+            </tr>
+            <tr *ngIf="project.subcontractorCostsEnabled"></tr>
+            <tr *ngIf="project.subcontractorCostsEnabled">
+              <td class="left">Subcontractor Total</td>
+              <td class="left">{{ request.subcontractorTotal | currency }}</td>
+              <td></td>
+            </tr>
+            <tr *ngIf="project.otherCostsEnabled">
+              <td class="left">Other Total</td>
+              <td class="left">{{ request.otherTotal | currency }}</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="left strong">TOTAL</td>
+              <td class="left strong">{{ request.total | currency }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="full-width row mx-auto no-row-margins">
+          <div
+            *ngIf="
+              request &&
+              request.isComplete() &&
+              (canManageProject || canManageRequest)
+            "
+            class="row mt-1 mx-auto no-row-margins"
+          >
+            <button
+              type="button"
+              (click)="viewRecapitulation()"
+              class="btn btn-primary ripple"
+            >
+              View Recapitulation
+            </button>
+          </div>
+          <div
+            *ngIf="
+              request &&
+              request.status.toLowerCase() !== 'draft' &&
+              (canManageRequest || canManageProject)
+            "
+            class="row mt-1 mx-auto no-row-margins"
+          >
+            <button
+              type="button"
+              *ngIf="request.status.toLowerCase() === 'pending'"
+              (click)="approveRequest()"
+              class="btn btn-primary ripple"
+            >
+              Approve Request
+            </button>
+          </div>
+          <div
+            *ngIf="
+              request &&
+              (request.status.toLowerCase() === 'new' ||
+                request.status.toLowerCase() === 'draft')
+            "
+            class="row mt-1 mx-auto no-row-margins"
+          >
+            <button
+              *ngIf="canSubmitRequest"
+              [disabled]="
+                signatureFormGroup.invalid ||
+                notesFormGroup.hasError('notValid') ||
+                !project ||
+                !request.hasLineItems() ||
+                !request.isDraft()
+              "
+              class="ripple
+                btn
+                btn-success mr-1"
+              (click)="submitRequest()"
+            >
+              Submit Request
+            </button>
+            <button
+              type="button"
+              *ngIf="!request.id"
+              class="btn
+                btn-outline-danger ripple"
+              matTooltip="Cancel Request"
+              (click)="cancelRequest()"
+            >
+              <mat-icon class="hidden-md-up">clear</mat-icon>
+              <span class="hidden-sm-down">Cancel</span>
+            </button>
+            <button
+              type="button"
+              *ngIf="request.id && canSubmitRequest"
+              class="btn
+                btn-outline-danger ripple"
+              matTooltip="Delete Request"
+              (click)="deleteRequest()"
+            >
+              <mat-icon class="hidden-md-up">clear</mat-icon>
+              <span class="hidden-sm-down">Delete</span>
+            </button>
+            <button
+              type="button"
+              *ngIf="canManageRequest || canManageProject"
+              [disabled]="
+                !canManageRequest || request.status.toLowerCase() === 'complete'
+              "
+              (click)="approveRequest()"
+              class="btn btn-primary"
+              color="primary"
+            >
+              Approve Request
+            </button>
+            <!--
+              <div class="spacer"></div>
+              <button *ngIf="!printingInvoice" class="btn btn-link" (click)="captureScreen()">Print to PDF</button>
+            -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -377,6 +440,7 @@
       </div>
     </div>
   </div>
+
   <div *ngIf="request && project" class="hidden-md-up mb-1">
     <div *ngIf="request">
       <h4>Recapitulation</h4>

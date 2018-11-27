@@ -1,0 +1,20 @@
+.recap-table {
+    border: none !important;
+    background: inherit !important;
+    font-size: 12px !important;
+}
+
+.recap-table table,
+td,
+tr {
+    border-collapse: collapse;
+    border: none !important;
+}
+
+.table td.right, .table th.right {
+    text-align: right;
+}
+
+.no-br {
+    border-radius: 1px !important;
+}

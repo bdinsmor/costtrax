@@ -147,7 +147,17 @@
               id="activeRegionalCheck"
               formControlName="activeRegionalCheck"
             />
-            <label for="activeRegionalCheck">Use regional adjustment</label>
+            <label for="activeRegionalCheck"
+              >Use regional adjustment for
+              <span
+                *ngIf="
+                  projectFormGroup &&
+                  projectFormGroup.get('state') &&
+                  projectFormGroup.get('state').value
+                "
+                [innerHTML]="findState(projectFormGroup.get('state').value)"
+              ></span
+            ></label>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
             <label class="no-bottom-margin"
@@ -246,7 +256,17 @@
               id="standbyRegionalCheck"
               formControlName="standbyRegionalCheck"
             />
-            <label for="standbyRegionalCheck">Use regional adjustment</label>
+            <label for="standbyRegionalCheck"
+              >Use regional adjustment for
+              <span
+                *ngIf="
+                  projectFormGroup &&
+                  projectFormGroup.get('state') &&
+                  projectFormGroup.get('state').value
+                "
+                [innerHTML]="findState(projectFormGroup.get('state').value)"
+              ></span
+            ></label>
           </div>
         </div>
       </div>

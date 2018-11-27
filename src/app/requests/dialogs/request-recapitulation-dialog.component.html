@@ -1,0 +1,234 @@
+<h1 mat-dialog-title>Recapitulation</h1>
+<mat-dialog-content>
+  <h3>Total: {{ request.total | currency }}</h3>
+  <div class="row pt-2">
+    <div class="col" *ngIf="project.laborCostsEnabled">
+      <div class="card-header no-br">
+        <h5 class="strong no-top-margin">Labor</h5>
+      </div>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        class="table table-compact recap-table"
+      >
+        <tbody>
+          <tr>
+            <td class="small-text left strong">Total, Labor</td>
+            <td class="small-text right strong">
+              {{ request.laborTotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4"><br /></td>
+          </tr>
+          <tr>
+            <td class="small-text left">Labor</td>
+            <td class="small-text right">
+              {{ request.laborSubtotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">Fringe Benefits</td>
+            <td class="small-text right">
+              {{ request.laborBenefitsTotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+
+          <tr>
+            <td class="small-text left">Labor Markup (10%)</td>
+            <td class="small-text right">
+              {{ request.laborMarkup | currency }}
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col" *ngIf="project.equipmentCostsEnabled">
+      <div class="card-header no-br">
+        <h5 class="strong no-top-margin">Equipment</h5>
+      </div>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        class="table table-compact recap-table"
+      >
+        <tbody>
+          <tr>
+            <td class="small-text left strong">Total, Equipment</td>
+            <td class="small-text right strong">
+              {{ request.equipmentTotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4"><br /></td>
+          </tr>
+          <tr>
+            <td class="small-text left strong" colspan="3">Equipment</td>
+          </tr>
+          <tr>
+            <td class="small-text left">Active Subtotal</td>
+            <td class="small-text right">
+              {{ request.activeSubtotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">
+              Active Markup ({{ project.adjustments.equipment.active.markup }}%)
+            </td>
+            <td class="small-text right">
+              {{ request.activeMarkup | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">Standby Subtotal</td>
+            <td class="small-text right">
+              {{ request.standbySubtotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">
+              Standby Markup ({{
+                project.adjustments.equipment.standby.markup
+              }}%)
+            </td>
+            <td class="small-text right">
+              {{ request.standbyMarkup | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">Rental Subtotal</td>
+            <td class="small-text right">
+              {{ request.rentalSubtotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">
+              Rental Markup ({{ project.adjustments.equipment.rental.markup }}%)
+            </td>
+            <td class="small-text right">
+              {{ request.rentalMarkup | currency }}
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col" *ngIf="project.materialCostsEnabled">
+      <div class="card-header no-br">
+        <h5 class="strong no-top-margin">Materials</h5>
+      </div>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        class="table table-compact recap-table"
+      >
+        <tbody>
+          <tr>
+            <td class="small-text left strong">Total, Materials</td>
+            <td class="small-text right strong">
+              {{ request.materialTotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4"><br /></td>
+          </tr>
+          <tr>
+            <td class="small-text left">Materials Subtotal</td>
+            <td class="small-text right">
+              {{ request.materialSubtotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">
+              Materials Markup ({{ project.adjustments.material.markup }}%)
+            </td>
+            <td class="small-text right">
+              {{ request.materialMarkup | currency }}
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col" *ngIf="project.subcontractorCostsEnabled">
+      <div class="card-header no-br">
+        <h5 class="strong no-top-margin">Subcontractor</h5>
+      </div>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        cellpadding="0"
+        cellspacing="0"
+        class="table table-compact recap-table"
+      >
+        <tbody>
+          <tr>
+            <td class="small-text left strong">Total, Subcontractor</td>
+            <td class="small-text right strong">
+              {{ request.subcontractorTotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="4"><br /></td>
+          </tr>
+          <tr>
+            <td class="small-text left">Subcontractor Subtotal</td>
+            <td class="small-text right">
+              {{ request.subcontractorSubtotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="small-text left">
+              Subcontractor Markup ({{
+                project.adjustments.subcontractor.markup
+              }}%)
+            </td>
+            <td class="small-text right">
+              {{ request.subcontractorMarkup | currency }}
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col" *ngIf="project.otherCostsEnabled">
+      <div class="card-header no-br">
+        <h5 class="strong no-top-margin">Other</h5>
+      </div>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        class="table table-compact recap-table"
+      >
+        <tbody>
+          <tr>
+            <td class="small-text left strong">Total, Other</td>
+            <td class="small-text right strong">
+              {{ request.otherTotal | currency }}
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-primary" (click)="cancel()">
+    Close
+  </button>
+</mat-dialog-actions>

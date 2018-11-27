@@ -52,13 +52,11 @@ class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
 
     // Check if the first is greater than second
     if (d1 > d2) {
-      console.log(d1 + ' is greater than ' + d2);
       return 1;
     }
 
     // Check if the first is less than second
     if (d1 < d2) {
-      console.log(d1 + ' is less than ' + d2);
       return -1;
     }
   }
@@ -1154,8 +1152,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.otherChanged(item);
     } else if (item.type === 'subcontractor') {
       this.subcontractorChanged(item);
-    } else if (item.type === 'rental') {
-      this.laborChanged(item);
+    } else if (item.type === 'equipment.rental') {
+      this.rentalChanged(item);
+    } else if (item.type === 'equipment.active') {
+      this.activeChanged(item);
+    } else if (item.type === 'equipment.standby') {
+      this.standbyChanged(item);
     }
   }
 
