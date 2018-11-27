@@ -344,8 +344,19 @@ export class Item {
   }
 
   generateYears() {
-    const startYear = new Date(this.details.dateIntroduced).getFullYear();
-    const endYear = this.details.dateDiscontinued.getFullYear();
+    if (!this.details.dateIntroduced) {
+      this.details.dateIntroduced = moment().toDate();
+    }
+    if (!this.details.dateDiscontinued) {
+      this.details.dateDiscontinued = moment().toDate();
+    }
+    let startYear = moment(this.details.dateIntroduced)
+      .toDate()
+      .getFullYear();
+    const endYear = moment(this.details.dateDiscontinued)
+      .toDate()
+      .getFullYear();
+    startYear = Math.max(startYear, endYear - 29);
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.details.years.push({ year: i });
@@ -816,7 +827,6 @@ export class Project {
   buildUsers() {
     this.users = [];
     this.requestors = [];
-    // console.log('userJSON: ' + JSON.stringify(this.userJSON, null, 2));
     for (let i = 0; i < this.userJSON.length; i++) {
       const u = new User(this.userJSON[i]);
       if (u.containsRole('RequestSubmit')) {
@@ -1046,7 +1056,6 @@ export class Account {
 
   constructor(a: any) {
     {
-      //  console.log(a.organization + ' ' + JSON.stringify(a, null, 2));
       this.id = a.id || '';
       this.organization = a.organization || '';
       this.accountName = a.accountName || this.organization || '';
@@ -1132,8 +1141,9 @@ export class Equipment {
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
 
-    this.dateIntroduced = new Date(m.dateIntroduced) || new Date();
-    this.dateDiscontinued = new Date(m.dateDiscontinued) || new Date();
+    this.dateIntroduced =
+      moment(m.dateIntroduced || new Date()).toDate() || new Date();
+    this.dateDiscontinued = moment(m.dateDiscontinued).toDate() || new Date();
 
     if (m.details) {
       this.vin = m.details.vin || m.details.serial || 0;
@@ -1177,7 +1187,6 @@ export class Equipment {
       this.type = m.type || this.model;
     }
 
-    //  console.log('this details: ' + JSON.stringify(m, null, 2));
     this.calculateHourlyRates();
     this.generateYears();
     this.display = this.make + ' ' + this.model;
@@ -1237,7 +1246,6 @@ export class Equipment {
   }
 
   buildRates(duration: number = 1) {
-    // console.log('national averages: ' + JSON.stringify(this.details, null, 2));
     if (
       this.type === 'equipment.rental' &&
       this.nationalAverages &&
@@ -1555,10 +1563,7 @@ export class Request {
               +currentItem.details.time2 +
               +currentItem.details.time15 +
               +currentItem.details.time1;
-            // console.log('totalHours: ' + totalHours);
             const totalBennies = +currentItem.details.benefits * totalHours;
-
-            // console.log('totalBennies: ' + totalBennies);
             laborBenefits += +totalBennies;
           }
         }
@@ -1704,10 +1709,7 @@ export class Request {
             +currentItem.details.time2 +
             +currentItem.details.time15 +
             +currentItem.details.time1;
-          // console.log('totalHours: ' + totalHours);
           const totalBennies = +currentItem.details.benefits * totalHours;
-
-          // console.log('totalBennies: ' + totalBennies);
           laborBenefits += +totalBennies;
         }
       }
@@ -1813,8 +1815,6 @@ export class Request {
     this.itemsByType.sort((a, b) =>
       a.sortOrder < b.sortOrder ? -1 : a.sortOrder > b.sortOrder ? 1 : 0
     );
-
-    //  console.log('Request Map: \n' + JSON.stringify(byType.size, null, 2));
   }
 
   getItemsForType(type: string) {

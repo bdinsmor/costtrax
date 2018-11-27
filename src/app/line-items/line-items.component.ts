@@ -261,7 +261,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   dateRangeChanged(item: Item) {
-    console.log('date range changed');
     if (item && item.details.dateRange && item.details.dateRange.length > 0) {
       item.details.startDate = item.details.dateRange[0];
       item.details.endDate = item.details.dateRange[1];
@@ -640,6 +639,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     item.details.dateIntroduced = event.item.dateIntroduced;
     item.details.dateDiscontinued = event.item.dateDiscontinued;
     item.generateYears();
+    if (item.details.years && item.details.years.length === 1) {
+      item.details.year = item.details.years[0].year;
+    }
     item.details.vin = event.item.vin;
     if (item && item.details) {
       if (item.type === 'equipment.rental') {
@@ -1391,6 +1393,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               rentalHouseRates: this.miscEquipment.rentalHouseRates
             }
           });
+          newItem.generateYears();
           newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
           newItem.details.configuration = this.miscEquipment.details.configurations;
           // need to set base rate that is different than invoice amount - right now i only
@@ -1430,6 +1433,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         }
       });
       newItem.generateYears();
+      if (newItem.details.years && newItem.details.years.length === 1) {
+        newItem.details.year = newItem.details.years[0].year;
+      }
       newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
       newItem.details.configuration = this.miscEquipment.details.configurations;
 

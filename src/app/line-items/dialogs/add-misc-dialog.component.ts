@@ -111,7 +111,6 @@ export class AddMiscDialogComponent implements OnInit {
     if (this.miscModelId) {
       this.equipmentService.getModelDetails(this.miscModelId).subscribe(
         (response: any) => {
-          console.log('model details: ' + JSON.stringify(response, null, 2));
           this.miscEquipment = response;
           this.miscModel = this.miscEquipment.model;
           this.equipmentService

@@ -1,18 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig
-} from '@angular/material';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -79,7 +66,6 @@ export class RequestsComponent implements OnInit {
     const selectedIds = this.selectedRequests.map(request => {
       return request.id;
     });
-    console.log('selectedIds: ' + JSON.stringify(selectedIds, null, 2));
   }
 
   clone(request: Request) {
