@@ -7,6 +7,7 @@
     <div>
       <h4 class="pb-1">Category:</h4>
       <ng-select
+        appendTo="body"
         [items]="categoryResults$ | async"
         (change)="categoryChanged()"
         bindLabel="categoryName"
@@ -23,6 +24,7 @@
     <div>
       <h4 class="pb-1">Subtype:</h4>
       <ng-select
+        appendTo="body"
         [items]="subtypeResults$ | async"
         [disabled]="!miscCategoryId"
         (change)="subtypeChanged()"
@@ -41,12 +43,13 @@
     <div>
       <h4 class="pb-1">Size Class:</h4>
       <ng-select
+        appendTo="body"
         [items]="sizeResults$ | async"
         [disabled]="!miscSubtypeId"
         (change)="sizeChanged()"
         bindLabel="model"
         bindValue="modelId"
-        clearAllText="Clear"
+        clearAllText="Clear Size Class"
         groupBy="sizeClassName"
         placeholder="Choose Size Class"
         clearAllText="Clear"
