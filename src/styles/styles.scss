@@ -39,6 +39,25 @@ $v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
     margin-bottom: 0 !important;
 }
 
+.no-row-margins {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.no-row-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.no-top-padding {
+    padding-top: 0 !important;
+}
+
+.account-dialog-container .mat-dialog-container {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 .ant-calendar-picker-input {
     height: 36px !important;
 }

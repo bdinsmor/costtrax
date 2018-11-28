@@ -50,6 +50,48 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.createProjectForm();
     this.refreshProjects();
     this.accounts$ = this.projectsService.getAccounts();
+    this.projectsService.getProjectRoles().subscribe((r: String[]) => {
+      if (!r || r.length === 0) {
+        this.requestsService.getAccounts().subscribe((accounts: Account[]) => {
+          if (accounts.length > 0) {
+            for (let i = 0; i < accounts.length; i++) {
+              const a: Account = accounts[i];
+              if (a.roles) {
+                for (let j = 0; j < a.roles.length; j++) {
+                  const role = a.roles[j];
+                  if (
+                    role === 'AccountAdmin' ||
+                    role === 'ProjectManage' ||
+                    role === 'ProjectAdmin'
+                  ) {
+                    this.canCreateProjects = true;
+                    break;
+                  }
+                }
+              }
+            }
+            this.authService.setUserAccounts(accounts);
+          } else {
+            this.canCreateProjects = false;
+          }
+          this.changeDetector.detectChanges();
+        });
+      } else {
+        for (let j = 0; j < r.length; j++) {
+          const role = r[j];
+          if (
+            role === 'AccountAdmin' ||
+            role === 'ProjectManage' ||
+            role === 'ProjectAdmin'
+          ) {
+            this.canCreateProjects = true;
+            break;
+          }
+        }
+
+        this.changeDetector.detectChanges();
+      }
+    });
     this.projectsService.getProjectsForRequests().subscribe((p: Project[]) => {
       this.requestableProjects = p;
       if (p.length > 0) {
@@ -58,26 +100,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         this.canSubmitRequests = false;
       }
 
-      this.changeDetector.detectChanges();
-    });
-    this.requestsService.getAccounts().subscribe((accounts: Account[]) => {
-      if (accounts.length > 0) {
-        for (let i = 0; i < accounts.length; i++) {
-          const a: Account = accounts[i];
-          if (a.roles) {
-            for (let j = 0; j < a.roles.length; j++) {
-              const role = a.roles[j];
-              if (role === 'ProjectManage' || role === 'ProjectAdmin') {
-                this.canCreateProjects = true;
-                break;
-              }
-            }
-          }
-        }
-        this.authService.setUserAccounts(accounts);
-      } else {
-        this.canCreateProjects = false;
-      }
       this.changeDetector.detectChanges();
     });
   }

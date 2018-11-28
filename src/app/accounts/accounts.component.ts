@@ -37,7 +37,10 @@ export class AccountsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   createAccount() {
-    const dialogRef = this.dialog.open(AccountFormComponent, {});
+    const dialogRef = this.dialog.open(AccountFormComponent, {
+      panelClass: 'account-dialog-container',
+      width: '60vw'
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
