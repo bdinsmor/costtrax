@@ -559,7 +559,7 @@
           <clr-dg-cell>
             <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
               class="padding-label-top row pl-1"
-              style="padding-left: 0 !important">
+              style="padding-left: 10px !important">
               <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
             </div>
             <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
@@ -860,7 +860,7 @@
             [clrDgItem]="item">
             <clr-dg-cell>
               <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
-                class="padding-label-top row pl-1">
+                class="padding-label-top row" style="padding-left:10px">
                 <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
               </div>
               <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
@@ -1039,8 +1039,8 @@
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
-              <div *ngIf="(manageRequests || manageProject)" class="padding-label-top row pl-1"
-                style="padding-left: 0 !important">
+              <div *ngIf="(manageRequests || manageProject)" class="padding-label-top row"
+                style="padding-left: 10px !important">
                 <mat-icon class="icon" *ngIf="item.rateVerified()"
                   svgIcon="costtrax-check"></mat-icon>
                 <mat-icon class="icon" *ngIf="!item.rateVerified()"
