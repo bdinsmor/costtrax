@@ -546,7 +546,7 @@
           [clrDgField]="'details.selectedConfiguration.hourlyOperatingCost'"
           style="width:150px">Operating</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.fhwa'" style="width:150px">Standby</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.fhwa'" style="width:150px">FHWA</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.transportation'"
           style="width:150px">Transport</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
@@ -559,7 +559,7 @@
           <clr-dg-cell>
             <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
               class="padding-label-top row pl-1"
-              style="padding-left: 0 !important">
+              style="padding-left: 10px !important">
               <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
             </div>
             <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
@@ -860,7 +860,7 @@
             [clrDgItem]="item">
             <clr-dg-cell>
               <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
-                class="padding-label-top row pl-1">
+                class="padding-label-top row" style="padding-left:10px">
                 <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
               </div>
               <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
@@ -1039,8 +1039,8 @@
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
-              <div *ngIf="(manageRequests || manageProject)" class="padding-label-top row pl-1"
-                style="padding-left: 0 !important">
+              <div *ngIf="(manageRequests || manageProject)" class="padding-label-top row"
+                style="padding-left: 10px !important">
                 <mat-icon class="icon" *ngIf="item.rateVerified()"
                   svgIcon="costtrax-check"></mat-icon>
                 <mat-icon class="icon" *ngIf="!item.rateVerified()"

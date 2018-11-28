@@ -125,6 +125,22 @@ export class ProjectsService {
     );
   }
 
+  getProjectRoles(): Observable<string[]> {
+    return this.http.get(environment.serverUrl + '/project').pipe(
+      map((res: any) => {
+        const roles = new Set();
+        res.forEach((p: any) => {
+          if (p.roles) {
+            for (let i = 0; i < p.roles.length; i++) {
+              roles.add(p.roles[i]);
+            }
+          }
+        });
+        return Array.from(roles);
+      })
+    );
+  }
+
   getAccount(id: string): Observable<Account> {
     return this.http.get(environment.serverUrl + '/account/' + id).pipe(
       map((res: any) => {
