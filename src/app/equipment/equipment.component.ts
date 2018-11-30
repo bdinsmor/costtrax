@@ -39,7 +39,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   _confirmDeleteModal = false;
 
   submitRequests: boolean;
-  autoSaveEnabled = true;
+  autoSaveEnabled = false;
   equipmentForm: FormGroup;
 
   selectedItem: Equipment;

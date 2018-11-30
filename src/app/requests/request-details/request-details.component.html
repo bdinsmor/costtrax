@@ -12,13 +12,51 @@
         [class.complete]="
           (canManageProject || canManageRequest) && request.isComplete()
         "
-        class="col-1 full-height row no-row-margins text-center"
+        class="hidden-md-down col-1 full-height row no-row-margins text-center"
       >
-        <h4 class="strong mx-auto light-text" *ngIf="!request.isComplete()">
+        <h4
+          class="hidden-md-down strong mx-auto light-text"
+          *ngIf="!request.isComplete()"
+        >
           {{ request.status.toUpperCase() }}
         </h4>
 
-        <h6 class="strong mx-auto light-text" *ngIf="request.isComplete()">
+        <h6 class=" strong mx-auto light-text" *ngIf="request.isComplete()">
+          APPROVED
+        </h6>
+      </div>
+      <div
+        [class.pending]="!request.isComplete()"
+        [class.requestor-complete]="canSubmitRequest && request.isComplete()"
+        [class.complete]="
+          (canManageProject || canManageRequest) && request.isComplete()
+        "
+        class="hidden-lg-up col-1 align-content-center align-items-center full-height row no-row-margins text-center"
+      >
+        <h4
+          class="hidden-md-up no-top-margin strong mx-auto light-text rotated"
+          *ngIf="!request.isComplete()"
+        >
+          {{ request.status.toUpperCase() }}
+        </h4>
+
+        <h6
+          class="hidden-md-up no-top-margin strong mx-auto light-text rotated"
+          *ngIf="request.isComplete()"
+        >
+          APPROVED
+        </h6>
+        <h4
+          class="hidden-sm-down strong mx-auto light-text rotated"
+          *ngIf="!request.isComplete()"
+        >
+          {{ request.status.toUpperCase() }}
+        </h4>
+
+        <h6
+          class="hidden-sm-down strong mx-auto light-text rotated"
+          *ngIf="request.isComplete()"
+        >
           APPROVED
         </h6>
       </div>
@@ -171,6 +209,7 @@
           >
             <button
               *ngIf="canSubmitRequest"
+              matTooltip="Submit Request"
               [disabled]="
                 signatureFormGroup.invalid ||
                 notesFormGroup.hasError('notValid') ||
@@ -183,7 +222,8 @@
                 btn-success mr-1"
               (click)="submitRequest()"
             >
-              Submit Request
+              <mat-icon class="hidden-md-up">send</mat-icon>
+              <span class="hidden-sm-down">Submit Request</span>
             </button>
             <button
               type="button"

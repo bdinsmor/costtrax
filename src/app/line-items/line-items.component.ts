@@ -331,7 +331,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   .selectedConfiguration.hourlyOperatingCost
             ).toFixed(2);
             this.itemList.items[this.selectedIndex].details.method = +Number(
-              this.itemList.items[this.selectedIndex].details.fhwa * 1.046
+              this.itemList.items[this.selectedIndex].details.fhwa
             ).toFixed(2);
           } else if (this.itemType === 'equipment.standby') {
             this.itemList.items[this.selectedIndex].details.fhwa = +Number(
@@ -339,7 +339,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 .selectedConfiguration.hourlyOwnershipCost * 0.5
             ).toFixed(2);
             this.itemList.items[this.selectedIndex].details.method = +Number(
-              +this.itemList.items[this.selectedIndex].details.fhwa * 1.046
+              +this.itemList.items[this.selectedIndex].details.fhwa
             ).toFixed(2);
           }
           this.selected = [];
@@ -447,16 +447,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             +newItem.details.selectedConfiguration.hourlyOwnershipCost +
               +newItem.details.selectedConfiguration.hourlyOperatingCost
           ).toFixed(2);
-          newItem.details.method = +Number(
-            +newItem.details.fhwa * 1.046
-          ).toFixed(2);
+          newItem.details.method = +Number(+newItem.details.fhwa).toFixed(2);
         } else if (this.itemType === 'equipment.standby') {
           newItem.details.fhwa = +Number(
             +newItem.details.selectedConfiguration.hourlyOwnershipCost * 0.5
           ).toFixed(2);
-          newItem.details.method = +Number(
-            +newItem.details.fhwa * 1.046
-          ).toFixed(2);
+          newItem.details.method = +Number(+newItem.details.fhwa).toFixed(2);
         }
         newItem.beingEdited = true;
         this.itemList.items = [...this.itemList.items, newItem];
@@ -733,14 +729,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               +item.details.selectedConfiguration.hourlyOwnershipCost +
                 +item.details.selectedConfiguration.hourlyOperatingCost
             ).toFixed(2);
-            item.details.method = +Number(item.details.fhwa * 1.046).toFixed(2);
+            item.details.method = +Number(item.details.fhwa).toFixed(2);
           } else if (this.itemType === 'equipment.standby') {
             item.details.fhwa = +Number(
               +item.details.selectedConfiguration.hourlyOwnershipCost * 0.5
             ).toFixed(2);
-            item.details.method = +Number(+item.details.fhwa * 1.046).toFixed(
-              2
-            );
+            item.details.method = +Number(+item.details.fhwa).toFixed(2);
           } else {
             item.resetSelectedConfiguration();
           }
@@ -862,9 +856,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   activeChanged(item: Item) {
     let total = 0;
-    console.log(
-      'modelId: ' + item.details.modelId + ' method: ' + item.details.method
-    );
+
     if (item.details.hours) {
       total = +item.details.hours * +item.details.method;
     }

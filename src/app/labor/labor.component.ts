@@ -24,7 +24,7 @@ export class LaborComponent implements OnInit {
   selectedItem: Employee;
   selectedIndex = -1;
   _confirmDeleteModal = false;
-  autoSaveEnabled = true;
+  autoSaveEnabled = false;
   laborForm: FormGroup;
 
   private config: MatSnackBarConfig;

@@ -773,10 +773,67 @@
 
                     </tbody>
                   </table>
+                  <div class="row no-row-margins">
+<div class="column no-row-margins col">
 
+
+  <h6>Rate Element Allocation</h6>
+  <h6 class="no-top-margin">Ownership Costs, Unadjusted
+    (Monthly)</h6>
+  <table id="invoice-table" class="no-top-margin table
+                    table-compact
+                    table-bordered table-striped comparison-table w-25">
+    <thead>
+      <th>Element</th>
+      <th>Percentage</th>
+      <th>Amount</th>
+    </thead>
+    <tbody>
+      <tr class="justify-content-center">
+        <td class="strong">Depreciation</td>
+        <td>{{100*item.details.selectedConfiguration.depreciation
+          | number : '1.2-2'}}%</td>
+        <td>{{item.details.selectedConfiguration.depreciation *
+          item.details.selectedConfiguration.monthlyOwnershipCost
+          | currency}}</td>
+      </tr>
+      <tr class="justify-content-center">
+        <td class="strong">Overhaul</td>
+        <td>{{100*item.details.selectedConfiguration.overhaul |
+          number : '1.2-2'}}%</td>
+        <td>{{item.details.selectedConfiguration.overhaul *
+          item.details.selectedConfiguration.monthlyOwnershipCost
+          |
+          currency}}</td>
+      </tr>
+      <tr class="justify-content-center">
+        <td class="strong">Cost of Facilities Capital</td>
+        <td>{{100*item.details.selectedConfiguration.costOfFacitiliesCaptial
+          | number : '1.2-2'}}%</td>
+        <td>{{item.details.selectedConfiguration.costOfFacitiliesCaptial
+          *
+          item.details.selectedConfiguration.monthlyOwnershipCost
+          |
+          currency}}</td>
+      </tr>
+      <tr class="justify-content-center">
+        <td class="strong">Indirect</td>
+        <td>{{100*item.details.selectedConfiguration.overhead |
+          number : '1.2-2'}}%</td>
+        <td>{{item.details.selectedConfiguration.overhead *
+          item.details.selectedConfiguration.monthlyOwnershipCost
+          |
+          currency}}</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+                  <div class="column col no-row-margins">
+
+                  
                   <h6>Rate Element Allocation</h6>
-                  <h6 class="no-top-margin">Ownership Costs, Unadjusted
-                    (Monthly)</h6>
+                  <h6 class="no-top-margin">Operating Costs, (Hourly)</h6>
                   <table id="invoice-table" class="no-top-margin table
                     table-compact
                     table-bordered table-striped comparison-table w-25">
@@ -787,44 +844,21 @@
                     </thead>
                     <tbody>
                       <tr class="justify-content-center">
-                        <td class="strong">Depreciation</td>
-                        <td>{{100*item.details.selectedConfiguration.depreciation
-                          | number : '1.2-2'}}%</td>
+                        <td class="strong">Fuel @ {{100*item.details.selectedConfiguration.fuel |
+                        currency}}</td>
+                        <!--<td>{{100*item.details.selectedConfiguration.overhead |
+                          number : '1.2-2'}}%</td>-->
+                        <td>{{item.details.selectedConfiguration.modelId}}</td>
                         <td>{{item.details.selectedConfiguration.depreciation *
-                          item.details.selectedConfiguration.monthlyOwnershipCost
+                          item.details.selectedConfiguration.hourlyOperatingCost
                           | currency}}</td>
                       </tr>
-                      <tr class="justify-content-center">
-                        <td class="strong">Overhaul</td>
-                        <td>{{100*item.details.selectedConfiguration.overhaul |
-                          number : '1.2-2'}}%</td>
-                        <td>{{item.details.selectedConfiguration.overhaul *
-                          item.details.selectedConfiguration.monthlyOwnershipCost
-                          |
-                          currency}}</td>
-                      </tr>
-                      <tr class="justify-content-center">
-                        <td class="strong">Cost of Facilities Capital</td>
-                        <td>{{100*item.details.selectedConfiguration.costOfFacitiliesCaptial
-                          | number : '1.2-2'}}%</td>
-                        <td>{{item.details.selectedConfiguration.costOfFacitiliesCaptial
-                          *
-                          item.details.selectedConfiguration.monthlyOwnershipCost
-                          |
-                          currency}}</td>
-                      </tr>
-                      <tr class="justify-content-center">
-                        <td class="strong">Indirect</td>
-                        <td>{{100*item.details.selectedConfiguration.overhead |
-                          number : '1.2-2'}}%</td>
-                        <td>{{item.details.selectedConfiguration.overhead *
-                          item.details.selectedConfiguration.monthlyOwnershipCost
-                          |
-                          currency}}</td>
-                      </tr>
+                      
 
                     </tbody>
                   </table>
+                  </div>
+                  </div>
 
                 </div>
 
@@ -883,8 +917,7 @@
                   (selected)="modelNewSelectionChanged($event,item,i)"
                   [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
               </div>
-              <div class="padding-label-top"
-                *ngIf="!item.beingEdited">{{item.details.model}}</div>
+              <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}</div>
             </clr-dg-cell>
             <clr-dg-cell>
               <div class="padding-label-top"

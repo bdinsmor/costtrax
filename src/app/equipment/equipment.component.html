@@ -393,14 +393,19 @@
     </clr-dg-row>
     <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
   </clr-datagrid>
-  <div class="align-items-center mt-1" align="end" [formGroup]="equipmentForm">
+  <div
+    class="align-items-center mt-1 float-right"
+    align="end"
+    [formGroup]="equipmentForm"
+  >
     <mat-checkbox
       type="checkbox"
       matRipple
+      disabled="true"
       id="activeCheck"
       formControlName="autoSave"
     ></mat-checkbox>
-    <label class="no-bottom-margin muted-text" style="padding-left: 4px">
+    <label class="no-bottom-margin disabled-text" style="padding-left: 4px">
       Automatically save new models added from requests to my Project Assets
     </label>
   </div>

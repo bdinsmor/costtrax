@@ -127,14 +127,19 @@
     </clr-dg-row>
     <clr-dg-footer *ngIf="items">{{ items.length }} Employees</clr-dg-footer>
   </clr-datagrid>
-  <div class="align-items-center mt-1" align="end" [formGroup]="laborForm">
+  <div
+    class="align-items-center mt-1 float-right"
+    align="end"
+    [formGroup]="laborForm"
+  >
     <mat-checkbox
       type="checkbox"
       matRipple
+      disabled="true"
       id="laborAutoSaveCheck"
       formControlName="autoSave"
     ></mat-checkbox>
-    <label class="no-bottom-margin muted-text" style="padding-left: 4px">
+    <label class="no-bottom-margin disabled-text" style="padding-left: 4px">
       Automatically save new employees added from requests to my Project Assets
     </label>
   </div>
