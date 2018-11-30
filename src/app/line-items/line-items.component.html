@@ -263,8 +263,7 @@
       <div class="full-width align-items-center row">
         <div class="align-items-center column">
           <h4 class="mt-0 pr-1">{{itemTypeDisplay}}</h4>
-          <h5 *ngIf="itemType === 'equipment.active' || itemType ===
-            'equipment.rental' || itemType === 'equipment.standby'"
+          <h5 *ngIf="itemType === 'equipment.active' || itemType === 'equipment.standby'"
             class="no-top-margin">Location:
             {{project.state}} | Ownership:
             {{project.adjustments.equipment.active.ownership}}%

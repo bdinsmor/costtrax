@@ -1,6 +1,6 @@
-<div class="px-2 pt-2 mb-2 full-width">
+<div class="px-1 pt-1 mb-2 full-width">
   <section class="full-width d-flex flex-row align-items-center">
-    <h3 class="pr-1 no-top-margin" disabled="true">Add Owned Equipment</h3>
+    <h3 class="pr-1 no-top-margin" disabled="true">Owned Equipment</h3>
     <button
       type="button"
       class="btn btn-sm btn-primary"
@@ -30,7 +30,7 @@
     </h4>
   </section>
 
-  <clr-datagrid class="px-1" *ngIf="accountSynced">
+  <clr-datagrid *ngIf="accountSynced">
     <clr-dg-column [clrDgField]="'id'" style="width:50px">ID</clr-dg-column>
     <clr-dg-column [clrDgField]="'make'" style="width:200px"
       >Make</clr-dg-column
@@ -393,4 +393,15 @@
     </clr-dg-row>
     <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
   </clr-datagrid>
+  <div class="align-items-center mt-1" align="end" [formGroup]="equipmentForm">
+    <mat-checkbox
+      type="checkbox"
+      matRipple
+      id="activeCheck"
+      formControlName="autoSave"
+    ></mat-checkbox>
+    <label class="no-bottom-margin muted-text" style="padding-left: 4px">
+      Automatically save new models added from requests to my Project Assets
+    </label>
+  </div>
 </div>

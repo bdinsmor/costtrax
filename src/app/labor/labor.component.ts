@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { auditTime } from 'rxjs/operators';
 
 import { Employee } from '../shared/model';
 import { appAnimations } from './../core/animations';
@@ -22,6 +24,8 @@ export class LaborComponent implements OnInit {
   selectedItem: Employee;
   selectedIndex = -1;
   _confirmDeleteModal = false;
+  autoSaveEnabled = true;
+  laborForm: FormGroup;
 
   private config: MatSnackBarConfig;
   duration = 3000;
@@ -43,6 +47,7 @@ export class LaborComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.buildForm();
     if (!this.items && this.projectId) {
       this.laborService.getRequestorEmployees(this.projectId).subscribe(
         (models: Employee[]) => {
@@ -61,6 +66,21 @@ export class LaborComponent implements OnInit {
   openSnackBar(message: string, type: string, action: string) {
     this.config = { duration: this.duration };
     this.snackBar.open(message, action, this.config);
+  }
+
+  buildForm() {
+    this.laborForm = new FormGroup({
+      autoSave: new FormControl(this.autoSaveEnabled)
+    });
+    this.laborForm.valueChanges
+      .pipe(auditTime(750))
+      .subscribe((formData: any) => {
+        this.autoSave(formData.autoSave);
+      });
+  }
+
+  autoSave(autoSaveValue) {
+    //   this.laborService.updateAutoSave(autoSaveValue);
   }
 
   employeeChanged(item: Employee) {}
