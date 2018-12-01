@@ -820,6 +820,15 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.itemList.items = [...this.itemList.items, newItem];
   }
 
+  removeLastRow() {
+    this.itemList.items.pop();
+  }
+
+  fakeRow() {
+    this.addRow();
+    this.removeLastRow();
+  }
+
   cancelAddEquipment() {
     this.beingEdited = false;
     this.createEquipmentForm();

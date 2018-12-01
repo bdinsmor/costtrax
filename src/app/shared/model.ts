@@ -356,7 +356,13 @@ export class Item {
     const endYear = moment(this.details.dateDiscontinued)
       .toDate()
       .getFullYear();
-    startYear = Math.max(startYear, endYear - 29);
+
+  
+    let nowYear = new Date().getFullYear() - 29;
+    
+    startYear = +Math.max(+startYear, +nowYear);
+   
+
 
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
@@ -1123,15 +1129,17 @@ export class Equipment {
   beingEdited = false;
 
   generateYears() {
-     let startYear = this.dateIntroduced.getFullYear();
-    const endYear = this.dateDiscontinued.getFullYear();
-    startYear = Math.max(startYear, endYear - 29);
-
+    let startYear = this.dateIntroduced.getFullYear();
+    let nowYear = new Date().getFullYear() - 29;
+    
+    startYear = +Math.max(+startYear, +nowYear);
+   
+    let endYear = this.dateDiscontinued.getFullYear();
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
-      
     }
+     
   }
 
   constructor(m: any) {
