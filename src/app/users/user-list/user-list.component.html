@@ -54,68 +54,20 @@
     </div>
   </section>
 
-  <div class="full-width hidden-md-up">
-    <div
-      class="col-lg-4 col-md-12 col-sm-12 col-xs-12"
-      *ngFor="let user of users; let i = index"
-    >
-      <div class="card">
-        <div class="card-header">
-          <h5 class="m-0 bold">{{ user.email }}</h5>
-        </div>
-        <div class="card-block">
-          <div class="card-text row">
-            <div class="d-flex flex-column col-12">
-              <!-- need to set ngModel to user based roles -->
-              <div class="row">
-                <div class="col-2 pr-1">Project Admin</div>
-                <mat-slide-toggle
-                  [(ngModel)]="user.projectAdmin"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectAdmin')"
-                ></mat-slide-toggle>
-              </div>
-              <div class="row">
-                <div class="col-2 pr-1">Project Observe</div>
-                <mat-slide-toggle
-                  [(ngModel)]="user.projectObserve"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectObserve')"
-                ></mat-slide-toggle>
-              </div>
-              <div class="row">
-                <div class="col-2 pr-1">Request Manage</div>
-                <mat-slide-toggle
-                  [(ngModel)]="user.requestManage"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'RequestManage')"
-                ></mat-slide-toggle>
-              </div>
-              <div class="row">
-                <div class="col-2 pr-1">Request Submit</div>
-                <mat-slide-toggle
-                  [(ngModel)]="user.requestSubmit"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'RequestSubmit')"
-                ></mat-slide-toggle>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="full-width hidden-sm-down mb-1">
+  
+  <div class="full-width mb-1">
     <clr-datagrid>
       <clr-dg-column>Email</clr-dg-column>
       <clr-dg-column>Roles</clr-dg-column>
       <clr-dg-column></clr-dg-column>
 
       <clr-dg-row *ngFor="let user of users; let i = index">
-        <clr-dg-cell>{{ user.email }}</clr-dg-cell>
+        <clr-dg-cell
+          ><div class="padding-label-top">{{ user.email }}</div></clr-dg-cell
+        >
         <clr-dg-cell>
-          <div *ngIf="user.roles">
-            <mat-chip-list>
+          <div class="padding-label-top" *ngIf="user.roles">
+            <mat-chip-list selectable="true">
               <mat-chip *ngFor="let role of user.roles">{{
                 role | rolePrint
               }}</mat-chip>
@@ -126,7 +78,7 @@
           <div class="row justify-content-end">
             <button
               *ngIf="user.expanded && type !== 'REQUESTOR'"
-              class="ripple icon-30 icon-button mr-1"
+              class="ripple icon-30 icon-button"
               matTooltip="Save"
               (click)="saveRoleEdit(user)"
             >
@@ -135,14 +87,14 @@
             <button
               *ngIf="!user.expanded && type !== 'REQUESTOR'"
               matTooltip="Edit"
-              class="ripple icon-30 icon-button mr-1"
+              class="ripple icon-30 icon-button"
               (click)="editUser(user)"
             >
               <mat-icon color="primary">edit</mat-icon>
             </button>
             <button
               *ngIf="!user.expanded"
-              class="ripple icon-30 icon-button"
+              class="ripple icon-30 icon-button mr-1"
               matTooltip="Remove"
               (click)="removeUser(i, user)"
             >
@@ -164,35 +116,60 @@
         >
           <clr-dg-row-detail *clrIfExpanded="user.expanded">
             <div class="d-flex flex-column col-12 pb-2">
-              <!-- need to set ngModel to user based roles -->
-
-              <h6>Project Owner Roles</h6>
-              <div class="row">
-                <div class="col-2 pr-1">Project Admin</div>
-                <mat-slide-toggle
+              <h5 class="mb-1 no-top-margin">Project Owner Roles</h5>
+              <div class="row no-row-margins">
+                <mat-checkbox
+                  type="checkbox"
+                  matRipple
+                  id="adminCheck"
                   [(ngModel)]="user.projectAdmin"
                   [disabled]="user.isRequestor()"
                   [ngModelOptions]="{ standalone: true }"
                   (change)="roleChanged(user, 'ProjectAdmin')"
-                ></mat-slide-toggle>
+                >
+                </mat-checkbox>
+                <h6
+                  [class.muted-text]="!user.projectAdmin"
+                  class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                >
+                  Project Admin
+                </h6>
               </div>
-              <div class="row">
-                <div class="col-2 pr-1">Project Observer</div>
-                <mat-slide-toggle
+              <div class="row no-row-margins">
+                <mat-checkbox
+                  type="checkbox"
+                  matRipple
+                  id="observeCheck"
                   [(ngModel)]="user.projectObserve"
                   [disabled]="user.isRequestor()"
                   [ngModelOptions]="{ standalone: true }"
                   (change)="roleChanged(user, 'ProjectObserve')"
-                ></mat-slide-toggle>
+                >
+                </mat-checkbox>
+                <h6
+                  [class.muted-text]="!user.projectObserve"
+                  class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                >
+                  Project Observer
+                </h6>
               </div>
-              <div class="row">
-                <div class="col-2 pr-1">Manage Request</div>
-                <mat-slide-toggle
+              <div class="row no-row-margins">
+                <mat-checkbox
+                  type="checkbox"
+                  matRipple
+                  id="requestorCheck"
                   [(ngModel)]="user.requestManage"
                   [disabled]="user.isRequestor()"
                   [ngModelOptions]="{ standalone: true }"
                   (change)="roleChanged(user, 'RequestManage')"
-                ></mat-slide-toggle>
+                >
+                </mat-checkbox>
+                <h6
+                  [class.muted-text]="!user.requestManage"
+                  class="pl-1 no-top-margin no-bottom-margin align-items-center"
+                >
+                  Manage Request
+                </h6>
               </div>
             </div>
           </clr-dg-row-detail>

@@ -47,6 +47,7 @@ export class UserListComponent implements OnInit {
   selectedItem: User;
   selectedIndex = -1;
   newUser: User = new User({});
+   selectedTags = [];
 
   constructor(
     private changeDetector: ChangeDetectorRef,
@@ -129,6 +130,7 @@ export class UserListComponent implements OnInit {
   }
 
   roleChanged(user: User, roleName: string) {
+    user.expanded = true;
     user.toggleRole(roleName);
     this.changeDetector.detectChanges();
   }

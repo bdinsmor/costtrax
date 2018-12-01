@@ -3,7 +3,7 @@ import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
+import { ClarityModule } from '@clr/angular';
 import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 
 import { CoreModule } from '../core';
@@ -62,7 +62,6 @@ registerLocaleData(en);
     UsersModule,
     RequestsModule,
     ClarityModule,
-    ClrFormsNextModule,
     PipesModule
   ],
   exports: [

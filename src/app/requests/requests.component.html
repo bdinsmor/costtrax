@@ -1,56 +1,5 @@
-<div class="line-items full-width hidden-md-up">
-  <div *ngIf="!items || items.length === 0" class="full-width">
-    <h2 class="smaller-gray-text">Please add requests</h2>
-  </div>
-  <div
-    *ngIf="items && items.length > 0"
-    class="mt-3 full-width"
-    [@listAnimation]="items.length"
-  >
-    <div *ngFor="let item of items; let i = index">
-      <a (click)="viewRequest(item)" class="card clickable">
-        <div class="card-header">
-          <div class="d-flex flex-row align-items-center">
-            <div class="col-8">
-              <h5 class="m-0 bold">{{ item.id }}</h5>
-            </div>
-          </div>
-          <div
-            class="d-flex flex-row
-            align-items-center"
-          >
-            <div class="col-8">
-              <h6 class="m-0 bold" [ngClass]="{ red: item.overdue }">
-                {{ item.age }} days
-              </h6>
-            </div>
-          </div>
-        </div>
-        <div class="card-block">
-          <div class="card-text row flex-row">
-            <div class="full-width">
-              <div class="full-width row justify-content-around">
-                <h5>
-                  <span class="section-label">Start Date:</span>
-                  {{ item.startDate | date: 'shortDate' }}
-                </h5>
-                <h5>
-                  <span class="section-label">End Date:</span>
-                  {{ item.endDate | date: 'shortDate' }}
-                </h5>
-              </div>
-              <div class="full-width row justify-content-around">
-                <h3>{{ item.total | currency }}</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </a>
-    </div>
-  </div>
-</div>
-
-<div class="line-items full-width hidden-sm-down">
+<div class="hidden-md-up mt-3"></div>
+<div class="line-items full-width">
   <div class="px-2 m-0">
     <div *ngIf="!items || items.length === 0" class="full-width">
       <h2 class="smaller-gray-text">Please add requests</h2>

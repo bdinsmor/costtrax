@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
+import { ClarityModule } from '@clr/angular';
 import { TextMaskModule } from 'angular2-text-mask';
 
 import { environment } from '../environments/environment';
@@ -47,7 +47,6 @@ import { SharedModule } from './shared';
     EquipmentModule,
     LaborModule,
     ClarityModule,
-    ClrFormsNextModule,
     MaterialModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {

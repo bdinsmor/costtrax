@@ -46,12 +46,7 @@
           </div>
           <label class="required no-bottom-margin pr-1">State: </label>
           <div class="w-50">
-            <ng-select
-              class="w-50"
-              formControlName="state"
-              appendTo="body"
-              required
-            >
+            <ng-select formControlName="state" appendTo="body" required>
               <ng-option *ngFor="let state of states" [value]="state.value">{{
                 state.label
               }}</ng-option>

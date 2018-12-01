@@ -350,13 +350,14 @@ export class Item {
     if (!this.details.dateDiscontinued) {
       this.details.dateDiscontinued = moment().toDate();
     }
-    let startYear = moment(this.details.dateIntroduced)
+     let startYear = moment(this.details.dateIntroduced)
       .toDate()
       .getFullYear();
     const endYear = moment(this.details.dateDiscontinued)
       .toDate()
       .getFullYear();
     startYear = Math.max(startYear, endYear - 29);
+
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.details.years.push({ year: i });
@@ -1122,12 +1123,14 @@ export class Equipment {
   beingEdited = false;
 
   generateYears() {
-    let startYear = this.dateIntroduced.getFullYear();
+     let startYear = this.dateIntroduced.getFullYear();
     const endYear = this.dateDiscontinued.getFullYear();
     startYear = Math.max(startYear, endYear - 29);
+
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
+      
     }
   }
 
@@ -1140,9 +1143,8 @@ export class Equipment {
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-
     this.dateIntroduced =
-      moment(m.dateIntroduced || new Date()).toDate() || new Date();
+      moment(m.dateIntroduced).toDate() || new Date();
     this.dateDiscontinued = moment(m.dateDiscontinued).toDate() || new Date();
 
     if (m.details) {
