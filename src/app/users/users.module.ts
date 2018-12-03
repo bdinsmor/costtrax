@@ -10,7 +10,12 @@ import { UserFormComponent } from './user-form/user-form.component';
 import { UserDialogComponent } from './user-list/user-dialog.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { UsersComponent } from './users.component';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+
+registerLocaleData(en);
 @NgModule({
   imports: [
     CommonModule,
@@ -19,6 +24,7 @@ import { UsersComponent } from './users.component';
     ReactiveFormsModule,
     ClarityModule,
     PipesModule,
+    NgZorroAntdModule,
     MaterialModule
   ],
   declarations: [

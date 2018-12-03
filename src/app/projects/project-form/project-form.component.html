@@ -56,13 +56,16 @@
           type="button"
           *ngIf="canSubmitRequests"
           (click)="createRequest()"
-          class="btn btn-primary"
+          matTooltip="Create Request"
+          class="btn ripple btn-primary"
           color="primary"
         >
-          Create Request
+          <clr-icon class="is-solid" shape="add"></clr-icon>
+          <span>&nbsp;Request</span>
         </button>
         <button
           type="button"
+          matTooltip="Archive Project"
           *ngIf="
             canChangeSettings &&
             (project.draftRequests &&
@@ -72,7 +75,8 @@
           (click)="completeProject()"
           class="btn btn-success"
         >
-          Archive Project
+          <clr-icon class="hidden-md-up is-solid" shape="archive"></clr-icon>
+          <span class="hidden-sm-down">Archive Project</span>
         </button>
         <div class="spacer"></div>
         <section class="row align-items-center pr-1">

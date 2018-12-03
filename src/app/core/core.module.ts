@@ -3,6 +3,7 @@ import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
+import { ClarityModule } from '@clr/angular';
 
 import { TokenInterceptor } from '../core/http/http-token.interceptor';
 import { ToolbarNotificationsComponent } from '../core/toolbar-notifications/toolbar-notifications.component';
@@ -27,6 +28,7 @@ import { UtilsModule } from './utils/utils.module';
   imports: [
     BrowserAnimationsModule,
     CommonModule,
+    ClarityModule,
     PipesModule,
     MaterialModule,
     UtilsModule,

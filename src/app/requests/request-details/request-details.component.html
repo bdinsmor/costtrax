@@ -12,13 +12,51 @@
         [class.complete]="
           (canManageProject || canManageRequest) && request.isComplete()
         "
-        class="col-1 full-height row no-row-margins text-center"
+        class="hidden-md-down col-1 full-height row no-row-margins text-center"
       >
-        <h4 class="strong mx-auto light-text" *ngIf="!request.isComplete()">
+        <h4
+          class="hidden-md-down strong mx-auto light-text"
+          *ngIf="!request.isComplete()"
+        >
           {{ request.status.toUpperCase() }}
         </h4>
 
-        <h6 class="strong mx-auto light-text" *ngIf="request.isComplete()">
+        <h6 class=" strong mx-auto light-text" *ngIf="request.isComplete()">
+          APPROVED
+        </h6>
+      </div>
+      <div
+        [class.pending]="!request.isComplete()"
+        [class.requestor-complete]="canSubmitRequest && request.isComplete()"
+        [class.complete]="
+          (canManageProject || canManageRequest) && request.isComplete()
+        "
+        class="hidden-lg-up col-1 align-content-center align-items-center full-height row no-row-margins text-center"
+      >
+        <h4
+          class="hidden-md-up no-top-margin strong mx-auto light-text rotated"
+          *ngIf="!request.isComplete()"
+        >
+          {{ request.status.toUpperCase() }}
+        </h4>
+
+        <h6
+          class="hidden-md-up no-top-margin strong mx-auto light-text rotated"
+          *ngIf="request.isComplete()"
+        >
+          APPROVED
+        </h6>
+        <h4
+          class="hidden-sm-down strong mx-auto light-text rotated"
+          *ngIf="!request.isComplete()"
+        >
+          {{ request.status.toUpperCase() }}
+        </h4>
+
+        <h6
+          class="hidden-sm-down strong mx-auto light-text rotated"
+          *ngIf="request.isComplete()"
+        >
           APPROVED
         </h6>
       </div>
@@ -26,7 +64,37 @@
         <div class="row no-row-margins">
           <h2 class="strong project-label no-top-margin">{{ project.name }}</h2>
         </div>
-        <div class="row no-row-margins pt-1">
+        <div class="hidden-lg-up column no-row-margins pt-1">
+          <div class="row no-row-margins">
+            <h3 class="no-top-margin row-details pr-1 strong">Request:</h3>
+
+            <h3 class="no-top-margin" *ngIf="request.oneUp">
+              {{ request.oneUp }}
+            </h3>
+            <h3 class="no-top-margin" *ngIf="!request.oneUp">NEW REQUEST</h3>
+          </div>
+          <div class="row no-row-margins pt-1">
+            <h3 class="no-top-margin strong row-details">Dates:</h3>
+
+            <div>
+              <input
+                *ngIf="canSubmitRequest && request.isDraft()"
+                type="text"
+                bsDaterangepicker
+                [bsConfig]="bsConfig"
+                placement="right"
+                formControlName="dateRange"
+              />
+              <h3
+                class="no-top-margin row-details"
+                *ngIf="!canSubmitRequest || !request.isDraft()"
+              >
+                {{ request.dateRange | dates: 'MM/dd/yy' }}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="hidden-md-down row no-row-margins pt-1">
           <h3 class="no-top-margin row-details pr-1 strong">Request:</h3>
           <div>
             <h3 class="no-top-margin" *ngIf="request.oneUp">
@@ -171,6 +239,7 @@
           >
             <button
               *ngIf="canSubmitRequest"
+              matTooltip="Submit Request"
               [disabled]="
                 signatureFormGroup.invalid ||
                 notesFormGroup.hasError('notValid') ||
@@ -183,7 +252,8 @@
                 btn-success mr-1"
               (click)="submitRequest()"
             >
-              Submit Request
+              <clr-icon class="hidden-md-up" shape="check"></clr-icon>
+              <span class="hidden-sm-down">Submit Request</span>
             </button>
             <button
               type="button"
@@ -193,7 +263,7 @@
               matTooltip="Cancel Request"
               (click)="cancelRequest()"
             >
-              <mat-icon class="hidden-md-up">clear</mat-icon>
+              <clr-icon class="hidden-md-up" shape="times"></clr-icon>
               <span class="hidden-sm-down">Cancel</span>
             </button>
             <button
@@ -204,7 +274,7 @@
               matTooltip="Delete Request"
               (click)="deleteRequest()"
             >
-              <mat-icon class="hidden-md-up">clear</mat-icon>
+              <clr-icon class="hidden-md-up" shape="times"></clr-icon>
               <span class="hidden-sm-down">Delete</span>
             </button>
             <button

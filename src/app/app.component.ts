@@ -2,6 +2,8 @@ import { animate, animateChild, group, query, sequence, style, transition, trigg
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Observable } from 'rxjs';
+import { debounce } from 'rxjs/operators';
 
 import { Subscription, timer } from '../../node_modules/rxjs';
 import { environment } from '../environments/environment';
@@ -9,8 +11,6 @@ import { AccountService } from './accounts/accounts.service';
 import { Logger } from './core';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { SyncDialogComponent } from './login/sync.dialog';
-import { debounce } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 const log = new Logger('App');
 
@@ -70,7 +70,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthenticationService,
     private accountService: AccountService
   ) {
-    this.debouncedExample = this.authService.getCreds().pipe(debounce(() => timer(250)));
+    this.debouncedExample = this.authService
+      .getCreds()
+      .pipe(debounce(() => timer(250)));
   }
 
   getRouteAnimation(outlet) {
@@ -94,7 +96,6 @@ export class AppComponent implements OnInit, OnDestroy {
       } else {
         this.uberAdmin = false;
         this.loggedIn = false;
-        console.log('LOGGED OUT!');
       }
     });
   }

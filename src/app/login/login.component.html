@@ -1,21 +1,16 @@
-<div *ngIf="mode === 'login'" class="container full-height mt-5">
+<div *ngIf="mode === 'login'" class="container full-height mt-2">
   <div class="row full-height justify-content-center align-items-center">
     <form
-      class="col-6 full-height"
+      class="col-md-8 col-sm-10 full-height"
       (submit)="login()"
       [formGroup]="loginForm"
       novalidate
     >
       <div class="login-box card no-border header-bg">
         <clr-header
-          class="header header-6  align-items-center justify-content-center pb-5 pt-5"
+          class="header header-6 align-items-center justify-content-center pb-5 pt-5"
         >
-          <img
-            class="logo"
-            alt="logo"
-            width="350"
-            src="../assets/img/costtrax.png"
-          />
+          <img class="px-1 logo" alt="logo" src="../assets/img/costtrax.png" />
         </clr-header>
         <div class="px-2 pt-2 form-bg">
           <div class="full-width">

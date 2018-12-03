@@ -1,4 +1,4 @@
-<div class="px-2 pt-2 mb-2 full-width">
+<div class="px-1 pt-1 mb-2 full-width">
   <section class="full-width d-flex flex-row align-items-center">
     <h3 class="pr-1 no-top-margin">Employees</h3>
     <button
@@ -10,7 +10,7 @@
     </button>
   </section>
 
-  <clr-datagrid class="px-1">
+  <clr-datagrid>
     <clr-dg-column [clrDgField]="'lastName'">Last Name</clr-dg-column>
     <clr-dg-column [clrDgField]="'firstName'">First Name</clr-dg-column>
     <clr-dg-column [clrDgField]="'trade'">Trade/Class </clr-dg-column>
@@ -125,6 +125,22 @@
         </div>
       </clr-dg-cell>
     </clr-dg-row>
-    <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
+    <clr-dg-footer *ngIf="items">{{ items.length }} Employees</clr-dg-footer>
   </clr-datagrid>
+  <div
+    class="align-items-center mt-1 float-right"
+    align="end"
+    [formGroup]="laborForm"
+  >
+    <mat-checkbox
+      type="checkbox"
+      matRipple
+      disabled="true"
+      id="laborAutoSaveCheck"
+      formControlName="autoSave"
+    ></mat-checkbox>
+    <label class="no-bottom-margin disabled-text" style="padding-left: 4px">
+      Automatically save new employees added from requests to my Project Assets
+    </label>
+  </div>
 </div>

@@ -8,8 +8,10 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { AddMiscDialogComponent } from '../line-items/dialogs/add-misc-dialog.component';
@@ -37,6 +39,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   _confirmDeleteModal = false;
 
   submitRequests: boolean;
+  autoSaveEnabled = false;
+  equipmentForm: FormGroup;
 
   selectedItem: Equipment;
   miscEquipment: Equipment;
@@ -70,6 +74,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.buildForm();
     this.subscription = this.authenticationService
       .getCreds()
       .subscribe(message => {
@@ -106,6 +111,21 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   openSnackBar(message: string, type: string = 'ok', action: string = 'ok') {
     this.config = { duration: this.duration };
     this.snackBar.open(message, action, this.config);
+  }
+
+  buildForm() {
+    this.equipmentForm = new FormGroup({
+      autoSave: new FormControl(this.autoSaveEnabled)
+    });
+    this.equipmentForm.valueChanges
+      .pipe(auditTime(750))
+      .subscribe((formData: any) => {
+        this.autoSave(formData.autoSave);
+      });
+  }
+
+  autoSave(autoSaveValue) {
+    //   this.equipmentService.updateAutoSave(autoSaveValue);
   }
 
   modelChanged(item: Equipment) {}

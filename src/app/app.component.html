@@ -14,22 +14,6 @@
     </a>
     <div class="header-nav align-items-center" [clr-nav-level]="1">
       <a
-        class="nav-link"
-        href="#"
-        [routerLink]="['/home']"
-        routerLinkActive="active"
-      >
-        <span class="nav-text">Home</span>
-      </a>
-      <a
-        class="nav-link"
-        href="#"
-        [routerLink]="['/projects']"
-        routerLinkActive="active"
-      >
-        <span class="nav-text">Projects</span>
-      </a>
-      <a
         *ngIf="uberAdmin"
         class="nav-link"
         href="#"
@@ -41,7 +25,6 @@
     </div>
 
     <div class="header-actions align-items-center pl-2 pr-1">
-      <app-toolbar-notifications></app-toolbar-notifications>
       <app-toolbar-user-button
         (advantageSync)="syncAccounts()"
       ></app-toolbar-user-button>

@@ -1,13 +1,15 @@
 <div
   class="user-button-container"
   #userButton
-  (appClickOutside)="onClickOutside()">
+  (appClickOutside)="onClickOutside()"
+>
   <button
     class="user-button ripple"
     mat-button
     (click)="toggleDropdown()"
-    [class.open]="isOpen">
-    <mat-icon class="avatar">account_circle</mat-icon>
+    [class.open]="isOpen"
+  >
+    <clr-icon class="is-solid" shape="id-badge" size="36"></clr-icon>
     <span class="hidden-sm-down">{{ userName }}</span>
     <mat-icon class="icon">keyboard_arrow_down</mat-icon>
   </button>
@@ -19,8 +21,9 @@
         <div
           *ngIf="!accountSynced"
           class="action pt-2 pb-2 d-flex align-items-center ripple"
-          (click)="syncAccounts()">
-          <mat-icon class="icon px-2">account_box</mat-icon>
+          (click)="syncAccounts()"
+        >
+          <mat-icon class="icon px-2">perm_identity</mat-icon>
           <span class="px-3 title">Sync EquipmentWatch Account</span>
         </div>
         <div *ngIf="accountSynced" class="pt-2 pb-2 d-flex align-items-center">
@@ -30,7 +33,8 @@
         <div class="divider"></div>
         <div
           class="action pt-2 pb-2 d-flex align-items-center ripple"
-          (click)="logout()">
+          (click)="logout()"
+        >
           <mat-icon class="icon px-2">exit_to_app</mat-icon>
           <span class="px-3 title">Logout</span>
         </div>

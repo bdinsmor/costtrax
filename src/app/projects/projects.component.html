@@ -7,9 +7,11 @@
       <button
         *ngIf="canCreateProjects"
         class="btn btn-primary"
+        matTooltip="Create Project"
         (click)="createProject()"
       >
-        <clr-icon shape="add"></clr-icon>&nbsp;Project
+        <clr-icon class="is-solid" shape="add"></clr-icon>
+        <span>Project</span>
       </button>
       <button
         *ngIf="
@@ -18,9 +20,11 @@
           requestableProjects.length > 0
         "
         class="btn btn-primary"
+        matTooltip="Create Request"
         (click)="createRequest()"
       >
-        <clr-icon shape="add"></clr-icon>&nbsp;Request
+        <clr-icon class="is-solid" shape="add"></clr-icon>
+        <span>&nbsp;Request</span>
       </button>
     </div>
 

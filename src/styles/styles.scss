@@ -53,6 +53,10 @@ $v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
     padding-top: 0 !important;
 }
 
+.muted-text {
+    color: rgba(0, 0, 0, 0.56);
+}
+
 .account-dialog-container .mat-dialog-container {
     margin: 0 !important;
     padding: 0 !important;
@@ -149,10 +153,11 @@ select:-moz-focusring {
     background-color: #698394 !important;
 }
 
+/**
 .ng-dropdown-panel {
     width: auto !important;
     min-width: 300px !important;
-}
+} **/
 
 .no-padding {
     padding: 0 !important;
@@ -406,6 +411,18 @@ button {
 .mat-card-content {
     display: flex;
     flex: 1;
+}
+
+.rotated {
+    transform: rotate(-90deg);
+    transform-origin: left top 0;
+    float: left;
+    text-align: center;
+    cursor: vertical-text;
+}
+
+.small-top-margin {
+    margin-top: 4px;
 }
 
 body,
