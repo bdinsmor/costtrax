@@ -6,10 +6,16 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
@@ -29,7 +35,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils,
+  Utils
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -308,6 +314,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   selectConfiguration(configurations: any[]) {
+    if (configurations.length === 0) {
+      console.log('no configs!!');
+    }
     const dialogRef = this.dialog.open(ConfigurationDialogComponent, {
       data: {
         configurations: configurations
@@ -342,6 +351,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               +this.itemList.items[this.selectedIndex].details.fhwa
             ).toFixed(2);
           }
+
           this.selected = [];
           this.selectedIndex = -1;
         } else {
@@ -662,10 +672,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 item.details.year = choice.year;
                 item.details.baseRental = choice.baseRental;
                 item.details.fhwa = choice.fhwa;
+                console.log("rental house rates: " + JSON.stringify(choice.rentalHouseRates,null,2));
                 item.details.nationalAverages = choice.nationalAverages;
                 item.details.regionalAverages = choice.regionalAverages;
                 item.details.rentalHouseRates = choice.rentalHouseRates;
-
+                item.details.nodata = false;
                 if (configurations && configurations.values.length > 1) {
                   this.selectedItem = item;
                   this.selectedIndex = index;
@@ -676,7 +687,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 ) {
                   item.details.selectedConfiguration = configurations.values[0];
                 } else {
-                  item.resetSelectedConfiguration();
+                  item.details.nodata = true;
+                  item.setNoCost();
                 }
                 item.beingEdited = true;
                 this.changeDetector.detectChanges();
@@ -707,15 +719,28 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       }
       return;
     }
+    let state = '';
+    if (
+      this.itemType === 'equipment.active' &&
+      this.project.adjustments.equipment.active.regionalAdjustmentsEnabled
+    ) {
+      state = this.project.state;
+    } else if (
+      this.itemType === 'equipment.standby' &&
+      this.project.adjustments.equipment.standby.regionalAdjustmentsEnabled
+    ) {
+      state = this.project.state;
+    }
     this.equipmentService
       .getConfiguration(
         item.details.modelId,
         item.details.year,
-        this.project.state,
+        state,
         this.requestStartDate
       )
       .subscribe((configurations: any) => {
         //  console.log('# of configs:  ' + configurations.values.length);
+        item.details.nodata = false;
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
           this.selectedIndex = index;
@@ -724,6 +749,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         } else if (configurations && configurations.values.length === 1) {
           item.details.selectedConfiguration = configurations.values[0];
           item.details.configurations = configurations;
+
           if (this.itemType === 'equipment.active') {
             item.details.fhwa = +Number(
               +item.details.selectedConfiguration.hourlyOwnershipCost +
@@ -738,6 +764,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           } else {
             item.resetSelectedConfiguration();
           }
+        } else {
+          item.setNoCost();
+          item.details.nodata = true;
         }
         if (this.itemType === 'equipment.active') {
           this.activeChanged(item);

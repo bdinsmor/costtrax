@@ -414,7 +414,6 @@ export class EquipmentService {
             return new Promise((resolve, reject) => {
               resolve(choice);
             });
-            // return of(choice).toPromise();
           })
       )
     ).then((response: Equipment[]) => {

@@ -1,11 +1,270 @@
+<div class="line-items full-width hidden-md-up">
+  <div *ngIf="!itemList || !itemList.items || itemList.items.length=== 0"
+    class="full-width">
+    <h2 class="smaller-gray-text">Please add line items</h2>
+  </div>
+  <div *ngIf="itemList && itemList.items && itemList.items.length> 0 &&
+    !draftMode" class="mt-0 full-width"
+    [@listAnimation]="itemList.items.length">
+    <div class="row">
+      <h4>{{itemType}}</h4>
+      <h4 class="no-top-margin">Location: {{project.state}} | Ownership:
+        {{project.adjustments.equipment.active.ownership}} %</h4>
+      <button *ngIf="hasPending && manageRequests" [disabled]="!manageRequests"
+        type="button" class="btn btn-sm ripple"
+        (click)="approveAll()">
+        <mat-icon color="primary">done_all</mat-icon>Approve All
+      </button>
+    </div>
+    <div *ngFor="let item of itemList.items; let i= index;">
 
-<div class="line-items full-width pb-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row align-items-center">
+            <h6 class="m-0">{{item.amount | currency}}</h6>
+          </div>
+        </div>
+        <div class="card-block">
+
+          <div class="card-text row flex-row">
+            <div class="full-width">
+
+              <ng-container *ngIf="item.type=== 'material'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">UNITS</h6>
+                      <div>{{item.details.units}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">COST PER UNIT</h6>
+                      <div>{{item.details.unitCost | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-1">
+                    <h6 class="row-details">DESCRIPTION</h6>
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'other'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="cost-column px-3">
+                      <h6 class="cost-label">TYPE</h6>
+                      <div>{{item.details.type}}</div>
+                    </div>
+                    <div class="cost-column px-3">
+                      <h6 class="cost-label">DESCRIPTION</h6>
+                      <div [matTooltip]="item.details.description">{{item.details.description
+                        | truncate: '50'}}</div>
+                    </div>
+                  </div>
+                </div>
+
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'equipment.active'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">MACHINE</h6>
+                      <div>{{item.details.year}} {{item.details.make}}
+                        {{item.details.model}}
+                      </div>
+                      <div>{{item.details.serial}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">OPERATING</h6>
+                      <div>{{item.details.operating}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">HOURS</h6>
+                      <div>{{item.details.hours | number: '.1-2'}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TRANSPORT</h6>
+                      <div>{{item.details.transport? item.details.transport :
+                        '0' | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'equipment.standby'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">MACHINE</h6>
+                      <div>{{item.details.year}} {{item.details.make}}
+                        {{item.details.model}}
+                      </div>
+                      <div>{{item.details.serial}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">OPERATING</h6>
+                      <div>{{item.details.operating}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">HOURS</h6>
+                      <div>{{item.details.hours | number: '.1-2'}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TRANSPORT</h6>
+                      <div>{{item.details.transport? item.details.transport :
+                        '0' | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'equipment.rental'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TYPE</h6>
+                      <div>{{item.details.type}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">BASE</h6>
+                      <div>{{item.details.base | currency}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">TRANSPORT</h6>
+                      <div>{{item.details.transportation?
+                        item.details.transportation : '0' | currency}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">OTHER</h6>
+                      <div>{{item.details.other | currency}}</div>
+                    </div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <div [matTooltip]="item.details.description">{{item.details.description
+                      | truncate: '50'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'labor'">
+                <div class="full-width row align-items-center">
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">EMPLOYEE</h6>
+                    <div>{{item.details.employee.name}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TRADE</h6>
+                    <div>{{item.details.trade}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">RATE</h6>
+                    <div>{{item.details.rate | currency}}</div>
+                  </div>
+                </div>
+                <div class="full-width row align-items-center">
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TIME X 1</h6>
+                    <div>{{item.details.time1 | number: '.1-2'}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TIME X 1.5</h6>
+                    <div>{{item.details.time15 | number: '.1-2'}}</div>
+                  </div>
+                  <div class="column flex-wrap px-2">
+                    <h6 class="row-details">TIME X 2</h6>
+                    <div>{{item.details.time2 | number: '.1-2'}}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="item.type=== 'subcontractor'">
+                <div class="full-width row align-items-center
+                  justify-content-between">
+                  <div class="full-width row align-items-center">
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">SUBCONTRACTOR</h6>
+                      <div>{{item.details.subcontractor}}</div>
+                    </div>
+                    <div class="column flex-wrap px-2">
+                      <h6 class="row-details">DESCRIPTION</h6>
+                      <div [matTooltip]="item.details.description">{{item.details.description
+                        | truncate: '50'}}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+          </div>
+        </div>
+
+        <div *ngIf="item.status.toLowerCase() !== 'complete'"
+          class="card-footer">
+          <div *ngIf="(item && item.beingEdited)" class="row
+            full-width
+            justify-content-end">
+            <button class="icon-30 ripple icon-button"
+              [disabled]="!submitRequests" matTooltip="Edit"
+              (click)="editLineItem(i,item)">
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button class="icon-30 ripple icon-button"
+              [disabled]="!submitRequests" matTooltip="Remove"
+              (click)="removeLineItem(i,item)">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+
+          </div>
+          <div *ngIf="(manageRequests &&
+            item.status.toLowerCase()=== 'pending')" class="row full-width
+            justify-content-end">
+            <button class="icon-30 ripple icon-button"
+              [disabled]="!manageRequests" matTooltip="Approve As Is"
+              (click)="approve(item)">
+              <mat-icon color="primary">done</mat-icon>
+            </button>
+            <button class="icon-30 ripple icon-button"
+              [disabled]="!manageRequests" matTooltip="Approve With Change"
+              (click)="approveWithChange(item)">
+              <mat-icon color="accent">edit</mat-icon>
+            </button>
+            <button class="icon-30 ripple icon-button"
+              [disabled]="!manageRequests" matTooltip="Request More Info"
+              (click)="requestMoreInfo(item)">
+              <mat-icon color="warn">info</mat-icon>
+            </button>
+
+          </div>
+
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<div class="line-items full-width hidden-sm-down pb-1">
   <div class="m-0">
     <div *ngIf="itemList.items" class="pt-1 full-width">
       <div class="full-width align-items-center row">
         <div class="align-items-center column">
           <h4 class="mt-0 pr-1">{{itemTypeDisplay}}</h4>
-          <h5 *ngIf="itemType === 'equipment.active' || itemType === 'equipment.standby'"
+          <h5 *ngIf="itemType === 'equipment.active' || itemType ===
+            'equipment.rental' || itemType === 'equipment.standby'"
             class="no-top-margin">Location:
             {{project.state}} | Ownership:
             {{project.adjustments.equipment.active.ownership}}%
@@ -73,7 +332,8 @@
         </div>
         <div *ngIf="manageRequests || manageProject" class="spacer"></div>
 
-        <div *ngIf="(manageRequests  || manageProject) && accountSynced && (itemType ===
+        <div *ngIf="(manageRequests || manageProject) && accountSynced &&
+          (itemType ===
           'equipment.active' ||
           itemType === 'equipment.standby' || itemType === 'equipment.rental')"
           class="row align-items-center">
@@ -298,12 +558,14 @@
           trackByFn"
           [clrDgItem]="item">
           <clr-dg-cell>
-            <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
+            <div *ngIf="(manageRequests || manageProject) &&
+              item.rateVerified()"
               class="padding-label-top row pl-1"
               style="padding-left: 10px !important">
               <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
             </div>
-            <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
+            <div *ngIf="(!manageRequests && !manageProject) ||
+              !item.rateVerified()"
               class="padding-label-top row pl-1">
               {{item.status}}
             </div>
@@ -347,12 +609,14 @@
             <div class="padding-label-top">{{item.details.sizeClassName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top">{{item.details.selectedConfiguration.hourlyOwnershipCost
+            <div class="padding-label-top" *ngIf="!item.details.nodata">{{item.details.selectedConfiguration.hourlyOwnershipCost
               | currency}}</div>
+            <div class="padding-label-top" *ngIf="item.details.nodata">no data</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top">{{item.details.selectedConfiguration.hourlyOperatingCost
+            <div class="padding-label-top" *ngIf="!item.details.nodata">{{item.details.selectedConfiguration.hourlyOperatingCost
               | currency}}</div>
+            <div class="padding-label-top" *ngIf="item.details.nodata">no data</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top">
@@ -462,13 +726,17 @@
                   <tbody>
                     <tr class="justify-content-center">
                       <td class="strong">Ownership</td>
-                      <td class="">{{item.details.selectedConfiguration.hourlyOwnershipCost}}</td>
-                      <td class="">{{item.details.selectedConfiguration.hourlyOwnershipCost}}</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOwnershipCost
+                        | currency}}</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOwnershipCost
+                        | currency}}</td>
                     </tr>
                     <tr class="justify-content-center">
                       <td class="strong">Operating</td>
-                      <td class="">{{item.details.selectedConfiguration.hourlyOperatingCost}}</td>
-                      <td class="">{{item.details.selectedConfiguration.hourlyOperatingCost}}</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOperatingCost
+                        | currency}}</td>
+                      <td class="">{{item.details.selectedConfiguration.hourlyOperatingCost
+                        | currency}}</td>
                     </tr>
 
                     <tr class="justify-content-center">
@@ -515,67 +783,10 @@
 
                     </tbody>
                   </table>
-                  <div class="row no-row-margins">
-<div class="column no-row-margins col">
 
-
-  <h6>Rate Element Allocation</h6>
-  <h6 class="no-top-margin">Ownership Costs, Unadjusted
-    (Monthly)</h6>
-  <table id="invoice-table" class="no-top-margin table
-                    table-compact
-                    table-bordered table-striped comparison-table w-25">
-    <thead>
-      <th>Element</th>
-      <th>Percentage</th>
-      <th>Amount</th>
-    </thead>
-    <tbody>
-      <tr class="justify-content-center">
-        <td class="strong">Depreciation</td>
-        <td>{{100*item.details.selectedConfiguration.depreciation
-          | number : '1.2-2'}}%</td>
-        <td>{{item.details.selectedConfiguration.depreciation *
-          item.details.selectedConfiguration.monthlyOwnershipCost
-          | currency}}</td>
-      </tr>
-      <tr class="justify-content-center">
-        <td class="strong">Overhaul</td>
-        <td>{{100*item.details.selectedConfiguration.overhaul |
-          number : '1.2-2'}}%</td>
-        <td>{{item.details.selectedConfiguration.overhaul *
-          item.details.selectedConfiguration.monthlyOwnershipCost
-          |
-          currency}}</td>
-      </tr>
-      <tr class="justify-content-center">
-        <td class="strong">Cost of Facilities Capital</td>
-        <td>{{100*item.details.selectedConfiguration.costOfFacitiliesCaptial
-          | number : '1.2-2'}}%</td>
-        <td>{{item.details.selectedConfiguration.costOfFacitiliesCaptial
-          *
-          item.details.selectedConfiguration.monthlyOwnershipCost
-          |
-          currency}}</td>
-      </tr>
-      <tr class="justify-content-center">
-        <td class="strong">Indirect</td>
-        <td>{{100*item.details.selectedConfiguration.overhead |
-          number : '1.2-2'}}%</td>
-        <td>{{item.details.selectedConfiguration.overhead *
-          item.details.selectedConfiguration.monthlyOwnershipCost
-          |
-          currency}}</td>
-      </tr>
-
-    </tbody>
-  </table>
-</div>
-                  <div class="column col no-row-margins">
-
-                  
                   <h6>Rate Element Allocation</h6>
-                  <h6 class="no-top-margin">Operating Costs, (Hourly)</h6>
+                  <h6 class="no-top-margin">Ownership Costs, Unadjusted
+                    (Monthly)</h6>
                   <table id="invoice-table" class="no-top-margin table
                     table-compact
                     table-bordered table-striped comparison-table w-25">
@@ -586,21 +797,44 @@
                     </thead>
                     <tbody>
                       <tr class="justify-content-center">
-                        <td class="strong">Fuel @ {{100*item.details.selectedConfiguration.fuel |
-                        currency}}</td>
-                        <!--<td>{{100*item.details.selectedConfiguration.overhead |
-                          number : '1.2-2'}}%</td>-->
-                        <td>{{item.details.selectedConfiguration.modelId}}</td>
+                        <td class="strong">Depreciation</td>
+                        <td>{{100*item.details.selectedConfiguration.depreciation
+                          | number : '1.2-2'}}%</td>
                         <td>{{item.details.selectedConfiguration.depreciation *
-                          item.details.selectedConfiguration.hourlyOperatingCost
+                          item.details.selectedConfiguration.monthlyOwnershipCost
                           | currency}}</td>
                       </tr>
-                      
+                      <tr class="justify-content-center">
+                        <td class="strong">Overhaul</td>
+                        <td>{{100*item.details.selectedConfiguration.overhaul |
+                          number : '1.2-2'}}%</td>
+                        <td>{{item.details.selectedConfiguration.overhaul *
+                          item.details.selectedConfiguration.monthlyOwnershipCost
+                          |
+                          currency}}</td>
+                      </tr>
+                      <tr class="justify-content-center">
+                        <td class="strong">Cost of Facilities Capital</td>
+                        <td>{{100*item.details.selectedConfiguration.costOfFacitiliesCaptial
+                          | number : '1.2-2'}}%</td>
+                        <td>{{item.details.selectedConfiguration.costOfFacitiliesCaptial
+                          *
+                          item.details.selectedConfiguration.monthlyOwnershipCost
+                          |
+                          currency}}</td>
+                      </tr>
+                      <tr class="justify-content-center">
+                        <td class="strong">Indirect</td>
+                        <td>{{100*item.details.selectedConfiguration.overhead |
+                          number : '1.2-2'}}%</td>
+                        <td>{{item.details.selectedConfiguration.overhead *
+                          item.details.selectedConfiguration.monthlyOwnershipCost
+                          |
+                          currency}}</td>
+                      </tr>
 
                     </tbody>
                   </table>
-                  </div>
-                  </div>
 
                 </div>
 
@@ -634,11 +868,13 @@
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
-              <div *ngIf="(manageRequests || manageProject) && item.rateVerified()"
+              <div *ngIf="(manageRequests || manageProject) &&
+                item.rateVerified()"
                 class="padding-label-top row" style="padding-left:10px">
                 <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
               </div>
-              <div *ngIf="(!manageRequests && !manageProject) || !item.rateVerified()"
+              <div *ngIf="(!manageRequests && !manageProject) ||
+                !item.rateVerified()"
                 class="padding-label-top row pl-1">
                 {{item.status}}
               </div>
@@ -659,7 +895,8 @@
                   (selected)="modelNewSelectionChanged($event,item,i)"
                   [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
               </div>
-              <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}</div>
+              <div class="padding-label-top"
+                *ngIf="!item.beingEdited">{{item.details.model}}</div>
             </clr-dg-cell>
             <clr-dg-cell>
               <div class="padding-label-top"
@@ -793,12 +1030,9 @@
           <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
           <clr-dg-column [clrDgField]="'details.sizeClassName'"
             style="width:175px">Subtype</clr-dg-column>
-          <clr-dg-column [clrDgField]="'details.dateRangeStr'" [clrDgSortBy]="dateRangeComparator" style="width:250px">Rental
+          <clr-dg-column [clrDgField]="'details.dateRangeStr'"
+            [clrDgSortBy]="dateRangeComparator" style="width:250px">Rental
             Dates</clr-dg-column>
-          <!--  <clr-dg-column [clrDgField]="'details.startDate'" style="width:150px">Rental
-              Start</clr-dg-column>
-            <clr-dg-column [clrDgField]="'details.endDate'" style="width:150px">Rental End</clr-dg-column>
-          -->
 
           <clr-dg-column [clrDgField]="'details.invoice'" style="width:150px">Invoice
             Amount</clr-dg-column>
@@ -813,7 +1047,8 @@
             trackByFn"
             [clrDgItem]="item">
             <clr-dg-cell>
-              <div *ngIf="(manageRequests || manageProject)" class="padding-label-top row"
+              <div *ngIf="(manageRequests || manageProject)"
+                class="padding-label-top row"
                 style="padding-left: 10px !important">
                 <mat-icon class="icon" *ngIf="item.rateVerified()"
                   svgIcon="costtrax-check"></mat-icon>
@@ -821,7 +1056,8 @@
                   color="warn">priority_high</mat-icon>
                 {{item.status}}
               </div>
-              <div *ngIf="!manageRequests && !manageProject" class="padding-label-top row pl-1">
+              <div *ngIf="!manageRequests && !manageProject"
+                class="padding-label-top row pl-1">
                 {{item.status}}
               </div>
             </clr-dg-cell>
@@ -853,39 +1089,15 @@
             </clr-dg-cell>
             <clr-dg-cell>
               <div class="padding-label-top" *ngIf="item.beingEdited">
-                <input class="w-85" type="text" bsDaterangepicker [bsConfig]="bsConfig" (ngModelChange)="dateRangeChanged(item)" [(ngModel)]="item.details.dateRange">
-                
+                <input class="w-85" type="text" bsDaterangepicker
+                  [bsConfig]="bsConfig" (ngModelChange)="dateRangeChanged(item)"
+                  [(ngModel)]="item.details.dateRange">
+
               </div>
               <div class="padding-label-top"
                 *ngIf="!item.beingEdited">{{item.details.dateRange
                 | dates: 'M/dd/yy'}}</div>
             </clr-dg-cell>
-           <!-- <clr-dg-cell [class.no-padding-top]="item.beingEdited">
-              <div *ngIf="item.beingEdited">
-                <mat-form-field [floatLabel]="'never'" style="width:125px">
-                  <input class="line-item-font-size" matInput [(ngModel)]="item.details.startDate" autocomplete="off" [ngModelOptions]="{standalone: true}"
-                    [matDatepicker]="picker" placeholder="Start Date">
-                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-            
-              </div>
-              <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.startDate
-                | date: 'M/dd/yy'}}</div>
-            </clr-dg-cell>
-            <clr-dg-cell [class.no-padding-top]="item.beingEdited">
-              <div *ngIf="item.beingEdited">
-                <mat-form-field [floatLabel]="'never'" style="width:125px">
-                  <input class="line-item-font-size" matInput [min]="item.details.startDate" autocomplete="off" [(ngModel)]="item.details.endDate"
-                    [ngModelOptions]="{standalone: true}" [matDatepicker]="endPicker" placeholder="End Date">
-                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-                  <mat-datepicker #endPicker></mat-datepicker>
-                </mat-form-field>
-              </div>
-              <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.endDate
-                | date: 'M/dd/yy'}}</div>
-            </clr-dg-cell>-->
-
 
             <clr-dg-cell>
               <div class="padding-label-top"
@@ -1040,22 +1252,28 @@
                           <td class="strong">Monthly Rate</td>
                           <td class="">{{item.details.rentalBreakdown.months}}</td>
                           <td class=""></td>
-                          <td class="">{{item.details.terms.blueBook.monthlyOwnershipCost}}</td>
-                          <td class="">{{item.details.terms.regionalAvg.monthlyRetailRentalCost}}</td>
+                          <td class="">{{item.details.terms.blueBook.monthlyOwnershipCost
+                            | currency}}</td>
+                          <td class="">{{item.details.terms.regionalAvg.monthlyRetailRentalCost
+                            | currency}}</td>
                         </tr>
                         <tr class="justify-content-center">
                           <td class="strong">Weekly Rate</td>
                           <td class="">{{item.details.rentalBreakdown.weeks}}</td>
                           <td class=""></td>
-                          <td class="">{{item.details.terms.blueBook.weeklyOwnershipCost}}</td>
-                          <td class="">{{item.details.terms.regionalAvg.weeklyRetailRentalCost}}</td>
+                          <td class="">{{item.details.terms.blueBook.weeklyOwnershipCost
+                            | currency}}</td>
+                          <td class="">{{item.details.terms.regionalAvg.weeklyRetailRentalCost
+                            | currency}}</td>
                         </tr>
                         <tr class="justify-content-center">
                           <td class="strong">Daily Rate</td>
                           <td class="">{{item.details.rentalBreakdown.days}}</td>
                           <td class=""></td>
-                          <td class="">{{item.details.terms.blueBook.dailyOwnershipCost}}</td>
-                          <td class="">{{item.details.terms.regionalAvg.dailyRetailRentalCost}}</td>
+                          <td class="">{{item.details.terms.blueBook.dailyOwnershipCost
+                            | currency}}</td>
+                          <td class="">{{item.details.terms.regionalAvg.dailyRetailRentalCost
+                            | currency}}</td>
                         </tr>
                         <tr class="justify-content-center">
                           <td class="strong">Total Cost</td>

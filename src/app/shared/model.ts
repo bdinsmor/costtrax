@@ -333,6 +333,16 @@ export class Item {
   revert: Item;
   beingEdited = false;
 
+  setNoCost() {
+    this.details.selectedConfiguration = {
+      hourlyOperatingCost: 0,
+      hourlyOwnershipCost: 0,
+      dailyOwnershipCost: 0,
+      weeklyOwnershipCost: 0,
+      monthlyOwnershipCost: 0
+    };
+  }
+
   resetSelectedConfiguration() {
     this.details.selectedConfiguration = {
       hourlyOperatingCost: 0,
@@ -1200,6 +1210,16 @@ export class Equipment {
     this.calculateHourlyRates();
     this.generateYears();
     this.display = this.make + ' ' + this.model;
+  }
+
+  setNoCost() {
+    this.details.selectedConfiguration = {
+      hourlyOperatingCost: 0,
+      hourlyOwnershipCost: 0,
+      dailyOwnershipCost: 0,
+      weeklyOwnershipCost: 0,
+      monthlyOwnershipCost: 0
+    };
   }
 
   resetSelectedConfiguration() {
