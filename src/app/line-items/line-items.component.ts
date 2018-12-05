@@ -6,16 +6,10 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig,
-  Sort
-} from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
@@ -35,7 +29,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils
+  Utils,
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { LaborService } from './../labor/labor.service';
@@ -266,10 +260,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  dateRangeChanged(item: Item) {
-    if (item && item.details.dateRange && item.details.dateRange.length > 0) {
-      item.details.startDate = item.details.dateRange[0];
-      item.details.endDate = item.details.dateRange[1];
+  dateRangeChanged(item, event: any) {
+    if (item && event && event.length > 0) {
+      item.setDates(event);
+      this.rentalChanged(item);
     }
   }
 
@@ -672,7 +666,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 item.details.year = choice.year;
                 item.details.baseRental = choice.baseRental;
                 item.details.fhwa = choice.fhwa;
-                console.log("rental house rates: " + JSON.stringify(choice.rentalHouseRates,null,2));
+                console.log(
+                  'rental house rates: ' +
+                    JSON.stringify(choice.rentalHouseRates, null, 2)
+                );
                 item.details.nationalAverages = choice.nationalAverages;
                 item.details.regionalAverages = choice.regionalAverages;
                 item.details.rentalHouseRates = choice.rentalHouseRates;
@@ -938,7 +935,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       new Date(item.details.startDate).getTime() -
         new Date(item.details.endDate).getTime()
     );
+
     let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+
     if (diffDays === 0) {
       diffDays = 1;
     }

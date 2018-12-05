@@ -360,19 +360,16 @@ export class Item {
     if (!this.details.dateDiscontinued) {
       this.details.dateDiscontinued = moment().toDate();
     }
-     let startYear = moment(this.details.dateIntroduced)
+    let startYear = moment(this.details.dateIntroduced)
       .toDate()
       .getFullYear();
     const endYear = moment(this.details.dateDiscontinued)
       .toDate()
       .getFullYear();
 
-  
-    let nowYear = new Date().getFullYear() - 29;
-    
-    startYear = +Math.max(+startYear, +nowYear);
-   
+    const nowYear = new Date().getFullYear() - 29;
 
+    startYear = +Math.max(+startYear, +nowYear);
 
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
@@ -454,6 +451,14 @@ export class Item {
       +this.details.terms.blueBook.hourlyOwnershipCost +
         +this.details.terms.blueBook.hourlyOperatingCost
     ).toFixed(2);
+  }
+
+  setDates(dates: any) {
+    if (dates && dates.length > 0) {
+      this.details.dateRnage = dates;
+      this.details.startDate = moment(dates[0]);
+      this.details.endDate = moment(dates[1]);
+    }
   }
 
   calculateRentalComps() {
@@ -1140,16 +1145,15 @@ export class Equipment {
 
   generateYears() {
     let startYear = this.dateIntroduced.getFullYear();
-    let nowYear = new Date().getFullYear() - 29;
-    
+    const nowYear = new Date().getFullYear() - 29;
+
     startYear = +Math.max(+startYear, +nowYear);
-   
-    let endYear = this.dateDiscontinued.getFullYear();
+
+    const endYear = this.dateDiscontinued.getFullYear();
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
     }
-     
   }
 
   constructor(m: any) {
@@ -1161,8 +1165,7 @@ export class Equipment {
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.dateIntroduced =
-      moment(m.dateIntroduced).toDate() || new Date();
+    this.dateIntroduced = moment(m.dateIntroduced).toDate() || new Date();
     this.dateDiscontinued = moment(m.dateDiscontinued).toDate() || new Date();
 
     if (m.details) {
