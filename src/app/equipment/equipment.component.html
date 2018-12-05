@@ -195,203 +195,263 @@
         *ngIf="item.modelId && item.year"
       >
         <clr-dg-row-detail *clrIfExpanded>
-          <div>
-            <h5>Model Configuration</h5>
-            <table
-              id="invoice-table"
-              *ngIf="item.details.configurations"
-              class="mt-3p table table-compact
+          <div class="full-width">
+            <div class="col-8">
+              <h5 class="strong">Model Configuration</h5>
+              <table
+                id="invoice-table"
+                *ngIf="item.details.configurations"
+                class="mt-3p table table-compact
                                                       table-bordered table-striped comparison-table"
-            >
-              <thead>
-                <th *ngFor="let column of item.details.configurations.columns">
-                  {{ column.name }}
-                </th>
-              </thead>
-              <tbody>
-                <tr class="justify-content-center">
-                  <td
+              >
+                <thead>
+                  <th
                     *ngFor="let column of item.details.configurations.columns"
                   >
-                    {{ item.details.selectedConfiguration[column.name] }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h5>Rental Rate Blue Book Ownership & Operating Costs</h5>
-            <table
-              id="invoice-table"
-              *ngIf="item.details.selectedConfiguration"
-              class="w-50 mt-3p table table-compact table-bordered table-striped comparison-table"
-            >
-              <thead style="display:none">
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-              </thead>
-              <tbody>
-                <tr class="justify-content-center">
-                  <td></td>
-                  <td colspan="4">Ownership</td>
-                  <td>Operating</td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td></td>
-                  <td>Monthly</td>
-                  <td>Weekly</td>
-                  <td>Daily</td>
-                  <td>Hourly</td>
-                  <td>Hourly</td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td class="strong">Cost</td>
-                  <td>
-                    {{
-                      item.details.selectedConfiguration.monthlyOwnershipCost
-                    }}
-                  </td>
-                  <td>
-                    {{ item.details.selectedConfiguration.weeklyOwnershipCost }}
-                  </td>
-                  <td>
-                    {{ item.details.selectedConfiguration.dailyOwnershipCost }}
-                  </td>
-                  <td>
-                    {{ item.details.selectedConfiguration.hourlyOwnershipCost }}
-                  </td>
-                  <td>
-                    {{ item.details.selectedConfiguration.hourlyOperatingCost }}
-                  </td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td class="strong">Hourly Conversion</td>
-                  <td>176</td>
-                  <td>40</td>
-                  <td>8</td>
-                  <td>1</td>
-                  <td>1</td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td class="strong">Hourly Rate</td>
-                  <td>
-                    {{
-                      item.details.rates.ownership_monthly_calculated_hourly
-                        | currency
-                    }}
-                  </td>
-                  <td>
-                    {{
-                      item.details.rates.ownership_weekly_calculated_hourly
-                        | currency
-                    }}
-                  </td>
-                  <td>
-                    {{
-                      item.details.rates.ownership_daily_calculated_hourly
-                        | currency
-                    }}
-                  </td>
-                  <td>
-                    {{
-                      item.details.rates.ownership_hourly_calculated_hourly
-                        | currency
-                    }}
-                  </td>
-                  <td>
-                    {{
-                      item.details.rates.operating_hourly_calculated_hourly
-                        | currency
-                    }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <h5>Rate Element Allocation</h5>
-            <h5 class="no-top-margin">Ownership Costs, Unadjusted (Monthly)</h5>
-            <table
-              id="invoice-table"
-              *ngIf="item.details.selectedConfiguration"
-              class="mt-3p table table-compact
+                    {{ column.name }}
+                  </th>
+                </thead>
+                <tbody>
+                  <tr class="justify-content-center">
+                    <td
+                      *ngFor="let column of item.details.configurations.columns"
+                    >
+                      {{ item.details.selectedConfiguration[column.name] }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-8">
+              <h5 class="strong">
+                Rental Rate Blue Book Ownership & Operating Costs
+              </h5>
+              <table
+                id="invoice-table"
+                *ngIf="item.details.selectedConfiguration"
+                class="w-50 mt-3p table table-compact table-bordered table-striped comparison-table"
+              >
+                <thead style="display:none">
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  <tr class="justify-content-center">
+                    <td></td>
+                    <td colspan="4">Ownership</td>
+                    <td>Operating</td>
+                  </tr>
+                  <tr class="justify-content-center">
+                    <td></td>
+                    <td>Monthly</td>
+                    <td>Weekly</td>
+                    <td>Daily</td>
+                    <td>Hourly</td>
+                    <td>Hourly</td>
+                  </tr>
+                  <tr class="justify-content-center">
+                    <td class="strong">Cost</td>
+                    <td>
+                      {{
+                        item.details.selectedConfiguration.monthlyOwnershipCost
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.selectedConfiguration.weeklyOwnershipCost
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.selectedConfiguration.dailyOwnershipCost
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.selectedConfiguration.hourlyOwnershipCost
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.selectedConfiguration.hourlyOperatingCost
+                      }}
+                    </td>
+                  </tr>
+                  <tr class="justify-content-center">
+                    <td class="strong">Hourly Conversion</td>
+                    <td>176</td>
+                    <td>40</td>
+                    <td>8</td>
+                    <td>1</td>
+                    <td>1</td>
+                  </tr>
+                  <tr class="justify-content-center">
+                    <td class="strong">Hourly Rate</td>
+                    <td>
+                      {{
+                        item.details.rates.ownership_monthly_calculated_hourly
+                          | currency
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.rates.ownership_weekly_calculated_hourly
+                          | currency
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.rates.ownership_daily_calculated_hourly
+                          | currency
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.rates.ownership_hourly_calculated_hourly
+                          | currency
+                      }}
+                    </td>
+                    <td>
+                      {{
+                        item.details.rates.operating_hourly_calculated_hourly
+                          | currency
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="full-width row no-row-margins">
+              <div class="col-4 px-1">
+                <h5 class="strong">Rate Element Allocation</h5>
+                <h5 class="strong no-top-margin">
+                  Ownership Costs, Unadjusted (Monthly)
+                </h5>
+                <table
+                  id="invoice-table"
+                  *ngIf="item.details.selectedConfiguration"
+                  class="mt-3p table table-compact
                                                                                   table-bordered table-striped comparison-table w-25"
-            >
-              <thead>
-                <th>Element</th>
-                <th>Percentage</th>
-                <th>Amount</th>
-              </thead>
-              <tbody>
-                <tr class="justify-content-center">
-                  <td class="strong">Depreciation</td>
-                  <td>
-                    {{
-                      100 * item.details.selectedConfiguration.depreciation
-                        | number: '1.2-2'
-                    }}%
-                  </td>
-                  <td>
-                    {{
-                      item.details.selectedConfiguration.depreciation *
-                        item.details.selectedConfiguration.monthlyOwnershipCost
-                        | currency
-                    }}
-                  </td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td class="strong">Overhaul</td>
-                  <td>
-                    {{
-                      100 * item.details.selectedConfiguration.overhaul
-                        | number: '1.2-2'
-                    }}%
-                  </td>
-                  <td>
-                    {{
-                      item.details.selectedConfiguration.overhaul *
-                        item.details.selectedConfiguration.monthlyOwnershipCost
-                        | currency
-                    }}
-                  </td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td class="strong">Cost of Facilities Capital</td>
-                  <td>
-                    {{
-                      100 *
-                        item.details.selectedConfiguration
-                          .costOfFacitiliesCaptial | number: '1.2-2'
-                    }}%
-                  </td>
-                  <td>
-                    {{
-                      item.details.selectedConfiguration
-                        .costOfFacitiliesCaptial *
-                        item.details.selectedConfiguration.monthlyOwnershipCost
-                        | currency
-                    }}
-                  </td>
-                </tr>
-                <tr class="justify-content-center">
-                  <td class="strong">Indirect</td>
-                  <td>
-                    {{
-                      100 * item.details.selectedConfiguration.overhead
-                        | number: '1.2-2'
-                    }}%
-                  </td>
-                  <td>
-                    {{
-                      item.details.selectedConfiguration.overhead *
-                        item.details.selectedConfiguration.monthlyOwnershipCost
-                        | currency
-                    }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                >
+                  <thead>
+                    <th>Element</th>
+                    <th>Percentage</th>
+                    <th>Amount</th>
+                  </thead>
+                  <tbody>
+                    <tr class="justify-content-center">
+                      <td class="strong">Depreciation</td>
+                      <td>
+                        {{
+                          100 * item.details.selectedConfiguration.depreciation
+                            | number: '1.2-2'
+                        }}%
+                      </td>
+                      <td>
+                        {{
+                          item.details.selectedConfiguration.depreciation *
+                            item.details.selectedConfiguration
+                              .monthlyOwnershipCost | currency
+                        }}
+                      </td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Overhaul</td>
+                      <td>
+                        {{
+                          100 * item.details.selectedConfiguration.overhaul
+                            | number: '1.2-2'
+                        }}%
+                      </td>
+                      <td>
+                        {{
+                          item.details.selectedConfiguration.overhaul *
+                            item.details.selectedConfiguration
+                              .monthlyOwnershipCost | currency
+                        }}
+                      </td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Cost of Facilities Capital</td>
+                      <td>
+                        {{
+                          100 *
+                            item.details.selectedConfiguration
+                              .costOfFacitiliesCaptial | number: '1.2-2'
+                        }}%
+                      </td>
+                      <td>
+                        {{
+                          item.details.selectedConfiguration
+                            .costOfFacitiliesCaptial *
+                            item.details.selectedConfiguration
+                              .monthlyOwnershipCost | currency
+                        }}
+                      </td>
+                    </tr>
+                    <tr class="justify-content-center">
+                      <td class="strong">Indirect</td>
+                      <td>
+                        {{
+                          100 * item.details.selectedConfiguration.overhead
+                            | number: '1.2-2'
+                        }}%
+                      </td>
+                      <td>
+                        {{
+                          item.details.selectedConfiguration.overhead *
+                            item.details.selectedConfiguration
+                              .monthlyOwnershipCost | currency
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-4 px-1">
+                <h5 class="strong">Rate Element Allocation</h5>
+                <h5 class="strong no-top-margin">Operating Costs, (Hourly)</h5>
+                <table
+                  id="invoice-table"
+                  class="no-top-margin table
+                                    table-compact
+                                    table-bordered table-striped comparison-table w-25"
+                >
+                  <thead>
+                    <th>Element</th>
+                    <th>Percentage</th>
+                    <th>Amount</th>
+                  </thead>
+                  <tbody>
+                    <tr class="justify-content-center">
+                      <td style="min-width:125px">
+                        Fuel @
+                        {{
+                          item.details.selectedConfiguration.fuelCost | currency
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          100 * item.details.selectedConfiguration.fuelOverhaul
+                            | number: '1.2-2'
+                        }}%
+                      </td>
+                      <td>
+                        {{
+                          item.details.selectedConfiguration.overhead *
+                            item.details.selectedConfiguration
+                              .hourlyOperatingCost | currency
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </clr-dg-row-detail>
       </ng-container>

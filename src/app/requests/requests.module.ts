@@ -20,7 +20,7 @@ import { RequestsComponent } from './requests.component';
 // import HeadroomModule
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
-  allowNegative: true,
+  allowNegative: false,
   allowZero: true,
   precision: 2,
   prefix: '$ ',
