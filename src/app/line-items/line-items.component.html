@@ -372,7 +372,7 @@
                   <h5 class="strong no-top-margin">Configuration</h5>
                   <table *ngIf="item.details.configurations" class="mt-3p table table-compact table-bordered table-striped comparison-table">
                     <thead>
-                      <th  class="left" *ngFor="let column of item.details.configurations.columns">
+                      <th class="left" *ngFor="let column of item.details.configurations.columns">
                         {{ column.name }}
                       </th>
                     </thead>
@@ -639,7 +639,7 @@
           <clr-dg-cell>
             <div class="padding-label-top">{{item.details.sizeClassName}}</div>
           </clr-dg-cell>
-          
+
           <clr-dg-cell>
             <div class="padding-label-top">
               <div *ngIf="!item.beingEdited">{{item.details.hours | number:
@@ -742,10 +742,10 @@
                     </tbody>
                   </table>
                 </div>
-                
+
                 <div class="row no-row-margins col-8 pb-1">
                   <div class="row col" *ngIf="submitRequests">
-              
+
                     <h5 class="strong left">Hourly Ownership & Operating Costs</h5>
                     <table *ngIf="item.details.configurations" class="mt-3p table table-compact table-bordered table-striped comparison-table">
                       <thead>
@@ -761,7 +761,7 @@
                       </tbody>
                     </table>
                   </div>
-              
+
                   <div class="row no-row-margins">
                     <div class="row col">
                       <h5 class="strong left">Rate Element Allocation</h5>
@@ -855,7 +855,7 @@
                         </thead>
                         <tbody>
                           <tr class="justify-content-center">
-                            <td  class="left"style="min-width: 125px">
+                            <td class="left" style="min-width: 125px">
                               Fuel @
                               {{
                               item.details.selectedConfiguration.fuelCost | currency
