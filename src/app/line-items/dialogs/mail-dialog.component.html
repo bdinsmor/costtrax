@@ -1,0 +1,20 @@
+<h3 mat-dialog-title>Request More Information</h3>
+<mat-dialog-content>
+  <form
+    *ngIf="selectedItem"
+    class="full-width px-1"
+    [formGroup]="mailFormGroup"
+  ></form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="btn btn-outline-danger" (click)="cancel()">Cancel</button>
+  <button
+    class="btn btn-primary mr-1"
+    *ngIf="modalType === 'ApprovedWithChange'"
+    (click)="confirm()"
+    cdkFocusInitial
+    [disabled]="!changeFormGroup.valid"
+  >
+    <clr-icon shape="send"></clr-icon>&nbsp;Send
+  </button>
+</mat-dialog-actions>

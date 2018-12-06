@@ -18,6 +18,7 @@ import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
+import { LineItemMailDialogComponent } from './dialogs/mail-dialog.component';
 import { LineItemsComponent } from './line-items.component';
 
 /** config angular i18n **/
@@ -40,6 +41,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemDeleteDialogComponent,
     AddSavedDialogComponent,
     AddMiscDialogComponent,
+    LineItemMailDialogComponent,
     ConfigurationDialogComponent,
     LineItemApproveDialogComponent
   ],
@@ -58,6 +60,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   exports: [
     LineItemsComponent,
     AddSavedDialogComponent,
+    LineItemMailDialogComponent,
     LineItemDeleteDialogComponent,
     AddMiscDialogComponent,
     ConfigurationDialogComponent,
@@ -68,6 +71,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   ],
   entryComponents: [
     LineItemsComponent,
+    LineItemMailDialogComponent,
     LineItemDeleteDialogComponent,
     AddSavedDialogComponent,
     AddMiscDialogComponent,

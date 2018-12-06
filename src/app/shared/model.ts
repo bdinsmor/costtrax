@@ -1240,6 +1240,7 @@ export class Equipment {
       this.details.rates &&
       this.details.rates.ownership_monthly_calculated_hourly > 0
     ) {
+      console.log('already have rates');
       return;
     }
 
