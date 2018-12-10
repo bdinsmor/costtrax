@@ -9,9 +9,9 @@
       nzType="drag"
       [nzMultiple]="true"
       [(nzFileList)]="fileList"
-      [nzRemove]="fileRemoved"
       [nzCustomRequest]="customReq"
       [nzShowUploadList]="showUpload()"
+      [nzRemove]="deleteAttachment"
       (nzChange)="handleChange($event)"
     >
       <p class="ant-upload-drag-icon">
@@ -29,7 +29,7 @@
       nzType="drag"
       [nzMultiple]="true"
       [(nzFileList)]="fileList"
-      [nzRemove]="fileRemoved"
+      [nzRemove]="deleteAttachment"
       [nzCustomRequest]="customReq"
       [nzShowUploadList]="showUpload()"
       (nzChange)="handleChange($event)"

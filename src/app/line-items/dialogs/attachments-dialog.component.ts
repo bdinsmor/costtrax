@@ -67,17 +67,15 @@ export class AttachmentsDialogComponent implements OnInit {
     }
   }
 
-  deleteAttachment(index: number, file: UploadFile) {
+  deleteAttachment = (file: UploadFile) => {
     return this.requestsService
       .deleteAttachment(file.uid)
       .subscribe((res: any) => {
-        this.fileList.splice(index, 1);
         this.cdr.detectChanges();
       });
   }
 
   showUpload() {
-    console.log('can delete: ' + this.canDelete);
     return { showPreviewIcon: false, showRemoveIcon: this.canDelete };
   }
 
