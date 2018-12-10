@@ -8,7 +8,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
@@ -18,7 +18,6 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { EquipmentService } from '../equipment/equipment.service';
-import { ProjectsService } from '../projects/projects.service';
 import { RequestsService } from '../requests/requests.service';
 import {
   Employee,
@@ -32,9 +31,9 @@ import {
   Utils,
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
-import { LaborService } from './../labor/labor.service';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
+import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
@@ -164,10 +163,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private requestsService: RequestsService,
-    private projectsService: ProjectsService,
-    private formBuilder: FormBuilder,
     private equipmentService: EquipmentService,
-    private laborService: LaborService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private authenticationService: AuthenticationService
@@ -409,6 +405,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             });
             newItem.beingEdited = true;
             this.itemList.items = [...this.itemList.items, newItem];
+            this.saveChanges(this.itemList.items.length, newItem);
           }
           this.changeDetector.detectChanges();
         })
@@ -460,7 +457,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         }
         newItem.beingEdited = true;
         this.itemList.items = [...this.itemList.items, newItem];
+        this.saveChanges(this.itemList.items.length, newItem);
       }
+
       this.changeDetector.detectChanges();
     }
   }
@@ -844,6 +843,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
     newItem.beingEdited = true;
     this.itemList.items = [...this.itemList.items, newItem];
+    this.saveChanges(this.itemList.items.length, newItem);
   }
 
   removeLastRow() {
@@ -1241,14 +1241,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         (response: any) => {
           lineItemData.id = response[0].id;
           item.id = lineItemData.id;
-          item.beingEdited = false;
+          item.beingEdited = true;
           this.itemsChanged.emit({ type: item.type, index: index });
-          this.openSnackBar('Line Item Saved!', 'ok', 'OK');
           this.changeDetector.detectChanges();
         },
-        (error: any) => {
-          this.openSnackBar('Line Items Did Not Save', 'error', 'OK');
-        }
+        (error: any) => {}
       );
     }
   }
@@ -1275,6 +1272,23 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   editLineItem(index: number, it: Item) {
     it.beingEdited = !it.beingEdited;
+  }
+
+  viewAttachments(item: Item) {
+    this.selectedItem = item;
+    const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
+      width: '50vw',
+      data: {
+        selectedItem: item,
+        canDelete: this.submitRequests,
+        canAdd: this.submitRequests
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+      }
+    });
   }
 
   approve(item: Item) {
@@ -1434,6 +1448,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           this.selectedConfig = null;
 
           this.itemList.items = [...this.itemList.items, newItem];
+          this.saveChanges(this.itemList.items.length, newItem);
           this.changeDetector.detectChanges();
         });
     } else if (
@@ -1486,6 +1501,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
       newItem.beingEdited = true;
       this.itemList.items = [...this.itemList.items, newItem];
+      this.saveChanges(this.itemList.items.length, newItem);
       this.changeDetector.detectChanges();
     }
     this.selected = [];

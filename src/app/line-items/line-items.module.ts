@@ -3,7 +3,9 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { FileDropModule } from 'ngx-file-drop';
 
 import { CommentsModule } from '../comments/comments.module';
 import { DirectivesModule } from '../core/directives/directives';
@@ -15,6 +17,7 @@ import { SharedModule } from '../shared';
 import { EquipmentModule } from './../equipment/equipment.module';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
+import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
@@ -43,7 +46,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     AddMiscDialogComponent,
     LineItemMailDialogComponent,
     ConfigurationDialogComponent,
-    LineItemApproveDialogComponent
+    LineItemApproveDialogComponent,
+    AttachmentsDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -55,6 +59,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     PipesModule,
     EquipmentModule,
     CommentsModule,
+    FileDropModule,
+    NgZorroAntdModule,
     BsDatepickerModule.forRoot()
   ],
   exports: [
@@ -64,9 +70,11 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemDeleteDialogComponent,
     AddMiscDialogComponent,
     ConfigurationDialogComponent,
-    LineItemApproveDialogComponent
+    LineItemApproveDialogComponent,
+    AttachmentsDialogComponent
   ],
   providers: [
+    { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [
@@ -76,7 +84,8 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     AddSavedDialogComponent,
     AddMiscDialogComponent,
     ConfigurationDialogComponent,
-    LineItemApproveDialogComponent
+    LineItemApproveDialogComponent,
+    AttachmentsDialogComponent
   ]
 })
 export class LineItemsModule {}

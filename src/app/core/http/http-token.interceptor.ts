@@ -31,8 +31,9 @@ export class TokenInterceptor implements HttpInterceptor {
     } else {
       this.router.navigate(['/login'], { replaceUrl: true });
     }
-    headerSettings['Authorization'] = 'Bearer ' + token;
-    headerSettings['x-api-key'] = 'almighty';
+    if (!request.url.includes('https://costtrax-dev.s3.amazonaws.com')) {
+      headerSettings['Authorization'] = 'Bearer ' + token;
+    }
     const newHeader = new HttpHeaders(headerSettings);
     changedRequest = request.clone({
       headers: newHeader
