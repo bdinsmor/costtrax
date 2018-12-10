@@ -30,6 +30,12 @@ export class RequestsService {
     );
   }
 
+  deleteAttachment(attachmentId: string) {
+    return this.http.delete(
+      environment.serverUrl + '/attachment/' + attachmentId
+    );
+  }
+
   uploadAttachment(lineItemId: string, fileList: UploadFile[]) {
     console.log('file name: ' + JSON.stringify(fileList, null, 2));
     console.log('item id: ' + lineItemId);

@@ -183,8 +183,7 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row ">
-              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                                                icon-30 icon-button" matTooltip="View Attachments"
+              <button class="ripple icon-30 icon-button" matTooltip="View Attachments"
                 (click)="viewAttachments(item)">
                 <mat-icon color="accent">attach_file</mat-icon>
               </button>
@@ -326,8 +325,7 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row padding-label-top ">
-              <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                                                icon-30 icon-button" matTooltip="View Attachments"
+              <button class="ripple icon-30 icon-button" matTooltip="View Attachments"
                 (click)="viewAttachments(item)">
                 <mat-icon color="accent">attach_file</mat-icon>
               </button>
@@ -686,8 +684,7 @@
             <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')" class="row padding-label-top ">
-                <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                                  icon-30 icon-button" matTooltip="View Attachments" (click)="viewAttachments(item)">
+                <button class="ripple icon-30 icon-button" matTooltip="View Attachments" (click)="viewAttachments(item)">
                   <mat-icon color="accent">attach_file</mat-icon>
                 </button>
              

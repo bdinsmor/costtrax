@@ -5,7 +5,9 @@
     nzType="drag"
     [nzMultiple]="true"
     [(nzFileList)]="fileList"
+    [nzRemove]="fileRemoved"
     [nzCustomRequest]="customReq"
+    (nzChange)="handleChange($event)"
   >
     <p class="ant-upload-drag-icon">
       <clr-icon shape="inbox" size="36"></clr-icon>

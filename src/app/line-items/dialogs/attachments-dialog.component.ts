@@ -1,9 +1,9 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
 import { RequestsService } from 'src/app/requests/requests.service';
-import { Item } from 'src/app/shared/model';
+import { Attachment, Item } from 'src/app/shared/model';
 
 import { environment } from '../../../environments/environment';
 
@@ -17,8 +17,10 @@ export class AttachmentsDialogComponent implements OnInit {
   selectedItem: Item;
   uploading = false;
   fileList: UploadFile[] = [];
+  addedFiles: Attachment[] = [];
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private http: HttpClient,
     private msg: NzMessageService,
     private requestsService: RequestsService,
@@ -37,36 +39,36 @@ export class AttachmentsDialogComponent implements OnInit {
   }
 
   openAttachment(file: UploadFile) {
-    this.requestsService.openAttachment(file).subscribe((res: any) => {
-      console.log('response: ' + JSON.stringify(res, null, 2));
-    });
+    this.requestsService.openAttachment(file).subscribe((res: any) => {});
   }
 
-  beforeUpload = (file: UploadFile): boolean => {
-    this.fileList.push(file);
-    console.log(' before file upload');
-    return false;
+  handleChange({ file, fileList }) {
+    const status = file.status;
+    if (status === 'done') {
+      fileList.forEach((p: any) => {
+        if (!p.url || p.url === '') {
+          const puid = p.uid;
+          for (let i = 0; i < this.addedFiles.length; i++) {
+            if (this.addedFiles[i].uid === puid) {
+              p.url =
+                environment.serverUrl + '/attachment/' + this.addedFiles[i].url;
+            }
+          }
+        }
+      });
+      this.cdr.detectChanges();
+    }
   }
 
-  handleUpload(event: any): void {
-    console.log('handleUpload: ' + JSON.stringify(event, null, 2));
-    const formData = new FormData();
-    // tslint:disable-next-line:no-any
-    this.fileList.forEach((file: any) => {
-      console.log('file: ' + JSON.stringify(file, null, 2));
-      formData.append('files[]', file);
-    });
-    this.uploading = true;
-  }
-  customData = (file: UploadFile) => {
-    console.log('inside customdata: ' + JSON.stringify(file, null, 2));
-    return file;
+  fileRemoved = (file: UploadFile) => {
+    return this.requestsService
+      .deleteAttachment(file.uid)
+      .subscribe((res: any) => {
+        return true;
+      });
   }
 
   customReq = (item: UploadXHRArgs) => {
-    // 构建一个 FormData 对象，用于存储文件或其他参数
-    console.log('file type: ' + item.file.name);
-    // 始终返回一个 `Subscription` 对象，nz-upload 会在适当时机自动取消订阅
     return this.http
       .post(
         environment.serverUrl +
@@ -77,6 +79,13 @@ export class AttachmentsDialogComponent implements OnInit {
       )
       .subscribe(
         (res: any) => {
+          this.addedFiles.push({
+            type: item.file.type,
+            size: item.file.size,
+            url: res.id,
+            name: item.file.name,
+            uid: item.file.uid
+          });
           const headerSettings: { [name: string]: string | string[] } = {};
 
           headerSettings['Content-Type'] = item.file.type;
@@ -89,48 +98,27 @@ export class AttachmentsDialogComponent implements OnInit {
             reportProgress: true
           });
 
-          console.log('headers: ' + JSON.stringify(headerSettings, null, 2));
           return this.http.request(req).subscribe(
             (event2: HttpEvent<{}>) => {
               if (event2.type === HttpEventType.UploadProgress) {
-                console.log('progress event!');
                 if (event2.total > 0) {
-                  // tslint:disable-next-line:no-any
                   (event2 as any).percent =
                     (event2.loaded / event2.total) * 100;
                 }
-                // 处理上传进度条，必须指定 `percent` 属性来表示进度
+
                 item.onProgress(event2, item.file);
               } else if (event2 instanceof HttpResponse) {
-                console.log('finish event!');
-
                 item.onSuccess(event2.body, item.file, event2);
               }
             },
             err => {
-              console.log('ERROR event!');
-              // 处理失败
               item.onError(err, item.file);
             }
           );
         },
         err => {
-          // 处理失败
           item.onError(err, item.file);
         }
       );
-  }
-
-  handleChange({ file, fileList }): void {
-    console.log('handleChange: ' + JSON.stringify(file, null, 2));
-    const status = file.status;
-    if (status !== 'uploading') {
-      console.log(file, fileList);
-    }
-    if (status === 'done') {
-      this.msg.success(`${file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      this.msg.error(`${file.name} file upload failed.`);
-    }
   }
 }

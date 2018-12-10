@@ -1280,7 +1280,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   viewAttachments(item: Item) {
     this.selectedItem = item;
     const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
-      width: '80vw',
+      width: '50vw',
       data: {
         selectedItem: item
       }
