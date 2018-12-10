@@ -1278,6 +1278,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.selectedItem = item;
     const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
       width: '50vw',
+      disableClose: true,
       data: {
         selectedItem: item,
         canDelete: this.submitRequests,
@@ -1286,7 +1287,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result && result.success) {
+      if (result && result.fileList) {
+        item.attachments = result.fileList;
+        this.selectedItem = null;
+        this.changeDetector.detectChanges();
+        this.changeDetector.markForCheck();
       }
     });
   }

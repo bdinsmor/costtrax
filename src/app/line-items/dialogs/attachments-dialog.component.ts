@@ -36,10 +36,17 @@ export class AttachmentsDialogComponent implements OnInit {
     this.canAdd = this.data.canAdd;
     this.selectedItem.attachments.forEach((p: any) => {
       p.url = environment.serverUrl + '/attachment/' + p.id;
-      p.name = p.fileName;
+      if (p.fileName && p.fileName !== '') {
+        p.name = p.fileName;
+      }
+
       p.uid = p.id;
       this.fileList.push(p as UploadFile);
     });
+  }
+
+  done() {
+    this.dialogRef.close({ fileList: this.fileList });
   }
 
   openAttachment(file: UploadFile) {
@@ -58,6 +65,13 @@ export class AttachmentsDialogComponent implements OnInit {
                 environment.serverUrl + '/attachment/' + this.addedFiles[i].url;
               if (!p.size || p.size === 0) {
                 p.size = this.addedFiles[i].size;
+              }
+              if (!p.id || p.id === '') {
+                p.id = this.addedFiles[i].tempId;
+                p.uid = p.id;
+              }
+              if (!p.name || p.name === '') {
+                p.name = this.addedFiles[i].name;
               }
             }
           }
@@ -95,7 +109,8 @@ export class AttachmentsDialogComponent implements OnInit {
             size: item.file.size,
             url: res.id,
             name: item.file.name,
-            uid: item.file.uid
+            uid: item.file.uid,
+            tempId: res.id
           });
           const headerSettings: { [name: string]: string | string[] } = {};
 

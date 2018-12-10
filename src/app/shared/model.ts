@@ -16,6 +16,7 @@ export interface Attachment {
   name: string;
   size: number;
   type: string;
+  tempId: string;
 }
 
 export class EmployeeFirstNameFilter
