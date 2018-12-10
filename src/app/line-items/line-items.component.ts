@@ -1243,12 +1243,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           item.id = lineItemData.id;
           item.beingEdited = true;
           this.itemsChanged.emit({ type: item.type, index: index });
-          this.openSnackBar('Line Item Saved!', 'ok', 'OK');
           this.changeDetector.detectChanges();
         },
-        (error: any) => {
-          this.openSnackBar('Line Items Did Not Save', 'error', 'OK');
-        }
+        (error: any) => {}
       );
     }
   }
@@ -1282,7 +1279,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
       width: '50vw',
       data: {
-        selectedItem: item
+        selectedItem: item,
+        canDelete: this.submitRequests,
+        canAdd: this.submitRequests
       }
     });
 

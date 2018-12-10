@@ -18,6 +18,8 @@ export class AttachmentsDialogComponent implements OnInit {
   uploading = false;
   fileList: UploadFile[] = [];
   addedFiles: Attachment[] = [];
+  canDelete = false;
+  canAdd = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -30,6 +32,8 @@ export class AttachmentsDialogComponent implements OnInit {
 
   ngOnInit() {
     this.selectedItem = this.data.selectedItem;
+    this.canDelete = this.data.canDelete;
+    this.canAdd = this.data.canAdd;
     this.selectedItem.attachments.forEach((p: any) => {
       p.url = environment.serverUrl + '/attachment/' + p.id;
       p.name = p.fileName;
@@ -52,6 +56,9 @@ export class AttachmentsDialogComponent implements OnInit {
             if (this.addedFiles[i].uid === puid) {
               p.url =
                 environment.serverUrl + '/attachment/' + this.addedFiles[i].url;
+              if (!p.size || p.size === 0) {
+                p.size = this.addedFiles[i].size;
+              }
             }
           }
         }
@@ -60,12 +67,18 @@ export class AttachmentsDialogComponent implements OnInit {
     }
   }
 
-  fileRemoved = (file: UploadFile) => {
+  deleteAttachment(index: number, file: UploadFile) {
     return this.requestsService
       .deleteAttachment(file.uid)
       .subscribe((res: any) => {
-        return true;
+        this.fileList.splice(index, 1);
+        this.cdr.detectChanges();
       });
+  }
+
+  showUpload() {
+    console.log('can delete: ' + this.canDelete);
+    return { showPreviewIcon: false, showRemoveIcon: this.canDelete };
   }
 
   customReq = (item: UploadXHRArgs) => {

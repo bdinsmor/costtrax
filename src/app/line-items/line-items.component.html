@@ -183,8 +183,9 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row ">
-              <button class="ripple icon-30 icon-button" matTooltip="View Attachments"
-                (click)="viewAttachments(item)">
+              <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                 <mat-icon color="accent">attach_file</mat-icon>
               </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
@@ -325,23 +326,25 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row padding-label-top ">
-              <button class="ripple icon-30 icon-button" matTooltip="View Attachments"
+              <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'"
                 (click)="viewAttachments(item)">
+                <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                 <mat-icon color="accent">attach_file</mat-icon>
-              </button>
+          </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
+                icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
+              icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                 Edits" (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                 item.isDraft())" matTooltip="Remove"
                 (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -375,7 +378,7 @@
                 <h4 class="strong left">No data available for this model</h4>
               </div>
               <div *ngIf="!item.details.nodata">
-               
+
                 <div class="col">
                   <h5 class="strong no-top-margin">Configuration</h5>
                   <table *ngIf="item.details.configurations" class="mt-3p table table-compact table-bordered table-striped comparison-table">
@@ -684,10 +687,12 @@
             <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')" class="row padding-label-top ">
-                <button class="ripple icon-30 icon-button" matTooltip="View Attachments" (click)="viewAttachments(item)">
+                <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                  <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                  <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                   <mat-icon color="accent">attach_file</mat-icon>
                 </button>
-             
+
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
                   icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
@@ -695,7 +700,7 @@
               <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                   Edits"
                 (click)="revertEdits(i,item)">
-                <mat-icon color="warn">undo</mat-icon>
+                <mat-icon color="accent">undo</mat-icon>
               </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                                 icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
@@ -1020,6 +1025,11 @@
             <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')" class="row padding-label-top ">
+                <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                  <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                  <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
+                  <mat-icon color="accent">attach_file</mat-icon>
+                </button>
               <button *ngIf="item.isDraft() || item.beingEdited" [class.ripple]="item && item.details.startDate &&
                   item.details.endDate && (item.details.endDate >=
                   item.details.startDate)"
@@ -1265,6 +1275,11 @@
             <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row ">
+                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                    <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                    <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
+                    <mat-icon color="accent">attach_file</mat-icon>
+                  </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                     icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
@@ -1357,6 +1372,11 @@
             <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row ">
+                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                    <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                    <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
+                    <mat-icon color="accent">attach_file</mat-icon>
+                  </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                     icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
@@ -1450,6 +1470,11 @@
             <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row ">
+                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                    <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
+                    <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
+                    <mat-icon color="accent">attach_file</mat-icon>
+                  </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                     icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>

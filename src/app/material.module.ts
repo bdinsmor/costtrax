@@ -8,6 +8,7 @@
 import { NgModule } from '@angular/core';
 import {
   MatAutocompleteModule,
+  MatBadgeModule,
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
@@ -35,6 +36,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatCardModule,
     MatDatepickerModule,
     MatStepperModule,
+    MatBadgeModule,
     MatCheckboxModule,
     MatDialogModule,
     MatButtonModule,

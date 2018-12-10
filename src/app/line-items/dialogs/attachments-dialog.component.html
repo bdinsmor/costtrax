@@ -1,20 +1,47 @@
-<h3 mat-dialog-title>Attachments</h3>
+<h3 mat-dialog-title>Line Item Attachments</h3>
 <mat-dialog-content>
-  <nz-upload
-    nzAction=""
-    nzType="drag"
-    [nzMultiple]="true"
-    [(nzFileList)]="fileList"
-    [nzRemove]="fileRemoved"
-    [nzCustomRequest]="customReq"
-    (nzChange)="handleChange($event)"
-  >
-    <p class="ant-upload-drag-icon">
-      <clr-icon shape="inbox" size="36"></clr-icon>
-    </p>
-    <p class="ant-upload-text">Click or drag file to this area to upload</p>
-    <p class="ant-upload-hint">Support for a single or bulk upload</p>
-  </nz-upload>
+  <div class="mb-2">
+    <nz-upload
+      *ngIf="canAdd"
+      [nzShowButton]="canAdd"
+      [nzDisabled]="!canAdd"
+      nzAction=""
+      nzType="drag"
+      [nzMultiple]="true"
+      [(nzFileList)]="fileList"
+      [nzRemove]="fileRemoved"
+      [nzCustomRequest]="customReq"
+      [nzShowUploadList]="showUpload()"
+      (nzChange)="handleChange($event)"
+    >
+      <p class="ant-upload-drag-icon">
+        <clr-icon shape="inbox" size="36"></clr-icon>
+      </p>
+      <p class="ant-upload-text">
+        Click or drag file(s) to this area to upload
+      </p>
+    </nz-upload>
+    <nz-upload
+      *ngIf="!canAdd"
+      [nzShowButton]="canAdd"
+      [nzDisabled]="!canAdd"
+      nzAction=""
+      nzType="drag"
+      [nzMultiple]="true"
+      [(nzFileList)]="fileList"
+      [nzRemove]="fileRemoved"
+      [nzCustomRequest]="customReq"
+      [nzShowUploadList]="showUpload()"
+      (nzChange)="handleChange($event)"
+    >
+      <h5 class="muted-text" *ngIf="fileList && fileList.length > 0">
+        Click on an attachment to download
+      </h5>
+      <h5 class="muted-text" *ngIf="!fileList || fileList.length === 0">
+        No Attachments have been added.
+      </h5>
+    </nz-upload>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button type="button" class="btn btn-primary" mat-dialog-close>Done</button>
