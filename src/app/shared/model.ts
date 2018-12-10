@@ -10,6 +10,14 @@ export interface Breadcrumb {
   display: string;
 }
 
+export interface Attachment {
+  uid: string;
+  url: string;
+  name: string;
+  size: number;
+  type: string;
+}
+
 export class EmployeeFirstNameFilter
   implements ClrDatagridStringFilterInterface<Employee> {
   accepts(employee: Employee, search: string): boolean {
@@ -329,6 +337,7 @@ export class Item {
   rejectReason: string;
   displayType: string;
   comments: Comment[];
+  attachments: Attachment[];
   editDetails: any;
   revert: Item;
   beingEdited = false;
@@ -657,6 +666,8 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.fromSaved = data.fromSaved || false;
+      this.attachments = data.attachments;
+
       this.buildRentalDates();
 
       if (this.details.startDate) {

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { FileDropModule } from 'ngx-file-drop';
 
 import { CoreModule } from '../core';
 import { DirectivesModule } from '../core/directives/directives';
@@ -16,6 +17,7 @@ import { RequestRecapitulationDialogComponent } from './dialogs/request-recapitu
 import { RequestSubmitDialogComponent } from './dialogs/request-submit-dialog.component';
 import { RequestDetailsComponent } from './request-details/request-details.component';
 import { RequestsComponent } from './requests.component';
+import { RequestsService } from './requests.service';
 
 // import HeadroomModule
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
@@ -46,6 +48,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     DirectivesModule,
     PipesModule,
     LineItemsModule,
+    FileDropModule,
     NgxCurrencyModule,
     BsDatepickerModule.forRoot()
   ],
@@ -59,6 +62,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     RequestsComponent
   ],
   providers: [
+    RequestsService,
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [
