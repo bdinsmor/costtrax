@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { UploadFile } from 'ng-zorro-antd';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -17,8 +18,30 @@ export class RequestsService {
   editedItems: Object;
   onFilterChanged: Subject<any> = new Subject();
 
+  uploading = false;
+
   constructor(private http: HttpClient) {
     this.editedItems = {};
+  }
+
+  openAttachment(uploadFile: UploadFile) {
+    return this.http.get(
+      environment.serverUrl + '/attachment/' + uploadFile.uid
+    );
+  }
+
+  uploadAttachment(lineItemId: string, fileList: UploadFile[]) {
+    console.log('file name: ' + JSON.stringify(fileList, null, 2));
+    console.log('item id: ' + lineItemId);
+    const formData = new FormData();
+    // tslint:disable-next-line:no-any
+    fileList.forEach((file: any) => {
+      console.log('file: ' + JSON.stringify(file, null, 2));
+    });
+    return this.http.post(
+      environment.serverUrl + '/lineitem/' + lineItemId + '/attachment',
+      formData
+    );
   }
 
   addEditItem(item: Item) {
