@@ -365,7 +365,7 @@ export class Item {
 
   generateYears() {
     if (!this.details.dateIntroduced) {
-      this.details.dateIntroduced = DateTime.local().toJSDate();
+      this.details.dateIntroduced = new Date(0);
     }
     if (!this.details.dateDiscontinued) {
       this.details.dateDiscontinued = DateTime.local().toJSDate();
@@ -473,8 +473,8 @@ export class Item {
 
   setDates(dates: any) {
     if (dates && dates.length > 0) {
-      this.details.startDate = DateTime.fromISO(dates[0]).toJSDate();
-      this.details.endDate = DateTime.fromISO(dates[1]).toJSDate();
+      this.details.startDate = new Date(dates[0]);
+      this.details.endDate = new Date(dates[1]);
     }
   }
 
@@ -907,8 +907,6 @@ export class Project {
     ) {
       this.adjustments.subcontractor.markup =
         this.adjustments.subcontractor.markup * 100;
-    } else {
-      this.adjustments.subcontractor = { markup: 10 };
     }
     if (
       this.adjustments.other &&
@@ -916,8 +914,6 @@ export class Project {
       Number(this.adjustments.other.markup) < 1
     ) {
       this.adjustments.other.markup = this.adjustments.other.markup * 100;
-    } else {
-      this.adjustments.other = { markup: 10 };
     }
     if (
       this.adjustments.material &&
@@ -925,8 +921,6 @@ export class Project {
       Number(this.adjustments.material.markup) < 1
     ) {
       this.adjustments.material.markup = this.adjustments.material.markup * 100;
-    } else {
-      this.adjustments.material = { markup: 10 };
     }
     if (
       this.adjustments.equipment &&
@@ -1169,6 +1163,9 @@ export class Equipment {
   beingEdited = false;
 
   generateYears() {
+    if (!this.dateIntroduced) {
+      this.dateIntroduced = new Date(0);
+    }
     let startYear = this.dateIntroduced.getFullYear();
     const nowYear = new Date().getFullYear() - 29;
 
@@ -1198,7 +1195,7 @@ export class Equipment {
         this.dateIntroduced = DateTime.fromISO(m.dateIntroduced).toJSDate();
       }
     } else {
-      this.dateIntroduced = DateTime.local().toJSDate();
+      this.dateIntroduced = new Date(0);
     }
 
     if (m.dateDiscontinued && m.dateDiscontinued !== '') {

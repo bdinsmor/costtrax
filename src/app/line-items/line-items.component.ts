@@ -177,7 +177,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
+    this.bsConfig = Object.assign(
+      {},
+      { containerClass: this.colorTheme, dateInputFormat: 'YYYY-MM-DD' }
+    );
     this.subscription = this.authenticationService
       .getCreds()
       .subscribe(message => {
@@ -952,6 +955,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     if (!item.details.startDate || !item.details.endDate) {
       return;
     }
+
     const diff = Math.abs(
       new Date(item.details.startDate).getTime() -
         new Date(item.details.endDate).getTime()

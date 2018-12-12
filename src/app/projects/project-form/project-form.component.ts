@@ -272,13 +272,16 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
         regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
         markup: formData.standbyMarkup || 10
       },
+
       rental: { markup: formData.rentalMarkup || 10 }
     };
+
     projectData.adjustments.material.markup = formData.materialMarkup || 10;
     projectData.adjustments.other.markup = formData.otherMarkup || 10;
     projectData.adjustments.subcontractor.markup =
       formData.subcontractorMarkup || 10;
     projectData.adjustments.labor.markup = formData.laborMarkup || 10;
+
     /*
     activeFormula: new FormControl('FHWA'),
       activeMarkup: new FormControl(
