@@ -401,6 +401,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 fhwa: e.fhwa,
                 method: e.method,
                 sizeClassName: e.sizeClassName,
+                subSize: e.subtypeName + ' ' + e.sizeClassName,
+                subtypeName: e.subtypeName,
                 year: e.year,
                 amount: 0,
                 subtotal: 0
@@ -441,6 +443,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             method: +e.method,
             fhwa: +e.fhwa,
             sizeClassName: e.sizeClassName,
+            subSize: e.subtypeName + ' ' + e.sizeClassName,
+            subtypeName: e.subtypeName,
             year: e.year,
             amount: 0,
             subtotal: 0
@@ -598,6 +602,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.itemList.items[event.index] = newItem;
     } else {
       item.details.sizeClassName = '';
+      item.details.subSize = '';
       item.details.fhwa = 0;
       item.details.year = '';
       item.details.years = null;
@@ -614,6 +619,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     if (!event || !event.item) {
       item.details.makeId = item.details.makeId;
       item.details.sizeClassName = '';
+      item.details.subSize = '';
+      item.details.subSize = '';
       item.details.fhwa = 0;
       item.details.year = '';
       item.details.years = null;
@@ -627,6 +634,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
     item.details.sizeClassId = event.item.sizeClassId;
     item.details.sizeClassName = event.item.sizeClassName;
+    item.details.subtypeName = event.item.subtypeName;
+    item.details.subSize = event.item.subSize;
     item.details.year = event.item.year;
     item.details.subtypeId = event.item.subtypeId;
     item.details.classificationId = event.item.classificationId;
@@ -1036,6 +1045,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               model: choice.model,
               base: choice.baseRental,
               sizeClassName: choice.sizeClassName,
+              subSize: choice.subtypeName + ' ' + choice.sizeClassName,
+              subtypeName: choice.subtypeName,
               year: choice.year,
               fhwa: choice.fhwa,
               markup: this.project.adjustments.equipment.active.markup,
@@ -1049,6 +1060,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               model: choice.model,
               base: choice.baseRental,
               sizeClassName: choice.sizeClassName,
+              subSize: choice.subtypeName + ' ' + choice.sizeClassName,
+              subtypeName: choice.subtypeName,
               year: choice.year,
               fhwa: choice.fhwa,
               markup: this.project.adjustments.equipment.active.markup,
@@ -1063,6 +1076,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               base: choice.baseRental,
               terms: 'Monthly',
               sizeClassName: choice.sizeClassName,
+              subSize: choice.subtypeName + ' ' + choice.sizeClassName,
+              subtypeName: choice.subtypeName,
               year: choice.year,
               fhwa: choice.fhwa,
               markup: this.project.adjustments.equipment.active.markup,
@@ -1408,7 +1423,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   confirmAddMiscModel(equipment: any, sc: any, configs: any) {
-    let yearSelected = false;
     equipment.details.configurations = configs;
     equipment.details.selectedConfiguration = sc;
 
@@ -1444,6 +1458,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               modelId: equipment.modelId,
               fhwa: equipment.fhwa,
               sizeClassName: equipment.sizeClassName,
+              subSize: choice.subtypeName + ' ' + choice.sizeClassName,
+              subtypeName: choice.subtypeName,
               year: equipment.year,
               amount: 0,
               subtotal: 0,
@@ -1484,6 +1500,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           model: equipment.model,
           modelId: equipment.modelId,
           sizeClassName: equipment.sizeClassName,
+          subSize: equipment.subtypeName + ' ' + equipment.sizeClassName,
+          subtypeName: equipment.subtypeName,
           year: equipment.year,
           dateIntroduced: equipment.dateIntroduced,
           dateDiscontinued: equipment.dateDiscontinued,

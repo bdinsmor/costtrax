@@ -687,7 +687,12 @@ export class Item {
         this.details.numDays = diffDays;
       }
       this.buildDateRange();
-
+      if (this.details.subtypeName && this.details.sizeClassName) {
+        this.details.subSize =
+          this.details.subtypeName + ' ' + this.details.sizeClassName;
+      } else {
+        this.details.subSize = this.details.sizeClassName;
+      }
       this.setDisplayType();
       this.setAmounts();
 
@@ -1137,6 +1142,7 @@ export class Equipment {
   sizeClassUom: string;
   sizeClassName: string;
   categoryName: string;
+  subSize: string;
   classificationName: string;
   subtypeName: string;
   sizeClassId: number;
@@ -1223,6 +1229,7 @@ export class Equipment {
     this.subtypeId = m.subtypeId;
     this.sizeClassId = m.sizeClassId;
     this.sizeClassName = m.sizeClassName;
+    this.subSize = m.subtypeName + ' ' + this.sizeClassName;
     this.classificationId = m.classificationId;
     this.classificationName = m.classificationName;
     this.rentalHouseRates = m.rentalHouseRates;
