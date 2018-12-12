@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
@@ -27,6 +28,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     private breadcrumbService: BreadcrumbService,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
+    private titleService: Title,
     private formBuilder: FormBuilder
   ) {}
   private config: MatSnackBarConfig;
@@ -141,12 +143,13 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
           this.checkPermissions();
           this.breadcrumbService.addProject(r.id, r.name);
           this.changeDetector.detectChanges();
+          this.titleService.setTitle('Project: ' + r.name);
         }
       });
     } else {
       this.newProject = true;
       this.project = new Project({});
-
+      this.titleService.setTitle('New Project');
       this.createProjectFormGroup();
       this.checkPermissions();
       this.changeDetector.detectChanges();

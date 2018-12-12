@@ -8,12 +8,12 @@
 import { NgModule } from '@angular/core';
 import {
   MatAutocompleteModule,
+  MatBadgeModule,
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
   MatChipsModule,
   MatCommonModule,
-  MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
@@ -28,19 +28,17 @@ import {
   MatStepperModule,
   MatTooltipModule,
 } from '@angular/material';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 @NgModule({
   exports: [
     MatCardModule,
-    MatDatepickerModule,
     MatStepperModule,
+    MatBadgeModule,
     MatCheckboxModule,
     MatDialogModule,
     MatButtonModule,
     MatCommonModule,
     MatFormFieldModule,
-    MatMomentDateModule,
     MatIconModule,
     MatInputModule,
     MatRippleModule,

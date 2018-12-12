@@ -32,7 +32,9 @@
             <mat-icon color="accent">radio_button_unchecked</mat-icon>
           </button>
         </clr-dg-cell>
-        <clr-dg-cell *ngFor="let column of configurations.columns"
+        <clr-dg-cell
+          *ngFor="let column of configurations.columns"
+          class="padding-label-top"
           >{{ configuration[column.name] }}
         </clr-dg-cell>
       </clr-dg-row>

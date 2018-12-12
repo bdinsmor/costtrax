@@ -3,6 +3,7 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { CommentsModule } from '../comments/comments.module';
@@ -15,9 +16,11 @@ import { SharedModule } from '../shared';
 import { EquipmentModule } from './../equipment/equipment.module';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
+import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
+import { LineItemMailDialogComponent } from './dialogs/mail-dialog.component';
 import { LineItemsComponent } from './line-items.component';
 
 /** config angular i18n **/
@@ -40,8 +43,10 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemDeleteDialogComponent,
     AddSavedDialogComponent,
     AddMiscDialogComponent,
+    LineItemMailDialogComponent,
     ConfigurationDialogComponent,
-    LineItemApproveDialogComponent
+    LineItemApproveDialogComponent,
+    AttachmentsDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -53,26 +58,32 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     PipesModule,
     EquipmentModule,
     CommentsModule,
+    NgZorroAntdModule,
     BsDatepickerModule.forRoot()
   ],
   exports: [
     LineItemsComponent,
     AddSavedDialogComponent,
+    LineItemMailDialogComponent,
     LineItemDeleteDialogComponent,
     AddMiscDialogComponent,
     ConfigurationDialogComponent,
-    LineItemApproveDialogComponent
+    LineItemApproveDialogComponent,
+    AttachmentsDialogComponent
   ],
   providers: [
+    { provide: NZ_I18N, useValue: en_US },
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [
     LineItemsComponent,
+    LineItemMailDialogComponent,
     LineItemDeleteDialogComponent,
     AddSavedDialogComponent,
     AddMiscDialogComponent,
     ConfigurationDialogComponent,
-    LineItemApproveDialogComponent
+    LineItemApproveDialogComponent,
+    AttachmentsDialogComponent
   ]
 })
 export class LineItemsModule {}

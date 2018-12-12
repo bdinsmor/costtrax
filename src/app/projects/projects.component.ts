@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -34,6 +35,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   _requestModel = false;
 
   constructor(
+    public titleService: Title,
     public dialog: MatDialog,
     private changeDetector: ChangeDetectorRef,
     public snackBar: MatSnackBar,
@@ -49,6 +51,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.breadcrumbService.addProjects();
     this.createProjectForm();
     this.refreshProjects();
+    this.titleService.setTitle('CostTrax');
     this.accounts$ = this.projectsService.getAccounts();
     this.projectsService.getProjectRoles().subscribe((r: String[]) => {
       if (!r || r.length === 0) {

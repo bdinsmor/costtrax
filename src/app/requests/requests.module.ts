@@ -16,11 +16,12 @@ import { RequestRecapitulationDialogComponent } from './dialogs/request-recapitu
 import { RequestSubmitDialogComponent } from './dialogs/request-submit-dialog.component';
 import { RequestDetailsComponent } from './request-details/request-details.component';
 import { RequestsComponent } from './requests.component';
+import { RequestsService } from './requests.service';
 
 // import HeadroomModule
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
-  allowNegative: true,
+  allowNegative: false,
   allowZero: true,
   precision: 2,
   prefix: '$ ',
@@ -59,6 +60,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     RequestsComponent
   ],
   providers: [
+    RequestsService,
     { provide: CURRENCY_MASK_CONFIG, useValue: CustomCurrencyMaskConfig }
   ],
   entryComponents: [

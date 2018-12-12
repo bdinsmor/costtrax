@@ -1,5 +1,5 @@
 import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 
 import { DatesPipe } from '../core/pipes/dates.pipe';
 
@@ -8,6 +8,15 @@ export interface Breadcrumb {
   path: string;
   route: string;
   display: string;
+}
+
+export interface Attachment {
+  uid: string;
+  url: string;
+  name: string;
+  size: number;
+  type: string;
+  tempId: string;
 }
 
 export class EmployeeFirstNameFilter
@@ -329,9 +338,20 @@ export class Item {
   rejectReason: string;
   displayType: string;
   comments: Comment[];
+  attachments: Attachment[];
   editDetails: any;
   revert: Item;
   beingEdited = false;
+
+  setNoCost() {
+    this.details.selectedConfiguration = {
+      hourlyOperatingCost: 0,
+      hourlyOwnershipCost: 0,
+      dailyOwnershipCost: 0,
+      weeklyOwnershipCost: 0,
+      monthlyOwnershipCost: 0
+    };
+  }
 
   resetSelectedConfiguration() {
     this.details.selectedConfiguration = {
@@ -345,24 +365,29 @@ export class Item {
 
   generateYears() {
     if (!this.details.dateIntroduced) {
-      this.details.dateIntroduced = moment().toDate();
+      this.details.dateIntroduced = DateTime.local().toJSDate();
     }
     if (!this.details.dateDiscontinued) {
-      this.details.dateDiscontinued = moment().toDate();
+      this.details.dateDiscontinued = DateTime.local().toJSDate();
     }
-     let startYear = moment(this.details.dateIntroduced)
-      .toDate()
-      .getFullYear();
-    const endYear = moment(this.details.dateDiscontinued)
-      .toDate()
-      .getFullYear();
+    if (this.details.dateIntroduced instanceof Date) {
+    } else {
+      this.details.dateIntroduced = DateTime.fromISO(
+        this.details.dateIntroduced
+      ).toJSDate();
+    }
+    if (this.details.dateDiscontinued instanceof Date) {
+    } else {
+      this.details.dateDiscontinued = DateTime.fromISO(
+        this.details.dateDiscontinued
+      ).toJSDate();
+    }
+    let startYear = this.details.dateIntroduced.getFullYear();
+    const endYear = this.details.dateDiscontinued.getFullYear();
 
-  
-    let nowYear = new Date().getFullYear() - 29;
-    
+    const nowYear = DateTime.local().year - 29;
+
     startYear = +Math.max(+startYear, +nowYear);
-   
-
 
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
@@ -444,6 +469,13 @@ export class Item {
       +this.details.terms.blueBook.hourlyOwnershipCost +
         +this.details.terms.blueBook.hourlyOperatingCost
     ).toFixed(2);
+  }
+
+  setDates(dates: any) {
+    if (dates && dates.length > 0) {
+      this.details.startDate = DateTime.fromISO(dates[0]).toJSDate();
+      this.details.endDate = DateTime.fromISO(dates[1]).toJSDate();
+    }
   }
 
   calculateRentalComps() {
@@ -642,6 +674,8 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.fromSaved = data.fromSaved || false;
+      this.attachments = data.attachments;
+
       this.buildRentalDates();
 
       if (this.details.startDate) {
@@ -665,7 +699,12 @@ export class Item {
         this.details.numDays = diffDays;
       }
       this.buildDateRange();
-
+      if (this.details.subtypeName && this.details.sizeClassName) {
+        this.details.subSize =
+          this.details.subtypeName + ' ' + this.details.sizeClassName;
+      } else {
+        this.details.subSize = this.details.sizeClassName;
+      }
       this.setDisplayType();
       this.setAmounts();
 
@@ -1115,6 +1154,7 @@ export class Equipment {
   sizeClassUom: string;
   sizeClassName: string;
   categoryName: string;
+  subSize: string;
   classificationName: string;
   subtypeName: string;
   sizeClassId: number;
@@ -1130,16 +1170,16 @@ export class Equipment {
 
   generateYears() {
     let startYear = this.dateIntroduced.getFullYear();
-    let nowYear = new Date().getFullYear() - 29;
-    
+    const nowYear = new Date().getFullYear() - 29;
+
     startYear = +Math.max(+startYear, +nowYear);
-   
-    let endYear = this.dateDiscontinued.getFullYear();
+
+    const endYear = this.dateDiscontinued.getFullYear();
+
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
     }
-     
   }
 
   constructor(m: any) {
@@ -1151,9 +1191,25 @@ export class Equipment {
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.dateIntroduced =
-      moment(m.dateIntroduced).toDate() || new Date();
-    this.dateDiscontinued = moment(m.dateDiscontinued).toDate() || new Date();
+    if (m.dateIntroduced && m.dateIntroduced !== '') {
+      if (m.dateIntroduced instanceof Date) {
+        this.dateIntroduced = m.dateIntroduced;
+      } else {
+        this.dateIntroduced = DateTime.fromISO(m.dateIntroduced).toJSDate();
+      }
+    } else {
+      this.dateIntroduced = DateTime.local().toJSDate();
+    }
+
+    if (m.dateDiscontinued && m.dateDiscontinued !== '') {
+      if (m.dateDiscontinued instanceof Date) {
+        this.dateDiscontinued = m.dateDiscontinued;
+      } else {
+        this.dateDiscontinued = DateTime.fromISO(m.dateDiscontinued).toJSDate();
+      }
+    } else {
+      this.dateDiscontinued = DateTime.local().toJSDate();
+    }
 
     if (m.details) {
       this.vin = m.details.vin || m.details.serial || 0;
@@ -1185,6 +1241,7 @@ export class Equipment {
     this.subtypeId = m.subtypeId;
     this.sizeClassId = m.sizeClassId;
     this.sizeClassName = m.sizeClassName;
+    this.subSize = m.subtypeName + ' ' + this.sizeClassName;
     this.classificationId = m.classificationId;
     this.classificationName = m.classificationName;
     this.rentalHouseRates = m.rentalHouseRates;
@@ -1200,6 +1257,16 @@ export class Equipment {
     this.calculateHourlyRates();
     this.generateYears();
     this.display = this.make + ' ' + this.model;
+  }
+
+  setNoCost() {
+    this.details.selectedConfiguration = {
+      hourlyOperatingCost: 0,
+      hourlyOwnershipCost: 0,
+      dailyOwnershipCost: 0,
+      weeklyOwnershipCost: 0,
+      monthlyOwnershipCost: 0
+    };
   }
 
   resetSelectedConfiguration() {
@@ -1410,6 +1477,7 @@ export class Request {
     if (!this.startDate && !this.endDate) {
       this.startDate = new Date();
       this.endDate = new Date();
+    } else {
     }
     this.dateRange = [this.startDate, this.endDate];
   }
@@ -1855,17 +1923,15 @@ export class Request {
       }
       this.notes = request.notes || '';
 
-      let sd = request.startDate || request.start;
+      const sd = request.startDate || request.start;
       if (sd && sd !== '') {
-        sd = moment(sd, 'YYYY-MM-DD');
-        this.startDate = new Date(sd);
+        this.startDate = DateTime.fromISO(sd).toJSDate();
       } else {
         this.startDate = new Date();
       }
-      let ed = request.endDate || request.end;
+      const ed = request.endDate || request.end;
       if (ed && ed !== '') {
-        ed = moment(ed, 'YYYY-MM-DD');
-        this.endDate = new Date(ed);
+        this.endDate = DateTime.fromISO(ed).toJSDate();
       } else {
         this.endDate = new Date(this.startDate);
       }

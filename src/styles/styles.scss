@@ -139,8 +139,16 @@ select:-moz-focusring {
     margin-top: 0 !important;
 }
 
+.datagrid-row-detail {
+    display: block !important;
+}
+
 .datagrid-column {
     //  background-color: #ccc !important;
+}
+
+.lp-2p {
+    padding-left: 2px;
 }
 
 .btn-dark {
