@@ -907,8 +907,6 @@ export class Project {
     ) {
       this.adjustments.subcontractor.markup =
         this.adjustments.subcontractor.markup * 100;
-    } else {
-      this.adjustments.subcontractor = { markup: 10 };
     }
     if (
       this.adjustments.other &&
@@ -916,8 +914,6 @@ export class Project {
       Number(this.adjustments.other.markup) < 1
     ) {
       this.adjustments.other.markup = this.adjustments.other.markup * 100;
-    } else {
-      this.adjustments.other = { markup: 10 };
     }
     if (
       this.adjustments.material &&
@@ -925,8 +921,6 @@ export class Project {
       Number(this.adjustments.material.markup) < 1
     ) {
       this.adjustments.material.markup = this.adjustments.material.markup * 100;
-    } else {
-      this.adjustments.material = { markup: 10 };
     }
     if (
       this.adjustments.equipment &&
