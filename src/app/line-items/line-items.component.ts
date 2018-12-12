@@ -325,7 +325,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           if (this.itemType === 'equipment.active') {
             this.itemList.items[this.selectedIndex].details.fhwa = +Number(
               +this.itemList.items[this.selectedIndex].details
-                .selectedConfiguration.hourlyOwnershipCost +
+                .selectedConfiguration.monthlyOwnershipCost /
+                176 +
                 +this.itemList.items[this.selectedIndex].details
                   .selectedConfiguration.hourlyOperatingCost
             ).toFixed(2);
@@ -334,8 +335,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             ).toFixed(2);
           } else if (this.itemType === 'equipment.standby') {
             this.itemList.items[this.selectedIndex].details.fhwa = +Number(
-              +this.itemList.items[this.selectedIndex].details
-                .selectedConfiguration.hourlyOwnershipCost * 0.5
+              (+this.itemList.items[this.selectedIndex].details
+                .selectedConfiguration.monthlyOwnershipCost /
+                176) *
+                0.5
             ).toFixed(2);
             this.itemList.items[this.selectedIndex].details.method = +Number(
               +this.itemList.items[this.selectedIndex].details.fhwa
@@ -445,13 +448,15 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         });
         if (this.itemType === 'equipment.active') {
           newItem.details.fhwa = +Number(
-            +newItem.details.selectedConfiguration.hourlyOwnershipCost +
+            +newItem.details.selectedConfiguration.monthlyOwnershipCost / 176 +
               +newItem.details.selectedConfiguration.hourlyOperatingCost
           ).toFixed(2);
           newItem.details.method = +Number(+newItem.details.fhwa).toFixed(2);
         } else if (this.itemType === 'equipment.standby') {
           newItem.details.fhwa = +Number(
-            +newItem.details.selectedConfiguration.hourlyOwnershipCost * 0.5
+            (+newItem.details.selectedConfiguration.monthlyOwnershipCost /
+              176) *
+              0.5
           ).toFixed(2);
           newItem.details.method = +Number(+newItem.details.fhwa).toFixed(2);
         }
@@ -605,6 +610,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
   }
   modelNewSelectionChanged(event: any, item: Item, index: number) {
+    let yearSelected = false;
     if (!event || !event.item) {
       item.details.makeId = item.details.makeId;
       item.details.sizeClassName = '';
@@ -640,7 +646,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     item.generateYears();
     if (item.details.years && item.details.years.length === 1) {
       item.details.year = item.details.years[0].year;
+      yearSelected = true;
     }
+
     item.details.vin = event.item.vin;
     if (item && item.details) {
       if (item.type === 'equipment.rental') {
@@ -665,10 +673,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 item.details.year = choice.year;
                 item.details.baseRental = choice.baseRental;
                 item.details.fhwa = choice.fhwa;
-                console.log(
-                  'rental house rates: ' +
-                    JSON.stringify(choice.rentalHouseRates, null, 2)
-                );
+
                 item.details.nationalAverages = choice.nationalAverages;
                 item.details.regionalAverages = choice.regionalAverages;
                 item.details.rentalHouseRates = choice.rentalHouseRates;
@@ -687,6 +692,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   item.setNoCost();
                 }
                 item.beingEdited = true;
+                if (yearSelected) {
+                  this.yearSelectionChanged(item, index, false);
+                }
                 this.changeDetector.detectChanges();
               });
           });
@@ -698,7 +706,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  yearSelectionChanged(item: Item, index: number) {
+  yearSelectionChanged(item: Item, index: number, saveAfter = false) {
     if (!item.details.year || item.details.year === '') {
       item.details.fhwa = 0;
       item.details.hours = 0;
@@ -748,13 +756,14 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
           if (this.itemType === 'equipment.active') {
             item.details.fhwa = +Number(
-              +item.details.selectedConfiguration.hourlyOwnershipCost +
+              +item.details.selectedConfiguration.monthlyOwnershipCost / 176 +
                 +item.details.selectedConfiguration.hourlyOperatingCost
             ).toFixed(2);
             item.details.method = +Number(item.details.fhwa).toFixed(2);
           } else if (this.itemType === 'equipment.standby') {
             item.details.fhwa = +Number(
-              +item.details.selectedConfiguration.hourlyOwnershipCost * 0.5
+              (+item.details.selectedConfiguration.monthlyOwnershipCost / 176) *
+                0.5
             ).toFixed(2);
             item.details.method = +Number(+item.details.fhwa).toFixed(2);
           } else {
@@ -772,6 +781,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           this.rentalChanged(item);
         }
         item.beingEdited = true;
+        if (saveAfter) {
+          this.saveChanges(index, item);
+        }
         this.changeDetector.detectChanges();
       });
   }
@@ -1197,7 +1209,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   editItem(index: number, item: Item) {
     item.beingEdited = true;
-    // console.log('details: ' + JSON.stringify(item.details, null, 2));
     this.requestsService.addEditItem(item);
     this.changeDetector.detectChanges();
   }
@@ -1397,59 +1408,57 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   confirmAddMiscModel(equipment: any, sc: any, configs: any) {
-    this.miscCategoryId = null;
-    this.miscEquipment = equipment;
-    this.miscEquipment.misc = true;
-    this.miscEquipment.details.configurations = configs;
-    this.miscEquipment.details.selectedConfiguration = sc;
+    let yearSelected = false;
+    equipment.details.configurations = configs;
+    equipment.details.selectedConfiguration = sc;
 
     if (this.itemType === 'equipment.rental') {
       this.equipmentService
         .getRateDataForSizeClassId(
-          String(this.miscEquipment.sizeClassId),
-          this.miscEquipment.modelId,
+          String(equipment.sizeClassId),
+          equipment.modelId,
           this.project.state,
-          this.project.zipcode,
-          1
+          this.project.zipcode
         )
         .subscribe((choice: Equipment) => {
-          this.miscEquipment.year = choice.year;
-          this.miscEquipment.baseRental = choice.baseRental;
-          this.miscEquipment.fhwa = choice.fhwa;
-          this.miscEquipment.type = this.itemType;
-          this.miscEquipment.rentalHouseRates = choice.rentalHouseRates;
-          this.miscEquipment.nationalAverages = choice.nationalAverages;
+          equipment.year = choice.year;
+          equipment.baseRental = choice.baseRental;
+          equipment.fhwa = choice.fhwa;
+          equipment.type = this.itemType;
+          equipment.rentalHouseRates = choice.rentalHouseRates;
+          equipment.nationalAverages = choice.nationalAverages;
           const newItem = new Item({
             status: 'Draft',
             beingEdited: true,
             requestId: this.requestId,
             type: this.itemType,
             details: {
-              configurations: this.miscEquipment.details.configurations,
-              selectedConfiguration: this.miscEquipment.details
-                .selectedConfiguration,
-              base: this.miscEquipment.baseRental,
+              configurations: equipment.details.configurations,
+              selectedConfiguration: equipment.details.selectedConfiguration,
+              base: equipment.baseRental,
               transportation: 0,
               hours: 0,
-              make: this.miscEquipment.make,
-              makeId: this.miscEquipment.makeId,
-              model: this.miscEquipment.model,
-              modelId: this.miscEquipment.modelId,
-              fhwa: this.miscEquipment.fhwa,
-              sizeClassName: this.miscEquipment.sizeClassName,
-              year: this.miscEquipment.year,
+              make: equipment.make,
+              makeId: equipment.makeId,
+              model: equipment.model,
+              modelId: equipment.modelId,
+              fhwa: equipment.fhwa,
+              sizeClassName: equipment.sizeClassName,
+              year: equipment.year,
               amount: 0,
               subtotal: 0,
-              nationalAverages: this.miscEquipment.nationalAverages,
-              rentalHouseRates: this.miscEquipment.rentalHouseRates
+              nationalAverages: equipment.nationalAverages,
+              rentalHouseRates: equipment.rentalHouseRates
             }
           });
           newItem.generateYears();
-          newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
-          newItem.details.configuration = this.miscEquipment.details.configurations;
+          newItem.details.selectedConfiguration =
+            equipment.details.selectedConfiguration;
+          newItem.details.configuration = equipment.details.configurations;
           // need to set base rate that is different than invoice amount - right now i only
           // have one amount which is used for invoice but needs to be split out
           newItem.beingEdited = true;
+          newItem.details.misc = true;
           this.selectedConfig = null;
 
           this.itemList.items = [...this.itemList.items, newItem];
@@ -1466,47 +1475,48 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         requestId: this.requestId,
         type: this.itemType,
         details: {
-          selectedConfiguration: this.miscEquipment.details
-            .selectedConfiguration,
-          configurations: this.miscEquipment.details.configurations,
+          selectedConfiguration: equipment.details.selectedConfiguration,
+          configurations: equipment.details.configurations,
           transportation: 0,
           hours: 0,
-          make: this.miscEquipment.make,
-          makeId: this.miscEquipment.makeId,
-          model: this.miscEquipment.model,
-          modelId: this.miscEquipment.modelId,
-          sizeClassName: this.miscEquipment.sizeClassName,
-          year: this.miscEquipment.year,
-          dateIntroduced: this.miscEquipment.dateIntroduced,
-          dateDiscontinued: this.miscEquipment.dateDiscontinued,
+          make: equipment.make,
+          makeId: equipment.makeId,
+          model: equipment.model,
+          modelId: equipment.modelId,
+          sizeClassName: equipment.sizeClassName,
+          year: equipment.year,
+          dateIntroduced: equipment.dateIntroduced,
+          dateDiscontinued: equipment.dateDiscontinued,
 
           amount: 0,
           subtotal: 0
         }
       });
       newItem.generateYears();
-      if (newItem.details.years && newItem.details.years.length === 1) {
-        newItem.details.year = newItem.details.years[0].year;
-      }
-      newItem.details.selectedConfiguration = this.miscEquipment.details.selectedConfiguration;
-      newItem.details.configuration = this.miscEquipment.details.configurations;
+
+      newItem.details.selectedConfiguration =
+        equipment.details.selectedConfiguration;
+      newItem.details.configuration = equipment.details.configurations;
 
       if (this.itemType === 'equipment.active') {
         newItem.details.fhwa = +Number(
-          +newItem.details.selectedConfiguration.hourlyOwnershipCost +
+          +newItem.details.selectedConfiguration.monthlyOwnershipCost / 176 +
             +newItem.details.selectedConfiguration.hourlyOperatingCost
         ).toFixed(2);
         newItem.details.method = newItem.details.fhwa;
       } else if (this.itemType === 'equipment.standby') {
         newItem.details.fhwa = +Number(
-          +newItem.details.selectedConfiguration.hourlyOwnershipCost * 0.5
+          (+newItem.details.selectedConfiguration.monthlyOwnershipCost / 176) *
+            0.5
         ).toFixed(2);
         newItem.details.method = newItem.details.fhwa;
       }
 
       newItem.beingEdited = true;
       this.itemList.items = [...this.itemList.items, newItem];
+
       this.saveChanges(this.itemList.items.length, newItem);
+
       this.changeDetector.detectChanges();
     }
     this.selected = [];

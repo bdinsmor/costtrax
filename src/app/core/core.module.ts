@@ -6,14 +6,12 @@ import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 
 import { TokenInterceptor } from '../core/http/http-token.interceptor';
-import { ToolbarNotificationsComponent } from '../core/toolbar-notifications/toolbar-notifications.component';
 import { ToolbarUserButtonComponent } from '../core/toolbar-user-button/toolbar-user-button.component';
 import { MaterialModule } from '../material.module';
 import { AuthenticationGuard } from './authentication/authentication.guard';
 import { UberAdminGuard } from './authentication/uberAdmin.guard';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { BreadcrumbService } from './breadcrumbs/breadcrumbs.service';
-import { HeaderComponent } from './header/header.component';
 import { ApiPrefixInterceptor } from './http/api-prefix.interceptor';
 import { CacheInterceptor } from './http/cache.interceptor';
 import { ErrorHandlerInterceptor } from './http/error-handler.interceptor';
@@ -21,7 +19,6 @@ import { RequestCacheService } from './http/http-cache.service';
 import { HttpService } from './http/http.service';
 import { PipesModule } from './pipes/pipes.module';
 import { RouteReusableStrategy } from './route-reusable-strategy';
-import { ShellComponent } from './shell/shell.component';
 import { UtilsModule } from './utils/utils.module';
 
 @NgModule({
@@ -34,18 +31,8 @@ import { UtilsModule } from './utils/utils.module';
     UtilsModule,
     RouterModule
   ],
-  declarations: [
-    HeaderComponent,
-    ToolbarNotificationsComponent,
-    ToolbarUserButtonComponent,
-    BreadcrumbsComponent,
-    ShellComponent
-  ],
-  exports: [
-    ToolbarNotificationsComponent,
-    ToolbarUserButtonComponent,
-    BreadcrumbsComponent
-  ],
+  declarations: [ToolbarUserButtonComponent, BreadcrumbsComponent],
+  exports: [ToolbarUserButtonComponent, BreadcrumbsComponent],
 
   providers: [
     AuthenticationGuard,

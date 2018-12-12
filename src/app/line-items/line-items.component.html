@@ -183,51 +183,48 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row ">
-              <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+              <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                 <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                 <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                 <mat-icon color="accent">attach_file</mat-icon>
-              </button>
+              </button>-->
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
+                 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
-              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                icon-30 icon-button
-                mr-1" matTooltip="Edit"
+              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple icon-button" matTooltip="Edit"
                 (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                 Edits" (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
                 item.isDraft())" matTooltip="Remove"
                 (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
               </button>
             </div>
 
-
             <div *ngIf="(manageRequests &&
               item.status.toLowerCase()===
               'pending')" class="row
               ">
-              <button [disabled]="!manageRequests" class="icon-30 ripple
+              <button [disabled]="!manageRequests" class=" ripple
                 icon-button" color="accent" matTooltip="Approve As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button [disabled]="!manageRequests" class="icon-30 ripple
+              <button [disabled]="!manageRequests" class=" ripple
                 icon-button" matTooltip="Approve With Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button [disabled]="!manageRequests" class="icon-30 ripple
+              <!--<button [disabled]="!manageRequests" class=" ripple
                 icon-button" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button>-->
             </div>
 
           </clr-dg-cell>
@@ -326,12 +323,12 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row padding-label-top ">
-              <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'"
+             <!-- <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'"
                 (click)="viewAttachments(item)">
                 <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                 <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                 <mat-icon color="accent">attach_file</mat-icon>
-          </button>
+          </button>-->
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
@@ -355,18 +352,18 @@
             <div *ngIf="(manageRequests &&
               item.status.toLowerCase()===
               'pending')" class="row padding-label-top">
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+              <button class=" ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
                 As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With Change" (click)="approveWithChange(item)">
+              <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
+              <!--<button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button>-->
             </div>
 
           </clr-dg-cell>
@@ -459,7 +456,7 @@
                       <tbody>
                         <tr class="justify-content-center">
                           <td class="left">{{item.details.selectedConfiguration.hourlyOwnershipCost | currency}}</td>
-                          <td class="left">{{item.details.selectedConfiguration.hourlyOwnershipCost | currency}}</td>
+                          <td class="left">{{item.details.selectedConfiguration.hourlyOperatingCost | currency}}</td>
                           <td class="left">{{item.details.fhwa | currency}}</td>
                       </tbody>
                     </table>
@@ -687,26 +684,26 @@
             <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')" class="row padding-label-top ">
-                <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+               <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                   <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                   <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                   <mat-icon color="accent">attach_file</mat-icon>
-                </button>
+                </button>--> 
 
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                  icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
+                   icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                   Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                                icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
+                                 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
                   item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -718,18 +715,18 @@
                 item.status.toLowerCase()===
                 'pending')" class="row padding-label-top
                 ">
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+              <button class=" ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
                   As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With Change" (click)="approveWithChange(item)">
+              <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
+              <!--<button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button>-->
             </div>
 
           </clr-dg-cell>
@@ -773,7 +770,7 @@
                       <tbody>
                         <tr class="justify-content-center">
                           <td class="left">{{item.details.selectedConfiguration.hourlyOwnershipCost | currency}}</td>
-                          <td class="left">{{item.details.selectedConfiguration.hourlyOwnershipCost | currency}}</td>
+                          <td class="left">{{item.details.selectedConfiguration.hourlyOperatingCost | currency}}</td>
                           <td class="left">{{item.details.fhwa | currency}}</td>
                       </tbody>
                     </table>
@@ -1025,15 +1022,15 @@
             <div *ngIf="(submitRequests &&
                 item.status.toLowerCase() !==
                 'complete')" class="row padding-label-top ">
-                <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                   <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                   <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                   <mat-icon color="accent">attach_file</mat-icon>
-                </button>
+                </button>-->
               <button *ngIf="item.isDraft() || item.beingEdited" [class.ripple]="item && item.details.startDate &&
                   item.details.endDate && (item.details.endDate >=
                   item.details.startDate)"
-                class="icon-30 icon-button" matTooltip="Save" [disabled]="!item || !item.details.startDate ||
+                class=" icon-button" matTooltip="Save" [disabled]="!item || !item.details.startDate ||
                   !item.details.endDate || item.details.endDate
                   <item.details.startDate"
                 (click)="saveChanges(i, item)">
@@ -1042,15 +1039,15 @@
                       item.details.endDate <item.details.startDate">done</mat-icon>
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
+                     icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1062,19 +1059,19 @@
                   item.status.toLowerCase()===
                   'pending')" class="row padding-label-top
                   ">
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+              <button class=" ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
                     As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
+              <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
                     Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
+             <!-- <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button>-->
             </div>
 
           </clr-dg-cell>
@@ -1166,7 +1163,7 @@
                       item.details.rentalHouseRates.length> 0">Rate
                   Verification: Local Retail Rates for {{project.zipcode}}</h6>
                 <h6 *ngIf="!item.details.rentalHouseRates ||
-                      item.details.rentalHouseRates.length === 0">Rate
+                      item.details.rentalHouseRates.length === 0" class="pb-1">Rate
                   Verification: No Local Retail Rates available for
                   {{project.zipcode}}</h6>
                 <table *ngIf="item.details.rentalHouseRates &&
@@ -1275,25 +1272,25 @@
             <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row ">
-                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                  <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                     <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                     <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                     <mat-icon color="accent">attach_file</mat-icon>
-                  </button>
+                  </button>-->
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
+                     icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
+                     icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1306,19 +1303,19 @@
                   'pending')" class="row
                   "
               style="min-width:150px">
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+              <button class=" ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
                     As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
+              <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
                     Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More
+             <!--x <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More
                     Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button>-->
             </div>
 
           </clr-dg-cell>
@@ -1372,25 +1369,25 @@
             <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row ">
-                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                  <!--x<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                     <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                     <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                     <mat-icon color="accent">attach_file</mat-icon>
-                  </button>
+                  </button>-->
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
+                     icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
+                     icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1403,20 +1400,20 @@
                   'pending')" class="row
                   "
               style="min-width:150px">
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+              <button class=" ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
                     As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
+              <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
                     Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More
+              <!--<button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More
                     Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button> -->
             </div>
 
           </clr-dg-cell>
@@ -1470,25 +1467,25 @@
             <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row ">
-                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                  <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                     <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                     <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                     <mat-icon color="accent">attach_file</mat-icon>
-                  </button>
+                  </button>-->
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
+                     icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
               <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
-                    icon-30 icon-button" matTooltip="Edit" (click)="editItem(i, item)">
+                     icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button icon-30" *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1501,20 +1498,20 @@
                   'pending')" class="row
                   "
               style="min-width:150px">
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
+              <button class=" ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
                     As Is"
                 (click)="approve(item)">
                 <mat-icon color="primary">done</mat-icon>
               </button>
 
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
+              <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve With
                     Change" (click)="approveWithChange(item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="icon-30 ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More
+             <!-- <button class=" ripple icon-button" [disabled]="!manageRequests" matTooltip="Request More
                     Info" (click)="requestMoreInfo(item)">
                 <mat-icon color="warn">info</mat-icon>
-              </button>
+              </button>-->
             </div>
 
           </clr-dg-cell>

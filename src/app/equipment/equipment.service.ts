@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
+import { format } from 'date-fns';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -110,7 +110,7 @@ export class EquipmentService {
       url += '&state=' + state;
     }
     if (startDate && startDate !== '') {
-      const formattedStartDate = moment(startDate).format('YYYY-MM-DD');
+      const formattedStartDate = format(startDate, 'YYYY-MM-DD');
       url += '&date=' + formattedStartDate;
     }
 

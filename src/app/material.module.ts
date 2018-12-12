@@ -14,7 +14,6 @@ import {
   MatCheckboxModule,
   MatChipsModule,
   MatCommonModule,
-  MatDatepickerModule,
   MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
@@ -29,12 +28,10 @@ import {
   MatStepperModule,
   MatTooltipModule,
 } from '@angular/material';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 @NgModule({
   exports: [
     MatCardModule,
-    MatDatepickerModule,
     MatStepperModule,
     MatBadgeModule,
     MatCheckboxModule,
@@ -42,7 +39,6 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatButtonModule,
     MatCommonModule,
     MatFormFieldModule,
-    MatMomentDateModule,
     MatIconModule,
     MatInputModule,
     MatRippleModule,

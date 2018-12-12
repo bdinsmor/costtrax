@@ -201,13 +201,13 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             updatedItem.resetSelectedConfiguration();
           }
           updatedItem.generateYears();
-          updatedItem.details.year = null;
+
           this.items[event.index] = updatedItem;
           this.changeDetector.markForCheck();
         });
     } else {
       this.items[event.index].sizeClassName = '';
-      this.items[event.index].details.year = null;
+      this.items[event.index].year = '';
       this.items[event.index].years = null;
       this.items[event.index].modelId = null;
     }

@@ -1,5 +1,5 @@
 import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
-import * as moment from 'moment';
+import { DateTime } from 'luxon';
 
 import { DatesPipe } from '../core/pipes/dates.pipe';
 
@@ -365,19 +365,15 @@ export class Item {
 
   generateYears() {
     if (!this.details.dateIntroduced) {
-      this.details.dateIntroduced = moment().toDate();
+      this.details.dateIntroduced = DateTime.local().toJSDate();
     }
     if (!this.details.dateDiscontinued) {
-      this.details.dateDiscontinued = moment().toDate();
+      this.details.dateDiscontinued = DateTime.local().toJSDate();
     }
-    let startYear = moment(this.details.dateIntroduced)
-      .toDate()
-      .getFullYear();
-    const endYear = moment(this.details.dateDiscontinued)
-      .toDate()
-      .getFullYear();
+    let startYear = this.details.dateIntroduced.getFullYear();
+    const endYear = this.details.dateDiscontinued.getFullYear();
 
-    const nowYear = new Date().getFullYear() - 29;
+    const nowYear = DateTime.local().year - 29;
 
     startYear = +Math.max(+startYear, +nowYear);
 
@@ -465,9 +461,8 @@ export class Item {
 
   setDates(dates: any) {
     if (dates && dates.length > 0) {
-      this.details.dateRnage = dates;
-      this.details.startDate = moment(dates[0]);
-      this.details.endDate = moment(dates[1]);
+      this.details.startDate = DateTime.fromISO(dates[0]).toJSDate();
+      this.details.endDate = DateTime.fromISO(dates[1]).toJSDate();
     }
   }
 
@@ -1162,6 +1157,7 @@ export class Equipment {
     startYear = +Math.max(+startYear, +nowYear);
 
     const endYear = this.dateDiscontinued.getFullYear();
+
     this.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.years.push({ year: i });
@@ -1177,8 +1173,25 @@ export class Equipment {
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
     this.configurations = m.specs || m.configurations || {};
-    this.dateIntroduced = moment(m.dateIntroduced).toDate() || new Date();
-    this.dateDiscontinued = moment(m.dateDiscontinued).toDate() || new Date();
+    if (m.dateIntroduced && m.dateIntroduced !== '') {
+      if (m.dateIntroduced instanceof Date) {
+        this.dateIntroduced = m.dateIntroduced;
+      } else {
+        this.dateIntroduced = DateTime.fromISO(m.dateIntroduced).toJSDate();
+      }
+    } else {
+      this.dateIntroduced = DateTime.local().toJSDate();
+    }
+
+    if (m.dateDiscontinued && m.dateDiscontinued !== '') {
+      if (m.dateDiscontinued instanceof Date) {
+        this.dateDiscontinued = m.dateDiscontinued;
+      } else {
+        this.dateDiscontinued = DateTime.fromISO(m.dateDiscontinued).toJSDate();
+      }
+    } else {
+      this.dateDiscontinued = DateTime.local().toJSDate();
+    }
 
     if (m.details) {
       this.vin = m.details.vin || m.details.serial || 0;
@@ -1252,7 +1265,6 @@ export class Equipment {
       this.details.rates &&
       this.details.rates.ownership_monthly_calculated_hourly > 0
     ) {
-      console.log('already have rates');
       return;
     }
 
@@ -1446,6 +1458,7 @@ export class Request {
     if (!this.startDate && !this.endDate) {
       this.startDate = new Date();
       this.endDate = new Date();
+    } else {
     }
     this.dateRange = [this.startDate, this.endDate];
   }
@@ -1891,17 +1904,15 @@ export class Request {
       }
       this.notes = request.notes || '';
 
-      let sd = request.startDate || request.start;
+      const sd = request.startDate || request.start;
       if (sd && sd !== '') {
-        sd = moment(sd, 'YYYY-MM-DD');
-        this.startDate = new Date(sd);
+        this.startDate = DateTime.fromISO(sd).toJSDate();
       } else {
         this.startDate = new Date();
       }
-      let ed = request.endDate || request.end;
+      const ed = request.endDate || request.end;
       if (ed && ed !== '') {
-        ed = moment(ed, 'YYYY-MM-DD');
-        this.endDate = new Date(ed);
+        this.endDate = DateTime.fromISO(ed).toJSDate();
       } else {
         this.endDate = new Date(this.startDate);
       }
