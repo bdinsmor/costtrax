@@ -281,7 +281,7 @@
 
   <div
     *ngIf="request && project"
-    class="hidden-sm-down d-flex mt-1 mb-4
+    class="d-flex mt-1 mb-4
     flex-row justify-content-around
     full-width">
     <div *ngIf="request && request.id">
@@ -326,7 +326,7 @@
             </tr>
 
             <tr *ngIf="project.laborCostsEnabled">
-              <td class="left">Labor Markup (10%)</td>
+              <td class="left">Labor Markup ({{ project.adjustments.labor.markup}}%)</td>
               <td class="left">{{ request.laborMarkup | currency }}</td>
               <td></td>
             </tr>
@@ -463,47 +463,5 @@
     </div>
   </div>
 
-  <div *ngIf="request && project" class="hidden-md-up mb-1">
-    <div *ngIf="request">
-      <h4>Recapitulation</h4>
-      <div class="full-width">
-        <table id="invoice-table" class="table table-compact">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Subtotal</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="left">Equipment</td>
-              <td class="left">{{ request.equipmentTotal | currency }}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td class="left">Material</td>
-              <td class="left">{{ request.materialTotal | currency }}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td class="left">Other</td>
-              <td class="left">{{ request.otherTotal | currency }}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td class="left">Subcontractor</td>
-              <td class="left">{{ request.subcontractorTotal | currency }}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td class="left"></td>
-              <td class="left"></td>
-              <td class="left">{{ request.total | currency }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+
 </div>

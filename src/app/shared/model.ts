@@ -365,7 +365,7 @@ export class Item {
 
   generateYears() {
     if (!this.details.dateIntroduced) {
-      this.details.dateIntroduced = DateTime.local().toJSDate();
+      this.details.dateIntroduced = new Date(0);
     }
     if (!this.details.dateDiscontinued) {
       this.details.dateDiscontinued = DateTime.local().toJSDate();
@@ -473,8 +473,8 @@ export class Item {
 
   setDates(dates: any) {
     if (dates && dates.length > 0) {
-      this.details.startDate = DateTime.fromISO(dates[0]).toJSDate();
-      this.details.endDate = DateTime.fromISO(dates[1]).toJSDate();
+      this.details.startDate = new Date(dates[0]);
+      this.details.endDate = new Date(dates[1]);
     }
   }
 
@@ -1169,6 +1169,9 @@ export class Equipment {
   beingEdited = false;
 
   generateYears() {
+    if (!this.dateIntroduced) {
+      this.dateIntroduced = new Date(0);
+    }
     let startYear = this.dateIntroduced.getFullYear();
     const nowYear = new Date().getFullYear() - 29;
 
@@ -1198,7 +1201,7 @@ export class Equipment {
         this.dateIntroduced = DateTime.fromISO(m.dateIntroduced).toJSDate();
       }
     } else {
-      this.dateIntroduced = DateTime.local().toJSDate();
+      this.dateIntroduced = new Date(0);
     }
 
     if (m.dateDiscontinued && m.dateDiscontinued !== '') {
