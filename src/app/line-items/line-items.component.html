@@ -196,11 +196,11 @@
                 (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                 Edits" (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                 item.isDraft())" matTooltip="Remove"
                 (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -693,7 +693,7 @@
                    icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                   Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
@@ -702,7 +702,7 @@
                                  icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                   item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1036,16 +1036,16 @@
                       !item.details.startDate || !item.details.endDate ||
                       item.details.endDate <item.details.startDate">done</mat-icon>
               </button>
-              <button *ngIf="!item.isDraft() && !item.beingEdited" class="ripple
+              <button *ngIf="item && !item.isDraft() && !item.beingEdited" class="ripple
                      icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1283,12 +1283,12 @@
                      icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1380,12 +1380,12 @@
                      icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>
@@ -1478,12 +1478,12 @@
                      icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                 <mat-icon color="accent">edit</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
+              <button class="ripple icon-button" *ngIf="item.beingEdited && !item.isDraft()" matTooltip="Undo
                     Edits"
                 (click)="revertEdits(i,item)">
                 <mat-icon color="accent">undo</mat-icon>
               </button>
-              <button class="ripple icon-button " *ngIf="!item.beingEdited || (item.beingEdited &&
+              <button class="ripple icon-button" *ngIf="!item.beingEdited || (item.beingEdited &&
                     item.isDraft())"
                 matTooltip="Remove" (click)="removeLineItem(i,item)">
                 <mat-icon color="warn">delete</mat-icon>

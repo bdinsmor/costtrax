@@ -1228,10 +1228,20 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.changeDetector.detectChanges();
   }
 
+  canRevert(itemId) {
+    if (this.requestsService.revertItem(itemId)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   revertEdits(index: number, item: Item) {
     item = this.requestsService.revertItem(item.id);
-    item.beingEdited = false;
-    this.itemList.items[index] = item;
+    if (item) {
+      item.beingEdited = false;
+      this.itemList.items[index] = item;
+    }
   }
 
   saveChanges(index: number, item: Item) {
@@ -1460,7 +1470,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               sizeClassName: equipment.sizeClassName,
               subSize: choice.subtypeName + ' ' + choice.sizeClassName,
               subtypeName: choice.subtypeName,
-              year: equipment.year,
+              year: equipment.details.year,
               amount: 0,
               subtotal: 0,
               nationalAverages: equipment.nationalAverages,
@@ -1479,6 +1489,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
           this.itemList.items = [...this.itemList.items, newItem];
           this.saveChanges(this.itemList.items.length, newItem);
+          // this.yearSelectionChanged(newItem, this.itemList.items.length,true)
           this.changeDetector.detectChanges();
         });
     } else if (
@@ -1497,12 +1508,14 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           hours: 0,
           make: equipment.make,
           makeId: equipment.makeId,
-          model: equipment.model,
           modelId: equipment.modelId,
           sizeClassName: equipment.sizeClassName,
           subSize: equipment.subtypeName + ' ' + equipment.sizeClassName,
+
+          model: equipment.model,
+
           subtypeName: equipment.subtypeName,
-          year: equipment.year,
+          year: equipment.details.year,
           dateIntroduced: equipment.dateIntroduced,
           dateDiscontinued: equipment.dateDiscontinued,
 

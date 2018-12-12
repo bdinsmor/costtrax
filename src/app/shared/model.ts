@@ -370,6 +370,18 @@ export class Item {
     if (!this.details.dateDiscontinued) {
       this.details.dateDiscontinued = DateTime.local().toJSDate();
     }
+    if (this.details.dateIntroduced instanceof Date) {
+    } else {
+      this.details.dateIntroduced = DateTime.fromISO(
+        this.details.dateIntroduced
+      ).toJSDate();
+    }
+    if (this.details.dateDiscontinued instanceof Date) {
+    } else {
+      this.details.dateDiscontinued = DateTime.fromISO(
+        this.details.dateDiscontinued
+      ).toJSDate();
+    }
     let startYear = this.details.dateIntroduced.getFullYear();
     const endYear = this.details.dateDiscontinued.getFullYear();
 
