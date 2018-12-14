@@ -23,10 +23,7 @@ export class AddMiscDialogComponent implements OnInit {
 
   categoryResults$: Observable<any>;
   subtypeResults$: Observable<any>;
-  sizeResults$: Observable<any>;
-  modelResults$: Observable<any>;
-  modelInput$ = new Subject<string>();
-  modelLoading = false;
+  loading = false;
 
   constructor(
     private equipmentService: EquipmentService,
@@ -53,31 +50,37 @@ export class AddMiscDialogComponent implements OnInit {
   }
 
   categoryChanged() {
-    this.miscModel = null;
-    this.miscSizeClass = null;
-    this.miscModel = null;
-    this.miscSubtypeId = null;
+    this.miscEquipment = null;
     this.configurations = null;
     this.selected = [];
     this.subtypeSearch();
+    this.loading = false;
   }
 
   subtypeSelected() {
     this.selected = [];
+    this.loading = true;
+
     this.equipmentService
 
       .getConfigurationUsingSubtypeId(this.miscEquipment.subtypeId)
-      .subscribe((configurations: any) => {
-        this.configurations = configurations;
+      .subscribe(
+        (configurations: any) => {
+          this.configurations = configurations;
 
-        if (configurations && configurations.values.length === 1) {
-          this.selected = configurations.values[0];
-          this.confirm(this.selected);
-          return;
-        } else {
-          this.showConfigurations = true;
+          if (configurations && configurations.values.length === 1) {
+            this.selected = configurations.values[0];
+            this.confirm(this.selected);
+            return;
+          } else {
+            this.showConfigurations = true;
+            this.loading = false;
+          }
+        },
+        (err: Error) => {
+          this.loading = false;
         }
-      });
+      );
   }
 
   categorySearch() {
