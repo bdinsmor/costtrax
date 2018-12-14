@@ -27,39 +27,19 @@
         appendTo="body"
         [items]="subtypeResults$ | async"
         [disabled]="!miscCategoryId"
-        (change)="subtypeChanged()"
+        (change)="subtypeSelected()"
         bindLabel="subtypeName"
-        bindValue="subtypeId"
         placeholder="Choose
                 subtype"
         clearAllText="Clear"
         [closeOnSelect]="true"
         [hideSelected]="true"
-        [(ngModel)]="miscSubtypeId"
+        [(ngModel)]="miscEquipment"
         [ngModelOptions]="{ standalone: true }"
       >
       </ng-select>
     </div>
-    <div>
-      <h4 class="pb-1">Size Class:</h4>
-      <ng-select
-        appendTo="body"
-        [items]="sizeResults$ | async"
-        [disabled]="!miscSubtypeId"
-        (change)="sizeChanged()"
-        bindLabel="model"
-        groupBy="sizeClassName"
-        bindValue="modelId"
-        clearAllText="Clear Size Class"
-        placeholder="Choose Size Class"
-        clearAllText="Clear"
-        [closeOnSelect]="true"
-        [hideSelected]="true"
-        [(ngModel)]="miscModelId"
-        [ngModelOptions]="{ standalone: true }"
-      >
-      </ng-select>
-    </div>
+
     <div>
       <!--
         <h4 class="pb-1">Model:</h4>
@@ -98,7 +78,7 @@
         #lineItemConfigurationGrid
       >
         <clr-dg-placeholder>No data found</clr-dg-placeholder>
-        <clr-dg-column></clr-dg-column>
+        <clr-dg-column style="width:60px"></clr-dg-column>
         <clr-dg-column
           *ngFor="let column of configurations.columns"
           [clrDgField]="column.name"
@@ -111,7 +91,7 @@
           *clrDgItems="let configuration of configurations.values"
           [clrDgItem]="configuration"
         >
-          <clr-dg-cell
+          <clr-dg-cell style="width:60px"
             ><button
               type="button"
               mat-icon-button
@@ -121,7 +101,9 @@
               <mat-icon color="accent">radio_button_unchecked</mat-icon>
             </button>
           </clr-dg-cell>
-          <clr-dg-cell *ngFor="let column of configurations.columns"
+          <clr-dg-cell
+            class="padding-label-top"
+            *ngFor="let column of configurations.columns"
             >{{ configuration[column.name] }}
           </clr-dg-cell>
         </clr-dg-row>

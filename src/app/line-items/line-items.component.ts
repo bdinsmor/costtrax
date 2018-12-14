@@ -1436,10 +1436,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     });
   }
 
-  confirmAddMiscModel(equipment: any, sc: any, configs: any) {
+  confirmAddMiscModel(e: any, sc: any, configs: any) {
+    const equipment = new Equipment(e);
     equipment.details.configurations = configs;
     equipment.details.selectedConfiguration = sc;
 
+    equipment.setDetailsFromConfiguration();
     if (this.itemType === 'equipment.rental') {
       this.equipmentService
         .getRateDataForSizeClassId(
@@ -1462,7 +1464,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             type: this.itemType,
             details: {
               configurations: equipment.details.configurations,
-              selectedConfiguration: equipment.details.selectedConfiguration,
+              selectedConfiguration: sc,
               base: equipment.baseRental,
               transportation: 0,
               hours: 0,
@@ -1506,7 +1508,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         requestId: this.requestId,
         type: this.itemType,
         details: {
-          selectedConfiguration: equipment.details.selectedConfiguration,
+          selectedConfiguration: sc,
           configurations: equipment.details.configurations,
           transportation: 0,
           hours: 0,

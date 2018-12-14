@@ -14,6 +14,7 @@ import { Project } from '../../shared/model';
 })
 export class ProjectsListComponent implements OnInit {
   descSort = ClrDatagridSortOrder.DESC;
+  ascSort = ClrDatagridSortOrder.ASC;
   @Input()
   projects: Project[];
 

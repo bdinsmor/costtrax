@@ -95,6 +95,71 @@ export class EquipmentService {
     );
   }
 
+  getConfigurationUsingSubtypeId(
+    subtypeId: number,
+    year: string = '',
+    state: string = '',
+    startDate: string = ''
+  ): Observable<any> {
+    let url: string =
+      environment.serverUrl +
+      '/equipment/configurations?subtypeId=' +
+      subtypeId;
+    if (year && year !== '') {
+      url += '&year=' + year;
+    }
+    if (state && state !== '') {
+      url += '&state=' + state;
+    }
+    if (startDate && startDate !== '') {
+      const formattedStartDate = format(startDate, 'YYYY-MM-DD');
+      url += '&date=' + formattedStartDate;
+    }
+
+    return this.http.get(url).pipe(
+      map((res: any) => {
+        if (
+          res === 'Query not covered at this time' ||
+          res === 'Query not covered by EquipmentWatch at this time'
+        ) {
+          return { columns: [], values: [] };
+        }
+
+        const specColumns = {};
+        let cols = [];
+        for (let i = 0; i < res.length; i++) {
+          const specs = res[i].specs;
+          res[i].selected = false;
+          for (let j = 0; j < specs.length; j++) {
+            const spec = specs[j];
+            const specNameFriendly = spec.specNameFriendly;
+
+            if (!specColumns[specNameFriendly]) {
+              specColumns[specNameFriendly] = true;
+              cols.push(specNameFriendly);
+            }
+            res[i][specNameFriendly] = spec.specValue || '';
+          }
+        }
+        cols = cols.sort();
+        const updatedCols = [];
+        for (let i = 0; i < res.length; i++) {
+          for (let k = 0; k < cols.length; k++) {
+            const col = cols[k] as string;
+            if (!res[i][col]) {
+              res[i][col] = '';
+            }
+          }
+          delete res[i].specs;
+        }
+        for (let k = 0; k < cols.length; k++) {
+          updatedCols.push({ name: cols[k] });
+        }
+        return { columns: updatedCols, values: res };
+      })
+    );
+  }
+
   getConfiguration(
     modelId: string,
     year: string = '',

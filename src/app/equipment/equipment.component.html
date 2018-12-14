@@ -47,7 +47,7 @@
       >Year</clr-dg-column
     >
     <clr-dg-column [clrDgField]="'sizeClassName'" style="width:200px"
-      >Size Class</clr-dg-column
+      >Subtype & Size Class</clr-dg-column
     >
     <clr-dg-column [clrDgField]="'serial'" style="width:200px"
       >Serial</clr-dg-column
@@ -101,7 +101,7 @@
         </div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div *ngIf="item.isDraft()">
+        <div *ngIf="!item.misc && item.isDraft()">
           <ng-select
             [disabled]="!item.modelId"
             [items]="item.years"
@@ -120,14 +120,13 @@
           >
           </ng-select>
         </div>
-        <div class="padding-label-top" *ngIf="!item.isDraft()">
+        <div class="padding-label-top" *ngIf="!item.misc && !item.isDraft()">
           {{ item.year }}
         </div>
+        <div class="padding-label-top" *ngIf="item.misc">N/A</div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div class="padding-label-top" *ngIf="item.isDraft()">
-          {{ item.sizeClassName }}
-        </div>
+        <div class="padding-label-top">{{ item.subSize }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div

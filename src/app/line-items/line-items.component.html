@@ -273,8 +273,9 @@
             <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.year}}</div>
-            <div *ngIf="item.beingEdited">
+            <div class="padding-label-top" *ngIf="item.isMisc()">N/A</div>
+            <div class="padding-label-top" *ngIf="!item.isMisc() && !item.beingEdited">{{item.details.year}}</div>
+            <div *ngIf="!item.isMisc() && item.beingEdited">
               <ng-select [disabled]="!item.details.modelId" [items]="item.details.years" dropdownPosition="top" appendTo="body" (change)="yearSelectionChanged(item,i)"
                 bindLabel="year" bindValue="year" placeholder="Year" clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true"
                 [(ngModel)]="item.details.year" [ngModelOptions]="{standalone: true}">
@@ -289,7 +290,7 @@
           <clr-dg-cell>
             <div class="padding-label-top">
               <div *ngIf="!item.beingEdited">{{item.details.hours | number:
-                '.1-2'}}
+                '.0-0'}}
               </div>
               <input *ngIf="item.beingEdited" [disabled]="!submitRequests
                 || !item.beingEdited" type="number" style="width:55px"
@@ -634,8 +635,9 @@
             <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.year}}</div>
-            <div *ngIf="item.beingEdited">
+            <div class="padding-label-top" *ngIf="item.isMisc()">N/A</div>
+            <div class="padding-label-top" *ngIf="!item.isMisc() && !item.beingEdited">{{item.details.year}}</div>
+            <div *ngIf="!item.isMisc() && item.beingEdited">
               <ng-select [disabled]="!item.details.modelId" [items]="item.details.years" dropdownPosition="top" appendTo="body" (change)="yearSelectionChanged(item,i)"
                 bindLabel="year" bindValue="year" placeholder="Year" clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true"
                 [(ngModel)]="item.details.year" [ngModelOptions]="{standalone: true}">
@@ -650,7 +652,7 @@
           <clr-dg-cell>
             <div class="padding-label-top">
               <div *ngIf="!item.beingEdited">{{item.details.hours | number:
-                '.1-2'}}
+                '.0-0'}}
               </div>
               <input *ngIf="item.beingEdited" [disabled]="!submitRequests
                   || !item.beingEdited" type="number" style="width:55px"
@@ -996,7 +998,7 @@
           <clr-dg-cell>
             <div>
               <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.hours
-                | number: '.1-2'}}
+                | number: '.0-0'}}
               </div>
               <div class="padding-label-top" *ngIf="item.beingEdited">
                 <input [disabled]="!submitRequests
@@ -1118,39 +1120,38 @@
                       <td class="strong left">Total Cost</td>
                       <td class="left"></td>
                       <td class="left">{{item.details.invoice | currency}}</td>
-                      <td class="left pl-1" style="position: relative" [class.green]="item.details.terms.blueBook.ownershipDelta
-                          <100"
-                        [class.red]="item.details.terms.blueBook.ownershipDelta
-                            >= 100 ">
-                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.blueBook.ownershipDelta
-                            <100"
+                      <td class="left pl-1" style="position: relative" [class.green]="item.details.terms.blueBook.ownershipTotal
+                       >= item.details.invoice"
+                        [class.red]="item.details.terms.blueBook.ownershipTotal
+                            < item.details.invoice ">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.blueBook.ownershipTotal
+                        >= item.details.invoice"
                           svgIcon="costtrax-check"></mat-icon>
-                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px" *ngIf="item.details.terms.blueBook.ownershipDelta
-                              >=
-                              100"
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px" *ngIf="item.details.terms.blueBook.ownershipTotal
+                              <
+                              item.details.invoice"
                           color="warn">priority_high</mat-icon>
                         {{item.details.terms.blueBook.ownershipTotal |
                         currency}}
                         <br />
-                        ({{item.details.terms.blueBook.ownershipDelta}}% vs
-                        Invoice)
+                        ({{item.details.terms.blueBook.ownershipDelta}}%
+                        <span *ngIf="item.details.invoice <= item.details.terms.blueBook.ownershipTotal">above</span><span *ngIf="item.details.invoice > item.details.terms.blueBook.ownershipTotal">below</span>&nbsp;Invoice)
                       </td>
-                      <td class="left pl-1" style="position: relative" [class.green]="item.details.terms.regionalAvg.retailRentalDelta
-                          <100"
-                        [class.red]="item.details.terms.regionalAvg.retailRentalDelta
-                            >= 100">
-                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.regionalAvg.retailRentalDelta
-                            <100"
+                      <td class="left pl-1" style="position: relative" [class.green]="item.details.terms.regionalAvg.retailRentalTotal
+                      >= item.details.invoice"
+                        [class.red]="item.details.terms.regionalAvg.retailRentalTotal
+                            < item.details.invoice">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.regionalAvg.retailRentalTotal
+                        >= item.details.invoice"
                           svgIcon="costtrax-check"></mat-icon>
-                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px" *ngIf="item.details.terms.regionalAvg.retailRentalDelta
-                              >=
-                              100"
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px" *ngIf="item.details.terms.regionalAvg.retailRentalTotal
+                         < item.details.invoice"
                           color="warn">priority_high</mat-icon>
                         {{item.details.terms.regionalAvg.retailRentalTotal |
                         currency}}
                         <br />
                         ({{item.details.terms.regionalAvg.retailRentalDelta}}%
-                        vs Invoice)
+                        <span *ngIf="item.details.invoice <= item.details.terms.regionalAvg.retailRentalTotal">above</span><span *ngIf="item.details.invoice > item.details.terms.regionalAvg.retailRentalTotal">below</span>&nbsp;Invoice)
                       </td>
                     </tr>
                   </tbody>

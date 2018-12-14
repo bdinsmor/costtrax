@@ -89,6 +89,17 @@ export class ProjectsService {
           //   console.log('project name: ' + p.name);
           projects.push(new Project(p));
         });
+        projects.sort((n1, n2) => {
+          if (n2.age > n1.age) {
+            return -1;
+          }
+
+          if (n2.age < n1.age) {
+            return 1;
+          }
+
+          return 0;
+        });
         return projects;
       })
     );
@@ -101,6 +112,17 @@ export class ProjectsService {
         res.forEach((p: any) => {
           //   console.log('project name: ' + p.name);
           projects.push(new Project(p));
+        });
+        projects.sort((n1, n2) => {
+          if (n2.age > n1.age) {
+            return 1;
+          }
+
+          if (n2.age < n1.age) {
+            return -1;
+          }
+
+          return 0;
         });
         return projects;
       })
