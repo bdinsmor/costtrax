@@ -105,7 +105,8 @@
           style="width:150px">Last Name</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.employee.firstName'"
           style="width:150px">First Name</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.trade'" style="width:175px">Trade/Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.trade'" style="width:175px">Trade
+          / Class</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.rate'" style="width:150px">Hourly
           Rate</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.time1'" style="width:125px">Time x
@@ -1525,7 +1526,7 @@
 
                         <div *ngIf="(manageRequests &&
                           item.status.toLowerCase()===
-                          'pending')" class="row"style="width:150px">
+                          'pending')" class="row" style="width:150px">
                           <button class="ripple icon-button"
                             [disabled]="!manageRequests" color="primary"
                             matTooltip="Approve
@@ -1644,7 +1645,7 @@
 
                         <div *ngIf="(manageRequests &&
                           item.status.toLowerCase()===
-                          'pending')" class="row"style="width:150px">
+                          'pending')" class="row" style="width:150px">
                           <button class="ripple icon-button"
                             [disabled]="!manageRequests" color="primary"
                             matTooltip="Approve
@@ -1762,7 +1763,7 @@
 
                         <div *ngIf="(manageRequests &&
                           item.status.toLowerCase()===
-                          'pending')" class="row"style="width:150px">
+                          'pending')" class="row" style="width:150px">
                           <button class="ripple icon-button"
                             [disabled]="!manageRequests" color="primary"
                             matTooltip="Approve
