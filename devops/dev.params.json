@@ -29,6 +29,14 @@
     },
     {
         "ParameterKey": "CodeBuildCommand",
-        "ParameterValue": "ng build --configuration=staging"
+        "ParameterValue": "npm run build -- --configuration=staging"
+    },
+    {
+        "ParameterKey": "CodeBranch",
+        "ParameterValue": "aws-dev"
+    },
+    {
+        "ParameterKey": "HostedZone",
+        "ParameterValue": "costtrax.com."
     }
 ]
