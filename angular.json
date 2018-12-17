@@ -54,10 +54,10 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": false,
+              "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
+              "vendorChunk": true,
+              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -79,10 +79,10 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": false,
+              "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
+              "vendorChunk": true,
+              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
