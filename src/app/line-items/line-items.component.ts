@@ -1173,7 +1173,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     let total = 0;
 
     if (item.details.hours) {
-      total = +item.details.hours * +item.details.method;
+      total = +item.details.hours * +item.details.fhwa;
     }
     if (item.details.transportation) {
       total += +item.details.transportation;
@@ -1185,7 +1185,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   standbyChanged(item: Item) {
     let total = 0;
     if (item.details.hours) {
-      total = +item.details.hours * +item.details.method;
+      total = +item.details.hours * +item.details.fhwa;
     }
     if (item.details.transportation) {
       total += +item.details.transportation;
