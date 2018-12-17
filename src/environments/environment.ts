@@ -6,6 +6,7 @@
 export const environment = {
   production: false,
   version: '(dev)',
+  attachmentURL: 'costtrax-dev.s3.amazonaws.com',
   serverUrl: 'https://hermes-api.development.equipmentwatchapi.com',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US']
