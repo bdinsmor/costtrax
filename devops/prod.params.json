@@ -13,7 +13,7 @@
     },
     {
         "ParameterKey": "WebsiteURL",
-        "ParameterValue": "app.costtrax.com"
+        "ParameterValue": "app-prod.costtrax.com"
     },
     {
         "ParameterKey": "CertificateARN",
@@ -33,6 +33,10 @@
     },
     {
         "ParameterKey": "CodeBranch",
-        "ParameterValue": "production"
+        "ParameterValue": "prod"
+    },
+    {
+        "ParameterKey": "HostedZone",
+        "ParameterValue": "costtrax.com."
     }
 ]

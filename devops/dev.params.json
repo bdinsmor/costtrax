@@ -33,7 +33,7 @@
     },
     {
         "ParameterKey": "CodeBranch",
-        "ParameterValue": "aws-dev"
+        "ParameterValue": "dev"
     },
     {
         "ParameterKey": "HostedZone",
