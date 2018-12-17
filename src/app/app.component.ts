@@ -2,6 +2,7 @@ import { animate, animateChild, group, query, sequence, style, transition, trigg
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { debounce } from 'rxjs/operators';
 
@@ -56,6 +57,7 @@ const log = new Logger('App');
 export class AppComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   loggedIn = false;
+  loading = false;
   roles: String[];
   uberAdmin = false;
   loginForm: FormGroup;
@@ -65,11 +67,30 @@ export class AppComponent implements OnInit, OnDestroy {
   debouncedExample: Observable<any>;
 
   constructor(
+    private router: Router,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private authService: AuthenticationService,
     private accountService: AccountService
   ) {
+    this.router.events.subscribe((event: any) => {
+      switch (true) {
+        case event instanceof NavigationStart: {
+          this.loading = true;
+          break;
+        }
+
+        case event instanceof NavigationEnd:
+        case event instanceof NavigationCancel:
+        case event instanceof NavigationError: {
+          this.loading = false;
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    });
     this.debouncedExample = this.authService
       .getCreds()
       .pipe(debounce(() => timer(250)));

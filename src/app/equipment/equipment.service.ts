@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { format } from 'date-fns';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
@@ -95,25 +95,109 @@ export class EquipmentService {
     );
   }
 
-  getConfigurationUsingSubtypeId(
-    subtypeId: number,
+  getRateDataforSelectedEquipment(
+    selectedEquipment: Equipment[],
+    state: string = '',
+    date: string = '',
+    operatingAdjustment: number = 1,
+    ownershipAdjustment: number = 1,
+    standbyFactor: number = 0.49
+  ): Observable<any> {
+    const returns = [];
+    selectedEquipment.forEach((e: Equipment) => {
+      returns.push(
+        this.getRateDataForEquipment(
+          e,
+          state,
+          date,
+          operatingAdjustment,
+          ownershipAdjustment,
+          standbyFactor
+        )
+      );
+    });
+    return forkJoin(returns);
+  }
+
+  getRateDataForEquipment(
+    equipment: Equipment,
+    state: string = '',
+    date: string = '',
+    operatingAdjustment: number = 1,
+    ownershipAdjustment: number = 1,
+    standbyFactor: number = 0.49
+  ): Observable<Equipment> {
+    let params = new HttpParams();
+    console.log('year: ' + equipment.year);
+    params = params.set('date', format(date, 'YYYY-MM-DD'));
+    if (
+      equipment.year &&
+      (equipment.year !== '' || equipment.year !== undefined)
+    ) {
+      params = params.set('year', String(equipment.year));
+    }
+    if (state && state !== '') {
+      params = params.set('state', state);
+    }
+    params = params.set('operatingAdjustment', String(operatingAdjustment));
+    params = params.set('ownershipAdjustment', String(ownershipAdjustment));
+    params = params.set('standbyFactor', String(standbyFactor));
+
+    const url: string =
+      environment.serverUrl +
+      '/equipment/cost-recovery/' +
+      equipment.details.selectedConfiguration.configurationId;
+
+    const options = { params: params };
+
+    return this.http.get(url, options).pipe(
+      map((res: any) => {
+        equipment.details.selectedConfiguration.rates = res;
+        return equipment;
+      })
+    );
+  }
+
+  getRateDataForConfig(
+    configId: string,
     year: string = '',
     state: string = '',
-    startDate: string = ''
+    date: string = '',
+    operatingAdjustment: number = 1,
+    ownershipAdjustment: number = 1,
+    standbyFactor: number = 0.49
+  ): Observable<any> {
+    let params = new HttpParams();
+    params = params.set('date', format(date, 'YYYY-MM-DD'));
+    if (year && (year !== '' || year !== undefined)) {
+      params = params.set('year', String(year));
+    }
+    if (state && state !== '') {
+      params = params.set('state', state);
+    }
+    params = params.set('operatingAdjustment', String(operatingAdjustment));
+    params = params.set('ownershipAdjustment', String(ownershipAdjustment));
+    params = params.set('standbyFactor', String(standbyFactor));
+
+    const url: string =
+      environment.serverUrl + '/equipment/cost-recovery/' + configId;
+
+    const options = { params: params };
+
+    return this.http.get(url, options);
+  }
+
+  getConfigurationUsingSubtypeId(
+    subtypeId: number,
+    state: string = ''
   ): Observable<any> {
     let url: string =
       environment.serverUrl +
       '/equipment/configurations?subtypeId=' +
       subtypeId;
-    if (year && year !== '') {
-      url += '&year=' + year;
-    }
+
     if (state && state !== '') {
       url += '&state=' + state;
-    }
-    if (startDate && startDate !== '') {
-      const formattedStartDate = format(startDate, 'YYYY-MM-DD');
-      url += '&date=' + formattedStartDate;
     }
 
     return this.http.get(url).pipe(
@@ -164,22 +248,24 @@ export class EquipmentService {
     modelId: string,
     year: string = '',
     state: string = '',
-    startDate: string = ''
+    startDate: string = null
   ): Observable<any> {
-    let url: string =
+    const url: string =
       environment.serverUrl + '/equipment/configurations?modelId=' + modelId;
+    let params: HttpParams = new HttpParams();
     if (year && year !== '') {
-      url += '&year=' + year;
+      params = params.set('year', String(year));
     }
     if (state && state !== '') {
-      url += '&state=' + state;
+      params = params.set('state', state);
     }
     if (startDate && startDate !== '') {
-      const formattedStartDate = format(startDate, 'YYYY-MM-DD');
-      url += '&date=' + formattedStartDate;
+      params = params.set('date', format(startDate, 'YYYY-MM-DD'));
     }
 
-    return this.http.get(url).pipe(
+    const options = { params: params };
+
+    return this.http.get(url, options).pipe(
       map((res: any) => {
         if (
           res === 'Query not covered at this time' ||
@@ -296,29 +382,26 @@ export class EquipmentService {
 
   getModelsForSizeId(
     term: string = null,
-    sizeId: string = null
+    sizeClassId: string = null
   ): Observable<Equipment[]> {
     //  console.log('sizeId: ' + sizeId);
-    if (!sizeId || sizeId === '') {
+    if (!sizeClassId || sizeClassId === '') {
       return of([]);
     }
-    let url: string = environment.serverUrl + '/equipment/models';
-    let addedParam = false;
+    const url: string = environment.serverUrl + '/equipment/models';
+    let params: HttpParams = new HttpParams();
     if (term && term.length >= 1) {
-      addedParam = true;
-      url = url + '?model=' + term.toLowerCase();
+      params = params.set('model', term.toLowerCase());
     } else {
-      addedParam = true;
-      url = url + '?model=*';
+      params = params.set('model', '*');
     }
-    if (sizeId && sizeId !== '') {
-      if (addedParam) {
-        url = url + '&sizeClassId=' + sizeId;
-      } else {
-        url = url + '?sizeClassId=' + sizeId;
-      }
+    if (sizeClassId && sizeClassId.length >= 1) {
+      params = params.set('sizeClassId', sizeClassId);
     }
-    return this.http.get(url).pipe(
+
+    const options = { params: params };
+
+    return this.http.get(url, options).pipe(
       map((res: any) => {
         //  console.log('response: ' + JSON.stringify(res, null, 2));
         if (res === 'Query not covered at this time') {
@@ -339,26 +422,23 @@ export class EquipmentService {
     term: string = null,
     makeId: string = null
   ): Observable<Equipment[]> {
-    if (!makeId || makeId === '') {
+    if (!makeId || makeId === '' || !term || term.length === 0) {
       return of([]);
     }
-    let url: string = environment.serverUrl + '/equipment/models';
-    let addedParam = false;
+    const url: string = environment.serverUrl + '/equipment/models';
+    let params: HttpParams = new HttpParams();
     if (term && term.length >= 1) {
-      addedParam = true;
-      url = url + '?model=' + term.toLowerCase();
+      params = params.set('model', term.toLowerCase());
     } else {
-      return of([]);
+      params = params.set('model', '*');
     }
-    if (makeId && makeId !== '') {
-      if (addedParam) {
-        url = url + '&manufacturerId=' + makeId;
-      } else {
-        url = url + '?manufacturerId=' + makeId;
-      }
+    if (makeId) {
+      params = params.set('manufacturerId', makeId);
     }
-    // console.log('url:\n' + url);
-    return this.http.get(url).pipe(
+
+    const options = { params: params };
+
+    return this.http.get(url, options).pipe(
       map((res: any) => {
         // console.log('response: ' + JSON.stringify(res, null, 2));
         if (res === 'Query not covered at this time') {
@@ -416,7 +496,7 @@ export class EquipmentService {
     state: string = '',
     zipcode: number,
     duration: number = 1
-  ): Observable<Equipment> {
+  ): Observable<any> {
     return this.http
       .get(
         environment.serverUrl +
@@ -434,61 +514,63 @@ export class EquipmentService {
           if (res === 'Query not covered at this time') {
             return null;
           }
-          const e: Equipment = new Equipment(res);
-          e.nationalAverages = res.nationalAverages;
-          e.rentalHouseRates = res.rentalHouseRates;
-          e.sizeClassId = res.sizeClassId;
-          e.sizeClassMax = res.sizeClassMax;
-          e.sizeClassMin = res.sizeClassMin;
-          e.sizeClassUom = res.sizeClassUom;
-          e.sizeClassName = res.sizeClassName;
-          e.subtypeId = res.subtypeId;
-          e.subtypeName = res.subtypeName;
-          e.classificationId = res.classificationId;
-          e.classificationName = res.classificationName;
-          e.categoryName = res.categoryName;
-          e.categoryId = res.categoryId;
-          e.buildRates(duration);
-          return e;
+          const rateData = {
+            nationalAverages: res.nationalAverages,
+            rentalHouseRates: res.rentalHouseRates
+          };
+          if (res.nationalAverages && res.nationalAverages.length > 0) {
+            res.baseRental =
+              Number(res.nationalAverages[0].dailyRate * duration) || 0;
+          }
+          return res;
         })
       );
   }
 
-  getConfigurations(
-    choices: Equipment[],
-    state: string = '',
-    startDate: string = ''
-  ): Promise<any> {
-    let promises: Promise<any>;
-    promises = Promise.all(
-      choices.map(async (choice: Equipment) =>
-        this.http
-          .get(
-            environment.serverUrl +
-              '/equipment/configurations?modelId=' +
-              choice.modelId +
-              '&year=' +
-              choice.year +
-              '&state=' +
-              state
-          )
-          .toPromise()
-          .then((res: any) => {
-            choice.configurations = res[0].specs;
-
-            return new Promise((resolve, reject) => {
-              resolve(choice);
-            });
-          })
-      )
-    ).then((response: Equipment[]) => {
-      return response;
-    });
-
-    return promises;
+  getEquipmentRates(choice: Equipment, state: string) {
+    let params = new HttpParams();
+    if (choice.sizeClassId && choice.sizeClassId !== 0) {
+      params = params.set('sizeClassId', String(choice.sizeClassId));
+    }
+    if (state && state !== '') {
+      params = params.set('state', state);
+    }
+    const options = { params: params };
+    return this.http
+      .get(environment.serverUrl + '/equipment/rates', options)
+      .pipe(
+        map((res: any) => {
+          choice.nationalAverages = res.nationalAverages;
+          choice.regionalAverages = res.regionalAverages;
+          choice.sizeClassId = res.sizeClassId;
+          choice.sizeClassMax = res.sizeClassMax;
+          choice.sizeClassMin = res.sizeClassMin;
+          choice.sizeClassUom = res.sizeClassUom;
+          choice.sizeClassName = res.sizeClassName;
+          choice.subtypeId = res.subtypeId;
+          choice.subtypeName = res.subtypeName;
+          choice.dateIntroduced = res.dateIntroduced;
+          choice.dateDiscontinued = res.dateDiscontinued;
+          choice.classificationId = res.classificationId;
+          choice.classificationName = res.classificationName;
+          choice.categoryName = res.categoryName;
+          choice.categoryId = res.categoryId;
+          choice.buildRates(1);
+          return choice;
+        })
+      );
   }
 
-  getRateData(
+  getRateData(state: string = '', choices: Equipment[], duration: number = 1) {
+    const returns = [];
+    console.log('# choices: ' + choices.length);
+    choices.forEach((e: Equipment) => {
+      returns.push(this.getEquipmentRates(e, state));
+    });
+    return forkJoin(returns);
+  }
+
+  /*getRateData(
     state: string = '',
     choices: Equipment[],
     duration: number = 1
@@ -537,5 +619,5 @@ export class EquipmentService {
     return promises;
 
     //  return of([]);
-  }
+  }*/
 }

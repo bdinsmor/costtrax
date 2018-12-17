@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   version: '(dev)',
-  serverUrl: 'https://hermes-api.development.equipmentwatchapi.com',
+  serverUrl: 'https://costtrax.development.equipmentwatchapi.com',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US']
 };

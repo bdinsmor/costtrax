@@ -40,24 +40,7 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
                 }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": true,
-              "extractCss": true,
-              "namedChunks": true,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "8mb",
-                  "maximumError": "16mb"
-                }
-              ],
-              "serviceWorker": true
+              ]
             },
             "staging": {
               "fileReplacements": [
@@ -71,10 +54,10 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
+              "aot": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
+              "buildOptimizer": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -96,10 +79,10 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
+              "aot": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
+              "buildOptimizer": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -117,8 +100,11 @@
             "browserTarget": "v7:build"
           },
           "configurations": {
-            "production": {
+            "prod": {
               "browserTarget": "v7:build:production"
+            },
+            "dev": {
+              "browserTarget": "v7:build:dev"
             }
           }
         },

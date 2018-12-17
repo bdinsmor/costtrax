@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { concat, Observable, of, Subject } from 'rxjs';
+import { concat, Observable, of } from 'rxjs';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { Equipment } from './../../shared/model';
@@ -20,7 +20,7 @@ export class AddMiscDialogComponent implements OnInit {
   miscEquipment: Equipment;
   selected = [];
   showConfigurations = false;
-
+  projectState: string;
   categoryResults$: Observable<any>;
   subtypeResults$: Observable<any>;
   loading = false;
@@ -33,6 +33,7 @@ export class AddMiscDialogComponent implements OnInit {
 
   ngOnInit() {
     this.configurations = this.data.configurations;
+    this.projectState = this.data.state;
     this.categorySearch();
   }
 
@@ -63,7 +64,10 @@ export class AddMiscDialogComponent implements OnInit {
 
     this.equipmentService
 
-      .getConfigurationUsingSubtypeId(this.miscEquipment.subtypeId)
+      .getConfigurationUsingSubtypeId(
+        this.miscEquipment.subtypeId,
+        this.projectState
+      )
       .subscribe(
         (configurations: any) => {
           this.configurations = configurations;
