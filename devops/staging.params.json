@@ -9,11 +9,11 @@
     },
     {
         "ParameterKey": "WebBucket",
-        "ParameterValue": "/production/infrastructure/website-hosting-bucket"
+        "ParameterValue": "/staging/infrastructure/website-hosting-bucket"
     },
     {
         "ParameterKey": "WebsiteURL",
-        "ParameterValue": "app.costtrax.com"
+        "ParameterValue": "app-staging.costtrax.com"
     },
     {
         "ParameterKey": "CertificateARN",
@@ -21,7 +21,7 @@
     },
     {
         "ParameterKey": "OriginAccessIdentity",
-        "ParameterValue": "/production/infrastructure/cloud-formation-access-identity"
+        "ParameterValue": "/staging/infrastructure/cloud-formation-access-identity"
     },
     {
         "ParameterKey": "TTL",
@@ -29,11 +29,11 @@
     },
     {
         "ParameterKey": "CodeBuildCommand",
-        "ParameterValue": "npm run build -- --configuration=production"
+        "ParameterValue": "npm run build -- --configuration=staging"
     },
     {
         "ParameterKey": "CodeBranch",
-        "ParameterValue": "prod"
+        "ParameterValue": "staging"
     },
     {
         "ParameterKey": "HostedZone",
