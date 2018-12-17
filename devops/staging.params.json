@@ -1,0 +1,42 @@
+[
+    {
+        "ParameterKey": "ArtifactBucket",
+        "ParameterValue": "aws-codepipeline-610665873581-us-east-1"
+    },
+    {
+        "ParameterKey": "CodeRepoName",
+        "ParameterValue": "costtrax-ui"
+    },
+    {
+        "ParameterKey": "WebBucket",
+        "ParameterValue": "/staging/infrastructure/website-hosting-bucket"
+    },
+    {
+        "ParameterKey": "WebsiteURL",
+        "ParameterValue": "app-staging.costtrax.com"
+    },
+    {
+        "ParameterKey": "CertificateARN",
+        "ParameterValue": "/production/costtrax/certificate"
+    },
+    {
+        "ParameterKey": "OriginAccessIdentity",
+        "ParameterValue": "/staging/infrastructure/cloud-formation-access-identity"
+    },
+    {
+        "ParameterKey": "TTL",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey": "CodeBuildCommand",
+        "ParameterValue": "ng build --configuration=staging"
+    },
+    {
+        "ParameterKey": "CodeBranch",
+        "ParameterValue": "staging"
+    },
+    {
+        "ParameterKey": "HostedZone",
+        "ParameterValue": "costtrax.com."
+    }
+]
