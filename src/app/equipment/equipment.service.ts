@@ -128,7 +128,6 @@ export class EquipmentService {
     standbyFactor: number = 0.49
   ): Observable<Equipment> {
     let params = new HttpParams();
-    console.log('year: ' + equipment.year);
     params = params.set('date', format(date, 'YYYY-MM-DD'));
     if (
       equipment.year &&
