@@ -13,7 +13,7 @@
     },
     {
         "ParameterKey": "WebsiteURL",
-        "ParameterValue": "app-prod.costtrax.com"
+        "ParameterValue": "app.costtrax.com"
     },
     {
         "ParameterKey": "CertificateARN",
@@ -29,7 +29,7 @@
     },
     {
         "ParameterKey": "CodeBuildCommand",
-        "ParameterValue": "npm run build -- --configuration=prod"
+        "ParameterValue": "npm run build -- --configuration=production"
     },
     {
         "ParameterKey": "CodeBranch",
