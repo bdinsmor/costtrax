@@ -29,11 +29,11 @@
     },
     {
         "ParameterKey": "CodeBuildCommand",
-        "ParameterValue": "npm run build -- --configuration=staging"
+        "ParameterValue": "npm run build -- --configuration=dev"
     },
     {
         "ParameterKey": "CodeBranch",
-        "ParameterValue": "aws-dev"
+        "ParameterValue": "dev"
     },
     {
         "ParameterKey": "HostedZone",
