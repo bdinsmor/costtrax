@@ -213,11 +213,11 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row">
-              <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+              <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                 <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                 <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                 <mat-icon color="accent">attach_file</mat-icon>
-              </button>-->
+              </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
@@ -230,7 +230,7 @@
               <button class="ripple icon-button" *ngIf="item.beingEdited &&
                 !item.isDraft()" matTooltip="Undo
                 Edits" (click)="revertEdits(i,item)">
-                <mat-icon color="accent">undo</mat-icon>
+                <mat-icon color="warn">undo</mat-icon>
               </button>
               <button class="ripple icon-button" *ngIf="!item.beingEdited ||
                 (item.beingEdited &&
@@ -278,7 +278,7 @@
         <clr-dg-column [clrDgField]="'details.transportation'"
           style="width:150px">Transport</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
-        <clr-dg-column></clr-dg-column>
+        <clr-dg-column style="min-width: 130px"></clr-dg-column>
         <clr-dg-row class="align-items-center" *clrDgItems="let item of
           itemList.items; let i=
           index;trackBy:
@@ -313,10 +313,10 @@
             <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" *ngIf="item.isMisc()">N/A</div>
-            <div class="padding-label-top" *ngIf="!item.isMisc() &&
+            <div class="padding-label-top" *ngIf="item.misc">N/A</div>
+            <div class="padding-label-top" *ngIf="!item.misc &&
               !item.beingEdited">{{item.details.year}}</div>
-            <div *ngIf="!item.isMisc() && item.beingEdited">
+            <div *ngIf="!item.misc && item.beingEdited">
               <ng-select [disabled]="!item.details.modelId"
                 [items]="item.details.years" dropdownPosition="top"
                 appendTo="body" (change)="yearSelectionChanged(item,i)"
@@ -374,12 +374,12 @@
             <div *ngIf="(submitRequests &&
               item.status.toLowerCase() !==
               'complete')" class="row padding-label-top">
-              <!-- <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'"
+              <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'"
                 (click)="viewAttachments(item)">
                 <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                 <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                 <mat-icon color="accent">attach_file</mat-icon>
-          </button>-->
+          </button>
               <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
                 icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
                 <mat-icon color="accent">done</mat-icon>
@@ -391,7 +391,7 @@
               <button class="ripple icon-button" *ngIf="item.beingEdited &&
                 !item.isDraft()" matTooltip="Undo
                 Edits" (click)="revertEdits(i,item)">
-                <mat-icon color="accent">undo</mat-icon>
+                <mat-icon color="warn">undo</mat-icon>
               </button>
               <button class="ripple icon-button" *ngIf="!item.beingEdited ||
                 (item.beingEdited &&
@@ -529,9 +529,9 @@
                         </thead>
                         <tbody>
                           <tr class="justify-content-center">
-                            <td class="left">{{item.details.selectedConfiguration.hourlyOwnershipCost
+                            <td class="left">{{item.details.selectedConfiguration.rates.hourlyOwnershipCostFinal
                               | currency}}</td>
-                            <td class="left">{{item.details.selectedConfiguration.hourlyOperatingCost
+                            <td class="left">{{item.details.selectedConfiguration.rates.hourlyOperatingCostFinal
                               | currency}}</td>
                             <td class="left">{{item.details.fhwa | currency}}</td>
                           </tbody>
@@ -559,16 +559,16 @@
                                 <td class="left">
                                   {{
                                   100 *
-                                  item.details.selectedConfiguration.depreciation
+                                  item.details.selectedConfiguration.rates.depreciation
                                   | number: '1.2-2'
                                   }}%
                                 </td>
                                 <td class="left">
                                   {{
-                                  item.details.selectedConfiguration.depreciation
+                                  item.details.selectedConfiguration.rates.depreciation
                                   *
-                                  item.details.selectedConfiguration
-                                  .monthlyOwnershipCost | currency
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostUnadjusted | currency
                                   }}
                                 </td>
                               </tr>
@@ -577,15 +577,15 @@
                                 <td class="left">
                                   {{
                                   100 *
-                                  item.details.selectedConfiguration.overhaul
+                                  item.details.selectedConfiguration.rates.overhaul
                                   | number: '1.2-2'
                                   }}%
                                 </td>
                                 <td class="left">
                                   {{
-                                  item.details.selectedConfiguration.overhaul *
-                                  item.details.selectedConfiguration
-                                  .monthlyOwnershipCost | currency
+                                  item.details.selectedConfiguration.rates.overhaul *
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostUnadjusted | currency
                                   }}
                                 </td>
                               </tr>
@@ -595,16 +595,16 @@
                                 <td class="left">
                                   {{
                                   100 *
-                                  item.details.selectedConfiguration
+                                  item.details.selectedConfiguration.rates
                                   .costOfFacitiliesCaptial | number: '1.2-2'
                                   }}%
                                 </td>
                                 <td class="left">
                                   {{
-                                  item.details.selectedConfiguration
+                                  item.details.selectedConfiguration.rates
                                   .costOfFacitiliesCaptial *
-                                  item.details.selectedConfiguration
-                                  .monthlyOwnershipCost | currency
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostUnadjusted | currency
                                   }}
                                 </td>
                               </tr>
@@ -613,15 +613,15 @@
                                 <td class="left">
                                   {{
                                   100 *
-                                  item.details.selectedConfiguration.overhead
+                                  item.details.selectedConfiguration.rates.overhead
                                   | number: '1.2-2'
                                   }}%
                                 </td>
                                 <td class="left">
                                   {{
-                                  item.details.selectedConfiguration.overhead *
+                                  item.details.selectedConfiguration.rates.overhead *
                                   item.details.selectedConfiguration
-                                  .monthlyOwnershipCost | currency
+                                  .rates.monthlyOwnershipCostUnadjusted | currency
                                   }}
                                 </td>
                               </tr>
@@ -645,7 +645,7 @@
                                 <td class="left" style="width: 125px">
                                   Fuel @
                                   {{
-                                  item.details.selectedConfiguration.fuelCost |
+                                  item.details.selectedConfiguration.rates.fuelCost |
                                   currency
                                   }}
                                 </td>
@@ -653,15 +653,15 @@
                                   {{
                                   100 *
                                   (item.details.selectedConfiguration
-                                  .fuelOperatingCost /
+                                  .rates.fuel /
                                   item.details.selectedConfiguration
-                                  .hourlyOperatingCost) | number: '1.2-2'
+                                  .rates.hourlyOperatingCostFinal) | number: '1.2-2'
                                   }}%
                                 </td>
                                 <td class="left">
                                   {{
                                   item.details.selectedConfiguration
-                                  .fuelOperatingCost | currency
+                                  .rates.fuel | currency
                                   }}
                                 </td>
                               </tr>
@@ -698,7 +698,7 @@
             <clr-dg-column [clrDgField]="'details.transportation'"
               style="width:150px">Transport</clr-dg-column>
             <clr-dg-column [clrDgField]="'amount'" style="width:100px">Total</clr-dg-column>
-            <clr-dg-column style="width:150px"></clr-dg-column>
+            <clr-dg-column style="min-width: 130px"></clr-dg-column>
             <clr-dg-row *clrDgItems="let item of itemList.items; let i=
               index;trackBy:
               trackByFn" [clrDgItem]="item">
@@ -731,10 +731,10 @@
                 <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
               </clr-dg-cell>
               <clr-dg-cell>
-                <div class="padding-label-top" *ngIf="item.isMisc()">N/A</div>
-                <div class="padding-label-top" *ngIf="!item.isMisc() &&
+                <div class="padding-label-top" *ngIf="item.misc">N/A</div>
+                <div class="padding-label-top" *ngIf="!item.misc &&
                   !item.beingEdited">{{item.details.year}}</div>
-                <div *ngIf="!item.isMisc() && item.beingEdited">
+                <div *ngIf="!item.misc && item.beingEdited">
                   <ng-select [disabled]="!item.details.modelId"
                     [items]="item.details.years" dropdownPosition="top"
                     appendTo="body" (change)="yearSelectionChanged(item,i)"
@@ -794,27 +794,28 @@
                 <div *ngIf="(submitRequests &&
                   item.status.toLowerCase() !==
                   'complete')" class="row padding-label-top">
-                  <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                  <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                   <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                   <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                   <mat-icon color="accent">attach_file</mat-icon>
-                </button>-->
+                </button>
                   <button *ngIf="!item.isDraft() && !item.beingEdited"
                     class="ripple
                     icon-button" matTooltip="Edit" (click)="editItem(i, item)">
                     <mat-icon color="accent">edit</mat-icon>
                   </button>
-                  <button class="ripple icon-button" *ngIf="item.beingEdited &&
-                    !item.isDraft()" matTooltip="Undo
-                    Edits"
-                    (click)="revertEdits(i,item)">
-                    <mat-icon color="accent">undo</mat-icon>
-                  </button>
+                  
                   <button *ngIf="item.isDraft() || item.beingEdited"
                     class="ripple
                     icon-button" matTooltip="Save" (click)="saveChanges(i,
                     item)">
                     <mat-icon color="accent">done</mat-icon>
+                  </button>
+                  <button class="ripple icon-button" *ngIf="item.beingEdited &&
+                                      !item.isDraft()" matTooltip="Undo
+                                      Edits"
+                    (click)="revertEdits(i,item)">
+                    <mat-icon color="warn">undo</mat-icon>
                   </button>
                   <button class="ripple icon-button" *ngIf="!item.beingEdited ||
                     (item.beingEdited &&
@@ -1072,7 +1073,7 @@
               <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
               <clr-dg-column [clrDgField]="'details.amount'"
                 style="width:100px">Total</clr-dg-column>
-              <clr-dg-column style="width:150px"></clr-dg-column>
+              <clr-dg-column style="min-width: 130px"></clr-dg-column>
               <clr-dg-row *clrDgItems="let item of itemList.items; let i=
                 index;trackBy:
                 trackByFn" [clrDgItem]="item">
@@ -1192,11 +1193,11 @@
                   <div *ngIf="(submitRequests &&
                     item.status.toLowerCase() !==
                     'complete')" class="row padding-label-top">
-                    <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                    <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                   <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                   <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                   <mat-icon color="accent">attach_file</mat-icon>
-                </button>-->
+                </button>
                     <button *ngIf="item.isDraft() || item.beingEdited"
                       [class.ripple]="item && item.details.startDate &&
                       item.details.endDate && (item.details.endDate >=
@@ -1220,7 +1221,7 @@
                         && !item.isDraft()" matTooltip="Undo
                         Edits"
                         (click)="revertEdits(i,item)">
-                        <mat-icon color="accent">undo</mat-icon>
+                        <mat-icon color="warn">undo</mat-icon>
                       </button>
                       <button class="ripple icon-button"
                         *ngIf="!item.beingEdited || (item.beingEdited &&
@@ -1490,11 +1491,11 @@
                         <div *ngIf="(submitRequests &&
                           item.status.toLowerCase() !==
                           'complete')" class="row">
-                          <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                          <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                     <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                     <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                     <mat-icon color="accent">attach_file</mat-icon>
-                  </button>-->
+                  </button>
                           <button *ngIf="item.isDraft() || item.beingEdited"
                             class="ripple
                             icon-button" matTooltip="Save"
@@ -1512,7 +1513,7 @@
                             matTooltip="Undo
                             Edits"
                             (click)="revertEdits(i,item)">
-                            <mat-icon color="accent">undo</mat-icon>
+                            <mat-icon color="warn">undo</mat-icon>
                           </button>
                           <button class="ripple icon-button"
                             *ngIf="!item.beingEdited || (item.beingEdited &&
@@ -1609,11 +1610,11 @@
                         <div *ngIf="(submitRequests &&
                           item.status.toLowerCase() !==
                           'complete')" class="row">
-                          <!--x<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                          <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                     <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                     <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                     <mat-icon color="accent">attach_file</mat-icon>
-                  </button>-->
+                  </button>
                           <button *ngIf="item.isDraft() || item.beingEdited"
                             class="ripple
                             icon-button" matTooltip="Save"
@@ -1631,7 +1632,7 @@
                             matTooltip="Undo
                             Edits"
                             (click)="revertEdits(i,item)">
-                            <mat-icon color="accent">undo</mat-icon>
+                            <mat-icon color="warn">undo</mat-icon>
                           </button>
                           <button class="ripple icon-button"
                             *ngIf="!item.beingEdited || (item.beingEdited &&
@@ -1727,11 +1728,11 @@
                         <div *ngIf="(submitRequests &&
                           item.status.toLowerCase() !==
                           'complete')" class="row">
-                          <!--<button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
+                          <button class="ripple icon-button" [matTooltip]="item.attachments && item.attachments.length > 0 ? 'View Attachments':'Add Attachments'" (click)="viewAttachments(item)">
                     <span *ngIf="!item.attachments || item.attachments.length === 0" class="badge accent-badge">+</span>
                     <span *ngIf="item.attachments && item.attachments.length > 0" class="badge notify-badge">{{item.attachments.length}}</span>
                     <mat-icon color="accent">attach_file</mat-icon>
-                  </button>-->
+                  </button>
                           <button *ngIf="item.isDraft() || item.beingEdited"
                             class="ripple
                             icon-button" matTooltip="Save"
@@ -1749,7 +1750,7 @@
                             matTooltip="Undo
                             Edits"
                             (click)="revertEdits(i,item)">
-                            <mat-icon color="accent">undo</mat-icon>
+                            <mat-icon color="warn">undo</mat-icon>
                           </button>
                           <button class="ripple icon-button"
                             *ngIf="!item.beingEdited || (item.beingEdited &&

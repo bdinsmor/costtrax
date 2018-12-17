@@ -24,6 +24,8 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   makeId: string;
   @Input()
+  make: string;
+  @Input()
   shouldDisable = false;
   @Input()
   type: string;
@@ -66,7 +68,10 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes.firstChange) {
-      if (changes.makeId && !changes.makeId.currentValue) {
+      if (
+        changes.makeId &&
+        changes.makeId.previousValue !== changes.makeId.currentValue
+      ) {
         this.selectedItem = null;
         this.searchInput$.next();
       }

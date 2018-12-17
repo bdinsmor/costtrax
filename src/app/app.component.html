@@ -39,6 +39,8 @@
       class="content-area full-width"
       [@routerAnimation]="getRouteAnimation(route)"
     >
+      <mat-progress-bar *ngIf="loading" color="accent" mode="indeterminate">
+      </mat-progress-bar>
       <router-outlet #route="outlet"></router-outlet>
     </div>
   </div>

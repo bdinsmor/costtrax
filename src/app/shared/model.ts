@@ -343,13 +343,7 @@ export class Item {
   revert: Item;
   beingEdited = false;
 
-  isMisc() {
-    return (
-      this.details &&
-      this.details.make &&
-      this.details.make.toUpperCase() === 'MISCELLANEOUS'
-    );
-  }
+  misc = false;
 
   setNoCost() {
     this.details.selectedConfiguration = {
@@ -396,7 +390,6 @@ export class Item {
     const nowYear = DateTime.local().year - 29;
 
     startYear = +Math.max(+startYear, +nowYear);
-
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.details.years.push({ year: i });
@@ -579,8 +572,9 @@ export class Item {
     if (this.details.terms.blueBook.ownershipTotal > 0) {
       this.details.terms.blueBook.ownershipDelta = Math.abs(
         +Number(
-          (+this.details.terms.blueBook.ownershipTotal -
-            +this.details.invoice) /
+          (100 *
+            (+this.details.terms.blueBook.ownershipTotal -
+              +this.details.invoice)) /
             +this.details.invoice
         ).toFixed(2)
       );
@@ -1246,7 +1240,7 @@ export class Equipment {
 
   constructor(m: any) {
     this.id = m.id || '';
-    this.details = m.details || { id: '', serial: '', year: 2018 };
+    this.details = m.details || { id: '', serial: '', year: '' };
     this.guid = m.guid || '';
     this.make = m.make || m.manufacturerName || '';
     this.makeId = m.makeId || m.manufacturerId || '';
@@ -1304,7 +1298,14 @@ export class Equipment {
     this.subtypeId = m.subtypeId || '';
     this.sizeClassId = m.sizeClassId || '';
     this.sizeClassName = m.sizeClassName || '';
-    this.subSize = m.subtypeName + ' ' + this.sizeClassName;
+    if (this.subtypeName && this.sizeClassName) {
+      this.subSize = this.subtypeName + ' ' + this.sizeClassName;
+    } else if (this.sizeClassName) {
+      this.subSize = this.sizeClassName;
+    } else {
+      this.subSize = '';
+    }
+
     this.classificationId = m.classificationId;
     this.classificationName = m.classificationName;
     this.rentalHouseRates = m.rentalHouseRates;

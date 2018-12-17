@@ -25,6 +25,8 @@ export class RequestsComponent implements OnInit {
   ascSort = ClrDatagridSortOrder.ASC;
   selectedItem: Request;
   selectedIndex = -1;
+  envUrl: string;
+  loading = false;
   onUpComparator = new OneUpComparator();
   selectedRequests = [];
   @Input() projectId: string;
@@ -53,7 +55,9 @@ export class RequestsComponent implements OnInit {
     );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loading = false;
+  }
 
   openSnackBar(message: string, type: string, action: string) {
     this.config = { duration: this.duration };
