@@ -1,14 +1,12 @@
 import { animate, animateChild, group, query, sequence, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
 import { debounce } from 'rxjs/operators';
 
 import { Subscription, timer } from '../../node_modules/rxjs';
 import { environment } from '../environments/environment';
-import { AccountService } from './accounts/accounts.service';
 import { Logger } from './core';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { SyncDialogComponent } from './login/sync.dialog';
@@ -62,35 +60,14 @@ export class AppComponent implements OnInit, OnDestroy {
   uberAdmin = false;
   loginForm: FormGroup;
   isLoading = false;
-  private config: MatSnackBarConfig;
   duration = 3000;
   debouncedExample: Observable<any>;
 
   constructor(
-    private router: Router,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private authService: AuthenticationService,
-    private accountService: AccountService
+    private authService: AuthenticationService
   ) {
-    this.router.events.subscribe((event: any) => {
-      switch (true) {
-        case event instanceof NavigationStart: {
-          this.loading = true;
-          break;
-        }
-
-        case event instanceof NavigationEnd:
-        case event instanceof NavigationCancel:
-        case event instanceof NavigationError: {
-          this.loading = false;
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-    });
     this.debouncedExample = this.authService
       .getCreds()
       .pipe(debounce(() => timer(250)));
