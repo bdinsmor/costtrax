@@ -1,47 +1,46 @@
 <div
   class="user-button-container"
   #userButton
-  (appClickOutside)="onClickOutside()">
+  (appClickOutside)="onClickOutside()"
+>
   <button
     class="user-button ripple"
     mat-button
     (click)="toggleDropdown()"
-    [class.open]="isOpen">
+    [class.open]="isOpen"
+  >
     <clr-icon class="is-solid" shape="id-badge" size="36"></clr-icon>
     <span class="hidden-sm-down">{{ userName }}</span>
     <mat-icon class="icon">keyboard_arrow_down</mat-icon>
   </button>
 
-  <div class="dropdown mat-elevation-z1 mt-1 mr-1" [class.open]="isOpen">
-    <div class="content">
-      <div class="list">
-        <div class="divider"></div>
-        <div
-          *ngIf="!accountSynced"
-          class="action pt-2 pb-2 d-flex align-items-center ripple"
-          (click)="syncAccounts()">
-          <mat-icon class="icon px-2">perm_identity</mat-icon>
-          <span class="px-3 title">Sync EquipmentWatch Account</span>
-        </div>
-        <div *ngIf="accountSynced" class="pt-2 pb-2 d-flex align-items-center">
-          <mat-icon class="icon px-2">account_box</mat-icon>
-          <span class="px-3 title">EquipmentWatch Account Synced</span>
-        </div>
-        <div class="divider"></div>
-        <div
-          class="action pt-2 pb-2 d-flex align-items-center ripple"
-          (click)="logout()">
-          <mat-icon class="icon px-2">exit_to_app</mat-icon>
-          <span class="px-3 title">Logout</span>
-        </div>
-        <div class="divider"></div>
-        <div class="mt-2 mb-2 d-flex align-items-center">
-          <mat-icon class="icon px-2">copyright</mat-icon>
-          <span class="px-3 title">CostTrax 2018 </span>
-          <span class="spacer"></span><span class="muted-text
-            smaller-text pr-6px">version: {{version}}</span>
-        </div>
-      </div>
-    </div>
+  <div class="dropdown mat-elevation-z1 mr-1" [class.open]="isOpen">
+    <mat-list>
+      <mat-list-item *ngIf="!accountSynced" (click)="syncAccounts()">
+        <mat-icon mat-list-icon>perm_identity</mat-icon>
+        <h4 mat-line>Sync EquipmentWatch Account</h4>
+      </mat-list-item>
+      <mat-list-item *ngIf="accountSynced">
+        <mat-icon mat-list-icon>account_box</mat-icon>
+        <h4 mat-line>EquipmentWatch Account Synced</h4>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item class="pointer action" (click)="logout()">
+        <mat-icon mat-list-icon>exit_to_app</mat-icon>
+        <h4 mat-line>Logout</h4>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <mat-icon mat-list-icon>copyright</mat-icon>
+        <h4 mat-line class="full-width">
+          CostTrax 2018
+          <span
+            class="muted-text
+                        smaller-text"
+            >&nbsp;&nbsp;version: {{ version }}</span
+          >
+        </h4>
+      </mat-list-item>
+    </mat-list>
   </div>
 </div>
