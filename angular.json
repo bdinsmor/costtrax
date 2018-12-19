@@ -25,7 +25,7 @@
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
             "styles": [
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.scss",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles/styles.scss",
               "./node_modules/@clr/icons/clr-icons.min.css",
@@ -34,13 +34,38 @@
             "scripts": ["./node_modules/@clr/icons/clr-icons.min.js"]
           },
           "configurations": {
-            "dev": {
+            "local": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
                 }
               ]
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "8mb",
+                  "maximumError": "16mb"
+                }
+              ],
+              "serviceWorker": true
             },
             "staging": {
               "fileReplacements": [
@@ -105,6 +130,9 @@
             },
             "dev": {
               "browserTarget": "v7:build:dev"
+            },
+            "local": {
+              "browserTarget": "v7:build:local"
             }
           }
         },
