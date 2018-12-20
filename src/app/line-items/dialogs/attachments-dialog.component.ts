@@ -34,6 +34,8 @@ export class AttachmentsDialogComponent implements OnInit {
     this.selectedItem = this.data.selectedItem;
     this.canDelete = this.data.canDelete;
     this.canAdd = this.data.canAdd;
+
+    console.log("canAdd: " + this.canAdd);
     this.selectedItem.attachments.forEach((p: any) => {
       p.url = environment.serverUrl + '/attachment/' + p.id;
       if (p.fileName && p.fileName !== '') {
