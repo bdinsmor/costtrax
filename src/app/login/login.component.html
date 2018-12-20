@@ -4,14 +4,13 @@
       class="col-md-8 col-sm-10 full-height"
       (submit)="login()"
       [formGroup]="loginForm"
-      novalidate
-    >
+      novalidate>
       <div class="login-box card no-border header-bg">
-        <clr-header
-          class="header header-6 align-items-center justify-content-center pb-5 pt-5"
-        >
+        <mat-toolbar
+          class="header header-6 align-items-center justify-content-center pb-5
+          pt-5">
           <img class="px-1 logo" alt="logo" src="../assets/img/costtrax.png" />
-        </clr-header>
+        </mat-toolbar>
         <div class="px-2 pt-2 form-bg">
           <div class="full-width">
             <mat-form-field class="full-width">
@@ -21,13 +20,10 @@
                 type="email"
                 formControlName="email"
                 required
-              />
+                />
               <mat-error
-                *ngIf="
-                  loginForm.get('email').hasError('email') &&
-                  !loginForm.get('email').hasError('required')
-                "
-              >
+                *ngIf="loginForm.get('email').hasError('email') &&
+                !loginForm.get('email').hasError('required')">
                 Please enter a <strong>valid email address</strong>
               </mat-error>
               <mat-error *ngIf="loginForm.get('email').hasError('required')">
@@ -45,13 +41,10 @@
                 autocomplete="current-password"
                 [placeholder]="'Password'"
                 required
-              />
+                />
               <mat-error
-                *ngIf="
-                  !loginForm.get('password').valid ||
-                  loginForm.get('password').untouched
-                "
-              >
+                *ngIf="!loginForm.get('password').valid ||
+                loginForm.get('password').untouched">
                 <span translate>Password is <strong>required</strong> </span>
               </mat-error>
             </mat-form-field>
@@ -60,8 +53,7 @@
               type="button"
               disabled="true"
               class="btn btn-link ripple"
-              (click)="forgetPassword()"
-            >
+              (click)="forgetPassword()">
               <span>Forgot Password?</span>
             </button>
           </div>
@@ -77,12 +69,10 @@
               class="btn btn-primary ripple btn-dark login-btn"
               type="submit"
               cdkFocusInitial
-              [disabled]="loginForm.invalid || isLoading"
-            >
+              [disabled]="loginForm.invalid || isLoading">
               <app-loader
                 class="inline-loader"
-                [isLoading]="isLoading"
-              ></app-loader>
+                [isLoading]="isLoading"></app-loader>
               <span>Login</span>
             </button>
           </div>
@@ -96,19 +86,19 @@
   <div class="row full-height justify-content-center align-items-center">
     <form class="col-6 full-height" [formGroup]="loginForm" novalidate>
       <div class="login-box card no-border header-bg">
-        <clr-header
-          class="header header-6  align-items-center justify-content-center pb-5 pt-5"
-        >
+        <mat-toolbar
+          class="header header-6 align-items-center justify-content-center pb-5
+          pt-5">
           <img
             class="logo"
             alt="logo"
             width="350"
             src="../assets/img/costtrax.png"
-          />
-        </clr-header>
+            />
+        </mat-toolbar>
         <div
-          class="full-width justify-content-center align-items-center px-2 pt-1"
-        >
+          class="full-width justify-content-center align-items-center px-2
+          pt-1">
           <h3>CHANGE PASSWORD</h3>
         </div>
         <div class="px-2 pt-2 form-bg">
@@ -122,13 +112,10 @@
                 autocomplete="current-email"
                 [placeholder]="'Email'"
                 required
-              />
+                />
               <mat-error
-                *ngIf="
-                  !loginForm.get('email').valid ||
-                  loginForm.get('email').untouched
-                "
-              >
+                *ngIf="!loginForm.get('email').valid ||
+                loginForm.get('email').untouched">
                 <span> <strong>Valid</strong> Email is required</span>
               </mat-error>
             </mat-form-field>
@@ -143,13 +130,10 @@
                 autocomplete="current-password"
                 [placeholder]="'Current Password'"
                 required
-              />
+                />
               <mat-error
-                *ngIf="
-                  !loginForm.get('password').valid ||
-                  loginForm.get('password').untouched
-                "
-              >
+                *ngIf="!loginForm.get('password').valid ||
+                loginForm.get('password').untouched">
                 <span translate>Current Password is required</span>
               </mat-error>
             </mat-form-field>
@@ -162,10 +146,9 @@
                 placeholder="New password"
                 formControlName="confirm_password"
                 required
-              />
+                />
               <mat-error
-                *ngIf="loginForm.hasError('required', 'confirm_password')"
-              >
+                *ngIf="loginForm.hasError('required', 'confirm_password')">
                 Please enter your new password
               </mat-error>
             </mat-form-field>
@@ -179,7 +162,7 @@
                 formControlName="confirm_password2"
                 [errorStateMatcher]="matcher"
                 required
-              />
+                />
               <mat-error *ngIf="loginForm.hasError('notSame')">
                 Passwords do not match
               </mat-error>
@@ -194,12 +177,10 @@
             <button
               class="btn btn-primary ripple btn-dark login-btn"
               (click)="updatePassword()"
-              [disabled]="loginForm.invalid || isLoading"
-            >
+              [disabled]="loginForm.invalid || isLoading">
               <app-loader
                 class="inline-loader"
-                [isLoading]="isLoading"
-              ></app-loader>
+                [isLoading]="isLoading"></app-loader>
               <span>Login</span>
             </button>
           </div>
@@ -213,19 +194,19 @@
   <div class="row full-height justify-content-center align-items-center">
     <form class="col-6 full-height" [formGroup]="loginForm" novalidate>
       <div class="login-box card no-border header-bg">
-        <clr-header
-          class="header header-6  align-items-center justify-content-center pb-5 pt-5"
-        >
+        <mat-toolbar
+          class="header header-6 align-items-center justify-content-center pb-5
+          pt-5">
           <img
             class="logo"
             alt="logo"
             width="350"
             src="../assets/img/costtrax.png"
-          />
-        </clr-header>
+            />
+        </mat-toolbar>
         <div
-          class="full-width justify-content-center align-items-center px-2 pt-1"
-        >
+          class="full-width justify-content-center align-items-center px-2
+          pt-1">
           <h3>FORGOT PASSWORD</h3>
         </div>
         <div class="px-2 pt-2 form-bg">
@@ -239,13 +220,10 @@
                 autocomplete="current-email"
                 [placeholder]="'Email'"
                 required
-              />
+                />
               <mat-error
-                *ngIf="
-                  !loginForm.get('email').valid ||
-                  loginForm.get('email').untouched
-                "
-              >
+                *ngIf="!loginForm.get('email').valid ||
+                loginForm.get('email').untouched">
                 <span> <strong>Valid</strong> Email is required</span>
               </mat-error>
             </mat-form-field>
@@ -256,19 +234,16 @@
           <div align="end" class="pb-2">
             <button
               class="btn btn-warning-outline login-btn ripple"
-              (click)="cancelForgot()"
-            >
+              (click)="cancelForgot()">
               Cancel
             </button>
             <button
               class="btn btn-primary ripple btn-dark login-btn"
               (click)="submitForgot()"
-              [disabled]="loginForm.invalid || isLoading"
-            >
+              [disabled]="loginForm.invalid || isLoading">
               <app-loader
                 class="inline-loader"
-                [isLoading]="isLoading"
-              ></app-loader>
+                [isLoading]="isLoading"></app-loader>
               <span>Reset Password</span>
             </button>
           </div>

@@ -23,6 +23,12 @@ import { ProjectFormDialogComponent } from './projects/project-form/project-form
 import { ProjectsModule } from './projects/projects.module';
 import { RequestsModule } from './requests/requests.module';
 import { SharedModule } from './shared';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
+
+/** config angular i18n **/
+registerLocaleData(en);
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,13 +54,14 @@ import { SharedModule } from './shared';
     LaborModule,
     ClarityModule,
     MaterialModule,
+    NgZorroAntdModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     })
   ],
   entryComponents: [ProjectFormDialogComponent],
-
+  providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,83 +1,64 @@
-import { animate, keyframes, query, stagger, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  keyframes,
+  query,
+  stagger,
+  style,
+  transition,
+  trigger,
+  state
+} from '@angular/animations';
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  NgZone
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/ngx-bootstrap-datepicker';
 import { Observable, Subscription } from 'rxjs';
-import { auditTime } from 'rxjs/operators';
+import { auditTime, map } from 'rxjs/operators';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { ProjectsService } from '../../projects/projects.service';
-import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
+import {
+  Equipment,
+  Item,
+  ItemList,
+  Project,
+  Request
+} from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
 import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
+import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/overlay';
+import { appAnimations } from '../../core/animations/index';
 
 @Component({
   selector: 'app-request-details',
   templateUrl: './request-details.component.html',
   styleUrls: ['./request-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('ngIfAnimation', [
-      transition('void => *', [
-        query(
-          '*',
-          stagger('10ms', [
-            animate(
-              '0.25s ease-in',
-              keyframes([
-                style({ opacity: 0, transform: 'translateY(-5%)', offset: 0 }),
-                style({
-                  opacity: 0.5,
-                  transform: 'translateY(5px)',
-                  offset: 0.3
-                }),
-                style({ opacity: 1, transform: 'translateY(0)', offset: 1.0 })
-              ])
-            )
-          ]),
-          { optional: true }
-        )
-      ]),
-      transition('* => void', [
-        query('*', style({ opacity: 1, background: 'red' }), {
-          optional: true
-        }),
-        query(
-          '*',
-          stagger('300ms', [
-            animate(
-              '0.8s ease-in',
-              keyframes([
-                style({ opacity: 1, transform: 'translateY(0)', offset: 0 }),
-                style({
-                  opacity: 0.5,
-                  transform: 'translateY(35px)',
-                  offset: 0.3
-                }),
-                style({
-                  opacity: 0,
-                  transform: 'translateY(-75%)',
-                  offset: 1.0
-                })
-              ])
-            )
-          ]),
-          { optional: true }
-        )
-      ])
-    ])
-  ]
+  animations: appAnimations
 })
 export class RequestDetailsComponent implements OnInit, OnDestroy {
   private config: MatSnackBarConfig;
+  shrinkToolbar = false;
+
   duration = 3000;
   subscription: Subscription;
   requestFormGroup: FormGroup;
@@ -106,6 +87,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
 
   bsConfig: Partial<BsDatepickerConfig>;
 
+  SHRINK_TOP_SCROLL_POSITION = 250;
   constructor(
     private titleService: Title,
     public dialog: MatDialog,
@@ -118,7 +100,9 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     private projectsService: ProjectsService,
     private authenticationService: AuthenticationService,
     private breadcrumbService: BreadcrumbService,
-    private _location: Location
+    private _location: Location,
+    private scrollDispatcher: ScrollDispatcher,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
@@ -222,57 +206,12 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  getScrollPosition(event) {
+    return window.scrollY;
   }
 
-  captureScreen() {
-    this.printingInvoice = true;
-    this.changeDetector.detectChanges();
-    const data = document.getElementById('invoice-contents');
-    const opts = {
-      margin: 0.5,
-      filename: 'myfile.pdf',
-      html2canvas: {
-        backgroundColor: '#000',
-        scale: 2,
-        dpi: 600,
-        imageTimeout: 0,
-        letterRendering: true
-      },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-    };
-
-    /* const worker = html2pdf()
-      .from(data)
-      .set(opts)
-      .save();
-     html2canvas(data).then(canvas => {
-      // Few necessary setting options
-      const imgWidth = 208;
-      const pageHeight = 295;
-      console.log('canvas.height: ' + canvas.height);
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      console.log('image height: ' + imgHeight);
-      let heightLeft = imgHeight;
-      const contentDataURL = canvas.toDataURL('image/png');
-      const pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF
-      let position = 0;
-
-      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      pdf.save('file.pdf');
-      this.printingInvoice = false;
-      this.changeDetector.detectChanges();
-      // pdf.save('MYPdf.pdf'); // Generated PDF
-    }); */
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   findSelectedProject(projects: Project[], project: Project) {
@@ -284,6 +223,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     return '';
   }
   checkPermissions() {
+    let scrollAdded = false;
     this.canManageRequest = false;
     this.canSubmitRequest = false;
     this.canManageProject = false;
@@ -294,12 +234,48 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       const role = this.project.roles[i];
       if (role === 'RequestManage') {
         this.canManageRequest = true;
+        if (!scrollAdded && this.request.isComplete()) {
+          scrollAdded = true;
+          this.scrollDispatcher
+            .scrolled()
+            .pipe(map((event: CdkScrollable) => this.getScrollPosition(event)))
+            .subscribe(scrollTop =>
+              this.ngZone.run(() => {
+                if (this.shrinkToolbar) {
+                  this.SHRINK_TOP_SCROLL_POSITION = 50;
+                } else {
+                  this.SHRINK_TOP_SCROLL_POSITION = 250;
+                }
+                this.shrinkToolbar =
+                  scrollTop > this.SHRINK_TOP_SCROLL_POSITION ? true : false;
+                this.changeDetector.detectChanges();
+              })
+            );
+        }
       }
       if (role === 'RequestSubmit') {
         this.canSubmitRequest = true;
       }
       if (role === 'ProjectAdmin') {
         this.canManageProject = true;
+        if (!scrollAdded && this.request.isComplete()) {
+          scrollAdded = true;
+          this.scrollDispatcher
+            .scrolled()
+            .pipe(map((event: CdkScrollable) => this.getScrollPosition(event)))
+            .subscribe(scrollTop =>
+              this.ngZone.run(() => {
+                if (this.shrinkToolbar) {
+                  this.SHRINK_TOP_SCROLL_POSITION = 50;
+                } else {
+                  this.SHRINK_TOP_SCROLL_POSITION = 250;
+                }
+                this.shrinkToolbar =
+                  scrollTop > this.SHRINK_TOP_SCROLL_POSITION ? true : false;
+                this.changeDetector.detectChanges();
+              })
+            );
+        }
       }
     }
   }

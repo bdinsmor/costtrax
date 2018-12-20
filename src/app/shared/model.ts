@@ -1517,7 +1517,7 @@ export class Request {
   rentalSubtotal = 0;
   materialSubtotal = 0;
   subcontractorSubtotal = 0;
-
+  approved = false;
   pendingItems: Item[];
   completeItems: Item[];
   draftItems: Item[];

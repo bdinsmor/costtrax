@@ -1,15 +1,25 @@
-import { animate, animateChild, group, query, sequence, style, transition, trigger } from '@angular/animations';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  animate,
+  animateChild,
+  group,
+  query,
+  sequence,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
+import { Component, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { Observable } from 'rxjs';
-import { debounce } from 'rxjs/operators';
+import { debounce, map } from 'rxjs/operators';
 
 import { Subscription, timer } from '../../node_modules/rxjs';
 import { environment } from '../environments/environment';
 import { Logger } from './core';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { SyncDialogComponent } from './login/sync.dialog';
+import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/overlay';
 
 const log = new Logger('App');
 
@@ -62,6 +72,8 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoading = false;
   duration = 3000;
   debouncedExample: Observable<any>;
+  shrinkToolbar = false;
+  SHRINK_TOP_SCROLL_POSITION = 50;
 
   constructor(
     public dialog: MatDialog,
@@ -82,7 +94,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Setup logger
     if (environment.production) {
       Logger.enableProductionMode();
     }

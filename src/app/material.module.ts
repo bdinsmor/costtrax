@@ -28,6 +28,7 @@ import {
   MatSnackBarModule,
   MatStepperModule,
   MatTooltipModule,
+  MatToolbarModule
 } from '@angular/material';
 
 @NgModule({
@@ -44,6 +45,7 @@ import {
     MatIconModule,
     MatInputModule,
     MatRippleModule,
+    MatToolbarModule,
     MatSlideToggleModule,
     MatSnackBarModule,
     MatChipsModule,
