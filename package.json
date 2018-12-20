@@ -1,6 +1,6 @@
 {
   "name": "ctx",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve  --configuration=local",
@@ -28,7 +28,7 @@
     "@clr/angular": "^1.0.2",
     "@clr/icons": "^1.0.2",
     "@clr/ui": "^1.0.2",
-    "@ng-select/ng-select": "^2.13.2",
+    "@ng-select/ng-select": "^2.13.3",
     "@webcomponents/custom-elements": "^1.2.1",
     "angular2-text-mask": "^9.0.0",
     "bootstrap": "^4.1.3",
