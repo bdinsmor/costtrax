@@ -36,6 +36,7 @@ const credentialsKey = 'credentials';
 export class AuthenticationService {
   private _credentials: Credentials | null;
   private subject = new BehaviorSubject<any>({});
+  public redirectUrl: string;
 
   constructor(private http: HttpClient) {
     const savedCredentials =
