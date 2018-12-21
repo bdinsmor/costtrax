@@ -426,8 +426,8 @@
 
           </clr-dg-cell>
           <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item &&
-            item.details.modelId && item.details.year &&
-            item.details.selectedConfiguration">
+            item.details.modelId &&
+            item.details.selectedConfiguration && item.details.selectedConfiguration.rates">
             <clr-dg-row-detail *clrIfExpanded>
               <div *ngIf="item.details.nodata" class="px-3 mb-3
                 align-content-center align-items-center text-center">
@@ -436,7 +436,7 @@
               <div *ngIf="!item.details.nodata">
 
                 <div class="col">
-                  <h5 class="strong no-top-margin">Configuration</h5>
+                  <h6 class="strong no-top-margin">Configuration</h6>
                   <table *ngIf="item.details.configurations" class="mt-3p table
                     table-compact table-bordered table-striped
                     comparison-table">
@@ -456,12 +456,12 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="row col-8 pb-1" *ngIf="(manageRequests ||
+                <div class="row col-10 pb-1" *ngIf="(manageRequests ||
                   manageProject)">
-                  <div class="col">
+                  <div class="col row-margins">
 
-                    <h5 class="strong left">Rate Verification: Hourly Ownership
-                      & Operating Cost</h5>
+                    <h6 class="strong left">Rate Verification: Hourly Ownership
+                      & Operating Cost</h6>
                     <table id="invoice-table" class="no-top-margin table
                       table-compact
                       table-bordered table-striped comparison-table">
@@ -489,11 +489,10 @@
                         <tr class="justify-content-center">
                           <td class="strong left">Total</td>
                           <td class="left">{{item.details.rateTotal | currency}}</td>
-                          <td class="left pl-1" style="position:relative"
-                            [class.green]="item.details.terms.blueBook.rateDelta
-                            >= 0 "
-                            [class.red]="item.details.terms.blueBook.rateDelta
-                            <0">
+                          <td *ngIf="!item.details.terms || !item.details.terms.blueBook"></td>
+                          <td *ngIf="item.details.terms && item.details.terms.blueBook" class="left pl-1" style="position:relative"
+                            [class.green]="item.details.terms.blueBook.rateDelta >= 0"
+                            [class.red]="item.details.terms.blueBook.rateDelta < 0">
                               <mat-icon class="icon rate-icon"
                                 style="position:absolute;top:1px;left:4px"
                                 *ngIf="item.details.terms.blueBook.rateDelta
@@ -501,7 +500,7 @@
                                 svgIcon="costtrax-check"></mat-icon>
                               <mat-icon class="icon rate-icon"
                                 style="position:absolute;top:1px;left:4px;font-size:16px"
-                                *ngIf="item.details.terms.blueBook.rateDelta <0"
+                                *ngIf="item.details.terms.blueBook.rateDelta < 0"
                                 color="warn">priority_high</mat-icon>
                               {{item.details.terms.blueBook.rateTotal |
                               currency}}
@@ -517,11 +516,11 @@
 
                     </div>
                   </div>
-                  <div class="row no-row-margins col-8 pb-1">
-                    <div class="row col" *ngIf="submitRequests">
+                  <div class="row no-row-margins col-10 pb-1">
+                    <div class="col row-margins" *ngIf="submitRequests">
 
-                      <h5 class="strong left">Hourly Ownership & Operating Costs</h5>
-                      <table *ngIf="item.details.configurations" class="mt-3p
+                      <h6 class="strong left">Hourly Ownership & Operating Costs</h6>
+                      <table *ngIf="item.details.configurations && item.details.selectedConfiguration.rates" class="mt-3p
                         table table-compact table-bordered table-striped
                         comparison-table">
                         <thead>
@@ -538,15 +537,21 @@
                             <td class="left">{{item.details.fhwa | currency}}</td>
                           </tbody>
                         </table>
+                        <h6 class="muted-text  no-top-margin" *ngIf="!item.details.selectedConfiguration || !item.details.selectedConfiguration.rates">
+                          Unable to load hourly cost details
+                        </h6>
                       </div>
 
                       <div class="row no-row-margins">
-                        <div class="row col">
-                          <h5 class="strong left">Rate Element Allocation</h5>
-                          <h6 class="strong no-top-margin">
+                        <div class="col">
+                          <h6 class="strong left">Rate Element Allocation</h6>
+                          <h6 class="strong left no-top-margin">
                             Ownership Costs, Unadjusted (Monthly)
                           </h6>
-                          <table *ngIf="item.details.selectedConfiguration"
+                          <h6 class="muted-text no-top-margin" *ngIf="!item.details.selectedConfiguration || !item.details.selectedConfiguration.rates">
+                            Unable to load ownership cost details
+                          </h6>
+                          <table *ngIf="item.details.selectedConfiguration && item.details.selectedConfiguration.rates"
                             class="no-top-margin table table-compact
                             table-bordered table-striped comparison-table
                             full-width">
@@ -631,10 +636,13 @@
                           </table>
                         </div>
                         <div class="col">
-                          <h5 class="strong left">Rate Element Allocation</h5>
-                          <h6 class="strong no-top-margin">Operating Costs,
+                          <h6 class="strong left">Rate Element Allocation</h6>
+                          <h6 class="strong left no-top-margin">Operating Costs,
                             (Hourly)</h6>
-                          <table class="no-top-margin table table-compact
+                            <h6 class="muted-text no-top-margin" *ngIf="!item.details.selectedConfiguration || !item.details.selectedConfiguration.rates">
+                              Unable to load operating cost details
+                            </h6>
+                          <table *ngIf="item.details.selectedConfiguration && item.details.selectedConfiguration.rates" class="no-top-margin table table-compact
                             table-bordered table-striped comparison-table
                             full-width">
                             <thead>
@@ -851,8 +859,8 @@
               </clr-dg-cell>
 
               <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item &&
-                item.details.modelId && item.details.year &&
-                item.details.selectedConfiguration">
+                item.details.modelId &&
+                item.details.selectedConfiguration && item.details.selectedConfiguration.rates">
                 <clr-dg-row-detail *clrIfExpanded>
                   <div *ngIf="item.details.nodata" class="px-3 mb-3
                     align-content-center align-items-center text-center">
@@ -860,7 +868,7 @@
                   </div>
                   <div *ngIf="!item.details.nodata">
                     <div class="col">
-                      <h5 class="strong no-top-margin">Configuration</h5>
+                      <h6 class="strong no-top-margin">Configuration</h6>
                       <table *ngIf="item.details.configurations" class="mt-3p
                         table table-compact table-bordered table-striped
                         comparison-table">
@@ -882,12 +890,12 @@
                       </table>
                     </div>
 
-                    <div class="row no-row-margins col-8 pb-1">
-                      <div class="row col" *ngIf="submitRequests">
+                    <div class="row no-row-margins col-10 pb-1">
+                      <div class="col row-margins" *ngIf="submitRequests">
 
-                        <h5 class="strong left">Hourly Ownership & Operating
-                          Costs</h5>
-                        <table *ngIf="item.details.configurations" class="mt-3p
+                        <h6 class="strong left">Hourly Ownership & Operating
+                          Costs</h6>
+                        <table *ngIf="item.details.configurations && item.details.selectedConfiguration.rates" class="mt-3p
                           table table-compact table-bordered table-striped
                           comparison-table">
                           <thead>
@@ -897,9 +905,9 @@
                           </thead>
                           <tbody>
                             <tr class="justify-content-center">
-                              <td class="left">{{item.details.selectedConfiguration.hourlyOwnershipCost
+                              <td class="left">{{item.details.selectedConfiguration.rates.hourlyOwnershipCostFinal
                                 | currency}}</td>
-                              <td class="left">{{item.details.selectedConfiguration.hourlyOperatingCost
+                              <td class="left">{{item.details.selectedConfiguration.rates.hourlyOperatingCostFinal
                                 | currency}}</td>
                               <td class="left">{{item.details.fhwa | currency}}</td>
                             </tbody>
@@ -907,12 +915,12 @@
                         </div>
 
                         <div class="row no-row-margins">
-                          <div class="row col">
-                            <h5 class="strong left">Rate Element Allocation</h5>
+                          <div class="col">
+                            <h6 class="strong left">Rate Element Allocation</h6>
                             <h6 class="strong no-top-margin">
                               Ownership Costs, Unadjusted (Monthly)
                             </h6>
-                            <table *ngIf="item.details.selectedConfiguration"
+                            <table *ngIf="item.details.selectedConfiguration && item.details.selectedConfiguration.rates"
                               class="no-top-margin table table-compact
                               table-bordered table-striped comparison-table
                               full-width">
@@ -927,16 +935,16 @@
                                   <td class="left">
                                     {{
                                     100 *
-                                    item.details.selectedConfiguration.depreciation
+                                    item.details.selectedConfiguration.rates.depreciation
                                     | number: '1.2-2'
                                     }}%
                                   </td>
                                   <td class="left">
                                     {{
-                                    item.details.selectedConfiguration.depreciation
+                                    item.details.selectedConfiguration.rates.depreciation
                                     *
-                                    item.details.selectedConfiguration
-                                    .monthlyOwnershipCost | currency
+                                    item.details.selectedConfiguration.rates
+                                    .monthlyOwnershipCostFinal | currency
                                     }}
                                   </td>
                                 </tr>
@@ -945,16 +953,16 @@
                                   <td class="left">
                                     {{
                                     100 *
-                                    item.details.selectedConfiguration.overhaul
+                                    item.details.selectedConfiguration.rates.overhaul
                                     | number: '1.2-2'
                                     }}%
                                   </td>
                                   <td class="left">
                                     {{
-                                    item.details.selectedConfiguration.overhaul
+                                    item.details.selectedConfiguration.rates.overhaul
                                     *
-                                    item.details.selectedConfiguration
-                                    .monthlyOwnershipCost | currency
+                                    item.details.selectedConfiguration.rates
+                                    .monthlyOwnershipCostFinal | currency
                                     }}
                                   </td>
                                 </tr>
@@ -964,16 +972,16 @@
                                   <td class="left">
                                     {{
                                     100 *
-                                    item.details.selectedConfiguration
+                                    item.details.selectedConfiguration.rates
                                     .costOfFacitiliesCaptial | number: '1.2-2'
                                     }}%
                                   </td>
                                   <td class="left">
                                     {{
-                                    item.details.selectedConfiguration
+                                    item.details.selectedConfiguration.rates
                                     .costOfFacitiliesCaptial *
-                                    item.details.selectedConfiguration
-                                    .monthlyOwnershipCost | currency
+                                    item.details.selectedConfiguration.rates
+                                    .monthlyOwnershipCostFinal | currency
                                     }}
                                   </td>
                                 </tr>
@@ -982,16 +990,16 @@
                                   <td class="left">
                                     {{
                                     100 *
-                                    item.details.selectedConfiguration.overhead
+                                    item.details.selectedConfiguration.rates.overhead
                                     | number: '1.2-2'
                                     }}%
                                   </td>
                                   <td class="left">
                                     {{
-                                    item.details.selectedConfiguration.overhead
+                                    item.details.selectedConfiguration.rates.overhead
                                     *
-                                    item.details.selectedConfiguration
-                                    .monthlyOwnershipCost | currency
+                                    item.details.selectedConfiguration.rates
+                                    .monthlyOwnershipCostFinal | currency
                                     }}
                                   </td>
                                 </tr>
@@ -999,7 +1007,7 @@
                             </table>
                           </div>
                           <div class="col">
-                            <h5 class="strong left">Rate Element Allocation</h5>
+                            <h6 class="strong left">Rate Element Allocation</h6>
                             <h6 class="strong no-top-margin">Operating Costs,
                               (Hourly)</h6>
                             <table class="no-top-margin table table-compact
@@ -1015,22 +1023,22 @@
                                   <td class="left" style="width: 125px">
                                     Fuel @
                                     {{
-                                    item.details.selectedConfiguration.fuelCost
+                                    item.details.selectedConfiguration.rates.fuelCost
                                     | currency
                                     }}
                                   </td>
                                   <td class="left">
                                     {{
                                     100 *
-                                    (item.details.selectedConfiguration
+                                    (item.details.selectedConfiguration.rates
                                     .fuelOperatingCost /
-                                    item.details.selectedConfiguration
-                                    .hourlyOperatingCost) | number: '1.2-2'
+                                    item.details.selectedConfiguration.rates
+                                    .hourlyOperatingCostFinal) | number: '1.2-2'
                                     }}%
                                   </td>
                                   <td class="left">
                                     {{
-                                    item.details.selectedConfiguration.fuelOperatingCost
+                                    item.details.selectedConfiguration.rates.fuelOperatingCost
                                     | currency
                                     }}
                                   </td>
@@ -1257,9 +1265,10 @@
                   <ng-container ngProjectAs="clr-dg-row-detail"
                     *ngIf="manageRequests || manageProject">
                     <clr-dg-row-detail *clrIfExpanded>
-                      <div class="col-8">
+                      <div class="col-10">
                         <h6 class="no-top-margin">Rate Verification: Rental Cost</h6>
-                        <table id="invoice-table" class="no-top-margin table
+                        <h6 class="muted-text no-top-margin" *ngIf="!item.details.terms || !item.details.terms.blueBook || !item.details.rentalBreakdown">Unable to load rental cost details</h6>
+                        <table id="invoice-table" *ngIf="item.details.terms && item.details.terms.blueBook && item.details.rentalBreakdown" class="no-top-margin table
                           table-compact
                           table-bordered table-striped comparison-table">
                           <thead>

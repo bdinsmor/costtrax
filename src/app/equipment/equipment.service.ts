@@ -101,7 +101,7 @@ export class EquipmentService {
     date: string = '',
     operatingAdjustment: number = 1,
     ownershipAdjustment: number = 1,
-    standbyFactor: number = 0.49
+    standbyFactor: number = 0.5
   ): Observable<any> {
     const returns = [];
     selectedEquipment.forEach((e: Equipment) => {
@@ -125,7 +125,7 @@ export class EquipmentService {
     date: string = '',
     operatingAdjustment: number = 1,
     ownershipAdjustment: number = 1,
-    standbyFactor: number = 0.49
+    standbyFactor: number = 0.5
   ): Observable<Equipment> {
     let params = new HttpParams();
     params = params.set('date', format(date, 'YYYY-MM-DD'));
@@ -164,7 +164,7 @@ export class EquipmentService {
     date: string = '',
     operatingAdjustment: number = 1,
     ownershipAdjustment: number = 1,
-    standbyFactor: number = 0.49
+    standbyFactor: number = 0.5
   ): Observable<any> {
     let params = new HttpParams();
     params = params.set('date', format(date, 'YYYY-MM-DD'));
