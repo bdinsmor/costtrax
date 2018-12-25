@@ -127,7 +127,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   duration = 3000;
   sortActive = 'type';
   sortDirection = 'desc';
-  standbyFactor = 0.49;
+  standbyFactor = 0.5;
   operatingAdjustment = 100;
   ownershipAdjustment = 100;
 
@@ -317,7 +317,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   selectConfiguration(year: string, configurations: any[]) {
     if (configurations.length === 0) {
-      console.log('no configs!!');
     }
     const dialogRef = this.dialog.open(ConfigurationDialogComponent, {
       data: {
@@ -591,7 +590,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             .getRateData(this.project.state, updatedEquipment)
             .subscribe((response: any) => {
               const rentals = response as Equipment[];
-              console.log('# response: ' + response.length);
+              //  console.log('# response: ' + response.length);
               for (let z = 0; z < rentals.length; z++) {
                 const e: Equipment = rentals[z];
                 const newItem = new Item({
@@ -929,7 +928,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.requestStartDate
       )
       .subscribe((configurations: any) => {
-        //  console.log('# of configs:  ' + configurations.values.length);
+        // console.log('# of configs:  ' + configurations.values.length);
         item.details.nodata = false;
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
@@ -970,7 +969,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.hourlyOwnershipCostAdjusted
                   ).toFixed(2);
                 } else {
-                  console.log('here');
                   sc.rates.fhwa = +Number(
                     +sc.rates.monthlyOwnershipCostUnadjustedRate +
                       +sc.rates.hourlyOperatingCostUnadjusted
