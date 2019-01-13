@@ -29,7 +29,7 @@
     },
     {
         "ParameterKey": "CodeBuildCommand",
-        "ParameterValue": "npm run build -- --configuration=dev"
+        "ParameterValue": "npm run build -- --configuration=staging"
     },
     {
         "ParameterKey": "CodeBranch",
