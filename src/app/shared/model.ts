@@ -1678,7 +1678,11 @@ export class Request {
         const currentItem: Item = items[j];
         let lt = 0;
         if (currentItem.status.toLowerCase() === 'complete') {
-          lt = +currentItem.finalAmount;
+          if (currentItem.type === 'labor') {
+            lt = +currentItem.details.subtotal;
+          } else {
+            lt = +currentItem.finalAmount;
+          }
         } else {
           if (currentItem.type === 'labor') {
             lt = +currentItem.subtotal;
@@ -1821,12 +1825,19 @@ export class Request {
 
       this.addItem(lineItem);
       if (currentItem.status.toLowerCase() === 'complete') {
-        total += Number(currentItem.finalAmount);
-        lt = +currentItem.finalAmount;
+        if (currentItem.type === 'labor') {
+          total += +currentItem.details.subtotal;
+          lt = +currentItem.details.subtotal;
+          console.log('lt: ' + lt);
+        } else {
+          total += Number(currentItem.finalAmount);
+          lt = +currentItem.finalAmount;
+        }
       } else {
         if (currentItem.type === 'labor') {
-          total += Number(currentItem.amount);
-          lt = +currentItem.subtotal;
+          total += Number(currentItem.details.subtotal);
+
+          lt = +currentItem.details.subtotal;
         } else {
           total += Number(currentItem.amount);
           lt = +currentItem.amount;
@@ -1894,6 +1905,7 @@ export class Request {
         this.rentalSubtotal;
 
       this.laborSubtotal = laborSubtotal;
+      console.log('labor subtotal: ' + laborSubtotal);
       this.laborBenefitsTotal = laborBenefits;
 
       if (
@@ -1908,6 +1920,7 @@ export class Request {
 
       this.laborTotal =
         laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
+      console.log('labor total: ' + this.laborTotal);
 
       this.subcontractorSubtotal = subcontractorTotal;
       if (
