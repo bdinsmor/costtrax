@@ -1,6 +1,8 @@
-<div class="px-1 full-width">
+<div cdkScrollable class="full-width basic-container">
   <app-breadcrumbs></app-breadcrumbs>
-  <div id="invoice-contents" *ngIf="request" class="card-header no-row-padding">
+  <div id="invoice-contents" [@fadeInOut] *ngIf="request && !shrinkToolbar"
+    class="mx-1 card-header
+    no-row-padding">
     <div
       *ngIf="!editMode"
       class="col-12 px-1 full-width row"
@@ -11,16 +13,11 @@
         [class.complete]="(canManageProject || canManageRequest) &&
         request.isComplete()" class="hidden-lg-down col-1 full-height row
         no-row-margins text-center">
-        <h4
-          class="strong mx-auto light-text"
-          *ngIf="!request.isComplete()">
+        <h4 class="strong mx-auto light-text" *ngIf="!request.isComplete()">
           {{ request.status.toUpperCase() }}
         </h4>
 
-
-
-        <h6 class="strong mx-auto light-text"
-          *ngIf="request.isComplete()">
+        <h6 class="strong mx-auto light-text" *ngIf="request.isComplete()">
           APPROVED
         </h6>
       </div>
@@ -35,7 +32,6 @@
           *ngIf="!request.isComplete()">
           {{ request.status.toUpperCase() }}
         </h4>
-
         <h6
           class="hidden-sm-up no-top-margin strong mx-auto light-text rotated"
           *ngIf="request.isComplete()">
@@ -71,6 +67,7 @@
 
             <div>
               <input
+                class="date-range-picker"
                 *ngIf="canSubmitRequest && request.isDraft()"
                 type="text"
                 bsDaterangepicker
@@ -261,6 +258,36 @@
       </div>
     </div>
   </div>
+  <div *ngIf="request && request.isComplete() &&
+    (canManageProject || canManageRequest) && shrinkToolbar"
+    [@fadeInOut]>
+    <nz-affix [nzOffsetTop]="64">
+      <div class="card-header row full-width align-items-center
+        align-content-center px-1 no-row-margins col-12 mat-elevation-z2">
+        <div class="complete col-2 pr-1 full-status-height align-items-center
+          align-content-center row
+          no-row-margins text-center">
+          <h6 class="no-top-margin align-items-center align-content-center
+            strong mx-auto light-text">
+            APPROVED
+          </h6>
+        </div>
+
+        <h5 class="px-1 strong project-label no-top-margin">{{ project.name }}
+          | Request #{{request.oneUp}} | </h5>
+        <h5 class="no-top-margin row-details">
+          {{ request.dateRange | dates: 'MM/dd/yy' }}
+        </h5>
+        <div class="spacer"></div>
+        <button
+          type="button"
+          (click)="viewRecapitulation()"
+          class="btn btn-primary ripple">
+          View Recapitulation
+        </button>
+      </div>
+    </nz-affix>
+  </div>
   <div
     *ngIf="request"
     class="px-1 pt-1 full-width
@@ -326,7 +353,9 @@
             </tr>
 
             <tr *ngIf="project.laborCostsEnabled">
-              <td class="left">Labor Markup ({{ project.adjustments.labor.markup}}%)</td>
+              <td class="left">
+                Labor Markup ({{ project.adjustments.labor.markup }}%)
+              </td>
               <td class="left">{{ request.laborMarkup | currency }}</td>
               <td></td>
             </tr>
@@ -462,6 +491,4 @@
       </div>
     </div>
   </div>
-
-
 </div>

@@ -4,6 +4,7 @@ import env from './.env';
 export const environment = {
   production: true,
   version: env.npm_package_version,
+  attachmentURL: 'costtrax.s3.amazonaws.com',
   serverUrl: 'https://costtrax.production.equipmentwatchapi.com',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US']

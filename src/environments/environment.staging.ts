@@ -4,7 +4,8 @@ import env from './.env';
 export const environment = {
   production: true,
   version: env.npm_package_version,
-  serverUrl: 'https://hermes-api.development.equipmentwatchapi.com',
+  attachmentURL: 'costtrax.s3.amazonaws.com',
+  serverUrl: 'https://costtrax.production.equipmentwatchapi.com',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US']
 };

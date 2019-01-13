@@ -1,45 +1,39 @@
-<clr-main-container class="full-width">
-  <clr-header *ngIf="loggedIn" class="header header-6 pl-1">
-    <div class="branding align-items-center">
-      <a href="#" class="full-width nav-link">
-        <span class="clr-icon clr-clarity-logo">
-          <img alt="logo" width="150" src="../assets/img/costtrax.png" />
-        </span>
-      </a>
-    </div>
-    <a href="#" class="align-items-center hidden-md-up full-width nav-link">
-      <span class="clr-icon clr-clarity-logo">
-        <img alt="logo" width="150" src="../assets/img/costtrax.png" />
-      </span>
-    </a>
-    <div class="header-nav align-items-center" [clr-nav-level]="1">
-      <a
-        *ngIf="uberAdmin"
-        class="nav-link"
-        href="#"
-        [routerLink]="['/accounts']"
-        routerLinkActive="active"
-      >
-        <span class="nav-text">Accounts</span>
-      </a>
-    </div>
+<div class="full-width">
+  <nz-affix>
+    <mat-toolbar *ngIf="loggedIn" class="header header-6 pl-1">
+      <div class="branding align-items-center">
+        <a href="#" class="full-width nav-link">
+          <span class="clr-icon clr-clarity-logo">
+            <img alt="logo" width="150" src="../assets/img/costtrax.png" />
+          </span>
+        </a>
+      </div>
 
-    <div class="header-actions align-items-center pl-2 pr-1">
-      <app-toolbar-user-button
-        (advantageSync)="syncAccounts()"
-      ></app-toolbar-user-button>
-    </div>
-  </clr-header>
+      <div class="header-nav align-items-center" [clr-nav-level]="1">
+        <a
+          *ngIf="uberAdmin"
+          class="nav-link"
+          href="#"
+          [routerLink]="['/accounts']"
+          routerLinkActive="active">
+          <span class="nav-text">Accounts</span>
+        </a>
+      </div>
+
+      <div class="header-actions align-items-center pl-2 pr-1">
+        <app-toolbar-user-button
+          (advantageSync)="syncAccounts()"></app-toolbar-user-button>
+      </div>
+    </mat-toolbar>
+  </nz-affix>
   <div
     class="content-container"
     [class.login]="!loggedIn"
-    [class.gray]="loggedIn"
-  >
+    [class.gray]="loggedIn">
     <div
       class="content-area full-width"
-      [@routerAnimation]="getRouteAnimation(route)"
-    >
+      [@routerAnimation]="getRouteAnimation(route)">
       <router-outlet #route="outlet"></router-outlet>
     </div>
   </div>
-</clr-main-container>
+</div>

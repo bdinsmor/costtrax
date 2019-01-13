@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ClrDatagridSortOrder } from '@clr/angular';
 
 import { AuthenticationService } from '../core';
 import { appAnimations } from '../core/animations';
@@ -20,9 +21,12 @@ import { RequestsService } from './requests.service';
 export class RequestsComponent implements OnInit {
   private config: MatSnackBarConfig;
   duration = 3000;
-  oneUpComparator = new OneUpComparator();
+  descSort = ClrDatagridSortOrder.DESC;
+  ascSort = ClrDatagridSortOrder.ASC;
   selectedItem: Request;
   selectedIndex = -1;
+  envUrl: string;
+  loading = false;
   onUpComparator = new OneUpComparator();
   selectedRequests = [];
   @Input() projectId: string;
@@ -51,7 +55,9 @@ export class RequestsComponent implements OnInit {
     );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loading = false;
+  }
 
   openSnackBar(message: string, type: string, action: string) {
     this.config = { duration: this.duration };

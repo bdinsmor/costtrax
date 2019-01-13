@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  NgForm,
+  Validators
+} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -161,7 +168,10 @@ export class LoginComponent implements OnInit {
       .subscribe(
         credentials => {
           log.debug(`${credentials.email} successfully logged in`);
-          this.router.navigate(['/'], { replaceUrl: true });
+          const redirect = this.authenticationService.redirectUrl
+            ? this.authenticationService.redirectUrl
+            : '/';
+          this.router.navigate([redirect], { replaceUrl: true });
         },
         (error: Error) => {
           if (error instanceof Error403) {

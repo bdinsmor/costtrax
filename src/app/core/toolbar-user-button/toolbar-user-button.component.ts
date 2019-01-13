@@ -6,7 +6,7 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { LIST_FADE_ANIMATION } from '../../core/utils/list.animation';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-toolbar-user-button',
@@ -25,6 +26,7 @@ import { LIST_FADE_ANIMATION } from '../../core/utils/list.animation';
 export class ToolbarUserButtonComponent
   implements OnInit, AfterViewInit, OnDestroy {
   isOpen: boolean;
+  version: string;
   userName: string;
   subscription: Subscription;
   loginForm: FormGroup;
@@ -37,7 +39,9 @@ export class ToolbarUserButtonComponent
     private router: Router,
     private authenticationService: AuthenticationService,
     private cd: ChangeDetectorRef
-  ) {}
+  ) {
+    this.version = environment.version;
+  }
 
   ngOnDestroy() {
     // unsubscribe to ensure no memory leaks

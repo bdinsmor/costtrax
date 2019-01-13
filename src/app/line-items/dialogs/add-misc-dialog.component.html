@@ -2,8 +2,7 @@
 <mat-dialog-content>
   <div
     class="px-2 pb-2 full-width justify-content-center
-            align-items-center"
-  >
+    align-items-center">
     <div>
       <h4 class="pb-1">Category:</h4>
       <ng-select
@@ -17,8 +16,7 @@
         [closeOnSelect]="true"
         [hideSelected]="true"
         [(ngModel)]="miscCategoryId"
-        [ngModelOptions]="{ standalone: true }"
-      >
+        [ngModelOptions]="{ standalone: true }">
       </ng-select>
     </div>
     <div>
@@ -27,39 +25,18 @@
         appendTo="body"
         [items]="subtypeResults$ | async"
         [disabled]="!miscCategoryId"
-        (change)="subtypeChanged()"
+        (change)="subtypeSelected()"
         bindLabel="subtypeName"
-        bindValue="subtypeId"
         placeholder="Choose
-                subtype"
+        subtype"
         clearAllText="Clear"
         [closeOnSelect]="true"
         [hideSelected]="true"
-        [(ngModel)]="miscSubtypeId"
-        [ngModelOptions]="{ standalone: true }"
-      >
+        [(ngModel)]="miscEquipment"
+        [ngModelOptions]="{ standalone: true }">
       </ng-select>
     </div>
-    <div>
-      <h4 class="pb-1">Size Class:</h4>
-      <ng-select
-        appendTo="body"
-        [items]="sizeResults$ | async"
-        [disabled]="!miscSubtypeId"
-        (change)="sizeChanged()"
-        bindLabel="model"
-        groupBy="sizeClassName"
-        bindValue="modelId"
-        clearAllText="Clear Size Class"
-        placeholder="Choose Size Class"
-        clearAllText="Clear"
-        [closeOnSelect]="true"
-        [hideSelected]="true"
-        [(ngModel)]="miscModelId"
-        [ngModelOptions]="{ standalone: true }"
-      >
-      </ng-select>
-    </div>
+
     <div>
       <!--
         <h4 class="pb-1">Model:</h4>
@@ -85,44 +62,52 @@
       -->
     </div>
     <div>
-      <h4 class="pb-1">Configuration:</h4>
-      <h6 class="disabled-text" *ngIf="!configurations">
-        No configurations found.
+      <h4>Configuration:</h4>
+
+      <div *ngIf="loading" class="row no-row-margins pt-1 full-width">
+        <span class="spinner spinner-md"></span>
+        <h5 class="no-top-margin pt-6px disabled-text pl-1">Loading
+          Configurations...</h5>
+      </div>
+
+      <h6 class="disabled-text" *ngIf="(!miscEquipment || !configurations) &&
+        !loading">
+        Please select a Subtype to view available configurations.
       </h6>
-      <h6 *ngIf="configurations && configurations.values.length === 0">
+      <h6 *ngIf="!loading && configurations && configurations.values.length ===
+        0">
         No configurations found for this model.
       </h6>
       <clr-datagrid
-        *ngIf="configurations && configurations.values.length > 0"
+        *ngIf="!loading && configurations && configurations.values.length> 0"
         class="datagrid-compact"
         #lineItemConfigurationGrid
-      >
+        >
         <clr-dg-placeholder>No data found</clr-dg-placeholder>
-        <clr-dg-column></clr-dg-column>
+        <clr-dg-column style="width:60px"></clr-dg-column>
         <clr-dg-column
           *ngFor="let column of configurations.columns"
           [clrDgField]="column.name"
-          [clrDgSorted]="column.name === 'name'"
-        >
+          [clrDgSorted]="column.name === 'name'">
           <div>{{ column.name }}</div>
         </clr-dg-column>
 
         <clr-dg-row
           *clrDgItems="let configuration of configurations.values"
-          [clrDgItem]="configuration"
-        >
-          <clr-dg-cell
-            ><button
+          [clrDgItem]="configuration">
+          <clr-dg-cell style="width:60px"><button
               type="button"
               mat-icon-button
               color="accent"
-              (click)="confirm(configuration)"
-            >
+              (click)="confirm(configuration)">
               <mat-icon color="accent">radio_button_unchecked</mat-icon>
             </button>
           </clr-dg-cell>
-          <clr-dg-cell *ngFor="let column of configurations.columns"
-            >{{ configuration[column.name] }}
+          <clr-dg-cell
+            class="padding-label-top pointer"
+            (click)="confirm(configuration)"
+            *ngFor="let column of configurations.columns">{{
+            configuration[column.name] }}
           </clr-dg-cell>
         </clr-dg-row>
       </clr-datagrid>
@@ -132,10 +117,8 @@
 <mat-dialog-actions align="end">
   <button
     type="button"
-    cdkFocusInitial
     class="btn btn-outline-danger"
-    (click)="cancel()"
-  >
+    (click)="cancel()">
     Cancel
   </button>
 </mat-dialog-actions>

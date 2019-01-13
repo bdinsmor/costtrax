@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { from, Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable()
@@ -31,7 +32,7 @@ export class TokenInterceptor implements HttpInterceptor {
     } else {
       this.router.navigate(['/login'], { replaceUrl: true });
     }
-    if (!request.url.includes('https://costtrax-dev.s3.amazonaws.com')) {
+    if (!request.url.includes(environment.attachmentURL)) {
       headerSettings['Authorization'] = 'Bearer ' + token;
     }
     const newHeader = new HttpHeaders(headerSettings);

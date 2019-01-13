@@ -310,7 +310,7 @@ export class LineItem {
 export class OneUpComparator
   implements ClrDatagridComparatorInterface<Request> {
   compare(a: Request, b: Request) {
-    return +a.oneUp - +b.oneUp;
+    return +b.oneUp - +a.oneUp;
   }
 }
 
@@ -342,6 +342,8 @@ export class Item {
   editDetails: any;
   revert: Item;
   beingEdited = false;
+
+  misc = false;
 
   setNoCost() {
     this.details.selectedConfiguration = {
@@ -388,7 +390,6 @@ export class Item {
     const nowYear = DateTime.local().year - 29;
 
     startYear = +Math.max(+startYear, +nowYear);
-
     this.details.years = [];
     for (let i = startYear; i <= endYear; i++) {
       this.details.years.push({ year: i });
@@ -565,23 +566,35 @@ export class Item {
         +this.details.rentalBreakdown.days *
         +this.details.terms.regionalAvg.dailyRetailRentalCost;
     }
+
+    // (Ownership Cost Total - Invoice)/Invoice and (Rental Total - Invoice) / Invoice
+
     if (this.details.terms.blueBook.ownershipTotal > 0) {
-      this.details.terms.blueBook.ownershipDelta = +Number(
-        100 *
-          (+this.details.invoice / +this.details.terms.blueBook.ownershipTotal)
-      ).toFixed(2);
-      if (+this.details.terms.blueBook.ownershipDelta >= 100) {
-        this.details.rateVerified = false;
-      } else {
+      this.details.terms.blueBook.ownershipDelta = Math.abs(
+        +Number(
+          (100 *
+            (+this.details.terms.blueBook.ownershipTotal -
+              +this.details.invoice)) /
+            +this.details.invoice
+        ).toFixed(2)
+      );
+      if (
+        +this.details.terms.blueBook.ownershipTotal >= +this.details.invoice
+      ) {
         this.details.rateVerified = true;
+      } else {
+        this.details.rateVerified = false;
       }
     }
     if (this.details.terms.regionalAvg.retailRentalTotal > 0) {
-      this.details.terms.regionalAvg.retailRentalDelta = +Number(
-        100 *
-          (+this.details.invoice /
-            +this.details.terms.regionalAvg.retailRentalTotal)
-      ).toFixed(2);
+      this.details.terms.regionalAvg.retailRentalDelta = Math.abs(
+        +Number(
+          100 *
+            ((+this.details.terms.regionalAvg.retailRentalTotal -
+              +this.details.invoice) /
+              +this.details.invoice)
+        ).toFixed(2)
+      );
     }
   }
 
@@ -591,6 +604,21 @@ export class Item {
     } else if (this.type === 'equipment.rental') {
       return !this.isDraft() && this.details.rateVerified;
     }
+  }
+
+  setDetailsFromConfiguration(m: any) {
+    this.details.make = m.make || m.manufacturerName || '';
+    this.details.makeId = m.makeId || m.manufacturerId || '';
+    this.details.model = m.model || m.modelName || '';
+    this.details.modelId = m.modelId || '';
+    this.details.categoryName = m.categoryName || '';
+    this.details.categoryId = m.categoryId || '';
+    this.details.subtypeName = m.subtypeName || '';
+    this.details.subtypeId = m.subtypeId || '';
+    this.details.sizeClassId = m.sizeClassId || '';
+    this.details.sizeClassName = m.sizeClassName || '';
+    this.details.subSize = m.subtypeName + ' ' + this.details.sizeClassName;
+    console.log('this.details: ' + JSON.stringify(this.details, null, 2));
   }
 
   detailsDisplay() {
@@ -699,9 +727,16 @@ export class Item {
         this.details.numDays = diffDays;
       }
       this.buildDateRange();
-      if (this.details.subtypeName && this.details.sizeClassName) {
+      if (
+        this.details.subtypeName &&
+        (this.details.sizeClassName &&
+          this.details.sizeClassName !== '' &&
+          this.details.sizeClassName !== undefined)
+      ) {
         this.details.subSize =
           this.details.subtypeName + ' ' + this.details.sizeClassName;
+      } else if (this.details.subtypeName) {
+        this.details.subSize = this.details.subtypeName;
       } else {
         this.details.subSize = this.details.sizeClassName;
       }
@@ -1162,6 +1197,30 @@ export class Equipment {
   revert: any;
   beingEdited = false;
 
+  setDetailsFromConfiguration() {
+    this.make =
+      this.details.selectedConfiguration.make ||
+      this.details.selectedConfiguration.manufacturerName ||
+      '';
+    this.makeId =
+      this.details.selectedConfiguration.makeId ||
+      this.details.selectedConfiguration.manufacturerId ||
+      '';
+    this.model =
+      this.details.selectedConfiguration.model ||
+      this.details.selectedConfiguration.modelName ||
+      '';
+    this.modelId = this.details.selectedConfiguration.modelId || '';
+    this.categoryName = this.details.selectedConfiguration.categoryName || '';
+    this.categoryId = this.details.selectedConfiguration.categoryId || '';
+    this.subtypeName = this.details.selectedConfiguration.subtypeName || '';
+    this.subtypeId = this.details.selectedConfiguration.subtypeId || '';
+    this.sizeClassId = this.details.selectedConfiguration.sizeClassId || '';
+    this.sizeClassName = this.details.selectedConfiguration.sizeClassName || '';
+    this.subSize =
+      this.details.selectedConfiguration.subtypeName + ' ' + this.sizeClassName;
+  }
+
   generateYears() {
     if (!this.dateIntroduced) {
       this.dateIntroduced = new Date(0);
@@ -1181,12 +1240,13 @@ export class Equipment {
 
   constructor(m: any) {
     this.id = m.id || '';
-    this.details = m.details || { id: '', serial: '', year: 2018 };
+    this.details = m.details || { id: '', serial: '', year: '' };
     this.guid = m.guid || '';
     this.make = m.make || m.manufacturerName || '';
     this.makeId = m.makeId || m.manufacturerId || '';
     this.model = m.model || m.modelName || '';
     this.modelId = m.modelId || '';
+    this.misc = this.make.toUpperCase() === 'MISCELLANEOUS';
     this.configurations = m.specs || m.configurations || {};
     if (m.dateIntroduced && m.dateIntroduced !== '') {
       if (m.dateIntroduced instanceof Date) {
@@ -1232,13 +1292,20 @@ export class Equipment {
     this.baseRental = Number(m.baseRental) || Number(m.base) || 0;
     this.fhwa = Number(m.fhwa) || 0;
     this.method = Number(m.method) || 0;
-    this.categoryName = m.categoryName;
-    this.categoryId = m.categoryId;
-    this.subtypeName = m.subtypeName;
-    this.subtypeId = m.subtypeId;
-    this.sizeClassId = m.sizeClassId;
-    this.sizeClassName = m.sizeClassName;
-    this.subSize = m.subtypeName + ' ' + this.sizeClassName;
+    this.categoryName = m.categoryName || '';
+    this.categoryId = m.categoryId || '';
+    this.subtypeName = m.subtypeName || '';
+    this.subtypeId = m.subtypeId || '';
+    this.sizeClassId = m.sizeClassId || '';
+    this.sizeClassName = m.sizeClassName || '';
+    if (this.subtypeName && this.sizeClassName) {
+      this.subSize = this.subtypeName + ' ' + this.sizeClassName;
+    } else if (this.sizeClassName) {
+      this.subSize = this.sizeClassName;
+    } else {
+      this.subSize = '';
+    }
+
     this.classificationId = m.classificationId;
     this.classificationName = m.classificationName;
     this.rentalHouseRates = m.rentalHouseRates;
@@ -1450,7 +1517,7 @@ export class Request {
   rentalSubtotal = 0;
   materialSubtotal = 0;
   subcontractorSubtotal = 0;
-
+  approved = false;
   pendingItems: Item[];
   completeItems: Item[];
   draftItems: Item[];
@@ -1611,7 +1678,11 @@ export class Request {
         const currentItem: Item = items[j];
         let lt = 0;
         if (currentItem.status.toLowerCase() === 'complete') {
-          lt = +currentItem.finalAmount;
+          if (currentItem.type === 'labor') {
+            lt = +currentItem.details.subtotal;
+          } else {
+            lt = +currentItem.finalAmount;
+          }
         } else {
           if (currentItem.type === 'labor') {
             lt = +currentItem.subtotal;
@@ -1754,12 +1825,19 @@ export class Request {
 
       this.addItem(lineItem);
       if (currentItem.status.toLowerCase() === 'complete') {
-        total += Number(currentItem.finalAmount);
-        lt = +currentItem.finalAmount;
+        if (currentItem.type === 'labor') {
+          total += +currentItem.details.subtotal;
+          lt = +currentItem.details.subtotal;
+          console.log('lt: ' + lt);
+        } else {
+          total += Number(currentItem.finalAmount);
+          lt = +currentItem.finalAmount;
+        }
       } else {
         if (currentItem.type === 'labor') {
-          total += Number(currentItem.amount);
-          lt = +currentItem.subtotal;
+          total += Number(currentItem.details.subtotal);
+
+          lt = +currentItem.details.subtotal;
         } else {
           total += Number(currentItem.amount);
           lt = +currentItem.amount;
@@ -1827,6 +1905,7 @@ export class Request {
         this.rentalSubtotal;
 
       this.laborSubtotal = laborSubtotal;
+      console.log('labor subtotal: ' + laborSubtotal);
       this.laborBenefitsTotal = laborBenefits;
 
       if (
@@ -1841,6 +1920,7 @@ export class Request {
 
       this.laborTotal =
         laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
+      console.log('labor total: ' + this.laborTotal);
 
       this.subcontractorSubtotal = subcontractorTotal;
       if (

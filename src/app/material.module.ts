@@ -20,6 +20,7 @@ import {
   MatInputModule,
   MatListModule,
   MatMenuModule,
+  MatProgressBarModule,
   MatProgressSpinnerModule,
   MatRippleModule,
   MatSelectModule,
@@ -27,6 +28,7 @@ import {
   MatSnackBarModule,
   MatStepperModule,
   MatTooltipModule,
+  MatToolbarModule
 } from '@angular/material';
 
 @NgModule({
@@ -39,9 +41,11 @@ import {
     MatButtonModule,
     MatCommonModule,
     MatFormFieldModule,
+    MatProgressBarModule,
     MatIconModule,
     MatInputModule,
     MatRippleModule,
+    MatToolbarModule,
     MatSlideToggleModule,
     MatSnackBarModule,
     MatChipsModule,
