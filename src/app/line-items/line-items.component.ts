@@ -13,7 +13,7 @@ import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { config, Observable, Subject, Subscription } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -858,7 +858,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 item.details.year = choice.year;
                 item.details.baseRental = choice.baseRental;
                 item.details.fhwa = choice.fhwa;
-
                 item.details.nationalAverages = choice.nationalAverages;
                 item.details.regionalAverages = choice.regionalAverages;
                 item.details.rentalHouseRates = choice.rentalHouseRates;
@@ -866,12 +865,28 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 if (configurations && configurations.values.length > 1) {
                   this.selectedItem = item;
                   this.selectedIndex = index;
+
                   this.selectConfiguration(choice.year, configurations);
                 } else if (
                   configurations &&
                   configurations.values.length === 1
                 ) {
-                  item.details.selectedConfiguration = configurations.values[0];
+                  const sc = configurations.values[0];
+
+                  this.equipmentService
+                    .getRateDataForConfig(
+                      sc.configurationId,
+                      item.details.year,
+                      this.project.state,
+                      this.requestStartDate,
+                      this.operatingAdjustment,
+                      this.ownershipAdjustment,
+                      this.standbyFactor
+                    )
+                    .subscribe((data: any) => {
+                      sc.rates = data;
+                      item.details.selectedConfiguration = sc;
+                    });
                 } else {
                   item.details.nodata = true;
                   item.setNoCost();
@@ -928,7 +943,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.requestStartDate
       )
       .subscribe((configurations: any) => {
-        // console.log('# of configs:  ' + configurations.values.length);
         item.details.nodata = false;
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
@@ -950,6 +964,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             )
             .subscribe((data: any) => {
               sc.rates = data;
+
               if (this.itemType === 'equipment.active') {
                 if (
                   this.project.adjustments.equipment.active
