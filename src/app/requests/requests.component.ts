@@ -1,5 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder } from '@clr/angular';
@@ -30,6 +43,7 @@ export class RequestsComponent implements OnInit {
   onUpComparator = new OneUpComparator();
   selectedRequests = [];
   @Input() projectId: string;
+  @Input() projectName: string;
   @Input() items: Request[];
   @Input() status: string;
   @Input() submitRequests: boolean;
@@ -72,6 +86,10 @@ export class RequestsComponent implements OnInit {
     const selectedIds = this.selectedRequests.map(request => {
       return request.id;
     });
+    console.log('exporting...');
+    this.requestsService
+      .export(this.projectId, this.projectName, selectedIds)
+      .subscribe((response: any) => {});
   }
 
   clone(request: Request) {
