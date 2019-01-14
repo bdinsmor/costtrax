@@ -79,14 +79,13 @@ export class RequestsComponent implements OnInit {
   }
 
   trackByFn(index: number, item: any) {
-    return index; // or item.id
+    return index;
   }
 
   export() {
     const selectedIds = this.selectedRequests.map(request => {
       return request.id;
     });
-    console.log('exporting...');
     this.requestsService
       .export(this.projectId, this.projectName, selectedIds)
       .subscribe((response: any) => {});
