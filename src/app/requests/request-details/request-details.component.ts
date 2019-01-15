@@ -290,6 +290,12 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
 
   notesChanged() {}
 
+  exportRecapitulation() {
+    this.requestsService
+      .export(this.project.id, this.project.name, [this.request.id])
+      .subscribe((response: any) => {});
+  }
+
   viewRecapitulation() {
     const dialogRef = this.dialog.open(RequestRecapitulationDialogComponent, {
       width: '95vw',

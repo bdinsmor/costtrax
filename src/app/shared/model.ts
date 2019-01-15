@@ -484,29 +484,58 @@ export class Item {
       return;
     }
 
-    this.details.terms = {
-      blueBook: {
-        dailyOwnershipCost: this.details.selectedConfiguration
-          .dailyOwnershipCost,
-        weeklyOwnershipCost: this.details.selectedConfiguration
-          .weeklyOwnershipCost,
-        monthlyOwnershipCost: this.details.selectedConfiguration
-          .monthlyOwnershipCost,
-        hourlyOwnershipCost: this.details.selectedConfiguration
-          .hourlyOwnershipCost,
-        hourlyOperatingCost: this.details.selectedConfiguration
-          .hourlyOperatingCost,
-        ownershipTotal: 0,
-        ownershipDelta: 0
-      },
-      regionalAvg: {
-        dailyRetailRentalCost: 0,
-        weeklyRetailRentalCost: 0,
-        monthlyRetailRentalCost: 0,
-        retailRentalTotal: 0,
-        retailRentalDelta: 0
-      }
-    };
+    if (
+      this.details.selectedConfiguration &&
+      this.details.selectedConfiguration.rates
+    ) {
+      this.details.terms = {
+        blueBook: {
+          dailyOwnershipCost: this.details.selectedConfiguration.rates
+            .dailyOwnershipCostUnadjusted,
+          weeklyOwnershipCost: this.details.selectedConfiguration.rates
+            .weeklyOwnershipCostUnadjusted,
+          monthlyOwnershipCost: this.details.selectedConfiguration.rates
+            .monthlyOwnershipCostUnadjusted,
+          hourlyOwnershipCost: this.details.selectedConfiguration.rates
+            .hourlyOwnershipCostUnadjusted,
+          hourlyOperatingCost: this.details.selectedConfiguration.rates
+            .hourlyOperatingCostUnadjusted,
+          ownershipTotal: 0,
+          ownershipDelta: 0
+        },
+        regionalAvg: {
+          dailyRetailRentalCost: 0,
+          weeklyRetailRentalCost: 0,
+          monthlyRetailRentalCost: 0,
+          retailRentalTotal: 0,
+          retailRentalDelta: 0
+        }
+      };
+    } else {
+      this.details.terms = {
+        blueBook: {
+          dailyOwnershipCost:
+            this.details.selectedConfiguration.dailyOwnershipCost || 0,
+          weeklyOwnershipCost:
+            this.details.selectedConfiguration.weeklyOwnershipCost || 0,
+          monthlyOwnershipCost:
+            this.details.selectedConfiguration.monthlyOwnershipCost || 0,
+          hourlyOwnershipCost:
+            this.details.selectedConfiguration.hourlyOwnershipCost || 0,
+          hourlyOperatingCost:
+            this.details.selectedConfiguration.hourlyOperatingCost || 0,
+          ownershipTotal: 0,
+          ownershipDelta: 0
+        },
+        regionalAvg: {
+          dailyRetailRentalCost: 0,
+          weeklyRetailRentalCost: 0,
+          monthlyRetailRentalCost: 0,
+          retailRentalTotal: 0,
+          retailRentalDelta: 0
+        }
+      };
+    }
 
     if (
       this.details.regionalAverages &&
@@ -1905,7 +1934,6 @@ export class Request {
         this.rentalSubtotal;
 
       this.laborSubtotal = laborSubtotal;
-      console.log('labor subtotal: ' + laborSubtotal);
       this.laborBenefitsTotal = laborBenefits;
 
       if (
@@ -1920,7 +1948,6 @@ export class Request {
 
       this.laborTotal =
         laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
-      console.log('labor total: ' + this.laborTotal);
 
       this.subcontractorSubtotal = subcontractorTotal;
       if (
@@ -2002,13 +2029,13 @@ export class Request {
 
       const sd = request.startDate || request.start;
       if (sd && sd !== '') {
-        this.startDate = DateTime.fromISO(sd).toJSDate();
+        this.startDate = DateTime.fromISO(sd, { zone: 'utc' }).toJSDate();
       } else {
         this.startDate = new Date();
       }
       const ed = request.endDate || request.end;
       if (ed && ed !== '') {
-        this.endDate = DateTime.fromISO(ed).toJSDate();
+        this.endDate = DateTime.fromISO(ed, { zone: 'utc' }).toJSDate();
       } else {
         this.endDate = new Date(this.startDate);
       }
