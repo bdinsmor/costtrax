@@ -89,7 +89,6 @@ export class EquipmentService {
         for (const machine of res) {
           r.push(new Equipment(machine));
         }
-
         return r;
       })
     );
@@ -156,9 +155,6 @@ export class EquipmentService {
       })
     );
   }
-
-  // https://costtrax.development.equipmentwatchapi.com/equipment/cost-recovery/1084470?date=2015-05-12&year=2016&operatingAdjustment=1&ownershipAdjustment=1&standbyFactor=0.5
-  //
 
   getRateDataForConfig(
     configId: string,
