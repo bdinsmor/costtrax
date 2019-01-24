@@ -98,7 +98,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            "Could not load requestor's saved models for this project" + error
+            'Could not load requestor\'s saved models for this project' + error
           );
         }
       );
@@ -367,8 +367,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
               this.selectedItem.year,
               this.state,
               '',
-              +(this.adjustments.equipment.active.operatingAdjustment / 100),
-              +(this.adjustments.equipment.active.ownershipAdjustment / 100),
+              +(this.adjustments.equipment.active.operating / 100),
+              +(this.adjustments.equipment.active.ownership / 100),
               this.standbyFactor
             )
             .subscribe((data: any) => {
@@ -383,6 +383,12 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                 sc.rates.monthlyOwnershipCostFinal = +Number(
                   +sc.rates.monthlyOwnershipCostAdjusted
                 ).toFixed(2);
+                sc.rates.weeklyOwnershipCostFinal = +Number(
+                  +sc.rates.weeklyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.dailyOwnershipCostFinal = +Number(
+                  +sc.rates.dailyOwnershipCostAdjusted
+                ).toFixed(2);
                 sc.rates.hourlyOperatingCostFinal = +Number(
                   +sc.rates.hourlyOperatingCostAdjusted
                 ).toFixed(2);
@@ -396,6 +402,12 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                 ).toFixed(2);
                 sc.rates.monthlyOwnershipCostFinal = +Number(
                   +sc.rates.monthlyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.weeklyOwnershipCostFinal = +Number(
+                  +sc.rates.weeklyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.dailyOwnershipCostFinal = +Number(
+                  +sc.rates.dailyOwnershipCostUnadjusted
                 ).toFixed(2);
                 sc.rates.hourlyOperatingCostFinal = +Number(
                   +sc.rates.hourlyOperatingCostUnadjusted
