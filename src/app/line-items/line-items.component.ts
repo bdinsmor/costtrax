@@ -591,7 +591,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             .getRateData(this.project.state, updatedEquipment)
             .subscribe((response: any) => {
               const rentals = response as Equipment[];
-              //  console.log('# response: ' + response.length);
               for (let z = 0; z < rentals.length; z++) {
                 const e: Equipment = rentals[z];
                 const newItem = new Item({
@@ -666,12 +665,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   confirmAddSavedEmployees() {
-    //  console.log('employees to add: ' + JSON.stringify(this.selected, null, 2));
     if (!this.selected || this.selected.length === 0) {
       return;
     }
     for (let i = 0; i < this.selected.length; i++) {
-      // check to see if employee already added...
 
       const employee: Employee = new Employee(this.selected[i]);
       if (this.hasEmployee(employee)) {
@@ -704,8 +701,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   makeNewSelectionChanged(event: any, item: Item) {
-    // console.log('event: ' + JSON.stringify(event, null, 2));
-    // console.log('item: ' + JSON.stringify(item, null, 2));
     if (item && item.details && event && event.item) {
       item.details.makeId = event.item.makeId;
       item.details.modelId = null;

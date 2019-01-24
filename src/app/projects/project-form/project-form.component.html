@@ -211,7 +211,8 @@
             <clr-icon shape="ruler-pencil"></clr-icon>&nbsp;Project Assets
           </button>
           <clr-tab-content *clrIfActive>
-            <app-equipment [projectId]="project.id"></app-equipment>
+            <app-equipment [projectId]="project.id"
+              [adjustments]="project.adjustments" [state]="project.state"></app-equipment>
             <app-labor [projectId]="project.id"></app-labor>
           </clr-tab-content>
         </clr-tab>
