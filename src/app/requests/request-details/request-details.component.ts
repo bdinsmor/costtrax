@@ -368,7 +368,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
         //  this.openSnackBar('Request Saved!', 'OK', 'OK');
       });
     } else {
-      console.log('request not saved, error on form');
     }
   }
 
@@ -431,7 +430,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     if (!this.project) {
       return;
     }
-
     if (this.project.laborCostsEnabled) {
       this.itemTypes = [
         ...this.itemTypes,

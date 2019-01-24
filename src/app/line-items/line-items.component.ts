@@ -177,6 +177,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         '../../assets/icons/check.svg'
       )
     );
+
   }
 
   ngOnInit() {
@@ -223,8 +224,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.itemType === 'equipment.rental')
     ) {
       this.adjustments = this.project.adjustments.equipment;
-
-      this.operatingAdjustment = +this.adjustments.active.operating / 100;
+      if (this.adjustments.active && this.adjustments.operating)
+ {
+  this.operatingAdjustment = +this.adjustments.active.operating / 100;
+ }     
       this.ownershipAdjustment = +this.adjustments.active.ownership / 100;
     } else if (
       this.project &&
