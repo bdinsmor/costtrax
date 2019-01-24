@@ -210,7 +210,8 @@
                 Rental Rate Blue Book Ownership & Operating Costs
               </h5>
               <table
-                *ngIf="item.details.selectedConfiguration"
+                *ngIf="item.details.selectedConfiguration &&
+                item.details.selectedConfiguration.rates"
                 class="full-width mt-3p table table-compact table-bordered
                 table-striped comparison-table">
                 <thead style="display:none">
@@ -319,7 +320,8 @@
                   Ownership Costs, Unadjusted (Monthly)
                 </h6>
                 <table
-                  *ngIf="item.details.selectedConfiguration"
+                  *ngIf="item.details.selectedConfiguration &&
+                  item.details.selectedConfiguration.rates"
                   class="no-top-margin table table-compact table-bordered
                   table-striped comparison-table full-width">
                   <thead>
@@ -402,6 +404,8 @@
                 <h5 class="strong">Rate Element Allocation</h5>
                 <h6 class="strong no-top-margin">Operating Costs, (Hourly)</h6>
                 <table
+                  *ngIf="item.details.selectedConfiguration &&
+                  item.details.selectedConfiguration.rates"
                   class="no-top-margin table table-compact table-bordered
                   table-striped comparison-table full-width">
                   <thead>
