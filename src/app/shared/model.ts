@@ -436,7 +436,7 @@ export class Item {
     return this.status && this.status.toLowerCase() === 'complete';
   }
   calculateActiveComps() {
-    if (!this.amount || !this.details.selectedConfiguration) {
+    if (!this.amount || !this.details.selectedConfiguration || !this.details.selectedConfiguration.rates) {
       return;
     }
 
@@ -511,7 +511,7 @@ export class Item {
           retailRentalDelta: 0
         }
       };
-    } else {
+    } else if (this.details.selectedConfiguration) {
       this.details.terms = {
         blueBook: {
           dailyOwnershipCost:
@@ -647,7 +647,6 @@ export class Item {
     this.details.sizeClassId = m.sizeClassId || '';
     this.details.sizeClassName = m.sizeClassName || '';
     this.details.subSize = m.subtypeName + ' ' + this.details.sizeClassName;
-    console.log('this.details: ' + JSON.stringify(this.details, null, 2));
   }
 
   detailsDisplay() {
@@ -1857,7 +1856,6 @@ export class Request {
         if (currentItem.type === 'labor') {
           total += +currentItem.details.subtotal;
           lt = +currentItem.details.subtotal;
-          console.log('lt: ' + lt);
         } else {
           total += Number(currentItem.finalAmount);
           lt = +currentItem.finalAmount;

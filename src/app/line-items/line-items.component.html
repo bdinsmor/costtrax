@@ -491,7 +491,10 @@
 
                     <h6 class="strong left">Rate Verification: Hourly Ownership
                       & Operating Cost</h6>
-                    <table id="invoice-table" class="no-top-margin table
+                    <table id="invoice-table"
+                      *ngIf="item.details.selectedConfiguration &&
+                      item.details.selectedConfiguration.rates"
+                      class="no-top-margin table
                       table-compact
                       table-bordered table-striped comparison-table">
                       <thead>
@@ -964,6 +967,7 @@
                         <h6 class="strong left">Hourly Ownership & Operating
                           Costs</h6>
                         <table *ngIf="item.details.configurations &&
+                          item.details.selectedConfiguration &&
                           item.details.selectedConfiguration.rates" class="mt-3p
                           table table-compact table-bordered table-striped
                           comparison-table">
@@ -1080,7 +1084,9 @@
                             <h6 class="strong left">Rate Element Allocation</h6>
                             <h6 class="strong no-top-margin">Operating Costs,
                               (Hourly)</h6>
-                            <table class="no-top-margin table table-compact
+                            <table *ngIf="item.details.selectedConfiguration &&
+                              item.details.selectedConfiguration.rates"
+                              class="no-top-margin table table-compact
                               table-bordered table-striped comparison-table
                               full-width">
                               <thead>
