@@ -98,7 +98,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            'Could not load requestor\'s saved models for this project' + error
+            "Could not load requestor's saved models for this project" + error
           );
         }
       );
@@ -418,6 +418,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
               }
               sc.rates.method = sc.rates.fhwa;
               this.selectedItem.details.selectedConfiguration = sc;
+              this.changeDetector.detectChanges();
             });
         } else {
           this.cancelSelectConfiguration();
