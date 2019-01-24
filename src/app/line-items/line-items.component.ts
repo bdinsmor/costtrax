@@ -13,7 +13,7 @@ import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { config, Observable, Subject, Subscription } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -128,8 +128,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   sortActive = 'type';
   sortDirection = 'desc';
   standbyFactor = 0.5;
-  operatingAdjustment = 100;
-  ownershipAdjustment = 100;
+  operatingAdjustment = 1;
+  ownershipAdjustment = 1;
 
   hasPending = false;
   equipmentFormGroup: FormGroup;
@@ -223,10 +223,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.itemType === 'equipment.rental')
     ) {
       this.adjustments = this.project.adjustments.equipment;
-      if (this.itemType === 'equipment.active') {
-        this.operatingAdjustment = +this.adjustments.active.operating / 100;
-        this.ownershipAdjustment = +this.adjustments.active.ownership / 100;
-      }
+
+      this.operatingAdjustment = +this.adjustments.active.operating / 100;
+      this.ownershipAdjustment = +this.adjustments.active.ownership / 100;
     } else if (
       this.project &&
       this.project.adjustments &&
@@ -379,10 +378,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.monthlyOwnershipCostUnadjusted
                   ).toFixed(2);
                   sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostUndjusted
+                    +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
                   sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.hourlyOwnershipCostUndjusted
+                    +sc.rates.hourlyOwnershipCostUnadjusted
                   ).toFixed(2);
                 }
                 sc.rates.method = sc.rates.fhwa;
@@ -400,6 +399,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostAdjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostAdjustedStandby
                   ).toFixed(2);
@@ -413,6 +413,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostUnadjustedStandby
                   ).toFixed(2);
@@ -512,10 +513,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   +sc.rates.monthlyOwnershipCostUnadjusted
                 ).toFixed(2);
                 sc.rates.hourlyOperatingCostFinal = +Number(
-                  +sc.rates.hourlyOperatingCostUndjusted
+                  +sc.rates.hourlyOperatingCostUnadjusted
                 ).toFixed(2);
                 sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.hourlyOwnershipCostUndjusted
+                  +sc.rates.hourlyOwnershipCostUnadjusted
                 ).toFixed(2);
               }
               sc.rates.method = sc.rates.fhwa;
@@ -638,7 +639,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       const e: Item = this.itemList.items[i];
       if (
         e.details.modelId === equipment.modelId &&
-        e.details.make === equipment.make
+        e.details.make === equipment.make &&
+        e.details.year === equipment.year &&
+        e.details.selectedConfiguration.configurationId ===
+          equipment.details.selectedConfiguration.configurationId
       ) {
         return true;
       }
@@ -858,7 +862,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 item.details.year = choice.year;
                 item.details.baseRental = choice.baseRental;
                 item.details.fhwa = choice.fhwa;
-
                 item.details.nationalAverages = choice.nationalAverages;
                 item.details.regionalAverages = choice.regionalAverages;
                 item.details.rentalHouseRates = choice.rentalHouseRates;
@@ -866,12 +869,29 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 if (configurations && configurations.values.length > 1) {
                   this.selectedItem = item;
                   this.selectedIndex = index;
+
                   this.selectConfiguration(choice.year, configurations);
                 } else if (
                   configurations &&
                   configurations.values.length === 1
                 ) {
-                  item.details.selectedConfiguration = configurations.values[0];
+                  const sc = configurations.values[0];
+
+                  this.equipmentService
+                    .getRateDataForConfig(
+                      sc.configurationId,
+                      item.details.year,
+                      this.project.state,
+                      this.requestStartDate,
+                      this.operatingAdjustment,
+                      this.ownershipAdjustment,
+                      this.standbyFactor
+                    )
+                    .subscribe((data: any) => {
+                      sc.rates = data;
+
+                      item.details.selectedConfiguration = sc;
+                    });
                 } else {
                   item.details.nodata = true;
                   item.setNoCost();
@@ -928,7 +948,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.requestStartDate
       )
       .subscribe((configurations: any) => {
-        // console.log('# of configs:  ' + configurations.values.length);
         item.details.nodata = false;
         if (configurations && configurations.values.length > 1) {
           this.selectedItem = item;
@@ -950,6 +969,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             )
             .subscribe((data: any) => {
               sc.rates = data;
+
               if (this.itemType === 'equipment.active') {
                 if (
                   this.project.adjustments.equipment.active
@@ -968,6 +988,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostAdjusted
                   ).toFixed(2);
+                  
                 } else {
                   sc.rates.fhwa = +Number(
                     +sc.rates.monthlyOwnershipCostUnadjustedRate +
@@ -977,10 +998,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.monthlyOwnershipCostUnadjusted
                   ).toFixed(2);
                   sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostUndjusted
+                    +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
                   sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.hourlyOwnershipCostUndjusted
+                    +sc.rates.hourlyOwnershipCostUnadjusted
                   ).toFixed(2);
                 }
                 sc.rates.method = sc.rates.fhwa;
@@ -998,6 +1019,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostAdjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostAdjustedStandby
                   ).toFixed(2);
@@ -1011,6 +1033,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostUnadjustedStandby
                   ).toFixed(2);
@@ -1626,10 +1649,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               +sc.rates.monthlyOwnershipCostUnadjusted
             ).toFixed(2);
             sc.rates.hourlyOperatingCostFinal = +Number(
-              +sc.rates.hourlyOperatingCostUndjusted
+              +sc.rates.hourlyOperatingCostUnadjusted
             ).toFixed(2);
             sc.rates.hourlyOwnershipCostFinal = +Number(
-              +sc.rates.hourlyOwnershipCostUndjusted
+              +sc.rates.hourlyOwnershipCostUnadjusted
             ).toFixed(2);
           }
           sc.rates.method = sc.rates.fhwa;

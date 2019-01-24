@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UploadFile } from 'ng-zorro-antd';
 import { Observable, Subject } from 'rxjs';
@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Account, Item, Project, Request } from '../shared/model';
+import { saveAs } from 'file-saver';
+import { DateTime } from 'luxon';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +18,36 @@ export class RequestsService {
   labelsArr: any;
   requests: Request[];
   editedItems: Object;
+  exportUrl: string;
   onFilterChanged: Subject<any> = new Subject();
 
   uploading = false;
 
   constructor(private http: HttpClient) {
     this.editedItems = {};
+  }
+
+  export(projectId: string, projectName: string, requestIds: String[]) {
+    let params: HttpParams = new HttpParams();
+    requestIds.forEach((p: any) => {
+      params = params.append('requestId', p);
+    });
+
+    return this.http
+      .get(environment.serverUrl + '/project/' + projectId + '/recap', {
+        responseType: 'blob',
+        params: params
+      })
+      .pipe(
+        map((res: any) => {
+          const x = res;
+          if (res) {
+            const filename = projectName + '.xlsx';
+            saveAs(x, filename);
+          }
+          return true;
+        })
+      );
   }
 
   openAttachment(uploadFile: UploadFile) {
@@ -37,12 +63,12 @@ export class RequestsService {
   }
 
   uploadAttachment(lineItemId: string, fileList: UploadFile[]) {
-    console.log('file name: ' + JSON.stringify(fileList, null, 2));
-    console.log('item id: ' + lineItemId);
+    //  console.log('file name: ' + JSON.stringify(fileList, null, 2));
+    // console.log('item id: ' + lineItemId);
     const formData = new FormData();
     // tslint:disable-next-line:no-any
     fileList.forEach((file: any) => {
-      console.log('file: ' + JSON.stringify(file, null, 2));
+      // console.log('file: ' + JSON.stringify(file, null, 2));
     });
     return this.http.post(
       environment.serverUrl + '/lineitem/' + lineItemId + '/attachment',
