@@ -128,8 +128,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   sortActive = 'type';
   sortDirection = 'desc';
   standbyFactor = 0.5;
-  operatingAdjustment = 100;
-  ownershipAdjustment = 100;
+  operatingAdjustment = 1;
+  ownershipAdjustment = 1;
 
   hasPending = false;
   equipmentFormGroup: FormGroup;
@@ -223,10 +223,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.itemType === 'equipment.rental')
     ) {
       this.adjustments = this.project.adjustments.equipment;
-      if (this.itemType === 'equipment.active') {
-        this.operatingAdjustment = +this.adjustments.active.operating / 100;
-        this.ownershipAdjustment = +this.adjustments.active.ownership / 100;
-      }
+
+      this.operatingAdjustment = +this.adjustments.active.operating / 100;
+      this.ownershipAdjustment = +this.adjustments.active.ownership / 100;
     } else if (
       this.project &&
       this.project.adjustments &&
@@ -400,6 +399,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostAdjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostAdjustedStandby
                   ).toFixed(2);
@@ -413,6 +413,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostUnadjustedStandby
                   ).toFixed(2);
@@ -638,7 +639,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       const e: Item = this.itemList.items[i];
       if (
         e.details.modelId === equipment.modelId &&
-        e.details.make === equipment.make
+        e.details.make === equipment.make &&
+        e.details.year === equipment.year &&
+        e.details.selectedConfiguration.configurationId ===
+          equipment.details.selectedConfiguration.configurationId
       ) {
         return true;
       }
@@ -885,6 +889,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     )
                     .subscribe((data: any) => {
                       sc.rates = data;
+
                       item.details.selectedConfiguration = sc;
                     });
                 } else {
@@ -1013,6 +1018,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostAdjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostAdjustedStandby
                   ).toFixed(2);
@@ -1026,6 +1032,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOperatingCostFinal = +Number(
                     +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
+
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostUnadjustedStandby
                   ).toFixed(2);
