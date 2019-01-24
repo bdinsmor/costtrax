@@ -1094,22 +1094,24 @@
                                     Fuel @
                                     {{
                                     item.details.selectedConfiguration.rates.fuelCost
-                                    | currency
+                                    |
+                                    currency
                                     }}
                                   </td>
                                   <td class="left">
                                     {{
                                     100 *
-                                    (item.details.selectedConfiguration.rates
-                                    .fuelOperatingCost /
-                                    item.details.selectedConfiguration.rates
-                                    .hourlyOperatingCostFinal) | number: '1.2-2'
+                                    (item.details.selectedConfiguration
+                                    .rates.fuel /
+                                    item.details.selectedConfiguration
+                                    .rates.hourlyOperatingCostFinal) | number:
+                                    '1.2-2'
                                     }}%
                                   </td>
                                   <td class="left">
                                     {{
-                                    item.details.selectedConfiguration.rates.fuelOperatingCost
-                                    | currency
+                                    item.details.selectedConfiguration
+                                    .rates.fuel | currency
                                     }}
                                   </td>
                                 </tr>
