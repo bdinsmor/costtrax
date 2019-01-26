@@ -1,3 +1,3 @@
 export default {
-  npm_package_version: '1.3.5'
+  npm_package_version: '1.3.6'
 };
