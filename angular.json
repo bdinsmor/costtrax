@@ -24,6 +24,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
             "styles": [
+              "src/assets/fonts/material-icons.css",
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.scss",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
