@@ -6,7 +6,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
@@ -31,6 +31,8 @@ import { EquipmentService } from './equipment.service';
 export class EquipmentComponent implements OnInit, OnDestroy {
   @Input() items: Equipment[];
   @Input() projectId: string;
+  @Input() state: string;
+  @Input() adjustments: any;
   @Output() changes = new EventEmitter<any>();
 
   accountSynced = false;
@@ -50,6 +52,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   miscSubtypeId: string;
   miscSizeClassId: string;
   miscModelId: string;
+
+  standbyFactor = 0.5;
 
   _miscModelModal = false;
   showConfigurations = false;
@@ -94,7 +98,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            'Could not load requestor\'s saved models for this project'
+            "Could not load requestor's saved models for this project" + error
           );
         }
       );
@@ -279,12 +283,70 @@ export class EquipmentComponent implements OnInit, OnDestroy {
           this.selectedItem.details.configurations = configurations;
           this.selectConfiguration(configurations);
         } else if (configurations && configurations.values.length === 1) {
-          item.details.selectedConfiguration = configurations.values[0];
-          item.details.configurations = configurations;
-        }
+          const sc = configurations.values[0];
 
-        item.beingEdited = true;
-        this.changeDetector.detectChanges();
+          this.equipmentService
+            .getRateDataForConfig(
+              sc.configurationId,
+              item.year,
+              this.state,
+              '',
+              +(this.adjustments.equipment.active.operating / 100),
+              +(this.adjustments.equipment.active.ownership / 100),
+              this.standbyFactor
+            )
+            .subscribe((data: any) => {
+              sc.rates = data;
+              if (
+                this.adjustments.equipment.active.regionalAdjustmentsEnabled
+              ) {
+                sc.rates.fhwa = +Number(
+                  +sc.rates.monthlyOwnershipCostAdjustedRate +
+                    +sc.rates.hourlyOperatingCostAdjusted
+                ).toFixed(2);
+                sc.rates.monthlyOwnershipCostFinal = +Number(
+                  +sc.rates.monthlyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.weeklyOwnershipCostFinal = +Number(
+                  +sc.rates.weeklyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.dailyOwnershipCostFinal = +Number(
+                  +sc.rates.dailyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.hourlyOperatingCostFinal = +Number(
+                  +sc.rates.hourlyOperatingCostAdjusted
+                ).toFixed(2);
+                sc.rates.hourlyOwnershipCostFinal = +Number(
+                  +sc.rates.hourlyOwnershipCostAdjusted
+                ).toFixed(2);
+              } else {
+                sc.rates.fhwa = +Number(
+                  +sc.rates.monthlyOwnershipCostUnadjustedRate +
+                    +sc.rates.hourlyOperatingCostUnadjusted
+                ).toFixed(2);
+                sc.rates.monthlyOwnershipCostFinal = +Number(
+                  +sc.rates.monthlyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.weeklyOwnershipCostFinal = +Number(
+                  +sc.rates.monthlyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.dailyOwnershipCostFinal = +Number(
+                  +sc.rates.dailyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.hourlyOperatingCostFinal = +Number(
+                  +sc.rates.hourlyOperatingCostUnadjusted
+                ).toFixed(2);
+                sc.rates.hourlyOwnershipCostFinal = +Number(
+                  +sc.rates.hourlyOwnershipCostUnadjusted
+                ).toFixed(2);
+              }
+              sc.rates.method = sc.rates.fhwa;
+              item.details.selectedConfiguration = sc;
+              item.details.configurations = configurations;
+              item.beingEdited = true;
+              this.changeDetector.detectChanges();
+            });
+        }
       });
   }
 
@@ -298,9 +360,66 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (result.configuration) {
-          this.selectedItem.details.selectedConfiguration = JSON.parse(
-            JSON.stringify(result.configuration)
-          );
+          const sc = result.configuration;
+          this.equipmentService
+            .getRateDataForConfig(
+              sc.configurationId,
+              this.selectedItem.year,
+              this.state,
+              '',
+              +(this.adjustments.equipment.active.operating / 100),
+              +(this.adjustments.equipment.active.ownership / 100),
+              this.standbyFactor
+            )
+            .subscribe((data: any) => {
+              sc.rates = data;
+              if (
+                this.adjustments.equipment.active.regionalAdjustmentsEnabled
+              ) {
+                sc.rates.fhwa = +Number(
+                  +sc.rates.monthlyOwnershipCostAdjustedRate +
+                    +sc.rates.hourlyOperatingCostAdjusted
+                ).toFixed(2);
+                sc.rates.monthlyOwnershipCostFinal = +Number(
+                  +sc.rates.monthlyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.weeklyOwnershipCostFinal = +Number(
+                  +sc.rates.weeklyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.dailyOwnershipCostFinal = +Number(
+                  +sc.rates.dailyOwnershipCostAdjusted
+                ).toFixed(2);
+                sc.rates.hourlyOperatingCostFinal = +Number(
+                  +sc.rates.hourlyOperatingCostAdjusted
+                ).toFixed(2);
+                sc.rates.hourlyOwnershipCostFinal = +Number(
+                  +sc.rates.hourlyOwnershipCostAdjusted
+                ).toFixed(2);
+              } else {
+                sc.rates.fhwa = +Number(
+                  +sc.rates.monthlyOwnershipCostUnadjustedRate +
+                    +sc.rates.hourlyOperatingCostUnadjusted
+                ).toFixed(2);
+                sc.rates.monthlyOwnershipCostFinal = +Number(
+                  +sc.rates.monthlyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.weeklyOwnershipCostFinal = +Number(
+                  +sc.rates.weeklyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.dailyOwnershipCostFinal = +Number(
+                  +sc.rates.dailyOwnershipCostUnadjusted
+                ).toFixed(2);
+                sc.rates.hourlyOperatingCostFinal = +Number(
+                  +sc.rates.hourlyOperatingCostUnadjusted
+                ).toFixed(2);
+                sc.rates.hourlyOwnershipCostFinal = +Number(
+                  +sc.rates.hourlyOwnershipCostUnadjusted
+                ).toFixed(2);
+              }
+              sc.rates.method = sc.rates.fhwa;
+              this.selectedItem.details.selectedConfiguration = sc;
+              this.changeDetector.detectChanges();
+            });
         } else {
           this.cancelSelectConfiguration();
         }

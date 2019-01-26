@@ -166,6 +166,9 @@ export class EquipmentService {
     standbyFactor: number = 0.5
   ): Observable<any> {
     let params = new HttpParams();
+    if (!date || date === '') {
+      date = new Date().toUTCString();
+    }
     params = params.set('date', format(date, 'YYYY-MM-DD'));
     if (year && (year !== '' || year !== undefined)) {
       params = params.set('year', String(year));

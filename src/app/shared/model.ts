@@ -436,13 +436,13 @@ export class Item {
     return this.status && this.status.toLowerCase() === 'complete';
   }
   calculateActiveComps() {
-    if (!this.amount || !this.details.selectedConfiguration) {
+    if (!this.amount || !this.details.selectedConfiguration || !this.details.selectedConfiguration.rates) {
       return;
     }
 
     this.details.rateTotal = +Number(
-      +this.details.selectedConfiguration.hourlyOwnershipCost +
-        +this.details.selectedConfiguration.hourlyOperatingCost
+      +this.details.selectedConfiguration.rates.hourlyOwnershipCostFinal +
+        +this.details.selectedConfiguration.rates.hourlyOperatingCostFinal
     ).toFixed(2);
     if (!this.details.terms || !this.details.terms.blueBook) {
       this.details.terms = {
@@ -463,9 +463,9 @@ export class Item {
       };
     }
     this.details.terms.blueBook.hourlyOwnershipCost = +this.details
-      .selectedConfiguration.hourlyOwnershipCost;
+      .selectedConfiguration.rates.hourlyOwnershipCostFinal;
     this.details.terms.blueBook.hourlyOperatingCost = +this.details
-      .selectedConfiguration.hourlyOperatingCost;
+      .selectedConfiguration.rates.hourlyOperatingCostFinal;
     this.details.terms.blueBook.rateTotal = +Number(
       +this.details.terms.blueBook.hourlyOwnershipCost +
         +this.details.terms.blueBook.hourlyOperatingCost
@@ -511,7 +511,7 @@ export class Item {
           retailRentalDelta: 0
         }
       };
-    } else {
+    } else if (this.details.selectedConfiguration) {
       this.details.terms = {
         blueBook: {
           dailyOwnershipCost:
@@ -647,7 +647,6 @@ export class Item {
     this.details.sizeClassId = m.sizeClassId || '';
     this.details.sizeClassName = m.sizeClassName || '';
     this.details.subSize = m.subtypeName + ' ' + this.details.sizeClassName;
-    console.log('this.details: ' + JSON.stringify(this.details, null, 2));
   }
 
   detailsDisplay() {
@@ -1388,21 +1387,21 @@ export class Equipment {
       operating_hourly_calculated_hourly: 0
     };
 
-    if (this.details.selectedConfiguration) {
+    if (this.details.selectedConfiguration && this.details.selectedConfiguration.rates) {
       this.details.rates.ownership_monthly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.monthlyOwnershipCost / 176
+        +this.details.selectedConfiguration.rates.monthlyOwnershipCostFinal / 176
       ).toFixed(2);
       this.details.rates.ownership_weekly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.weeklyOwnershipCost / 40
+        +this.details.selectedConfiguration.rates.weeklyOwnershipCostFinal / 40
       ).toFixed(2);
       this.details.rates.ownership_daily_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.dailyOwnershipCost / 8
+        +this.details.selectedConfiguration.rates.dailyOwnershipCostFinal / 8
       ).toFixed(2);
       this.details.rates.ownership_hourly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.hourlyOwnershipCost / 1
+        +this.details.selectedConfiguration.rates.hourlyOwnershipCostFinal
       ).toFixed(2);
       this.details.rates.operating_hourly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.hourlyOperatingCost / 1
+        +this.details.selectedConfiguration.rates.hourlyOperatingCostFinal
       ).toFixed(2);
     }
   }
@@ -1857,7 +1856,6 @@ export class Request {
         if (currentItem.type === 'labor') {
           total += +currentItem.details.subtotal;
           lt = +currentItem.details.subtotal;
-          console.log('lt: ' + lt);
         } else {
           total += Number(currentItem.finalAmount);
           lt = +currentItem.finalAmount;
