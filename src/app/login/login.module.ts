@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CountdownModule } from 'ngx-countdown';
 
 import { MaterialModule } from '../material.module';
 import { SharedModule } from '../shared';
@@ -15,6 +16,7 @@ import { SyncDialogComponent } from './sync.dialog';
     ReactiveFormsModule,
     SharedModule,
     MaterialModule,
+    CountdownModule,
     LoginRoutingModule
   ],
   declarations: [LoginComponent, SyncDialogComponent, ResetComponent],

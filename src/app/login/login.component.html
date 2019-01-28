@@ -1,29 +1,35 @@
 <div *ngIf="mode === 'login'" class="container full-height mt-2">
   <div class="row full-height justify-content-center align-items-center">
     <form
-      class="col-md-8 col-sm-10 full-height"
+      class="col-md-10 col-sm-10 full-height"
       (submit)="login()"
       [formGroup]="loginForm"
-      novalidate>
+      novalidate
+    >
       <div class="login-box card no-border header-bg">
         <mat-toolbar
           class="header header-6 align-items-center justify-content-center pb-5
-          pt-5">
+          pt-5"
+        >
           <img class="px-1 logo" alt="logo" src="../assets/img/costtrax.png" />
         </mat-toolbar>
         <div class="px-2 pt-2 form-bg">
           <div class="full-width">
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Email</mat-label>
               <input
                 matInput
                 placeholder="Email"
                 type="email"
                 formControlName="email"
                 required
-                />
+              />
               <mat-error
-                *ngIf="loginForm.get('email').hasError('email') &&
-                !loginForm.get('email').hasError('required')">
+                *ngIf="
+                  loginForm.get('email').hasError('email') &&
+                  !loginForm.get('email').hasError('required')
+                "
+              >
                 Please enter a <strong>valid email address</strong>
               </mat-error>
               <mat-error *ngIf="loginForm.get('email').hasError('required')">
@@ -32,7 +38,8 @@
             </mat-form-field>
           </div>
           <div class="full-width pt-1">
-            <mat-form-field class="fw">
+            <mat-form-field class="fw" appearance="outline">
+              <mat-label>Password</mat-label>
               <input
                 class="full-width"
                 type="password"
@@ -41,19 +48,22 @@
                 autocomplete="current-password"
                 [placeholder]="'Password'"
                 required
-                />
+              />
               <mat-error
-                *ngIf="!loginForm.get('password').valid ||
-                loginForm.get('password').untouched">
+                *ngIf="
+                  !loginForm.get('password').valid ||
+                  loginForm.get('password').untouched
+                "
+              >
                 <span translate>Password is <strong>required</strong> </span>
               </mat-error>
             </mat-form-field>
             <button
               tabindex="-1"
               type="button"
-              disabled="true"
               class="btn btn-link ripple"
-              (click)="forgetPassword()">
+              (click)="forgetPassword()"
+            >
               <span>Forgot Password?</span>
             </button>
           </div>
@@ -69,10 +79,12 @@
               class="btn btn-primary ripple btn-dark login-btn"
               type="submit"
               cdkFocusInitial
-              [disabled]="loginForm.invalid || isLoading">
+              [disabled]="loginForm.invalid || isLoading"
+            >
               <app-loader
                 class="inline-loader"
-                [isLoading]="isLoading"></app-loader>
+                [isLoading]="isLoading"
+              ></app-loader>
               <span>Login</span>
             </button>
           </div>
@@ -84,26 +96,33 @@
 
 <div *ngIf="mode === 'change'" class="container full-height mt-5" [@slideInOut]>
   <div class="row full-height justify-content-center align-items-center">
-    <form class="col-6 full-height" [formGroup]="loginForm" novalidate>
+    <form
+      class="col-md-10 col-sm-10 full-height"
+      [formGroup]="loginForm"
+      novalidate
+    >
       <div class="login-box card no-border header-bg">
         <mat-toolbar
           class="header header-6 align-items-center justify-content-center pb-5
-          pt-5">
+          pt-5"
+        >
           <img
             class="logo"
             alt="logo"
             width="350"
             src="../assets/img/costtrax.png"
-            />
+          />
         </mat-toolbar>
         <div
           class="full-width justify-content-center align-items-center px-2
-          pt-1">
+          pt-1"
+        >
           <h3>CHANGE PASSWORD</h3>
         </div>
         <div class="px-2 pt-2 form-bg">
           <div class="full-width">
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Email</mat-label>
               <input
                 class="full-width"
                 type="text"
@@ -112,16 +131,20 @@
                 autocomplete="current-email"
                 [placeholder]="'Email'"
                 required
-                />
+              />
               <mat-error
-                *ngIf="!loginForm.get('email').valid ||
-                loginForm.get('email').untouched">
+                *ngIf="
+                  !loginForm.get('email').valid ||
+                  loginForm.get('email').untouched
+                "
+              >
                 <span> <strong>Valid</strong> Email is required</span>
               </mat-error>
             </mat-form-field>
           </div>
           <div class="full-width">
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Current Password</mat-label>
               <input
                 class="full-width"
                 type="password"
@@ -130,31 +153,73 @@
                 autocomplete="current-password"
                 [placeholder]="'Current Password'"
                 required
-                />
+              />
               <mat-error
-                *ngIf="!loginForm.get('password').valid ||
-                loginForm.get('password').untouched">
+                *ngIf="
+                  !loginForm.get('password').valid ||
+                  loginForm.get('password').untouched
+                "
+              >
                 <span translate>Current Password is required</span>
               </mat-error>
             </mat-form-field>
           </div>
           <div class="full-width mt-2">
-            <mat-form-field class="full-width">
+            <h3>NEW PASSWORD</h3>
+            <h6>
+              Choose a password that is at least
+              {{ minPasswordLength }} characters long, contains at least 1
+              uppercase letter, and 1 number
+            </h6>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>New Password</mat-label>
               <input
                 type="password"
                 matInput
                 placeholder="New password"
                 formControlName="confirm_password"
                 required
-                />
+              />
               <mat-error
-                *ngIf="loginForm.hasError('required', 'confirm_password')">
+                *ngIf="loginForm.hasError('required', 'confirm_password')"
+              >
                 Please enter your new password
               </mat-error>
+              <mat-error
+                *ngIf="
+                  loginForm.hasError('pattern', 'confirm_password') ||
+                  loginForm.hasError('minlength', 'confirm_password')
+                "
+              >
+                Your password must be at least
+                <strong>{{ minPasswordLength }}</strong> characters long and
+                contain at least <strong>1 uppercase letter</strong>, and
+                <strong>1 number</strong>
+              </mat-error>
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  loginForm.hasError('pattern', 'confirm_password') ||
+                  loginForm.hasError('minlength', 'confirm_password')
+                "
+                matSuffix
+                >error_outline</mat-icon
+              >
+              <mat-icon
+                class="success-icon"
+                *ngIf="
+                  !loginForm.hasError('minlength', 'confirm_password') &&
+                  !loginForm.hasError('pattern', 'confirm_password') &&
+                  !loginForm.hasError('required', 'confirm_password')
+                "
+                matSuffix
+                >thumb_up</mat-icon
+              >
             </mat-form-field>
           </div>
           <div class="full-width">
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Confirm Password</mat-label>
               <input
                 type="password"
                 matInput
@@ -162,10 +227,31 @@
                 formControlName="confirm_password2"
                 [errorStateMatcher]="matcher"
                 required
-                />
+              />
               <mat-error *ngIf="loginForm.hasError('notSame')">
                 Passwords do not match
               </mat-error>
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  loginForm.hasError('notSame') ||
+                  loginForm.hasError('pattern', 'confirm_password2') ||
+                  loginForm.hasError('minlength', 'confirm_password2')
+                "
+                matSuffix
+                >error_outline</mat-icon
+              >
+              <mat-icon
+                class="success-icon"
+                *ngIf="
+                  !loginForm.hasError('notSame') &&
+                  !loginForm.hasError('minlength', 'confirm_password2') &&
+                  !loginForm.hasError('pattern', 'confirm_password2') &&
+                  !loginForm.hasError('required', 'confirm_password2')
+                "
+                matSuffix
+                >thumb_up</mat-icon
+              >
             </mat-form-field>
           </div>
           <div class="login-error" [hidden]="!passwordError || isLoading">
@@ -177,10 +263,12 @@
             <button
               class="btn btn-primary ripple btn-dark login-btn"
               (click)="updatePassword()"
-              [disabled]="loginForm.invalid || isLoading">
+              [disabled]="loginForm.invalid || isLoading"
+            >
               <app-loader
                 class="inline-loader"
-                [isLoading]="isLoading"></app-loader>
+                [isLoading]="isLoading"
+              ></app-loader>
               <span>Login</span>
             </button>
           </div>
@@ -192,26 +280,36 @@
 
 <div *ngIf="mode === 'forgot'" class="container full-height mt-5" [@slideInOut]>
   <div class="row full-height justify-content-center align-items-center">
-    <form class="col-6 full-height" [formGroup]="loginForm" novalidate>
+    <form
+      class="col-md-10 col-sm-10 full-height"
+      [formGroup]="loginForm"
+      novalidate
+    >
       <div class="login-box card no-border header-bg">
         <mat-toolbar
           class="header header-6 align-items-center justify-content-center pb-5
-          pt-5">
+          pt-5"
+        >
           <img
             class="logo"
             alt="logo"
             width="350"
             src="../assets/img/costtrax.png"
-            />
+          />
         </mat-toolbar>
         <div
           class="full-width justify-content-center align-items-center px-2
-          pt-1">
-          <h3>FORGOT PASSWORD</h3>
+          pt-1"
+        >
+          <h5>
+            Please enter email address to receive verification code to reset
+            password
+          </h5>
         </div>
         <div class="px-2 pt-2 form-bg">
           <div class="full-width">
-            <mat-form-field class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Email</mat-label>
               <input
                 class="full-width"
                 type="text"
@@ -220,31 +318,267 @@
                 autocomplete="current-email"
                 [placeholder]="'Email'"
                 required
-                />
+              />
               <mat-error
-                *ngIf="!loginForm.get('email').valid ||
-                loginForm.get('email').untouched">
+                *ngIf="
+                  !loginForm.get('email').valid ||
+                  loginForm.get('email').untouched
+                "
+              >
                 <span> <strong>Valid</strong> Email is required</span>
               </mat-error>
             </mat-form-field>
           </div>
-
+          <div class="login-error" [hidden]="!error || isLoading">
+            An error occurred trying to send a verification code. Please wait
+            <countdown
+              [config]="{ leftTime: 300 }"
+              (finished)="onTimerFinished()"
+              >$!m!:$!s!</countdown
+            >
+            and then try again.
+          </div>
           <br />
 
           <div align="end" class="pb-2">
             <button
-              class="btn btn-warning-outline login-btn ripple"
-              (click)="cancelForgot()">
+              class="btn btn-warning-legacy login-btn ripple"
+              (click)="cancelForgot()"
+            >
               Cancel
             </button>
             <button
               class="btn btn-primary ripple btn-dark login-btn"
               (click)="submitForgot()"
-              [disabled]="loginForm.invalid || isLoading">
+              [disabled]="loginForm.invalid || isLoading || error"
+            >
               <app-loader
                 class="inline-loader"
-                [isLoading]="isLoading"></app-loader>
+                [isLoading]="isLoading"
+              ></app-loader>
               <span>Reset Password</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  *ngIf="mode === 'code-reset'"
+  class="container full-height mt-5"
+  [@slideInOut]
+>
+  <div class="row full-height justify-content-center align-items-center">
+    <form
+      class="col-md-10 col-sm-10 full-height"
+      [formGroup]="loginForm"
+      novalidate
+    >
+      <div class="login-box card no-border header-bg">
+        <mat-toolbar
+          class="header header-6 align-items-center justify-content-center pb-5
+          pt-5"
+        >
+          <img
+            class="logo"
+            alt="logo"
+            width="350"
+            src="../assets/img/costtrax.png"
+          />
+        </mat-toolbar>
+        <div
+          class="full-width justify-content-center align-items-center px-2
+          pt-1"
+        >
+          <h3>RESET PASSWORD</h3>
+        </div>
+        <div class="px-2 form-bg" *ngIf="!resetSuccess">
+          <div class="full-width">
+            <h6>Email:</h6>
+            <h4 class="no-top-margin">{{ loginForm.get('email').value }}</h4>
+          </div>
+          <h6>
+            Choose a password that is at least
+            {{ minPasswordLength }} characters long, contains at least 1
+            uppercase letter, and 1 number
+          </h6>
+          <div class="full-width pt-1">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>New Password</mat-label>
+              <input
+                type="password"
+                matInput
+                placeholder="New password"
+                formControlName="confirm_password"
+                required
+              />
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  loginForm.hasError('pattern', 'confirm_password') ||
+                  loginForm.hasError('minlength', 'confirm_password')
+                "
+                matSuffix
+                >error_outline</mat-icon
+              >
+              <mat-icon
+                class="success-icon"
+                *ngIf="
+                  !loginForm.hasError('minlength', 'confirm_password') &&
+                  !loginForm.hasError('pattern', 'confirm_password') &&
+                  !loginForm.hasError('required', 'confirm_password')
+                "
+                matSuffix
+                >thumb_up</mat-icon
+              >
+              <mat-error
+                *ngIf="loginForm.hasError('required', 'confirm_password')"
+              >
+                Please enter your new password
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  loginForm.hasError('pattern', 'confirm_password') ||
+                  loginForm.hasError('minlength', 'confirm_password')
+                "
+              >
+                Your password must be at least
+                <strong>{{ minPasswordLength }}</strong> characters long and
+                contain at least <strong>1 uppercase letter</strong>, and
+                <strong>1 number</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="full-width mb-1">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Confirm New Password</mat-label>
+              <input
+                type="password"
+                matInput
+                placeholder="Confirm password"
+                formControlName="confirm_password2"
+                required
+              />
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  loginForm.hasError('notSame') ||
+                  loginForm.hasError('pattern', 'confirm_password2') ||
+                  loginForm.hasError('minlength', 'confirm_password2')
+                "
+                matSuffix
+                >error_outline</mat-icon
+              >
+              <mat-icon
+                class="success-icon"
+                *ngIf="
+                  !loginForm.hasError('notSame') &&
+                  !loginForm.hasError('minlength', 'confirm_password2') &&
+                  !loginForm.hasError('pattern', 'confirm_password2') &&
+                  !loginForm.hasError('required', 'confirm_password2')
+                "
+                matSuffix
+                >thumb_up</mat-icon
+              >
+              <mat-error *ngIf="loginForm.hasError('notSame')">
+                Passwords do not match
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <h6 class="success">
+            Please check email address listed above for a verification code and
+            enter it below.
+          </h6>
+          <button
+            tabindex="-1"
+            *ngIf="!resetSuccess"
+            type="button"
+            class="btn btn-link ripple neg-top-margin"
+            (click)="resendCode()"
+          >
+            <span>Resend Verification Code</span>
+          </button>
+          <div class="full-width">
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Verification Code</mat-label>
+              <input
+                type="text"
+                matInput
+                placeholder="Verification Code"
+                formControlName="resetCode"
+                required
+              />
+
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  loginForm.hasError('required', 'resetCode') ||
+                  loginForm.hasError('minlength', 'resetCode')
+                "
+                matSuffix
+                >error_outline</mat-icon
+              >
+              <mat-icon
+                class="success-icon"
+                *ngIf="
+                  !loginForm.hasError('minlength', 'resetCode') &&
+                  !loginForm.hasError('required', 'resetCode')
+                "
+                matSuffix
+                >thumb_up</mat-icon
+              >
+              <mat-error *ngIf="loginForm.hasError('minlength', 'resetCode')">
+                Verification Code should be <strong>6</strong> digits.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="login-error" [hidden]="!passwordError || isLoading">
+            Please ensure <strong>Verification Code</strong>is correct.
+          </div>
+
+          <div align="end" class="pt-1 pb-2">
+            <button
+              *ngIf="!resetSuccess"
+              class="btn btn-warning-legacy login-btn ripple"
+              (click)="cancelForgot()"
+            >
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary ripple btn-dark login-btn"
+              (click)="submitNewPassword()"
+              *ngIf="!resetSuccess"
+              [disabled]="loginForm.invalid || isLoading"
+            >
+              <app-loader
+                class="inline-loader"
+                [isLoading]="isLoading"
+              ></app-loader>
+              <span>Reset Password</span>
+            </button>
+          </div>
+        </div>
+        <div class="px-2 form-bg" *ngIf="resetSuccess">
+          <h6 class="success">
+            <strong>
+              Password Successfully Reset! Click below to return to the Login
+              page.
+            </strong>
+          </h6>
+          <div align="end" class="pt-1 pb-2">
+            <button
+              class="btn btn-primary ripple btn-dark login-btn"
+              (click)="goToLogin()"
+              *ngIf="resetSuccess"
+            >
+              <app-loader
+                class="inline-loader"
+                [isLoading]="isLoading"
+              ></app-loader>
+              <span>Go To Login</span>
             </button>
           </div>
         </div>
