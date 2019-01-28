@@ -332,7 +332,7 @@
           <div class="login-error" [hidden]="!error || isLoading">
             An error occurred trying to send a verification code. Please wait
             <countdown
-              [config]="{ leftTime: 300 }"
+              [config]="{ leftTime: 120 }"
               (finished)="onTimerFinished()"
               >$!m!:$!s!</countdown
             >
