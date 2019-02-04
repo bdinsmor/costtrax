@@ -478,12 +478,13 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   refreshRequest() {
     this.requestsService.getRequest(this.request.id).subscribe(
       (r: Request) => {
-        this.request = r;
-        this.changeDetector.detectChanges();
         this.projectsService
           .getProject(this.request.projectId)
           .subscribe((p: Project) => {
             this.project = p;
+            r.project = p;
+            this.request = r;
+            this.request.calculateTotals();
             this.checkPermissions();
             this.buildItemTypes();
             this.changeDetector.detectChanges();

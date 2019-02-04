@@ -436,7 +436,11 @@ export class Item {
     return this.status && this.status.toLowerCase() === 'complete';
   }
   calculateActiveComps() {
-    if (!this.amount || !this.details.selectedConfiguration || !this.details.selectedConfiguration.rates) {
+    if (
+      !this.amount ||
+      !this.details.selectedConfiguration ||
+      !this.details.selectedConfiguration.rates
+    ) {
       return;
     }
 
@@ -1387,9 +1391,13 @@ export class Equipment {
       operating_hourly_calculated_hourly: 0
     };
 
-    if (this.details.selectedConfiguration && this.details.selectedConfiguration.rates) {
+    if (
+      this.details.selectedConfiguration &&
+      this.details.selectedConfiguration.rates
+    ) {
       this.details.rates.ownership_monthly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.rates.monthlyOwnershipCostFinal / 176
+        +this.details.selectedConfiguration.rates.monthlyOwnershipCostFinal /
+          176
       ).toFixed(2);
       this.details.rates.ownership_weekly_calculated_hourly = +Number(
         +this.details.selectedConfiguration.rates.weeklyOwnershipCostFinal / 40
