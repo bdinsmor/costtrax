@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { CountdownComponent } from 'ngx-countdown';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { finalize } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
@@ -33,7 +34,7 @@ export class PasswordMatcher implements ErrorStateMatcher {
   styleUrls: ['./login.component.scss'],
   animations: appAnimations
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   version: string = environment.version;
   mode = 'login';
   error: string;
@@ -73,6 +74,8 @@ export class LoginComponent implements OnInit {
     this.authenticationService.logout();
   }
 
+  ngOnDestroy() {}
+
   forgetPassword() {
     // this.createForgetPasswordForm();
     this.mode = 'forgot';
@@ -102,7 +105,8 @@ export class LoginComponent implements OnInit {
         finalize(() => {
           this.loginForm.markAsPristine();
           this.isLoading = false;
-        })
+        }),
+        untilDestroyed(this)
       )
       .subscribe(
         email => {
@@ -158,7 +162,8 @@ export class LoginComponent implements OnInit {
         finalize(() => {
           this.loginForm.markAsPristine();
           this.isLoading = false;
-        })
+        }),
+        untilDestroyed(this)
       )
       .subscribe(
         success => {
@@ -180,7 +185,8 @@ export class LoginComponent implements OnInit {
         finalize(() => {
           this.loginForm.markAsPristine();
           this.isLoading = false;
-        })
+        }),
+        untilDestroyed(this)
       )
       .subscribe(
         credentials => {

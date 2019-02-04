@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ProjectsService } from 'src/app/projects/projects.service';
 import { Project } from 'src/app/shared/model';
 
 @Component({
@@ -14,7 +13,6 @@ export class ProjectRequestDialogComponent implements OnInit {
   projectForm: FormGroup;
 
   constructor(
-    private projectsService: ProjectsService,
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}

@@ -2,6 +2,7 @@ import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpRes
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { RequestsService } from 'src/app/requests/requests.service';
 import { Attachment, Item } from 'src/app/shared/model';
 
@@ -35,7 +36,7 @@ export class AttachmentsDialogComponent implements OnInit {
     this.canDelete = this.data.canDelete;
     this.canAdd = this.data.canAdd;
 
-    console.log("canAdd: " + this.canAdd);
+    console.log('canAdd: ' + this.canAdd);
     this.selectedItem.attachments.forEach((p: any) => {
       p.url = environment.serverUrl + '/attachment/' + p.id;
       if (p.fileName && p.fileName !== '') {
@@ -86,6 +87,7 @@ export class AttachmentsDialogComponent implements OnInit {
   deleteAttachment = (file: UploadFile) => {
     return this.requestsService
       .deleteAttachment(file.uid)
+      .pipe(untilDestroyed(this))
       .subscribe((res: any) => {
         this.cdr.detectChanges();
       });

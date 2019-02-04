@@ -1,23 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig
-} from '@angular/material';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ClrDatagridSortOrder } from '@clr/angular';
 
-import { AuthenticationService } from '../core';
 import { appAnimations } from '../core/animations';
 import { OneUpComparator, Request } from '../shared/model';
 import { RequestCloneDialogComponent } from './dialogs/request-clone-dialog.component';
@@ -54,11 +40,9 @@ export class RequestsComponent implements OnInit {
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private changeDetector: ChangeDetectorRef,
-    private route: ActivatedRoute,
     private router: Router,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private auth: AuthenticationService,
     private requestsService: RequestsService
   ) {
     this.matIconRegistry.addSvgIcon(

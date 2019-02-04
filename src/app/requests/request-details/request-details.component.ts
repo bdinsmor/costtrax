@@ -1,52 +1,25 @@
-import {
-  animate,
-  keyframes,
-  query,
-  stagger,
-  style,
-  transition,
-  trigger,
-  state
-} from '@angular/animations';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
 import { Location } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  NgZone
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/ngx-bootstrap-datepicker';
-import { Observable, Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Observable } from 'rxjs';
 import { auditTime, map } from 'rxjs/operators';
 
+import { appAnimations } from '../../core/animations';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { ProjectsService } from '../../projects/projects.service';
-import {
-  Equipment,
-  Item,
-  ItemList,
-  Project,
-  Request
-} from '../../shared/model';
+import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
 import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
-import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/overlay';
-import { appAnimations } from '../../core/animations/index';
 
 @Component({
   selector: 'app-request-details',
@@ -60,7 +33,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
   shrinkToolbar = false;
 
   duration = 3000;
-  subscription: Subscription;
   requestFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
   lineItemFormGroup: FormGroup;
@@ -112,8 +84,9 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       notes: new FormControl('')
     });
 
-    this.subscription = this.authenticationService
+    this.authenticationService
       .getCreds()
+      .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
           this.accountSynced =
@@ -210,9 +183,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     return window.scrollY;
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   findSelectedProject(projects: Project[], project: Project) {
     for (let i = 0; i < projects.length; i++) {
