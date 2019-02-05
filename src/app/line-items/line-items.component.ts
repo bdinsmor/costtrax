@@ -369,7 +369,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.hourlyOperatingCostAdjusted
                   ).toFixed(2);
                   sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.hourlyOwnershipCostAdjusted
+                    +sc.rates.monthlyOwnershipCostAdjustedRate
                   ).toFixed(2);
                 } else {
                   sc.rates.fhwa = +Number(
@@ -383,7 +383,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
                   sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.hourlyOwnershipCostUnadjusted
+                    +sc.rates.monthlyOwnershipCostUnadjustedRate
                   ).toFixed(2);
                 }
                 sc.rates.method = sc.rates.fhwa;
