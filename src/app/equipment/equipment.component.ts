@@ -92,7 +92,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            'Could not load requestor\'s saved models for this project' + error
+            "Could not load requestor's saved models for this project" + error
           );
         }
       );
@@ -309,7 +309,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                   +sc.rates.hourlyOperatingCostAdjusted
                 ).toFixed(2);
                 sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.hourlyOwnershipCostAdjusted
+                  +sc.rates.monthlyOwnershipCostAdjustedRate
                 ).toFixed(2);
               } else {
                 sc.rates.fhwa = +Number(
@@ -329,7 +329,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                   +sc.rates.hourlyOperatingCostUnadjusted
                 ).toFixed(2);
                 sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.hourlyOwnershipCostUnadjusted
+                  +sc.rates.monthlyOwnershipCostUnadjustedRate
                 ).toFixed(2);
               }
               sc.rates.method = sc.rates.fhwa;
@@ -385,7 +385,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                   +sc.rates.hourlyOperatingCostAdjusted
                 ).toFixed(2);
                 sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.hourlyOwnershipCostAdjusted
+                  +sc.rates.monthlyOwnershipCostAdjustedRate
                 ).toFixed(2);
               } else {
                 sc.rates.fhwa = +Number(
@@ -405,7 +405,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                   +sc.rates.hourlyOperatingCostUnadjusted
                 ).toFixed(2);
                 sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.hourlyOwnershipCostUnadjusted
+                  +sc.rates.monthlyOwnershipCostUnadjustedRate
                 ).toFixed(2);
               }
               sc.rates.method = sc.rates.fhwa;
