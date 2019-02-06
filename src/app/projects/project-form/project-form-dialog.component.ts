@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { Observable, Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Observable } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { Account, Project } from '../../shared/model';
@@ -25,7 +26,6 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   accounts$: Observable<Account[]>;
   projectFormGroup: FormGroup;
   project: Project;
-  subscription: Subscription;
   accountSynced = false;
   firstAccount: Account = new Account({});
   @Output()
@@ -109,8 +109,9 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.authenticationService
+    this.authenticationService
       .getCreds()
+      .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
           this.accountSynced =
@@ -137,9 +138,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   resetForm() {
     this.project = new Project({ id: '1' });

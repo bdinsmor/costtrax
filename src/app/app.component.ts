@@ -1,28 +1,18 @@
-import {
-  animate,
-  animateChild,
-  group,
-  query,
-  sequence,
-  style,
-  transition,
-  trigger
-} from '@angular/animations';
-import { Component, OnDestroy, OnInit, NgZone } from '@angular/core';
+import { animate, animateChild, group, query, sequence, style, transition, trigger } from '@angular/animations';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
-import { debounce, map } from 'rxjs/operators';
+import { debounce } from 'rxjs/operators';
 
-import { Subscription, timer } from '../../node_modules/rxjs';
+import { timer } from '../../node_modules/rxjs';
 import { environment } from '../environments/environment';
 import { Logger } from './core';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { SyncDialogComponent } from './login/sync.dialog';
-import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/overlay';
 
 const log = new Logger('App');
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -63,7 +53,6 @@ const log = new Logger('App');
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
-  subscription: Subscription;
   loggedIn = false;
   loading = false;
   roles: String[];
@@ -80,25 +69,24 @@ export class AppComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private authService: AuthenticationService
   ) {
-    this.debouncedExample = this.authService
-      .getCreds()
-      .pipe(debounce(() => timer(250)));
+    this.debouncedExample = this.authService.getCreds().pipe(
+      debounce(() => timer(250)),
+      untilDestroyed(this)
+    );
   }
 
   getRouteAnimation(outlet) {
     return outlet.activatedRouteData.animation;
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  ngOnDestroy() {}
 
   ngOnInit() {
     if (environment.production) {
       Logger.enableProductionMode();
     }
 
-    this.subscription = this.debouncedExample.subscribe(message => {
+    this.debouncedExample.pipe(untilDestroyed(this)).subscribe(message => {
       if (message && message.userName) {
         this.loggedIn = true;
         this.uberAdmin = message.uberAdmin;

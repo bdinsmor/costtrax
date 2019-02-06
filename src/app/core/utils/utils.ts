@@ -1,15 +1,7 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatSort, PageEvent, Sort } from '@angular/material';
-import {
-  distinctUntilChanged,
-  concat,
-  map,
-  startWith,
-  switchMap,
-  tap
-} from 'rxjs/operators';
-import { QueryList } from '@angular/core';
-import { Observable, of, combineLatest, defer } from 'rxjs';
+import { Sort } from '@angular/material';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export class SimpleDataSource<T> extends DataSource<T> {
   constructor(private rows$: Observable<T[]>) {

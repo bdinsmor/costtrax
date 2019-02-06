@@ -21,6 +21,7 @@ export interface LoginContext {
   password: string;
   confirm_password: string;
   confirm_password2: string;
+  resetCode: string;
   remember?: boolean;
 }
 
@@ -72,8 +73,20 @@ export class AuthenticationService {
     }
   }
 
-  forgotPassword(email: string): Observable<any> {
-    return of(null);
+  forgotPassword(context: LoginContext): Observable<any> {
+    const data = {
+      email: context.email
+    };
+    console.log('forgotPassword: ' + JSON.stringify(context, null, 2));
+    return this.http.post(environment.serverUrl + '/auth/forgot', data).pipe(
+      map((res: any) => {
+        if (!res) {
+          return context.email;
+        } else if (res.error) {
+          throw new Error('Email was not correct.');
+        }
+      })
+    );
   }
 
   login(context: LoginContext): Observable<Credentials> {
@@ -96,6 +109,24 @@ export class AuthenticationService {
         return creds as Credentials;
       })
     );
+  }
+
+  submitReset(context: LoginContext): Observable<any> {
+    return this.http
+      .post(environment.serverUrl + '/auth/forgot-confirm', {
+        email: context.email,
+        newpassword: context.confirm_password,
+        confirmationCode: context.resetCode
+      })
+      .pipe(
+        map((res: any) => {
+          if (!res) {
+            return true;
+          } else if (res.error) {
+            throw new Error('Email/Reset Code combination was not correct.');
+          }
+        })
+      );
   }
 
   reset(context: LoginContext): Observable<Credentials> {
