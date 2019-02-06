@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -17,7 +26,7 @@ import { LaborService } from './labor.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: appAnimations
 })
-export class LaborComponent implements OnInit {
+export class LaborComponent implements OnInit, OnDestroy {
   @Input() items: Employee[];
   @Input() projectId: string;
   @Output() changes = new EventEmitter<any>();
@@ -46,6 +55,8 @@ export class LaborComponent implements OnInit {
       )
     );
   }
+
+  ngOnDestroy() {}
 
   ngOnInit() {
     this.buildForm();
