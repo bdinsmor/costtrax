@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import { Breadcrumb } from '../../shared/model';
 import { BreadcrumbService } from './breadcrumbs.service';
@@ -11,21 +11,21 @@ import { BreadcrumbService } from './breadcrumbs.service';
 })
 export class BreadcrumbsComponent implements OnInit, OnDestroy {
   crumbs: Breadcrumb[];
-  subscription: Subscription;
 
   constructor(breadcrumbService: BreadcrumbService) {
-    this.subscription = breadcrumbService.getBreadcrumbs().subscribe(b => {
-      if (b) {
-        this.crumbs = b.crumbs;
-      } else {
-        this.crumbs = [];
-      }
-    });
+    breadcrumbService
+      .getBreadcrumbs()
+      .pipe(untilDestroyed(this))
+      .subscribe(b => {
+        if (b) {
+          this.crumbs = b.crumbs;
+        } else {
+          this.crumbs = [];
+        }
+      });
   }
 
   ngOnInit() {}
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  ngOnDestroy() {}
 }

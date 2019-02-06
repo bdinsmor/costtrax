@@ -6,11 +6,12 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -37,9 +38,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   accountSynced = false;
 
-  _configurationModal = false;
-  _confirmDeleteModal = false;
-
   submitRequests: boolean;
   autoSaveEnabled = false;
   equipmentForm: FormGroup;
@@ -57,17 +55,12 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   _miscModelModal = false;
   showConfigurations = false;
-  categoryResults$: Observable<any>;
-  subtypeResults$: Observable<any>;
-  sizeResults$: Observable<any>;
-  modelResults$: Observable<any>;
   modelInput$ = new Subject<string>();
   modelLoading = false;
   configurations: any;
   selected: any[];
   private config: MatSnackBarConfig;
   duration = 3000;
-  subscription: Subscription;
 
   constructor(
     public dialog: MatDialog,
@@ -79,8 +72,9 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.buildForm();
-    this.subscription = this.authenticationService
+    this.authenticationService
       .getCreds()
+      .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
           this.accountSynced =
@@ -98,7 +92,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            "Could not load requestor's saved models for this project" + error
+            'Could not load requestor\'s saved models for this project' + error
           );
         }
       );
@@ -106,7 +100,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
     if (this.modelInput$) {
       this.modelInput$.unsubscribe();
     }
@@ -122,7 +115,10 @@ export class EquipmentComponent implements OnInit, OnDestroy {
       autoSave: new FormControl(this.autoSaveEnabled)
     });
     this.equipmentForm.valueChanges
-      .pipe(auditTime(750))
+      .pipe(
+        auditTime(750),
+        untilDestroyed(this)
+      )
       .subscribe((formData: any) => {
         this.autoSave(formData.autoSave);
       });
@@ -200,7 +196,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
           } else if (configurations && configurations.values.length > 1) {
             this.selectedItem = updatedItem;
             this.selectedIndex = event.index;
-            this._configurationModal = true;
           } else {
             updatedItem.resetSelectedConfiguration();
           }
@@ -217,12 +212,9 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  cancelSelectConfiguration() {
-    this._configurationModal = false;
-  }
+  cancelSelectConfiguration() {}
 
   confirmSelectConfiguration(sc: any) {
-    this._configurationModal = false;
     this.items[this.selectedIndex].details.selectedConfiguration = sc;
     this.items[this.selectedIndex].calculateHourlyRates();
     this.changeDetector.markForCheck();
@@ -501,7 +493,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             .deleteRequestorModel(this.projectId, this.selectedItem.id)
             .subscribe(
               (response: any) => {
-                this._confirmDeleteModal = false;
                 this.items.splice(this.selectedIndex, 1);
                 this.changeDetector.detectChanges();
                 this.openSnackBar('Model Removed!', 'ok', 'OK');

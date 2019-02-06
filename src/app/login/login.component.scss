@@ -16,6 +16,22 @@
     border: none !important;
 }
 
+.success {
+    color: #1890ff;
+}
+
+.hint-color {
+    color: rgb(26, 58, 78);
+}
+
+.success-icon {
+    color: rgb(26, 58, 78);
+}
+
+.neg-top-margin {
+    margin-top: -0.3em !important;
+}
+
 .header {
     background: radial-gradient(#222 15%, transparent 16%) 0 0, radial-gradient(#222 15%, transparent 16%) 8px 8px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
     background-color: #333333;

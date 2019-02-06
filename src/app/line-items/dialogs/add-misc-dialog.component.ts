@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { concat, Observable, of } from 'rxjs';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
@@ -68,6 +69,7 @@ export class AddMiscDialogComponent implements OnInit {
         this.miscEquipment.subtypeId,
         this.projectState
       )
+      .pipe(untilDestroyed(this))
       .subscribe(
         (configurations: any) => {
           this.configurations = configurations;

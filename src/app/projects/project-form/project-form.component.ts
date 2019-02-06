@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Observable } from 'rxjs';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
@@ -28,8 +29,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     private breadcrumbService: BreadcrumbService,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
-    private titleService: Title,
-    private formBuilder: FormBuilder
+    private titleService: Title
   ) {}
   private config: MatSnackBarConfig;
   duration = 3000;
@@ -109,20 +109,18 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   requestId = null;
   newProject = false;
   inOverflow = true;
-  subscription: Subscription;
   accountSynced = false;
 
   @Output() save = new EventEmitter();
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+  ngOnDestroy() {}
 
   ngOnInit() {
-    this.subscription = this.authenticationService
+    this.authenticationService
       .getCreds()
+      .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
           this.accountSynced =

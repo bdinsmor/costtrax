@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { auditTime } from 'rxjs/operators';
 
 import { Employee } from '../shared/model';
@@ -73,7 +74,10 @@ export class LaborComponent implements OnInit {
       autoSave: new FormControl(this.autoSaveEnabled)
     });
     this.laborForm.valueChanges
-      .pipe(auditTime(750))
+      .pipe(
+        auditTime(750),
+        untilDestroyed(this)
+      )
       .subscribe((formData: any) => {
         this.autoSave(formData.autoSave);
       });

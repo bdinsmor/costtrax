@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { ClrDatagridSortOrder } from '@clr/angular';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import { appAnimations } from '../../core/animations';
 import { Account } from '../../shared/model';
@@ -48,26 +49,32 @@ export class AccountListComponent implements OnInit {
   }
 
   confirmArchiveAccount() {
-    this.accountService.archive(this.selectedAccount.id).subscribe(
-      (response: any) => {
-        this.openSnackBar('Account marked COMPLETE!', 'ok', 'OK');
-        this.router.navigate(['../accounts']);
-      },
-      (error: any) => {
-        this.openSnackBar('Error Archiving Account', 'error', 'OK');
-      }
-    );
+    this.accountService
+      .archive(this.selectedAccount.id)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        (response: any) => {
+          this.openSnackBar('Account marked COMPLETE!', 'ok', 'OK');
+          this.router.navigate(['../accounts']);
+        },
+        (error: any) => {
+          this.openSnackBar('Error Archiving Account', 'error', 'OK');
+        }
+      );
   }
 
   confirmDeleteAccount() {
-    this.accountService.delete(this.selectedAccount.id).subscribe(
-      (response: any) => {
-        this.openSnackBar('Account deleted!', 'ok', 'OK');
-        this.router.navigate(['../accounts']);
-      },
-      (error: any) => {
-        this.openSnackBar('Error Deleting Account', 'error', 'OK');
-      }
-    );
+    this.accountService
+      .delete(this.selectedAccount.id)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        (response: any) => {
+          this.openSnackBar('Account deleted!', 'ok', 'OK');
+          this.router.navigate(['../accounts']);
+        },
+        (error: any) => {
+          this.openSnackBar('Error Deleting Account', 'error', 'OK');
+        }
+      );
   }
 }

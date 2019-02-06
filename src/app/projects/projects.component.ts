@@ -32,8 +32,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   projectForm: FormGroup;
   requestableProjects: Project[];
 
-  _requestModel = false;
-
   constructor(
     public titleService: Title,
     public dialog: MatDialog,

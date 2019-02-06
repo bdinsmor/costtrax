@@ -9,6 +9,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { concat, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
@@ -78,11 +79,7 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.searchInput$) {
-      this.searchInput$.unsubscribe();
-    }
-  }
+  ngOnDestroy(): void {}
 
   selectionChanged() {
     if (!this.selectedItem) {
@@ -114,7 +111,8 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
             catchError(() => of([])), // empty list on error
             tap(() => (this.loading = false))
           )
-        )
+        ),
+        untilDestroyed(this)
       )
     );
   }
@@ -133,7 +131,8 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
             catchError(() => of([])), // empty list on error
             tap(() => (this.loading = false))
           )
-        )
+        ),
+        untilDestroyed(this)
       )
     );
   }

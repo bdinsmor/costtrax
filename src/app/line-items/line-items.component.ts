@@ -13,7 +13,8 @@ import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
-import { config, Observable, Subject, Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Observable, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
@@ -60,6 +61,7 @@ class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
     }
   }
 }
+
 @Component({
   selector: 'app-line-items',
   templateUrl: './line-items.component.html',
@@ -153,7 +155,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   itemTypeDisplay: string;
 
   accountSynced = false;
-  subscription: Subscription;
   /*
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
@@ -177,7 +178,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         '../../assets/icons/check.svg'
       )
     );
-
   }
 
   ngOnInit() {
@@ -186,8 +186,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       {},
       { containerClass: this.colorTheme, dateInputFormat: 'YYYY-MM-DD' }
     );
-    this.subscription = this.authenticationService
+    this.authenticationService
       .getCreds()
+      .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message && message.advantageId) {
           this.accountSynced =
@@ -224,10 +225,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.itemType === 'equipment.rental')
     ) {
       this.adjustments = this.project.adjustments.equipment;
-      if (this.adjustments.active && this.adjustments.operating)
- {
-  this.operatingAdjustment = +this.adjustments.active.operating / 100;
- }     
+      if (this.adjustments.active && this.adjustments.operating) {
+        this.operatingAdjustment = +this.adjustments.active.operating / 100;
+      }
       this.ownershipAdjustment = +this.adjustments.active.ownership / 100;
     } else if (
       this.project &&
@@ -261,7 +261,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     if (this.modelInput$) {
       this.modelInput$.unsubscribe();
     }
-    this.subscription.unsubscribe();
   }
 
   getComps() {
@@ -370,7 +369,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.hourlyOperatingCostAdjusted
                   ).toFixed(2);
                   sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.hourlyOwnershipCostAdjusted
+                    +sc.rates.monthlyOwnershipCostAdjustedRate
                   ).toFixed(2);
                 } else {
                   sc.rates.fhwa = +Number(
@@ -384,7 +383,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     +sc.rates.hourlyOperatingCostUnadjusted
                   ).toFixed(2);
                   sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.hourlyOwnershipCostUnadjusted
+                    +sc.rates.monthlyOwnershipCostUnadjustedRate
                   ).toFixed(2);
                 }
                 sc.rates.method = sc.rates.fhwa;
@@ -672,7 +671,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       return;
     }
     for (let i = 0; i < this.selected.length; i++) {
-
       const employee: Employee = new Employee(this.selected[i]);
       if (this.hasEmployee(employee)) {
         continue;
@@ -986,7 +984,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   sc.rates.hourlyOwnershipCostFinal = +Number(
                     +sc.rates.hourlyOwnershipCostAdjusted
                   ).toFixed(2);
-                  
                 } else {
                   sc.rates.fhwa = +Number(
                     +sc.rates.monthlyOwnershipCostUnadjustedRate +

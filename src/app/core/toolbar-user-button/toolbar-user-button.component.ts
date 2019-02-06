@@ -6,15 +6,15 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
+import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { LIST_FADE_ANIMATION } from '../../core/utils/list.animation';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-toolbar-user-button',
@@ -28,7 +28,6 @@ export class ToolbarUserButtonComponent
   isOpen: boolean;
   version: string;
   userName: string;
-  subscription: Subscription;
   loginForm: FormGroup;
   isLoading = false;
   accountSynced = false;
@@ -43,14 +42,12 @@ export class ToolbarUserButtonComponent
     this.version = environment.version;
   }
 
-  ngOnDestroy() {
-    // unsubscribe to ensure no memory leaks
-    this.subscription.unsubscribe();
-  }
+  ngOnDestroy() {}
 
   ngOnInit() {
-    this.subscription = this.authenticationService
+    this.authenticationService
       .getCreds()
+      .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message && message.userName) {
           this.userName = message.userName;
@@ -68,6 +65,7 @@ export class ToolbarUserButtonComponent
     this.toggleDropdown();
     this.authenticationService
       .logout()
+      .pipe(untilDestroyed(this))
       .subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
   }
 
