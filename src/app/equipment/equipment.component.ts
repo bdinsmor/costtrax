@@ -92,7 +92,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            "Could not load requestor's saved models for this project" + error
+            'Could not load requestor\'s saved models for this project' + error
           );
         }
       );
@@ -112,7 +112,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   buildForm() {
     this.equipmentForm = new FormGroup({
-      autoSave: new FormControl(this.autoSaveEnabled)
+      autoSave: new FormControl({ value: this.autoSaveEnabled, disabled: true })
     });
     this.equipmentForm.valueChanges
       .pipe(

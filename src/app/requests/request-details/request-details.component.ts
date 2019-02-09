@@ -13,6 +13,7 @@ import { auditTime, map } from 'rxjs/operators';
 import { appAnimations } from '../../core/animations';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
+import { EquipmentService } from '../../equipment/equipment.service';
 import { ProjectsService } from '../../projects/projects.service';
 import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
@@ -70,6 +71,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private requestsService: RequestsService,
     private projectsService: ProjectsService,
+    private equipmentService: EquipmentService,
     private authenticationService: AuthenticationService,
     private breadcrumbService: BreadcrumbService,
     private _location: Location,
@@ -336,7 +338,10 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       this.request.startDate = new Date(dateRange[0]);
       this.request.endDate = new Date(dateRange[1]);
       this.requestsService.update(this.request).subscribe((response: any) => {
-        //  this.openSnackBar('Request Saved!', 'OK', 'OK');
+        console.log('request status: ' + this.request.status);
+        if (this.request.status !== 'PENDING') {
+          this.equipmentService.sendDateChangeNotification();
+        }
       });
     } else {
     }
