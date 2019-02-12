@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { concat, Observable, of } from 'rxjs';
@@ -11,7 +11,7 @@ import { Equipment } from './../../shared/model';
   templateUrl: './add-misc-dialog.component.html',
   styleUrls: ['./add-misc-dialog.component.scss']
 })
-export class AddMiscDialogComponent implements OnInit {
+export class AddMiscDialogComponent implements OnInit, OnDestroy {
   configurations: any[];
   miscCategoryId: string;
   miscSubtypeId: string;
@@ -31,6 +31,8 @@ export class AddMiscDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
+
+  ngOnDestroy() {}
 
   ngOnInit() {
     this.configurations = this.data.configurations;

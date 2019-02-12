@@ -1,19 +1,29 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { format } from 'date-fns';
-import { forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { Equipment } from '../shared/model';
+import { Equipment, Item } from '../shared/model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EquipmentService {
+export class EquipmentService implements OnDestroy {
   data: Equipment[];
-
+  private subject = new BehaviorSubject<any>(null);
   constructor(private http: HttpClient) {}
+
+  sendDateChangeNotification() {
+    this.subject.next('date changed');
+  }
+
+  getDateNotifications(): Observable<any> {
+    return this.subject.asObservable();
+  }
+
+  ngOnDestroy(): void {}
 
   saveRequestorModel(projectId: string, item: Equipment): Observable<any> {
     item.details.year = item.year;
@@ -118,6 +128,32 @@ export class EquipmentService {
     return forkJoin(returns);
   }
 
+  recalculateRatesForItems(
+    items: Item[],
+    state: string = '',
+    date: string = '',
+    operatingAdjustment: number = 1,
+    ownershipAdjustment: number = 1,
+    standbyFactor: number = 0.5
+  ): Observable<any> {
+    const returns = [];
+
+    items.forEach((e: Item) => {
+      returns.push(
+        this.getRateDataForConfig(
+          e.details.selectedConfiguration.configurationId,
+          e.details.year,
+          state,
+          date,
+          operatingAdjustment,
+          ownershipAdjustment,
+          standbyFactor
+        )
+      );
+    });
+    return forkJoin(returns);
+  }
+
   getRateDataForEquipment(
     equipment: Equipment,
     state: string = '',
@@ -165,6 +201,9 @@ export class EquipmentService {
     ownershipAdjustment: number = 1,
     standbyFactor: number = 0.5
   ): Observable<any> {
+    if (!configId || configId === '') {
+      return of({});
+    }
     let params = new HttpParams();
     if (!date || date === '') {
       date = new Date().toUTCString();
@@ -182,9 +221,7 @@ export class EquipmentService {
 
     const url: string =
       environment.serverUrl + '/equipment/cost-recovery/' + configId;
-
     const options = { params: params };
-
     return this.http.get(url, options);
   }
 

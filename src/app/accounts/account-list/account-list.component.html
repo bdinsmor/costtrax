@@ -1,5 +1,6 @@
 <div class="full-width px-1">
   <clr-datagrid>
+    <clr-dg-placeholder>Loading Accounts...</clr-dg-placeholder>
     <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'"
       >Account</clr-dg-column
     >
@@ -9,7 +10,7 @@
     <clr-dg-column style="width:100px">Actions</clr-dg-column>
     <clr-dg-row
       class="pointer"
-      *clrDgItems="let item of (accounts | async); let i = index"
+      *clrDgItems="let item of accounts; let i = index"
     >
       <clr-dg-cell>{{ item.organization }}</clr-dg-cell>
       <clr-dg-cell
@@ -41,6 +42,5 @@
         </div>
       </clr-dg-cell>
     </clr-dg-row>
-    <clr-dg-footer>{{ (accounts | async)?.length }} Accounts</clr-dg-footer>
   </clr-datagrid>
 </div>

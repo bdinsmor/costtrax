@@ -138,7 +138,9 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+   
+  }
 
   resetForm() {
     this.project = new Project({ id: '1' });

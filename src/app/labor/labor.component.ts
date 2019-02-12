@@ -82,7 +82,7 @@ export class LaborComponent implements OnInit, OnDestroy {
 
   buildForm() {
     this.laborForm = new FormGroup({
-      autoSave: new FormControl(this.autoSaveEnabled)
+      autoSave: new FormControl({ value: this.autoSaveEnabled, disabled: true })
     });
     this.laborForm.valueChanges
       .pipe(
