@@ -1527,6 +1527,7 @@ export class Request {
   age: number;
   requestDate: Date;
   startDate: Date;
+  dateRangeStr: string[];
   endDate: Date;
   dateRange: Date[];
   signatures: Signatures;

@@ -1,5 +1,5 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -14,7 +14,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./attachments-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AttachmentsDialogComponent implements OnInit {
+export class AttachmentsDialogComponent implements OnInit, OnDestroy {
   selectedItem: Item;
   uploading = false;
   fileList: UploadFile[] = [];
@@ -35,8 +35,6 @@ export class AttachmentsDialogComponent implements OnInit {
     this.selectedItem = this.data.selectedItem;
     this.canDelete = this.data.canDelete;
     this.canAdd = this.data.canAdd;
-
-    console.log('canAdd: ' + this.canAdd);
     this.selectedItem.attachments.forEach((p: any) => {
       p.url = environment.serverUrl + '/attachment/' + p.id;
       if (p.fileName && p.fileName !== '') {
@@ -47,6 +45,8 @@ export class AttachmentsDialogComponent implements OnInit {
       this.fileList.push(p as UploadFile);
     });
   }
+
+  ngOnDestroy() {}
 
   done() {
     this.dialogRef.close({ fileList: this.fileList });

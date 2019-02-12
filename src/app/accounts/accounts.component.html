@@ -9,27 +9,6 @@
       </button>
     </div>
 
-    <clr-tabs class="col-2">
-      <clr-tab>
-        <button clrTabLink class="align-items-center">
-          <clr-icon shape="note"></clr-icon>
-          Active Accounts
-          <strong>({{ (activeAccounts$ | async)?.length }})</strong>
-        </button>
-        <clr-tab-content *clrIfActive>
-          <app-account-list [accounts]="activeAccounts$"> </app-account-list>
-        </clr-tab-content>
-      </clr-tab>
-      <clr-tab *ngIf="(archivedAccounts$ | async)?.length > 0">
-        <button clrTabLink class="align-items-center">
-          <clr-icon shape="tasks"></clr-icon>
-          Archived Accounts
-          <strong>({{ (archivedAccounts$ | async)?.length }})</strong>
-        </button>
-        <clr-tab-content *clrIfActive>
-          <app-account-list [accounts]="archivedAccounts$"> </app-account-list>
-        </clr-tab-content>
-      </clr-tab>
-    </clr-tabs>
+    <app-account-list [accounts]="accounts"> </app-account-list>
   </div>
 </div>
