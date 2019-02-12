@@ -1077,17 +1077,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       .subscribe((configurations: any) => {
         item.details.nodata = false;
         if (configurations && configurations.values.length > 1) {
-          console.log(
-            'configurationIds: ' +
-              JSON.stringify(configurations.values, null, 2)
-          );
           this.selectedItem = item;
           this.selectedIndex = index;
           this.selectedItem.details.configurations = configurations;
           this.selectConfiguration(item.details.year, configurations);
         } else if (configurations && configurations.values.length === 1) {
           const sc = configurations.values[0];
-          console.log('configurationId: ' + sc.configurationId);
           item.details.configurations = configurations;
           this.equipmentService
             .getRateDataForConfig(
