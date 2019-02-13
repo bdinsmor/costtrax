@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material';
-import { Router } from '@angular/router';
+import { MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { finalize } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
@@ -22,18 +21,25 @@ export class SyncDialogComponent implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
   changePassword = false;
+  private config: MatSnackBarConfig;
+  duration = 3000;
 
   constructor(
+    public snackBar: MatSnackBar,
     public dialogRef: MatDialogRef<any>,
-    private router: Router,
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private authenticationService: AuthenticationService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.createForm();
   }
 
-  ngOnInit() {}
+  openSnackBar(message: string, type: string = 'OK', action: string = 'OK') {
+    this.config = { duration: this.duration };
+    this.snackBar.open(message, action, this.config);
+  }
 
   cancelSync() {
     this.isLoading = false;
@@ -56,11 +62,12 @@ export class SyncDialogComponent implements OnInit {
             this.error = credentials.error;
           } else {
             this.authenticationService.setCreds(credentials.token);
-
+            this.openSnackBar('EquipmentWatch account synced');
             this.dialogRef.close({ success: true });
           }
         },
         (error: Error) => {
+          this.openSnackBar('EquipmentWatch account could not be synced');
           this.error = error.message;
         }
       );
@@ -68,7 +75,7 @@ export class SyncDialogComponent implements OnInit {
 
   private createForm() {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.minLength(1)]],
       password: ['', Validators.required],
       remember: true
     });

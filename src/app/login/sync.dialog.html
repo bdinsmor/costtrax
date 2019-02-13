@@ -23,8 +23,8 @@
           <mat-form-field class="full-width">
             <input
               matInput
-              placeholder="EquipmentWatch Email"
-              type="email"
+              placeholder="Username"
+              type="search"
               formControlName="email"
               required
             />
@@ -34,21 +34,21 @@
                 !loginForm.get('email').hasError('required')
               "
             >
-              Please enter a <strong>valid email address</strong>
+              Please enter your EquipmentWatch <strong>username</strong>
             </mat-error>
             <mat-error *ngIf="loginForm.get('email').hasError('required')">
-              Email is <strong>required</strong>
+              EquipmentWatch username is <strong>required</strong>
             </mat-error>
           </mat-form-field>
         </div>
         <div class="full-width pt-1">
           <mat-form-field class="fw">
             <input
+              matInput
               class="full-width"
               type="password"
-              matInput
+              autocomplete="off"
               formControlName="password"
-              autocomplete="current-password"
               [placeholder]="'Password'"
               required
             />
@@ -63,7 +63,7 @@
           </mat-form-field>
         </div>
         <div class="login-error" [hidden]="!error || isLoading">
-          Email or password incorrect.
+          Username and/or password incorrect.
         </div>
         <br />
       </div>
