@@ -368,7 +368,7 @@
     class="px-1 pt-1 full-width
     line-items"
   >
-    <div *ngFor="let listType of request.itemsByType">
+    <div class="clearfix" *ngFor="let listType of request.itemsByType">
       <app-line-items
         (allApprove)="approveAll($event)"
         [itemList]="listType"

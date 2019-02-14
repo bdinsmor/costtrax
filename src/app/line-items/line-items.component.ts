@@ -20,17 +20,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { EquipmentService } from '../equipment/equipment.service';
 import { RequestsService } from '../requests/requests.service';
-import {
-  Employee,
-  EmployeeFirstNameFilter,
-  EmployeeLastNameFilter,
-  EmployeeTradeFilter,
-  Equipment,
-  Item,
-  ItemList,
-  Project,
-  Utils,
-} from '../shared/model';
+import { Employee, Equipment, Item, ItemList, Project, Utils } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
@@ -71,9 +61,6 @@ class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
 })
 export class LineItemsComponent implements OnInit, OnDestroy {
   public dateRangeComparator = new ItemDateRangeComparator();
-  lastNameFilter = new EmployeeLastNameFilter();
-  firstNameFilter = new EmployeeFirstNameFilter();
-  tradeFilter = new EmployeeTradeFilter();
   dialogTitle: string;
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
   requestForm: FormGroup;
