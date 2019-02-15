@@ -31,6 +31,7 @@ import 'core-js/es6/string';
 import 'core-js/es6/symbol';
 import 'core-js/es6/weak-map';
 import 'web-animations-js';
+import '@webcomponents/custom-elements';
 import 'zone.js/dist/zone';
 
 /***************************************************************************************************

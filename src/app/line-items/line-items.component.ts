@@ -20,7 +20,14 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { EquipmentService } from '../equipment/equipment.service';
 import { RequestsService } from '../requests/requests.service';
-import { Employee, Equipment, Item, ItemList, Project, Utils } from '../shared/model';
+import {
+  Employee,
+  Equipment,
+  Item,
+  ItemList,
+  Project,
+  Utils,
+} from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
@@ -90,8 +97,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   @Input() itemList: ItemList;
   @Input() project: Project;
   @Input() requestId: string;
+  @Input() requestDates: string[];
   @Input() draftMode: boolean;
   @Input() requestStartDate: string;
+  @Input() printingInvoice = false;
   @Output() itemsChanged = new EventEmitter<any>();
   @Output() itemChanged = new EventEmitter<Item>();
   @Output() itemRemoved = new EventEmitter<Item>();
@@ -172,15 +181,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       {},
       { containerClass: this.colorTheme, dateInputFormat: 'YYYY-MM-DD' }
     );
-    this.equipmentService
-      .getDateNotifications()
-      .pipe(untilDestroyed(this))
-      .subscribe(msg => {
-        if (msg) {
-          // this.recalculateRates();
-        }
-      });
-
     this.authenticationService
       .getCreds()
       .pipe(untilDestroyed(this))
@@ -261,129 +261,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   getComps() {
     if (this.itemType !== 'equipment.rental') {
       return;
-    }
-  }
-
-  recalculateRates() {
-    if (
-      this.itemType !== 'equipment.active' &&
-      this.itemType !== 'equipment.standby' &&
-      this.itemType !== 'equipment.rental'
-    ) {
-      return;
-    }
-    const items = this.itemList.items;
-    let state = '';
-    if (
-      this.itemType === 'equipment.rental' ||
-      (this.itemType === 'equipment.active' &&
-        this.project.adjustments.equipment.active.regionalAdjustmentsEnabled) ||
-      (this.itemType === 'equipment.standby' &&
-        this.project.adjustments.equipment.standby.regionalAdjustmentsEnabled)
-    ) {
-      state = this.project.state;
-    }
-    if (
-      this.itemType === 'equipment.active' ||
-      this.itemType === 'equipment.standby'
-    ) {
-      this.equipmentService
-        .recalculateRatesForItems(
-          items,
-          state,
-          this.requestStartDate,
-          this.operatingAdjustment,
-          this.ownershipAdjustment,
-          this.standbyFactor
-        )
-        .subscribe((updatedConfigs: any) => {
-          updatedConfigs.map((config, index) => {
-            if (config && Object.keys(config).length > 0) {
-              const sc = this.itemList.items[index].details
-                .selectedConfiguration;
-              sc.rates = config;
-              if (this.itemType === 'equipment.active') {
-                if (
-                  this.project.adjustments.equipment.active
-                    .regionalAdjustmentsEnabled
-                ) {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedRate +
-                      +sc.rates.hourlyOperatingCostAdjusted
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostAdjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedRate
-                  ).toFixed(2);
-                } else {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedRate +
-                      +sc.rates.hourlyOperatingCostUnadjusted
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostUnadjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedRate
-                  ).toFixed(2);
-                }
-                sc.rates.method = sc.rates.fhwa;
-              } else if (this.itemType === 'equipment.standby') {
-                if (
-                  this.project.adjustments.equipment.standby
-                    .regionalAdjustmentsEnabled
-                ) {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedStandbyRate
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedStandby
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostAdjusted
-                  ).toFixed(2);
-
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedStandbyRate
-                  ).toFixed(2);
-                } else {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedStandbyRate
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedStandby
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostUnadjusted
-                  ).toFixed(2);
-
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedStandbyRate
-                  ).toFixed(2);
-                }
-                sc.rates.method = sc.rates.fhwa;
-              }
-
-              this.itemList.items[
-                index
-              ].details.selectedConfiguration = JSON.parse(JSON.stringify(sc));
-              this.itemList.items[index].details.fhwa = sc.rates.fhwa;
-              if (this.itemList.items[index].status.toUpperCase() !== 'DRAFT') {
-                this.saveChanges(index, this.itemList.items[index], false);
-              }
-            }
-          });
-          this.changeDetector.detectChanges();
-        });
-    } else {
     }
   }
 
@@ -1521,7 +1398,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveChanges(index: number, item: Item, showMsg = true) {
+  saveChanges(index: number, item: Item) {
     this.updateItemTotal(item);
     if (this.requestId && (!item.requestId || item.requestId === '')) {
       item.requestId = this.requestId;
@@ -1542,9 +1419,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           this.itemList.items[index] = new Item(item);
           item.beingEdited = false;
           this.itemsChanged.emit({ type: item.type, index: index });
-          if (showMsg) {
-            this.openSnackBar('Line Item Updated!', 'ok', 'OK');
-          }
+          this.openSnackBar('Line Item Updated!', 'ok', 'OK');
           this.changeDetector.detectChanges();
         },
         (error: any) => {
