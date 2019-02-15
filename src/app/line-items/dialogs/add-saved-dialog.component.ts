@@ -3,13 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs';
 
 import { LaborService } from '../../labor/labor.service';
-import {
-  Employee,
-  EmployeeFirstNameFilter,
-  EmployeeLastNameFilter,
-  EmployeeTradeFilter,
-  Equipment,
-} from '../../shared/model';
+import { Employee, Equipment } from '../../shared/model';
 import { EquipmentService } from './../../equipment/equipment.service';
 
 @Component({
@@ -22,9 +16,6 @@ export class AddSavedDialogComponent implements OnInit, OnDestroy {
   projectId: string;
   models: Observable<Equipment[]>;
   employees: Observable<Employee[]>;
-  lastNameFilter = new EmployeeLastNameFilter();
-  firstNameFilter = new EmployeeFirstNameFilter();
-  tradeFilter = new EmployeeTradeFilter();
   selected = [];
   constructor(
     private laborService: LaborService,

@@ -1,4 +1,4 @@
-import { ClrDatagridComparatorInterface, ClrDatagridStringFilterInterface } from '@clr/angular';
+import { ClrDatagridComparatorInterface } from '@clr/angular';
 import { DateTime } from 'luxon';
 
 import { DatesPipe } from '../core/pipes/dates.pipe';
@@ -17,27 +17,6 @@ export interface Attachment {
   size: number;
   type: string;
   tempId: string;
-}
-
-export class EmployeeFirstNameFilter
-  implements ClrDatagridStringFilterInterface<Employee> {
-  accepts(employee: Employee, search: string): boolean {
-    return employee.firstName.toLowerCase().indexOf(search) >= 0;
-  }
-}
-
-export class EmployeeLastNameFilter
-  implements ClrDatagridStringFilterInterface<Employee> {
-  accepts(employee: Employee, search: string): boolean {
-    return employee.lastName.toLowerCase().indexOf(search) >= 0;
-  }
-}
-
-export class EmployeeTradeFilter
-  implements ClrDatagridStringFilterInterface<Employee> {
-  accepts(employee: Employee, search: string): boolean {
-    return employee.trade.toLowerCase().indexOf(search) >= 0;
-  }
 }
 
 export class Error403 extends Error {
@@ -241,22 +220,7 @@ export class User {
   }
 }
 
-export class Activity {
-  project: string;
-  request: string;
-  details: string;
-  timestamp: Date;
-  constructor(activity: any) {
-    {
-      this.project = activity.project || '';
-      this.request = activity.request || '';
-      this.details = activity.details || '';
-      this.timestamp = activity.timestamp || new Date();
-    }
-  }
-}
-
-export class Adjustments {
+export interface Adjustments {
   subcontractor: { markup: 0.1 };
   labor: {
     markup: 0.1;
@@ -272,7 +236,7 @@ export class Adjustments {
   };
 }
 
-export class Comment {
+export interface Comment {
   id: string;
   itemId: string;
   author: string;
@@ -1137,11 +1101,11 @@ export class Project {
   }
 }
 
-export class Email {
+export interface Email {
   email: string;
 }
 
-export class Admin {
+export interface Admin {
   id: string;
   email: string;
 }
@@ -1434,7 +1398,7 @@ export class Equipment {
   }
 }
 
-export class Dispute {
+export interface Dispute {
   id: string;
   comments: string;
   type: string;
