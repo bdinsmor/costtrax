@@ -1359,7 +1359,7 @@
                   <ng-container ngProjectAs="clr-dg-row-detail"
                     *ngIf="manageRequests || manageProject">
                     <clr-dg-row-detail *clrIfExpanded>
-                      <div class="col-8 pb-2">
+                      <div class="col-8">
                         <h6 class="no-top-margin">Rate Verification: Rental Cost</h6>
                         <h6 class="muted-text no-top-margin"
                           *ngIf="!item.details.terms ||
@@ -1468,7 +1468,7 @@
                               </tbody>
                             </table>
                           </div>
-                          <div class="col-8">
+                          <div class="col-8 pb-2">
                             <h6 *ngIf="item.details.rentalHouseRates &&
                               item.details.rentalHouseRates.length> 0">Rate
                               Verification: Local Retail Rates for
