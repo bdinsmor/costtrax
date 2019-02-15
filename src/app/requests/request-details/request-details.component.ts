@@ -232,7 +232,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
             .pipe(map((event: CdkScrollable) => this.getScrollPosition(event)))
             .subscribe(scrollTop =>
               this.ngZone.run(() => {
-                console.log('shrink: ' + scrollTop + ' ' + this.shrinkToolbar);
                 if (this.shrinkToolbar) {
                   this.SHRINK_TOP_SCROLL_POSITION = 50;
                 } else {
@@ -258,7 +257,6 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
             .pipe(map((event: CdkScrollable) => this.getScrollPosition(event)))
             .subscribe(scrollTop =>
               this.ngZone.run(() => {
-                console.log('shrink: ' + scrollTop + ' ' + this.shrinkToolbar);
                 if (this.shrinkToolbar) {
                   this.SHRINK_TOP_SCROLL_POSITION = 50;
                 } else {
