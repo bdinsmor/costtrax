@@ -1,4 +1,10 @@
-import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpHeaders,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { from, Observable } from 'rxjs';
@@ -34,6 +40,9 @@ export class TokenInterceptor implements HttpInterceptor {
     }
     if (!request.url.includes(environment.attachmentURL)) {
       headerSettings['Authorization'] = 'Bearer ' + token;
+      headerSettings['Cache-Control'] = 'no-cache';
+      headerSettings['Pragma'] = 'no-cache';
+      headerSettings['Expires'] = 'Sat, 01 Jan 2000 00:00:00 GMT';
     }
     const newHeader = new HttpHeaders(headerSettings);
     changedRequest = request.clone({
