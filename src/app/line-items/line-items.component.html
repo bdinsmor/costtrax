@@ -1,4 +1,4 @@
-<div class="line-items full-width pb-1">
+<div class="line-items full-width pb-1 px-1">
   <div class="m-0">
     <div *ngIf="itemList.items" class="pt-1 full-width">
       <div class="full-width align-items-center row">
@@ -554,7 +554,7 @@
                     </div>
                   </div>
                   <div class="row no-row-margins col-10 pb-1">
-                    <div class="col row-margins" *ngIf="submitRequests">
+                    <div class="col-3 row-margins" *ngIf="submitRequests">
 
                       <h6 class="strong left">Hourly Ownership & Operating Costs</h6>
                       <table *ngIf="item.details.configurations &&
@@ -582,157 +582,158 @@
                         </h6>
                       </div>
 
-                      <div class="row no-row-margins">
-                        <div class="col">
-                          <h6 class="strong left">Rate Element Allocation</h6>
-                          <h6 class="strong left no-top-margin">
-                            Ownership Costs, Unadjusted (Monthly)
-                          </h6>
-                          <h6 class="muted-text no-top-margin"
-                            *ngIf="!item.details.selectedConfiguration ||
-                            !item.details.selectedConfiguration.rates">
-                            Unable to load ownership cost details
-                          </h6>
-                          <table *ngIf="item.details.selectedConfiguration &&
-                            item.details.selectedConfiguration.rates"
-                            class="no-top-margin table table-compact
-                            table-bordered table-striped comparison-table
-                            full-width">
-                            <thead>
-                              <th class="left">Element</th>
-                              <th class="left">Percentage</th>
-                              <th class="left">Amount</th>
-                            </thead>
-                            <tbody>
-                              <tr class="justify-content-center">
-                                <td class="strong left">Depreciation</td>
-                                <td class="left">
-                                  {{
-                                  100 *
-                                  item.details.selectedConfiguration.rates.depreciation
-                                  | number: '1.2-2'
-                                  }}%
-                                </td>
-                                <td class="left">
-                                  {{
-                                  item.details.selectedConfiguration.rates.depreciation
-                                  *
-                                  item.details.selectedConfiguration.rates
-                                  .monthlyOwnershipCostUnadjusted | currency
-                                  }}
-                                </td>
-                              </tr>
-                              <tr class="justify-content-center">
-                                <td class="strong left">Overhaul</td>
-                                <td class="left">
-                                  {{
-                                  100 *
-                                  item.details.selectedConfiguration.rates.overhaul
-                                  | number: '1.2-2'
-                                  }}%
-                                </td>
-                                <td class="left">
-                                  {{
-                                  item.details.selectedConfiguration.rates.overhaul
-                                  *
-                                  item.details.selectedConfiguration.rates
-                                  .monthlyOwnershipCostUnadjusted | currency
-                                  }}
-                                </td>
-                              </tr>
-                              <tr class="justify-content-center">
-                                <td class="strong left">Cost of Facilities
-                                  Capital</td>
-                                <td class="left">
-                                  {{
-                                  100 *
-                                  item.details.selectedConfiguration.rates
-                                  .costOfFacitiliesCaptial | number: '1.2-2'
-                                  }}%
-                                </td>
-                                <td class="left">
-                                  {{
-                                  item.details.selectedConfiguration.rates
-                                  .costOfFacitiliesCaptial *
-                                  item.details.selectedConfiguration.rates
-                                  .monthlyOwnershipCostUnadjusted | currency
-                                  }}
-                                </td>
-                              </tr>
-                              <tr class="justify-content-center">
-                                <td class="strong left">Indirect</td>
-                                <td class="left">
-                                  {{
-                                  100 *
-                                  item.details.selectedConfiguration.rates.overhead
-                                  | number: '1.2-2'
-                                  }}%
-                                </td>
-                                <td class="left">
-                                  {{
-                                  item.details.selectedConfiguration.rates.overhead
-                                  *
-                                  item.details.selectedConfiguration
-                                  .rates.monthlyOwnershipCostUnadjusted |
-                                  currency
-                                  }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div class="col">
-                          <h6 class="strong left">Rate Element Allocation</h6>
-                          <h6 class="strong left no-top-margin">Operating Costs,
-                            (Hourly)</h6>
-                          <h6 class="muted-text no-top-margin"
-                            *ngIf="!item.details.selectedConfiguration ||
-                            !item.details.selectedConfiguration.rates">
-                            Unable to load operating cost details
-                          </h6>
-                          <table *ngIf="item.details.selectedConfiguration &&
-                            item.details.selectedConfiguration.rates"
-                            class="no-top-margin table table-compact
-                            table-bordered table-striped comparison-table
-                            full-width">
-                            <thead>
-                              <th class="left">Element</th>
-                              <th class="left">Percentage</th>
-                              <th class="left">Amount</th>
-                            </thead>
-                            <tbody>
-                              <tr class="justify-content-center">
-                                <td class="left" style="width: 125px">
-                                  Fuel @
-                                  {{
-                                  item.details.selectedConfiguration.rates.fuelCost
-                                  |
-                                  currency
-                                  }}
-                                </td>
-                                <td class="left">
-                                  {{
-                                  100 *
-                                  (item.details.selectedConfiguration
-                                  .rates.fuel /
-                                  item.details.selectedConfiguration
-                                  .rates.hourlyOperatingCostFinal) | number:
-                                  '1.2-2'
-                                  }}%
-                                </td>
-                                <td class="left">
-                                  {{
-                                  item.details.selectedConfiguration
-                                  .rates.fuel | currency
-                                  }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
+                      <div class="col no-row-margins">
+
+                        <h6 class="strong left">Rate Element Allocation</h6>
+                        <h6 class="strong left no-top-margin">
+                          Ownership Costs, Unadjusted (Monthly)
+                        </h6>
+                        <h6 class="muted-text no-top-margin"
+                          *ngIf="!item.details.selectedConfiguration ||
+                          !item.details.selectedConfiguration.rates">
+                          Unable to load ownership cost details
+                        </h6>
+                        <table *ngIf="item.details.selectedConfiguration &&
+                          item.details.selectedConfiguration.rates"
+                          class="no-top-margin table table-compact
+                          table-bordered table-striped comparison-table
+                          full-width">
+                          <thead>
+                            <th class="left">Element</th>
+                            <th class="left">Percentage</th>
+                            <th class="left">Amount</th>
+                          </thead>
+                          <tbody>
+                            <tr class="justify-content-center">
+                              <td class="strong left">Depreciation</td>
+                              <td class="left">
+                                {{
+                                100 *
+                                item.details.selectedConfiguration.rates.depreciation
+                                | number: '1.2-2'
+                                }}%
+                              </td>
+                              <td class="left">
+                                {{
+                                item.details.selectedConfiguration.rates.depreciation
+                                *
+                                item.details.selectedConfiguration.rates
+                                .monthlyOwnershipCostUnadjusted | currency
+                                }}
+                              </td>
+                            </tr>
+                            <tr class="justify-content-center">
+                              <td class="strong left">Overhaul</td>
+                              <td class="left">
+                                {{
+                                100 *
+                                item.details.selectedConfiguration.rates.overhaul
+                                | number: '1.2-2'
+                                }}%
+                              </td>
+                              <td class="left">
+                                {{
+                                item.details.selectedConfiguration.rates.overhaul
+                                *
+                                item.details.selectedConfiguration.rates
+                                .monthlyOwnershipCostUnadjusted | currency
+                                }}
+                              </td>
+                            </tr>
+                            <tr class="justify-content-center">
+                              <td class="strong left">Cost of Facilities
+                                Capital</td>
+                              <td class="left">
+                                {{
+                                100 *
+                                item.details.selectedConfiguration.rates
+                                .costOfFacitiliesCaptial | number: '1.2-2'
+                                }}%
+                              </td>
+                              <td class="left">
+                                {{
+                                item.details.selectedConfiguration.rates
+                                .costOfFacitiliesCaptial *
+                                item.details.selectedConfiguration.rates
+                                .monthlyOwnershipCostUnadjusted | currency
+                                }}
+                              </td>
+                            </tr>
+                            <tr class="justify-content-center">
+                              <td class="strong left">Indirect</td>
+                              <td class="left">
+                                {{
+                                100 *
+                                item.details.selectedConfiguration.rates.overhead
+                                | number: '1.2-2'
+                                }}%
+                              </td>
+                              <td class="left">
+                                {{
+                                item.details.selectedConfiguration.rates.overhead
+                                *
+                                item.details.selectedConfiguration
+                                .rates.monthlyOwnershipCostUnadjusted |
+                                currency
+                                }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                      <div class="col">
+                        <h6 class="strong left">Rate Element Allocation</h6>
+                        <h6 class="strong left no-top-margin">Operating Costs,
+                          (Hourly)</h6>
+                        <h6 class="muted-text no-top-margin"
+                          *ngIf="!item.details.selectedConfiguration ||
+                          !item.details.selectedConfiguration.rates">
+                          Unable to load operating cost details
+                        </h6>
+                        <table *ngIf="item.details.selectedConfiguration &&
+                          item.details.selectedConfiguration.rates"
+                          class="no-top-margin table table-compact
+                          table-bordered table-striped comparison-table
+                          full-width">
+                          <thead>
+                            <th class="left">Element</th>
+                            <th class="left">Percentage</th>
+                            <th class="left">Amount</th>
+                          </thead>
+                          <tbody>
+                            <tr class="justify-content-center">
+                              <td class="left" style="width: 125px">
+                                Fuel @
+                                {{
+                                item.details.selectedConfiguration.rates.fuelCost
+                                |
+                                currency
+                                }}
+                              </td>
+                              <td class="left">
+                                {{
+                                100 *
+                                (item.details.selectedConfiguration
+                                .rates.fuel /
+                                item.details.selectedConfiguration
+                                .rates.hourlyOperatingCostFinal) | number:
+                                '1.2-2'
+                                }}%
+                              </td>
+                              <td class="left">
+                                {{
+                                item.details.selectedConfiguration
+                                .rates.fuel | currency
+                                }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
+
 
 
                 </clr-dg-row-detail>
@@ -987,141 +988,141 @@
                           </table>
                         </div>
 
-                        <div class="row no-row-margins">
-                          <div class="col">
-                            <h6 class="strong left">Rate Element Allocation</h6>
-                            <h6 class="strong no-top-margin">
-                              Ownership Costs, Unadjusted (Monthly)
-                            </h6>
-                            <table *ngIf="item.details.selectedConfiguration &&
-                              item.details.selectedConfiguration.rates"
-                              class="no-top-margin table table-compact
-                              table-bordered table-striped comparison-table
-                              full-width">
-                              <thead>
-                                <th class="left">Element</th>
-                                <th class="left">Percentage</th>
-                                <th class="left">Amount</th>
-                              </thead>
-                              <tbody>
-                                <tr class="justify-content-center">
-                                  <td class="strong left">Depreciation</td>
-                                  <td class="left">
-                                    {{
-                                    100 *
-                                    item.details.selectedConfiguration.rates.depreciation
-                                    | number: '1.2-2'
-                                    }}%
-                                  </td>
-                                  <td class="left">
-                                    {{
-                                    item.details.selectedConfiguration.rates.depreciation
-                                    *
-                                    item.details.selectedConfiguration.rates
-                                    .monthlyOwnershipCostFinal | currency
-                                    }}
-                                  </td>
-                                </tr>
-                                <tr class="justify-content-center">
-                                  <td class="strong left">Overhaul</td>
-                                  <td class="left">
-                                    {{
-                                    100 *
-                                    item.details.selectedConfiguration.rates.overhaul
-                                    | number: '1.2-2'
-                                    }}%
-                                  </td>
-                                  <td class="left">
-                                    {{
-                                    item.details.selectedConfiguration.rates.overhaul
-                                    *
-                                    item.details.selectedConfiguration.rates
-                                    .monthlyOwnershipCostFinal | currency
-                                    }}
-                                  </td>
-                                </tr>
-                                <tr class="justify-content-center">
-                                  <td class="strong left">Cost of Facilities
-                                    Capital</td>
-                                  <td class="left">
-                                    {{
-                                    100 *
-                                    item.details.selectedConfiguration.rates
-                                    .costOfFacitiliesCaptial | number: '1.2-2'
-                                    }}%
-                                  </td>
-                                  <td class="left">
-                                    {{
-                                    item.details.selectedConfiguration.rates
-                                    .costOfFacitiliesCaptial *
-                                    item.details.selectedConfiguration.rates
-                                    .monthlyOwnershipCostFinal | currency
-                                    }}
-                                  </td>
-                                </tr>
-                                <tr class="justify-content-center">
-                                  <td class="strong left">Indirect</td>
-                                  <td class="left">
-                                    {{
-                                    100 *
-                                    item.details.selectedConfiguration.rates.overhead
-                                    | number: '1.2-2'
-                                    }}%
-                                  </td>
-                                  <td class="left">
-                                    {{
-                                    item.details.selectedConfiguration.rates.overhead
-                                    *
-                                    item.details.selectedConfiguration.rates
-                                    .monthlyOwnershipCostFinal | currency
-                                    }}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                          <div class="col">
-                            <h6 class="strong left">Rate Element Allocation</h6>
-                            <h6 class="strong no-top-margin">Operating Costs,
-                              (Hourly)</h6>
-                            <table *ngIf="item.details.selectedConfiguration &&
-                              item.details.selectedConfiguration.rates"
-                              class="no-top-margin table table-compact
-                              table-bordered table-striped comparison-table
-                              full-width">
-                              <thead>
-                                <th class="left">Element</th>
-                                <th class="left">Percentage</th>
-                                <th class="left">Amount</th>
-                              </thead>
-                              <tbody>
-                                <tr class="justify-content-center">
-                                  <td class="left" style="width: 125px">
-                                    Fuel @
-                                    {{
-                                    item.details.selectedConfiguration.rates.fuelCost
-                                    | currency
-                                    }}
-                                  </td>
-                                  <td class="left">
-                                    {{
-                                    100 *
-                                    (item.details.selectedConfiguration.rates
-                                    .fuelOperatingCost /
-                                    item.details.selectedConfiguration.rates
-                                    .hourlyOperatingCostFinal) | number: '1.2-2'
-                                    }}%
-                                  </td>
-                                  <td class="left">
-                                    {{
-                                    item.details.selectedConfiguration.rates.fuelOperatingCost
-                                    | currency
-                                    }}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
+
+                        <div class="col">
+                          <h6 class="strong left">Rate Element Allocation</h6>
+                          <h6 class="strong no-top-margin">
+                            Ownership Costs, Unadjusted (Monthly)
+                          </h6>
+                          <table *ngIf="item.details.selectedConfiguration &&
+                            item.details.selectedConfiguration.rates"
+                            class="no-top-margin table table-compact
+                            table-bordered table-striped comparison-table
+                            full-width">
+                            <thead>
+                              <th class="left">Element</th>
+                              <th class="left">Percentage</th>
+                              <th class="left">Amount</th>
+                            </thead>
+                            <tbody>
+                              <tr class="justify-content-center">
+                                <td class="strong left">Depreciation</td>
+                                <td class="left">
+                                  {{
+                                  100 *
+                                  item.details.selectedConfiguration.rates.depreciation
+                                  | number: '1.2-2'
+                                  }}%
+                                </td>
+                                <td class="left">
+                                  {{
+                                  item.details.selectedConfiguration.rates.depreciation
+                                  *
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostFinal | currency
+                                  }}
+                                </td>
+                              </tr>
+                              <tr class="justify-content-center">
+                                <td class="strong left">Overhaul</td>
+                                <td class="left">
+                                  {{
+                                  100 *
+                                  item.details.selectedConfiguration.rates.overhaul
+                                  | number: '1.2-2'
+                                  }}%
+                                </td>
+                                <td class="left">
+                                  {{
+                                  item.details.selectedConfiguration.rates.overhaul
+                                  *
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostFinal | currency
+                                  }}
+                                </td>
+                              </tr>
+                              <tr class="justify-content-center">
+                                <td class="strong left">Cost of Facilities
+                                  Capital</td>
+                                <td class="left">
+                                  {{
+                                  100 *
+                                  item.details.selectedConfiguration.rates
+                                  .costOfFacitiliesCaptial | number: '1.2-2'
+                                  }}%
+                                </td>
+                                <td class="left">
+                                  {{
+                                  item.details.selectedConfiguration.rates
+                                  .costOfFacitiliesCaptial *
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostFinal | currency
+                                  }}
+                                </td>
+                              </tr>
+                              <tr class="justify-content-center">
+                                <td class="strong left">Indirect</td>
+                                <td class="left">
+                                  {{
+                                  100 *
+                                  item.details.selectedConfiguration.rates.overhead
+                                  | number: '1.2-2'
+                                  }}%
+                                </td>
+                                <td class="left">
+                                  {{
+                                  item.details.selectedConfiguration.rates.overhead
+                                  *
+                                  item.details.selectedConfiguration.rates
+                                  .monthlyOwnershipCostFinal | currency
+                                  }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col">
+                          <h6 class="strong left">Rate Element Allocation</h6>
+                          <h6 class="strong no-top-margin">Operating Costs,
+                            (Hourly)</h6>
+                          <table *ngIf="item.details.selectedConfiguration &&
+                            item.details.selectedConfiguration.rates"
+                            class="no-top-margin table table-compact
+                            table-bordered table-striped comparison-table
+                            full-width">
+                            <thead>
+                              <th class="left">Element</th>
+                              <th class="left">Percentage</th>
+                              <th class="left">Amount</th>
+                            </thead>
+                            <tbody>
+                              <tr class="justify-content-center">
+                                <td class="left" style="width: 125px">
+                                  Fuel @
+                                  {{
+                                  item.details.selectedConfiguration.rates.fuelCost
+                                  | currency
+                                  }}
+                                </td>
+                                <td class="left">
+                                  {{
+                                  100 *
+                                  (item.details.selectedConfiguration.rates
+                                  .fuelOperatingCost /
+                                  item.details.selectedConfiguration.rates
+                                  .hourlyOperatingCostFinal) | number: '1.2-2'
+                                  }}%
+                                </td>
+                                <td class="left">
+                                  {{
+                                  item.details.selectedConfiguration.rates.fuelOperatingCost
+                                  | currency
+                                  }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+
                         </div>
                       </div>
                     </div>
@@ -1358,7 +1359,7 @@
                   <ng-container ngProjectAs="clr-dg-row-detail"
                     *ngIf="manageRequests || manageProject">
                     <clr-dg-row-detail *clrIfExpanded>
-                      <div class="col-10">
+                      <div class="col-8 pb-2">
                         <h6 class="no-top-margin">Rate Verification: Rental Cost</h6>
                         <h6 class="muted-text no-top-margin"
                           *ngIf="!item.details.terms ||
@@ -1466,6 +1467,8 @@
                                 </tr>
                               </tbody>
                             </table>
+                          </div>
+                          <div class="col-8">
                             <h6 *ngIf="item.details.rentalHouseRates &&
                               item.details.rentalHouseRates.length> 0">Rate
                               Verification: Local Retail Rates for
@@ -1510,6 +1513,7 @@
                               </tbody>
                             </table>
                           </div>
+
 
                         </clr-dg-row-detail>
                       </ng-container>
