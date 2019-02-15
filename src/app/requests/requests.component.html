@@ -45,14 +45,14 @@
               justify-content-end">
               <button
                 *ngIf="submitRequests"
-                class="ripple icon-button icon-30"
+                class="icon-button ripple icon-30"
                 matTooltip="Clone Request"
                 (click)="clone(item)">
                 <mat-icon color="primary" svgIcon="duplicate"></mat-icon>
               </button>
               <button
                 *ngIf="submitRequests && item.isDraft()"
-                class="icon-30 ripple icon-button mr-1"
+                class="icon-button ripple mr-1"
                 matTooltip="Delete Request"
                 (click)="removeRequest(item)">
                 <mat-icon color="warn">delete</mat-icon>

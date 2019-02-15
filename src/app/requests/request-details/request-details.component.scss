@@ -1,121 +1,122 @@
 .gray {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .shrink-toolbar {
-    height: 15px !important;
-    background-color: red !important;
+  height: 15px !important;
+  background-color: red !important;
 }
 
 .hero-toolbar {
-    transition: height 0.5s;
-    height: 100%;
-    position: fixed;
-    top: 55px;
+  transition: height 0.5s;
+  height: 100%;
+  position: fixed;
+  top: 55px;
 }
 
 .request-details-toolbar.ng-enter,
 .request-details-toolbar.ng-leave {
-    -webkit-transition: opacity ease-in-out 1s;
-    -moz-transition: opacity ease-in-out 1s;
-    -ms-transition: opacity ease-in-out 1s;
-    -o-transition: opacity ease-in-out 1s;
-    transition: opacity ease-in-out 1s;
+  -webkit-transition: opacity ease-in-out 1s;
+  -moz-transition: opacity ease-in-out 1s;
+  -ms-transition: opacity ease-in-out 1s;
+  -o-transition: opacity ease-in-out 1s;
+  transition: opacity ease-in-out 1s;
 }
 
 .request-details-toolbar.ng-enter,
 .request-details-toolbar.ng-leave.ng-leave-active {
-    opacity: 0;
+  opacity: 0;
 }
 
 .request-details-toolbar.ng-leave,
 .request-details-toolbar.ng-enter.ng-enter-active {
-    opacity: 1;
+  opacity: 1;
 }
 
 .date-range-picker {
-    min-width: 235px !important;
+  min-width: 235px !important;
 }
 
 input[bsdaterangepicker] {
-    min-width: 235px !important;
+  min-width: 235px !important;
 }
 
 .full-status-height {
-    min-height: 40px;
+  min-height: 40px;
 }
 
 .section-label {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .cost-label {
-    color: #003d79;
+  color: #003d79;
 }
 
 .card-header {
-    border-radius: 4px;
+  border-radius: 4px;
 }
 
 .project-section {
-    background-color: white;
-    padding: 14px;
-    margin-top: 4px;
-    border-radius: 4px;
+  background-color: white;
+  padding: 14px;
+  margin-top: 4px;
+  border-radius: 4px;
 }
 
 .datagrid-host {
-    max-height: 60vh !important;
-    padding-top: 0 !important;
+  display: flex;
+  max-height: 60vh !important;
+  padding-top: 0 !important;
 }
 
 .primary-label {
-    color: #003d79;
+  color: #003d79;
 }
 
 .warning-label {
-    color: #f44336;
+  color: #f44336;
 }
 
 .row-label {
-    width: 160px !important;
+  width: 160px !important;
 }
 
 .pending {
-    background: #e9984c;
-    border-radius: 4px;
+  background: #e9984c;
+  border-radius: 4px;
 }
 
 .complete {
-    background: #218838;
-    border-radius: 4px;
+  background: #218838;
+  border-radius: 4px;
 }
 
 #invoice-contents {
-    z-index: 5000;
+  z-index: 5000;
 }
 
 .requestor-complete {
-    background: red;
-    border-radius: 4px;
+  background: red;
+  border-radius: 4px;
 }
 
 .light-text {
-    color: #eee !important;
+  color: #eee !important;
 }
 
 .totals-table table,
 tr,
 td {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
 
 .totals-table {
-    border: none !important;
-    background: inherit !important;
-    font-size: 12px !important;
+  border: none !important;
+  background: inherit !important;
+  font-size: 12px !important;
 }
 
 .small-top-padding {
-    padding-top: 8px !important;
+  padding-top: 8px !important;
 }
