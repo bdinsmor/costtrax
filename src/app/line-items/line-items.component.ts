@@ -6,10 +6,16 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
@@ -26,7 +32,7 @@ import {
   Item,
   ItemList,
   Project,
-  Utils,
+  Utils
 } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
@@ -150,6 +156,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   itemTypeDisplay: string;
 
   accountSynced = false;
+  regionalAdjustmentsEnabled = false;
+
   /*
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
@@ -220,6 +228,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         this.itemType === 'equipment.rental')
     ) {
       this.adjustments = this.project.adjustments.equipment;
+      if (this.itemType === 'equipment.rental') {
+        this.regionalAdjustmentsEnabled = true;
+      } else if (this.adjustments.active) {
+        this.regionalAdjustmentsEnabled = this.adjustments.active.regionalAdjustmentsEnabled;
+      } else if (this.adjustments.standby) {
+        this.regionalAdjustmentsEnabled = this.adjustments.standby.regionalAdjustmentsEnabled;
+      }
       if (this.adjustments.active && this.adjustments.operating) {
         this.operatingAdjustment = +this.adjustments.active.operating / 100;
       }

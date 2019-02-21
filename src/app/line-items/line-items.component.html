@@ -4,10 +4,12 @@
       <div class="full-width align-items-center row">
         <div class="align-items-center column">
           <h4 class="mt-0 pr-1">{{itemTypeDisplay}}</h4>
-          <h5 *ngIf="itemType === 'equipment.active' || itemType ===
+          <h5 *ngIf="itemType ===
+            'equipment.active' || itemType ===
             'equipment.rental' || itemType === 'equipment.standby'"
             class="no-top-margin">Location:
-            {{project.state}} | Ownership:
+            <span *ngIf="regionalAdjustmentsEnabled">{{project.state}}</span><span
+              *ngIf="!regionalAdjustmentsEnabled">none</span> | Ownership:
             {{project.adjustments.equipment.active.ownership}}%
             | Operating: {{project.adjustments.equipment.active.operating}}%</h5>
           <h5 *ngIf="!accountSynced && (itemType === 'equipment.active' ||

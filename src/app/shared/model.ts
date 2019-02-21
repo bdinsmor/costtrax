@@ -875,6 +875,7 @@ export class Project {
     let subcontractorTotal = 0;
     let otherTotal = 0;
     for (let i = 0; i < requestJSON.length; i++) {
+// tslint:disable-next-line: no-use-before-declare
       const r = new Request(requestJSON[i]);
 
       total += +r.total;
@@ -1049,8 +1050,10 @@ export class Project {
         project.otherCostsEnabled || project.otherCheck || true;
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
+// tslint:disable-next-line: no-use-before-declare
         this.account = new Account({ id: project.accountId });
       } else {
+// tslint:disable-next-line: no-use-before-declare
         this.account = project.account || new Account({});
       }
       this.roles = project.roles;
