@@ -601,7 +601,6 @@ export class EquipmentService implements OnDestroy {
 
   getRateData(state: string = '', choices: Equipment[], duration: number = 1) {
     const returns = [];
-    console.log('# choices: ' + choices.length);
     choices.forEach((e: Equipment) => {
       returns.push(this.getEquipmentRates(e, state));
     });
