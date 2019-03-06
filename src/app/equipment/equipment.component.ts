@@ -7,9 +7,11 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Papa } from 'ngx-papaparse';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
@@ -21,6 +23,7 @@ import { Equipment } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentService } from './equipment.service';
+import { EquipmentUploadDialogComponent } from './upload-equipment-dialog.component';
 
 @Component({
   selector: 'app-equipment',
@@ -30,6 +33,7 @@ import { EquipmentService } from './equipment.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EquipmentComponent implements OnInit, OnDestroy {
+  @ViewChild('file') file;
   @Input() items: Equipment[];
   @Input() projectId: string;
   @Input() state: string;
@@ -67,6 +71,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private equipmentService: EquipmentService,
+    private papaParse: Papa,
     private changeDetector: ChangeDetectorRef
   ) {}
 
@@ -430,6 +435,37 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   }
   addMisc() {
     this.items = [...this.items, new Equipment({})];
+  }
+
+  uploadEquipment() {
+    this.file.nativeElement.click();
+  }
+
+  uploadEquipment2() {
+    const dialogRef = this.dialog.open(EquipmentUploadDialogComponent, {
+      width: '50vw',
+      disableClose: true,
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.fileList) {
+        this.changeDetector.detectChanges();
+        this.changeDetector.markForCheck();
+      }
+    });
+  }
+
+  parse(files: FileList): void {
+    const file: File = files.item(0);
+    const reader: FileReader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = e => {
+      const csv = reader.result as string;
+      const parsed = this.papaParse.parse(csv, { header: true });
+      console.log('data: ' + JSON.stringify(parsed, null, 2));
+      // do something with parsed CSV
+    };
   }
 
   saveChanges(index: number, item: Equipment) {
