@@ -47,7 +47,7 @@
   </section>
 
   <clr-datagrid *ngIf="accountSynced">
-    <clr-dg-column [clrDgField]="'id'" style="width:50px">ID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'id'" style="width:50px"></clr-dg-column>
     <clr-dg-column [clrDgField]="'make'" style="width:200px"
       >Make</clr-dg-column
     >
@@ -64,7 +64,7 @@
       >Serial</clr-dg-column
     >
     <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
-    <clr-dg-column style="width:80px">Actions</clr-dg-column>
+    <clr-dg-column style="width:120px"></clr-dg-column>
     <clr-dg-row
       *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
       [clrDgItem]="item"
@@ -167,6 +167,21 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div class="row justify-content-end">
+          <button
+            class="ripple icon-30 icon-button"
+            matTooltip="Edit Configuration"
+            (click)="editConfiguration(i, item)"
+          >
+            <mat-icon *ngIf="!item.details.selectedConfiguration" color="accent"
+              >notification_important</mat-icon
+            >
+
+            <mat-icon
+              *ngIf="item.details.selectedConfiguration"
+              class="warning-fill"
+              svgIcon="notification_important"
+            ></mat-icon>
+          </button>
           <button
             *ngIf="item.isDraft()"
             class="ripple icon-30 icon-button

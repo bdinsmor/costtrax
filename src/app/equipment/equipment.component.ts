@@ -10,7 +10,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Papa } from 'ngx-papaparse';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Subject } from 'rxjs';
@@ -72,8 +73,17 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private equipmentService: EquipmentService,
     private papaParse: Papa,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
     private changeDetector: ChangeDetectorRef
-  ) {}
+  ) {
+    this.matIconRegistry.addSvgIcon(
+      'notification_important',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        '../../assets/icons/notification_important-24.svg'
+      )
+    );
+  }
 
   ngOnInit() {
     this.buildForm();
@@ -132,6 +142,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   autoSave(autoSaveValue) {
     //   this.equipmentService.updateAutoSave(autoSaveValue);
   }
+
+  editConfiguration(index: number, e: Equipment) {}
 
   modelChanged(item: Equipment) {}
 
@@ -461,9 +473,11 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     const reader: FileReader = new FileReader();
     reader.readAsText(file);
     reader.onload = e => {
-      const csv = reader.result as string;
-      const parsed = this.papaParse.parse(csv, { header: true });
+      const csvStr = reader.result as string;
+      const parsed = this.papaParse.parse(csvStr, { header: true });
       console.log('data: ' + JSON.stringify(parsed, null, 2));
+      const csv = parsed.data;
+
       // do something with parsed CSV
     };
   }
