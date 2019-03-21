@@ -138,9 +138,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-   
-  }
+  ngOnDestroy(): void {}
 
   resetForm() {
     this.project = new Project({ id: '1' });
@@ -238,7 +236,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     projectData.adjustments.subcontractor.markup =
       formData.subcontractorMarkup || 10;
     projectData.adjustments.labor.markup = formData.laborMarkup || 10;
-    // console.log('project form: ' + JSON.stringify(projectData, null, 2));
+    console.log('project form: ' + JSON.stringify(projectData, null, 2));
 
     this.projectsService.save(projectData).subscribe(
       (response: any) => {

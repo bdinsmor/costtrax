@@ -250,10 +250,14 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       description: formProject.description,
       paymentTerms: this.project.paymentTerms,
       materialCostsEnabled: formProject.materialCostsEnabled,
-      activeCostsEnabled: formProject.activeCostsEnabled,
-      rentalCostsEnabled: formProject.rentalCostsEnabled,
-      standbyCostsEnabled: formProject.standbyCostsEnabled,
-      laborCostsEnabled: formProject.laborCostsEnabled,
+      // activeCostsEnabled: formProject.activeCostsEnabled,
+      // rentalCostsEnabled: formProject.rentalCostsEnabled,
+      // standbyCostsEnabled: formProject.standbyCostsEnabled,
+      // laborCostsEnabled: formProject.laborCostsEnabled,
+      activeCheck: formData.activeCheck,
+      standbyCheck: formData.standbyCheck,
+      rentalCheck: formData.rentalCheck,
+      laborCheck: formData.laborCheck,
       otherCostsEnabled: formProject.otherCostsEnabled,
       subcontractorCostsEnabled: formProject.subcontractorCostsEnabled,
       adjustments: formProject.adjustments
@@ -261,6 +265,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
     projectData.adjustments.equipment = {
       active: {
+        enabled: formData.activeCheck,
         regionalAdjustmentsEnabled: formData.activeRegionalCheck,
         markup: formData.activeMarkup || 10,
         ownership: formData.activeOwnershipCost || 100,
@@ -279,6 +284,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     projectData.adjustments.subcontractor.markup =
       formData.subcontractorMarkup || 10;
     projectData.adjustments.labor.markup = formData.laborMarkup || 10;
+    console.log('project data: ' + JSON.stringify(projectData, null, 2));
 
     /*
     activeFormula: new FormControl('FHWA'),

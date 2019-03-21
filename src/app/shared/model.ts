@@ -875,7 +875,7 @@ export class Project {
     let subcontractorTotal = 0;
     let otherTotal = 0;
     for (let i = 0; i < requestJSON.length; i++) {
-// tslint:disable-next-line: no-use-before-declare
+      // tslint:disable-next-line: no-use-before-declare
       const r = new Request(requestJSON[i]);
 
       total += +r.total;
@@ -1026,6 +1026,8 @@ export class Project {
         const days = Math.abs(this.createdOn.getTime() - new Date().getTime());
         this.age = Math.ceil(days / (1000 * 3600 * 24));
       }
+
+      console.log('project form object:' + JSON.stringify(project, null, 2));
       this.paymentTerms = project.paymentTerms || 45;
       this.description =
         project.description || project.projectInstructions || '';
@@ -1033,27 +1035,23 @@ export class Project {
       this.itemsPending = project.itemsPending || 0;
       this.itemsOverdue = project.itemsOverdue || 0;
       this.materialCostsEnabled =
-        project.materialCostsEnabled || project.materialCheck || true;
+        project.materialCostsEnabled || project.materialCheck;
       this.activeCostsEnabled =
-        project.activeCostsEnabled || project.activeCheck || true;
+        project.activeCostsEnabled || project.activeCheck;
       this.standbyCostsEnabled =
-        project.standbyCostsEnabled || project.standbyCheck || true;
+        project.standbyCostsEnabled || project.standbyCheck;
       this.rentalCostsEnabled =
-        project.rentalCostsEnabled || project.rentalCheck || true;
+        project.rentalCostsEnabled || project.rentalCheck;
       this.subcontractorCostsEnabled =
-        project.subcontractorCostsEnabled ||
-        project.subcontractorCostsCheckbox ||
-        true;
-      this.laborCostsEnabled =
-        project.laborCostsEnabled || project.laborCheck || true;
-      this.otherCostsEnabled =
-        project.otherCostsEnabled || project.otherCheck || true;
+        project.subcontractorCostsEnabled || project.subcontractorCostsCheckbox;
+      this.laborCostsEnabled = project.laborCostsEnabled || project.laborCheck;
+      this.otherCostsEnabled = project.otherCostsEnabled || project.otherCheck;
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
-// tslint:disable-next-line: no-use-before-declare
+        // tslint:disable-next-line: no-use-before-declare
         this.account = new Account({ id: project.accountId });
       } else {
-// tslint:disable-next-line: no-use-before-declare
+        // tslint:disable-next-line: no-use-before-declare
         this.account = project.account || new Account({});
       }
       this.roles = project.roles;

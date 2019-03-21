@@ -132,6 +132,10 @@ $v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
     vertical-align: middle !important;
 }
 
+.mat-ripple {
+    overflow: visible !important;
+}
+
 select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;

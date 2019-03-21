@@ -161,7 +161,7 @@
             <div class="spacer"></div>
             <nz-input-number
               formControlName="activeOwnershipCost"
-              [nzMin]="1"
+              [nzMin]="0"
               [nzMax]="100"
               [nzStep]="1"
               [nzFormatter]="formatterPercent"
@@ -175,7 +175,7 @@
             <div class="spacer"></div>
             <nz-input-number
               formControlName="activeOperatingCost"
-              [nzMin]="1"
+              [nzMin]="0"
               [nzMax]="100"
               [nzStep]="1"
               [nzFormatter]="formatterPercent"
@@ -189,7 +189,7 @@
         <div class="row no-margin-left">
           <nz-input-number
             formControlName="activeMarkup"
-            [nzMin]="1"
+            [nzMin]="0"
             [nzMax]="100"
             [nzStep]="1"
             [nzFormatter]="formatterPercent"

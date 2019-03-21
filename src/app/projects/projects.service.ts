@@ -75,6 +75,9 @@ export class ProjectsService {
   }
 
   updateProject(project: any) {
+    console.log(
+      '\n\n\nupdated project json: ' + JSON.stringify(project, null, 2)
+    );
     return this.http.put(
       environment.serverUrl + '/project/' + project.id,
       project
