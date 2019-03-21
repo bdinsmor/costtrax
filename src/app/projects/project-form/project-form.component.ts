@@ -249,23 +249,18 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       state: formProject.state,
       description: formProject.description,
       paymentTerms: this.project.paymentTerms,
-      materialCostsEnabled: formProject.materialCostsEnabled,
-      // activeCostsEnabled: formProject.activeCostsEnabled,
-      // rentalCostsEnabled: formProject.rentalCostsEnabled,
-      // standbyCostsEnabled: formProject.standbyCostsEnabled,
-      // laborCostsEnabled: formProject.laborCostsEnabled,
-      activeCheck: formData.activeCheck,
-      standbyCheck: formData.standbyCheck,
-      rentalCheck: formData.rentalCheck,
-      laborCheck: formData.laborCheck,
-      otherCostsEnabled: formProject.otherCostsEnabled,
-      subcontractorCostsEnabled: formProject.subcontractorCostsEnabled,
+      materialCostsEnabled: formData.materialCheck,
+      activeCostsEnabled: formData.activeCheck,
+      standbyCostsEnabled: formData.standbyCheck,
+      rentalCostsEnabled: formData.rentalCheck,
+      laborCostsEnabled: formData.laborCheck,
+      otherCostsEnabled: formData.otherCheck,
+      subcontractorCostsEnabled: formData.subcontractorCheck,
       adjustments: formProject.adjustments
     };
 
     projectData.adjustments.equipment = {
       active: {
-        enabled: formData.activeCheck,
         regionalAdjustmentsEnabled: formData.activeRegionalCheck,
         markup: formData.activeMarkup || 10,
         ownership: formData.activeOwnershipCost || 100,
