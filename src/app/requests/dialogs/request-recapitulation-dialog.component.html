@@ -2,7 +2,7 @@
 <mat-dialog-content>
   <h3>Total: {{ request.total | currency }}</h3>
   <div class="row pt-2">
-    <div class="col" *ngIf="project.laborCostsEnabled">
+    <div class="col" *ngIf="project.adjustments.labor.enabled">
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Labor</h5>
       </div>
@@ -47,7 +47,14 @@
         </tbody>
       </table>
     </div>
-    <div class="col" *ngIf="project.equipmentCostsEnabled">
+    <div
+      class="col"
+      *ngIf="
+        project.adjustments.equipment.active.enabled ||
+        project.adjustments.equipment.standby.enabled ||
+        project.adjustments.equipment.rental.enabled
+      "
+    >
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Equipment</h5>
       </div>
@@ -120,7 +127,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col" *ngIf="project.materialCostsEnabled">
+    <div class="col" *ngIf="project.adjustments.material.enabled">
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Materials</h5>
       </div>
@@ -159,7 +166,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col" *ngIf="project.subcontractorCostsEnabled">
+    <div class="col" *ngIf="project.adjustments.subcontractor.enabled">
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Subcontractor</h5>
       </div>
@@ -202,7 +209,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col" *ngIf="project.otherCostsEnabled">
+    <div class="col" *ngIf="project.adjustments.other.enabled">
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Other</h5>
       </div>
