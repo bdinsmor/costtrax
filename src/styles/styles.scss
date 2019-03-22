@@ -126,6 +126,10 @@ $v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
   display: block;
 }
 
+.mat-ripple {
+  overflow: visible !important;
+}
+
 .ripple {
   vertical-align: middle !important;
 }
@@ -395,7 +399,7 @@ button {
   padding-top: 0.6rem !important;
 }
 
-.ng-select .ng-select-container .ng-value-container .ng-input > input {
+.ng-select .ng-select-container .ng-value-container .ng-input>input {
   padding: 0 !important;
 }
 
@@ -483,7 +487,8 @@ button {
 body,
 html {
   font-family: 'Metropolis', 'Avenir Next', 'Helvetica Neue', Arial, sans-serif !important;
-  display: flex; /* IE11 fix */
+  display: flex;
+  /* IE11 fix */
 }
 
 .mat-toolbar,

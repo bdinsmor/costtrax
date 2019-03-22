@@ -425,13 +425,13 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     if (!this.project) {
       return;
     }
-    if (this.project.laborCostsEnabled) {
+    if (this.project.adjustments.labor.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'labor', label: 'Labor', sortOrder: 0 }
       ];
     }
-    if (this.project.activeCostsEnabled) {
+    if (this.project.adjustments.equipment.active.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -441,7 +441,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    if (this.project.standbyCostsEnabled) {
+    if (this.project.adjustments.equipment.standby.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -451,7 +451,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    if (this.project.rentalCostsEnabled) {
+    if (this.project.adjustments.equipment.rental.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -462,19 +462,19 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       ];
     }
 
-    if (this.project.materialCostsEnabled) {
+    if (this.project.adjustments.material.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'material', label: 'Material', sortOrder: 4 }
       ];
     }
-    if (this.project.otherCostsEnabled) {
+    if (this.project.adjustments.other.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'other', label: 'Other', sortOrder: 6 }
       ];
     }
-    if (this.project.subcontractorCostsEnabled) {
+    if (this.project.adjustments.subcontractor.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'subcontractor', label: 'Subcontractor', sortOrder: 5 }

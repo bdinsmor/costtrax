@@ -781,14 +781,6 @@ export class Project {
   modifiedOn: Date;
   modifiedBy: string;
   numContractors: number;
-  materialCostsEnabled = true;
-  equipmentCostsEnabled = true;
-  activeCostsEnabled = true;
-  standbyCostsEnabled = true;
-  rentalCostsEnabled = true;
-  laborCostsEnabled = true;
-  otherCostsEnabled = true;
-  subcontractorCostsEnabled = true;
   users: User[];
   requestors: User[];
   requestorJSON: any[];
@@ -989,24 +981,75 @@ export class Project {
     }
   }
 
+  buildCostEnabled(p: any) {
+    if (
+      p.adjustments &&
+      !p.adjustments.equipment.active.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('equipmentCostsEnabled') &&
+      (p.equipmentCostsEnabled ||
+        p.equipmentCostsEnabled === null ||
+        p.equipmentCostsEnabled === 'null')
+    ) {
+      this.adjustments.equipment.active.enabled = true;
+      this.adjustments.equipment.rental.enabled = true;
+      this.adjustments.equipment.standby.enabled = true;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.material.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('materialCostsEnabled') &&
+      p.materialCostsEnabled
+    ) {
+      this.adjustments.material.enabled = p.materialCostsEnabled;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.labor.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('laborCostsEnabled') &&
+      p.laborCostsEnabled
+    ) {
+      this.adjustments.labor.enabled = p.laborCostsEnabled;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.subcontractor.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('subcontractorCostsEnabled') &&
+      p.subcontractorCostsEnabled
+    ) {
+      this.adjustments.subcontractor.enabled = p.subcontractorCostsEnabled;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.other.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('otherCostsEnabled') &&
+      p.otherCostsEnabled
+    ) {
+      this.adjustments.other.enabled = p.otherCostsEnabled;
+    }
+  }
+
   buildDefaultAdjustments() {
     return {
-      subcontractor: { markup: 10 },
-      material: { markup: 10 },
-      other: { markup: 10 },
-      labor: {
-        markup: 10
-      },
       equipment: {
         active: {
+          enabled: true,
           regionalAdjustmentsEnabled: true,
           operating: 100,
           ownership: 100,
           markup: 10
         },
-        standby: { regionalAdjustmentsEnabled: true, markup: 10 },
-        rental: { markup: 10 }
-      }
+        standby: {
+          enabled: true,
+          regionalAdjustmentsEnabled: true,
+          markup: 10
+        },
+        rental: { enabled: true, markup: 10 }
+      },
+
+      labor: { markup: 10, enabled: true },
+      material: { markup: 10, enabled: true },
+      other: { markup: 10, enabled: true },
+      subcontractor: { markup: 10, enabled: true }
     };
   }
 
@@ -1031,22 +1074,7 @@ export class Project {
       this.numContractors = project.numContractors || 0;
       this.itemsPending = project.itemsPending || 0;
       this.itemsOverdue = project.itemsOverdue || 0;
-      this.materialCostsEnabled =
-        project.materialCostsEnabled || project.materialCheck || true;
-      this.activeCostsEnabled =
-        project.activeCostsEnabled || project.activeCheck || true;
-      this.standbyCostsEnabled =
-        project.standbyCostsEnabled || project.standbyCheck || true;
-      this.rentalCostsEnabled =
-        project.rentalCostsEnabled || project.rentalCheck || true;
-      this.subcontractorCostsEnabled =
-        project.subcontractorCostsEnabled ||
-        project.subcontractorCostsCheckbox ||
-        true;
-      this.laborCostsEnabled =
-        project.laborCostsEnabled || project.laborCheck || true;
-      this.otherCostsEnabled =
-        project.otherCostsEnabled || project.otherCheck || true;
+
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
         this.account = new Account({ id: project.accountId });
@@ -1055,17 +1083,29 @@ export class Project {
       }
       this.roles = project.roles;
       this.adjustments = project.adjustments || this.buildDefaultAdjustments();
+
       if (!this.adjustments.labor) {
         this.adjustments.labor = {
+          enabled: true,
+          markup: 10
+        };
+      }
+
+      if (!this.adjustments.other) {
+        this.adjustments.other = {
+          enabled: true,
           markup: 10
         };
       }
 
       if (!this.adjustments.equipment.rental) {
         this.adjustments.equipment.rental = {
+          enabled: true,
           markup: 10
         };
       }
+
+      this.buildCostEnabled(project);
 
       this.itemsPending = 0;
       this.itemsOverdue = 0;
