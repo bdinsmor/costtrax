@@ -217,7 +217,7 @@ export class RequestDetailsComponent
     }
     for (let i = 0; i < this.project.roles.length; i++) {
       const role = this.project.roles[i];
-      if (role === 'RequestManage') {
+      if (role === 'ProjectApprover') {
         this.canManageRequest = true;
         if (!scrollAdded && this.request.isComplete()) {
           scrollAdded = true;
@@ -239,10 +239,10 @@ export class RequestDetailsComponent
             );
         }
       }
-      if (role === 'RequestSubmit') {
+      if (role === 'ProjectRequestor') {
         this.canSubmitRequest = true;
       }
-      if (role === 'ProjectAdmin') {
+      if (role === 'ProjectManager') {
         this.canManageProject = true;
         if (!scrollAdded && this.request.isComplete()) {
           scrollAdded = true;

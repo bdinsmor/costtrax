@@ -259,6 +259,24 @@
           >
             <button
               *ngIf="canSubmitRequest"
+              matTooltip="Save Request"
+              [disabled]="
+                signatureFormGroup.invalid ||
+                notesFormGroup.hasError('notValid') ||
+                !project ||
+                !request.hasLineItems() ||
+                !request.isDraft()
+              "
+              class="ripple
+                        btn
+                        btn-success mr-1"
+              (click)="saveRequest()"
+            >
+              <clr-icon class="hidden-md-up" shape="floppy"></clr-icon>
+              <span class="hidden-sm-down">Save</span>
+            </button>
+            <button
+              *ngIf="canSubmitRequest"
               matTooltip="Submit Request"
               [disabled]="
                 signatureFormGroup.invalid ||
@@ -273,7 +291,7 @@
               (click)="submitRequest()"
             >
               <clr-icon class="hidden-md-up" shape="check"></clr-icon>
-              <span class="hidden-sm-down">Submit Request</span>
+              <span class="hidden-sm-down">Submit</span>
             </button>
             <button
               type="button"

@@ -1,11 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
@@ -140,17 +133,20 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.projectsService.getProject(id).subscribe(r => {
-        if (r) {
-          this.newProject = false;
-          this.project = r;
-          this.createProjectFormGroup();
-          this.checkPermissions();
-          this.breadcrumbService.addProject(r.id, r.name);
-          this.changeDetector.detectChanges();
-          this.titleService.setTitle('Project: ' + r.name);
-        }
-      });
+      this.projectsService
+        .getProject(id)
+        .pipe(untilDestroyed(this))
+        .subscribe(r => {
+          if (r) {
+            this.newProject = false;
+            this.project = r;
+            this.createProjectFormGroup();
+            this.checkPermissions();
+            this.breadcrumbService.addProject(r.id, r.name);
+            this.changeDetector.detectChanges();
+            this.titleService.setTitle('Project: ' + r.name);
+          }
+        });
     } else {
       this.newProject = true;
       this.project = new Project({});
@@ -192,15 +188,16 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     }
     for (let i = 0; i < this.project.roles.length; i++) {
       const role = this.project.roles[i];
-      if (role === 'RequestSubmit') {
+      if (role === 'ProjectRequestor') {
         this.canSubmitRequests = true;
       }
-      if (role === 'RequestManage') {
+      if (role === 'ProjectApprover') {
         this.canManageRequests = true;
         this.draftCosts = false;
       }
-      if (role === 'ProjectAdmin') {
+      if (role === 'ProjectManager') {
         this.canChangeSettings = true;
+        this.canManageRequests = true;
         this.draftCosts = false;
         this.isUserAdmin = true;
       }

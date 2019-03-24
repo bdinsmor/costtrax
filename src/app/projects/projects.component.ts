@@ -26,8 +26,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   canCreateProjects = false;
   private config: MatSnackBarConfig;
   duration = 3000;
-  activeProjects$: Observable<Project[]>;
-  archivedProjects$: Observable<Project[]>;
+  activeProjects: Project[];
+  archivedProjects: Project[];
   accounts$: Observable<Account[]>;
   loading$: Observable<boolean>;
   projectForm: FormGroup;
@@ -49,6 +49,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.breadcrumbService.addHome();
     this.breadcrumbService.addProjects();
     this.createProjectForm();
+    this.activeProjects = [];
+    this.archivedProjects = [];
     this.refreshProjects();
     this.titleService.setTitle('CostTrax');
     this.accounts$ = this.projectsService.getAccounts();
@@ -85,9 +87,14 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   refreshProjects() {
-    this.archivedProjects$ = this.projectsService.getArchivedProjects();
-    this.activeProjects$ = this.projectsService.getActiveProjects();
-    this.changeDetector.detectChanges();
+    this.projectsService
+      .getAllProjects()
+      .pipe(untilDestroyed(this))
+      .subscribe((p: any) => {
+        this.activeProjects = p.activeProjects;
+        this.archivedProjects = p.archivedProjects;
+        this.changeDetector.detectChanges();
+      });
   }
 
   projectSaved(event) {

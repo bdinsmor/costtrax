@@ -8,16 +8,18 @@ export class RolePipe implements PipeTransform {
     if (!value || value === '') {
       return;
     }
-    if (value === 'RequestManage') {
+    if (value === 'ProjectApprover') {
       return 'Approver';
-    } else if (value === 'RequestSubmit') {
+    } else if (value === 'ProjectRequestor') {
       return 'Requestor';
-    } else if (value === 'ProjectAdmin') {
-      return 'Admin';
-    } else if (value === 'ProjectObserve') {
+    } else if (value === 'ProjectObserver') {
       return 'Observer';
     } else if (value === 'AccountAdmin') {
       return 'Account Admin';
+    } else if (value === 'ProjectManager') {
+      return 'Manager';
+    } else if (value === 'ProjectAdmin') {
+      return 'Project Admin';
     }
     return value;
   }

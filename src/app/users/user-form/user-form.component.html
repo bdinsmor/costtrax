@@ -31,22 +31,24 @@
         <mat-checkbox
           type="checkbox"
           id="adminCheck"
-          [(ngModel)]="newUser.projectAdmin"
+          [(ngModel)]="newUser.projectManager"
           [disabled]="newUser.isRequestor()"
           [ngModelOptions]="{ standalone: true }"
-          (change)="roleChanged(newUser, 'ProjectAdmin')"
-          ><span [class.muted-text]="!newUser.projectAdmin">Project Admin</span>
+          (change)="roleChanged(newUser, 'ProjectManager')"
+          ><span [class.muted-text]="!newUser.projectManager"
+            >Project Manager</span
+          >
         </mat-checkbox>
       </div>
       <div class="column">
         <mat-checkbox
           type="checkbox"
           id="observeCheck"
-          [(ngModel)]="newUser.projectObserve"
+          [(ngModel)]="newUser.projectObserver"
           [disabled]="newUser.isRequestor()"
           [ngModelOptions]="{ standalone: true }"
-          (change)="roleChanged(newUser, 'ProjectObserve')"
-          ><span [class.muted-text]="!newUser.projectObserve"
+          (change)="roleChanged(newUser, 'projectObserver')"
+          ><span [class.muted-text]="!newUser.projectObserver"
             >Project Observer</span
           >
         </mat-checkbox>
@@ -56,12 +58,12 @@
         <mat-checkbox
           type="checkbox"
           id="requestorCheck"
-          [(ngModel)]="newUser.requestManage"
+          [(ngModel)]="newUser.projectApprover"
           [disabled]="newUser.isRequestor()"
           [ngModelOptions]="{ standalone: true }"
-          (change)="roleChanged(newUser, 'RequestManage')"
-          ><span [class.muted-text]="!newUser.requestManage"
-            >Manage Requests</span
+          (change)="roleChanged(newUser, 'ProjectApprover')"
+          ><span [class.muted-text]="!newUser.projectApprover"
+            >Project Approver</span
           >
         </mat-checkbox>
       </div>
@@ -74,7 +76,6 @@
   </button>
   <button
     *ngIf="!newProject"
-    cdkFocusInitial
     class="btn btn-primary"
     (click)="sendInvite()"
     [disabled]="emailForm.invalid"
@@ -83,7 +84,6 @@
   </button>
   <button
     *ngIf="newProject"
-    cdkFocusInitial
     class="btn btn-primary"
     (click)="addUser()"
     [disabled]="emailForm.invalid"

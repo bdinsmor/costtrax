@@ -43,10 +43,14 @@ export class ProjectsService {
     );
   }
 
-  inviteUser(projectId: string, invite: any): Observable<any> {
+  inviteUser(
+    projectId: string,
+    email: string,
+    roles: string[]
+  ): Observable<any> {
     return this.http.post(
-      environment.serverUrl + '/project/' + projectId + '/user',
-      invite
+      environment.serverUrl + '/project/' + projectId + '/users',
+      { users: [{ email: email, roles: roles }] }
     );
   }
 
@@ -56,10 +60,10 @@ export class ProjectsService {
     );
   }
 
-  updateUser(projectId: string, userId: string, roles: string[]) {
-    return this.http.put(
-      environment.serverUrl + '/project/' + projectId + '/user/' + userId,
-      { roles: roles }
+  updateUser(projectId: string, email: string, roles: string[]) {
+    return this.http.post(
+      environment.serverUrl + '/project/' + projectId + '/users',
+      { users: [{ email: email, roles: roles }] }
     );
   }
 
@@ -67,7 +71,7 @@ export class ProjectsService {
     return this.http.get(environment.serverUrl + '/project/' + id).pipe(
       map((res: any) => {
         const json = res as any;
-        // console.log('project json: ' + JSON.stringify(json, null, 1));
+        console.log('project json: ' + JSON.stringify(json, null, 1));
         return new Project(json);
       })
     );
@@ -89,67 +93,52 @@ export class ProjectsService {
     );
   }
 
-  getActiveProjects(): Observable<Project[]> {
-    return this.http.get(environment.serverUrl + '/project?active=1').pipe(
+  getAllProjects(): Observable<any> {
+    return this.http.get(environment.serverUrl + '/project').pipe(
       catchError(e => {
         this.openSnackBar('Could not load Projects', 'OK', 'OK');
         return of([]);
       }),
       map(
         (res: any) => {
-          const projects: Project[] = [];
-          res.forEach((p: any) => {
-            //   console.log('project name: ' + p.name);
-            projects.push(new Project(p));
+          const activeProjects: Project[] = [];
+          const archivedProjects: Project[] = [];
+          res.results.map((p: any) => {
+            if (p.active) {
+              activeProjects.push(new Project(p));
+            } else {
+              archivedProjects.push(new Project(p));
+            }
           });
-          projects.sort((n1, n2) => {
-            if (n2.age > n1.age) {
+          activeProjects.sort((n1, n2) => {
+            if (n2.requestStats.pendingMaxAge > n1.requestStats.pendingMaxAge) {
               return -1;
             }
 
-            if (n2.age < n1.age) {
+            if (n2.requestStats.pendingMaxAge < n1.requestStats.pendingMaxAge) {
               return 1;
             }
 
             return 0;
           });
-          return projects;
+          archivedProjects.sort((n1, n2) => {
+            if (n2.requestStats.pendingMaxAge > n1.requestStats.pendingMaxAge) {
+              return -1;
+            }
+
+            if (n2.requestStats.pendingMaxAge < n1.requestStats.pendingMaxAge) {
+              return 1;
+            }
+
+            return 0;
+          });
+          return {
+            activeProjects: activeProjects,
+            archivedProjects: archivedProjects
+          };
         },
         (err: any) => {
           console.log('got error!');
-          return [];
-        }
-      )
-    );
-  }
-
-  getArchivedProjects(): Observable<Project[]> {
-    return this.http.get(environment.serverUrl + '/project?active=0').pipe(
-      catchError(e => {
-        this.openSnackBar('Could not load Projects', 'OK', 'OK');
-        return of([]);
-      }),
-      map(
-        (res: any) => {
-          const projects: Project[] = [];
-          res.forEach((p: any) => {
-            //   console.log('project name: ' + p.name);
-            projects.push(new Project(p));
-          });
-          projects.sort((n1, n2) => {
-            if (n2.age > n1.age) {
-              return 1;
-            }
-
-            if (n2.age < n1.age) {
-              return -1;
-            }
-
-            return 0;
-          });
-          return projects;
-        },
-        (err: any) => {
           return [];
         }
       )
@@ -163,7 +152,7 @@ export class ProjectsService {
         res.forEach((p: any) => {
           if (p.roles) {
             for (let i = 0; i < p.roles.length; i++) {
-              if (p.roles[i] === 'RequestSubmit') {
+              if (p.roles[i] === 'ProjectRequestor') {
                 projects.push(new Project(p));
               }
             }

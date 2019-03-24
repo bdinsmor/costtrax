@@ -82,10 +82,10 @@ export class User {
   initialRoles: string[];
   status: string;
   expanded = false;
-  projectAdmin = false;
-  projectObserve = false;
-  requestManage = false;
-  requestSubmit = false;
+  projectManager = false;
+  projectObserver = false;
+  projectApprover = false;
+  projectRequestor = false;
 
   constructor(user: any) {
     {
@@ -101,10 +101,10 @@ export class User {
       this.birthday = user.birthday || new Date();
       this.notes = user.notes || '';
       this.roles = user.roles || [];
-      this.projectAdmin = false;
-      this.projectObserve = false;
-      this.requestManage = false;
-      this.requestSubmit = false;
+      this.projectManager = false;
+      this.projectObserver = false;
+      this.projectApprover = false;
+      this.projectRequestor = false;
       this.initialRoles = [];
       this.roles.map(x => this.initialRoles.push(x.toString()));
       this.setRoles();
@@ -140,7 +140,7 @@ export class User {
   }
 
   isRequestor() {
-    return this.containsRole('RequestSubmit');
+    return this.containsRole('ProjectRequestor');
   }
 
   hasRoles() {
@@ -148,25 +148,25 @@ export class User {
   }
 
   setRolesFromChecks(event) {
-    if (this.requestSubmit) {
-      this.addRole('RequestSubmit');
+    if (this.projectRequestor) {
+      this.addRole('ProjectRequestor');
     } else {
-      this.removeRole('RequestSubmit');
+      this.removeRole('ProjectRequestor');
     }
-    if (this.requestManage) {
-      this.addRole('RequestManage');
+    if (this.projectApprover) {
+      this.addRole('ProjectApprover');
     } else {
-      this.removeRole('RequestManage');
+      this.removeRole('ProjectApprover');
     }
-    if (this.projectAdmin) {
-      this.addRole('ProjectAdmin');
+    if (this.projectManager) {
+      this.addRole('ProjectManager');
     } else {
-      this.removeRole('ProjectAdmin');
+      this.removeRole('ProjectManager');
     }
-    if (this.projectObserve) {
-      this.addRole('ProjectObserve');
+    if (this.projectObserver) {
+      this.addRole('ProjectObserver');
     } else {
-      this.removeRole('ProjectObserve');
+      this.removeRole('ProjectObserver');
     }
   }
 
@@ -176,19 +176,19 @@ export class User {
     }
   }
   setRoles() {
-    this.requestManage = false;
-    this.requestSubmit = false;
-    this.projectAdmin = false;
-    this.projectObserve = false;
+    this.projectApprover = false;
+    this.projectRequestor = false;
+    this.projectManager = false;
+    this.projectObserver = false;
     for (let i = 0; i < this.roles.length; i++) {
-      if (this.roles[i] === 'RequestSubmit') {
-        this.requestSubmit = true;
-      } else if (this.roles[i] === 'RequestManage') {
-        this.requestManage = true;
-      } else if (this.roles[i] === 'ProjectAdmin') {
-        this.projectAdmin = true;
-      } else if (this.roles[i] === 'ProjectObserve') {
-        this.projectObserve = true;
+      if (this.roles[i] === 'ProjectRequestor') {
+        this.projectRequestor = true;
+      } else if (this.roles[i] === 'ProjectApprover') {
+        this.projectApprover = true;
+      } else if (this.roles[i] === 'ProjectManager') {
+        this.projectManager = true;
+      } else if (this.roles[i] === 'ProjectObserver') {
+        this.projectObserver = true;
       }
     }
   }
@@ -770,6 +770,8 @@ export class Project {
   active = true;
   name: string;
   age: number;
+  meta: any;
+  requestStats: any;
   description: string;
   itemsOverdue: number;
   itemsPending: number;
@@ -793,6 +795,8 @@ export class Project {
   pendingTotal = 0;
   approvedTotal = 0;
   roles: any[];
+  accountRoles: any[];
+  projectRoles: any[];
   total = 0;
   activeDays = 0;
   materialTotal = 0;
@@ -898,7 +902,7 @@ export class Project {
     this.requestors = [];
     for (let i = 0; i < this.userJSON.length; i++) {
       const u = new User(this.userJSON[i]);
-      if (u.containsRole('RequestSubmit')) {
+      if (u.containsRole('ProjectRequestor')) {
         this.requestors.push(u);
       } else {
         this.users.push(u);
@@ -981,6 +985,49 @@ export class Project {
     }
   }
 
+  buildMarkup() {
+    if (this.adjustments.equipment.active) {
+      this.adjustments.equipment.active.markup =
+        100 * +this.adjustments.equipment.active.markupPercent;
+      this.adjustments.equipment.active.operating =
+        100 * +this.adjustments.equipment.active.operatingPercent;
+      this.adjustments.equipment.active.ownership =
+        100 * +this.adjustments.equipment.active.ownershipPercent;
+    }
+    if (this.adjustments.equipment.standby) {
+      this.adjustments.equipment.standby.markup =
+        100 * +this.adjustments.equipment.standby.markupPercent;
+      if (this.adjustments.equipment.standby.operatingPercent) {
+        this.adjustments.equipment.standby.operating =
+          100 * +this.adjustments.equipment.standby.operatingPercent;
+      }
+      if (this.adjustments.equipment.standby.ownershipPercent) {
+        this.adjustments.equipment.standby.ownership =
+          100 * +this.adjustments.equipment.standby.ownershipPercent;
+      }
+    }
+    if (this.adjustments.equipment.rental) {
+      this.adjustments.equipment.rental.markup =
+        100 * +this.adjustments.equipment.rental.markupPercent;
+    }
+    if (this.adjustments.labor) {
+      this.adjustments.labor.markup =
+        100 * +this.adjustments.labor.markupPercent;
+    }
+    if (this.adjustments.other) {
+      this.adjustments.other.markup =
+        100 * +this.adjustments.other.markupPercent;
+    }
+    if (this.adjustments.material) {
+      this.adjustments.material.markup =
+        100 * +this.adjustments.material.markupPercent;
+    }
+    if (this.adjustments.subcontractor) {
+      this.adjustments.subcontractor.markup =
+        100 * +this.adjustments.subcontractor.markupPercent;
+    }
+  }
+
   buildCostEnabled(p: any) {
     if (
       p.adjustments &&
@@ -1036,44 +1083,53 @@ export class Project {
           regionalAdjustmentsEnabled: true,
           operating: 100,
           ownership: 100,
-          markup: 10
+          markup: 10,
+          operatingPercent: 1,
+          ownershipPercent: 1,
+          markupPerect: 0.1
         },
         standby: {
           enabled: true,
           regionalAdjustmentsEnabled: true,
-          markup: 10
+          markup: 10,
+          markupPerect: 0.1
         },
-        rental: { enabled: true, markup: 10 }
+        rental: { enabled: true, markup: 10, markupPerect: 0.1 }
       },
 
-      labor: { markup: 10, enabled: true },
-      material: { markup: 10, enabled: true },
-      other: { markup: 10, enabled: true },
-      subcontractor: { markup: 10, enabled: true }
+      labor: { markup: 10, markupPerect: 0.1, enabled: true },
+      material: { markup: 10, markupPerect: 0.1, enabled: true },
+      other: { markup: 10, markupPerect: 0.1, enabled: true },
+      subcontractor: { markup: 10, markupPerect: 0.1, enabled: true }
     };
   }
 
   constructor(project: any) {
     {
       this.id = project.id || '';
-      this.zipcode = project.zipcode || 30332;
-      this.state = project.state || 'GA';
+      this.meta = project.meta || {};
+      this.requestStats = project.requestStats || {};
+      if (!this.requestStats.pendingMaxAge) {
+        this.requestStats.pendingMaxAge = 0;
+      }
+      if (!this.requestStats.pendingCount) {
+        this.requestStats.pendingCount = 0;
+      }
+      this.zipcode = project.meta.zipcode || project.zipcode || 30332;
+      this.state = project.meta.state || project.state || 'GA';
       this.active = project.active || true;
-      this.name = project.name || project.projectName || '';
+      this.name =
+        project.meta.name || project.name || project.projectName || '';
       this.createdBy = project.createdBy || '';
       this.createdOn = new Date(project.createdOn);
-      if (project.age) {
-        this.age = project.age;
-      } else {
-        const days = Math.abs(this.createdOn.getTime() - new Date().getTime());
-        this.age = Math.ceil(days / (1000 * 3600 * 24));
-      }
-      this.paymentTerms = project.paymentTerms || 45;
+
+      this.paymentTerms =
+        project.meta.paymentTerms || project.paymentTerms || 45;
       this.description =
-        project.description || project.projectInstructions || '';
-      this.numContractors = project.numContractors || 0;
-      this.itemsPending = project.itemsPending || 0;
-      this.itemsOverdue = project.itemsOverdue || 0;
+        project.meta.description ||
+        project.description ||
+        project.projectInstructions ||
+        '';
 
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
@@ -1082,61 +1138,41 @@ export class Project {
         this.account = project.account || new Account({});
       }
       this.roles = project.roles;
+      this.accountRoles = project.accountRoles || [];
+      this.projectRoles = project.projectRoles || [];
       this.adjustments = project.adjustments || this.buildDefaultAdjustments();
-
+      this.buildMarkup();
       if (!this.adjustments.labor) {
         this.adjustments.labor = {
           enabled: true,
-          markup: 10
+          markup: 10,
+          markupPerect: 0.1
         };
       }
 
       if (!this.adjustments.other) {
         this.adjustments.other = {
           enabled: true,
-          markup: 10
+          markup: 10,
+          markupPerect: 0.1
         };
       }
 
       if (!this.adjustments.equipment.rental) {
         this.adjustments.equipment.rental = {
           enabled: true,
-          markup: 10
+          markup: 10,
+          markupPerect: 0.1
         };
       }
 
       this.buildCostEnabled(project);
-
-      this.itemsPending = 0;
-      this.itemsOverdue = 0;
-
       this.buildRequests(project.requests || []);
-      this.pendingTotal = project.pendingTotal || 0;
-      this.approvedTotal = project.approvedTotal || 0;
-
-      if (project.organization) {
-        this.account.organization = project.organization;
-      }
-      if (project.pendingRequests) {
-        this.itemsPending = project.pendingRequests;
-      }
-      if (project.overdueRequests) {
-        this.itemsOverdue = project.overdueRequests;
-      }
       this.checkAdjustments();
       this.buildUsers();
       const today = new Date();
       const diff = Math.abs(today.getTime() - this.createdOn.getTime());
       this.activeDays = Math.ceil(diff / (1000 * 3600 * 24));
-      if (this.itemsOverdue > 0) {
-        this.progress =
-          100 *
-          Number(
-            +this.itemsPending / (+this.itemsPending + +this.itemsOverdue)
-          );
-      } else {
-        this.progress = 100;
-      }
     }
   }
 }

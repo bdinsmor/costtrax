@@ -54,7 +54,6 @@
     </div>
   </section>
 
-  
   <div class="full-width mb-1">
     <clr-datagrid>
       <clr-dg-column>Email</clr-dg-column>
@@ -67,7 +66,7 @@
         >
         <clr-dg-cell>
           <div class="padding-label-top" *ngIf="user.roles">
-            <mat-chip-list selectable="true">
+            <mat-chip-list selectable="false">
               <mat-chip *ngFor="let role of user.roles">{{
                 role | rolePrint
               }}</mat-chip>
@@ -122,14 +121,14 @@
                   type="checkbox"
                   matRipple
                   id="adminCheck"
-                  [(ngModel)]="user.projectAdmin"
+                  [(ngModel)]="user.projectManager"
                   [disabled]="user.isRequestor()"
                   [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectAdmin')"
+                  (change)="roleChanged(user, 'ProjectManager')"
                 >
                 </mat-checkbox>
                 <h6
-                  [class.muted-text]="!user.projectAdmin"
+                  [class.muted-text]="!user.projectManager"
                   class="pl-1 no-top-margin no-bottom-margin align-items-center"
                 >
                   Project Admin
@@ -140,14 +139,14 @@
                   type="checkbox"
                   matRipple
                   id="observeCheck"
-                  [(ngModel)]="user.projectObserve"
+                  [(ngModel)]="user.projectObserver"
                   [disabled]="user.isRequestor()"
                   [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectObserve')"
+                  (change)="roleChanged(user, 'ProjectObserver')"
                 >
                 </mat-checkbox>
                 <h6
-                  [class.muted-text]="!user.projectObserve"
+                  [class.muted-text]="!user.projectObserver"
                   class="pl-1 no-top-margin no-bottom-margin align-items-center"
                 >
                   Project Observer
@@ -158,17 +157,17 @@
                   type="checkbox"
                   matRipple
                   id="requestorCheck"
-                  [(ngModel)]="user.requestManage"
+                  [(ngModel)]="user.projectApprover"
                   [disabled]="user.isRequestor()"
                   [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'RequestManage')"
+                  (change)="roleChanged(user, 'ProjectApprover')"
                 >
                 </mat-checkbox>
                 <h6
-                  [class.muted-text]="!user.requestManage"
+                  [class.muted-text]="!user.projectApprover"
                   class="pl-1 no-top-margin no-bottom-margin align-items-center"
                 >
-                  Manage Request
+                  Request Approver
                 </h6>
               </div>
             </div>

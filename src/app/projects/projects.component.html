@@ -8,19 +8,21 @@
         *ngIf="canCreateProjects"
         class="btn btn-primary"
         matTooltip="Create Project"
-        (click)="createProject()">
+        (click)="createProject()"
+      >
         <clr-icon class="is-solid" shape="add"></clr-icon>
         <span>Project</span>
       </button>
       <button
-        *ngIf="canSubmitRequests &&
-        requestableProjects &&
-        requestableProjects.length> 0
+        *ngIf="
+          canSubmitRequests &&
+          requestableProjects &&
+          requestableProjects.length > 0
         "
         class="btn btn-primary"
         matTooltip="Create Request"
         (click)="createRequest()"
-        >
+      >
         <clr-icon class="is-solid" shape="add"></clr-icon>
         <span>&nbsp;Request</span>
       </button>
@@ -31,21 +33,20 @@
         <button clrTabLink class="align-items-center">
           <clr-icon shape="note"></clr-icon>
           Active Projects
-          <strong>({{ (activeProjects$ | async)?.length }})</strong>
+          <strong>({{ activeProjects.length }})</strong>
         </button>
         <clr-tab-content *clrIfActive>
-          <app-projects-list [projects]="activeProjects$"> </app-projects-list>
+          <app-projects-list [projects]="activeProjects"> </app-projects-list>
         </clr-tab-content>
       </clr-tab>
       <clr-tab>
         <button clrTabLink class="align-items-center">
           <clr-icon shape="tasks"></clr-icon>
           Archived Projects
-          <strong>({{ (archivedProjects$ | async)?.length }})</strong>
+          <strong>({{ archivedProjects.length }})</strong>
         </button>
         <clr-tab-content *clrIfActive>
-          <app-projects-list [projects]="archivedProjects$">
-          </app-projects-list>
+          <app-projects-list [projects]="archivedProjects"> </app-projects-list>
         </clr-tab-content>
       </clr-tab>
     </clr-tabs>

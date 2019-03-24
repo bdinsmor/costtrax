@@ -16,10 +16,11 @@ export class UserFormComponent implements OnInit {
   newUser: User;
   project: Project;
   projectId: string;
-  projectAdmin = false;
+  projectManager = false;
   projectDisabled = false;
-  requestManage = false;
-  requestSubmit = false;
+  projectApprover = false;
+  projectObserver = false;
+  projectRequestor = false;
   requestDisabled = false;
 
   constructor(
@@ -48,7 +49,7 @@ export class UserFormComponent implements OnInit {
   addUser() {
     this.newUser.email = this.emailForm.value.email;
     if (this.type === 'REQUESTOR') {
-      this.newUser.addRole('RequestSubmit');
+      this.newUser.addRole('ProjectRequestor');
     }
     this.dialogRef.close({ success: true, user: this.newUser });
   }
@@ -56,40 +57,42 @@ export class UserFormComponent implements OnInit {
   sendInvite() {
     this.newUser.email = this.emailForm.value.email;
     if (this.type === 'REQUESTOR') {
-      this.newUser.addRole('RequestSubmit');
+      this.newUser.addRole('ProjectRequestor');
     }
     const invite = {
       email: this.newUser.email,
       roles: this.newUser.roles
     };
 
-    this.projectsService.inviteUser(this.projectId, invite).subscribe(
-      (response: any) => {
-        this.dialogRef.close({ success: true, user: this.newUser });
-      },
-      (error: any) => {
-        this.dialogRef.close();
-      }
-    );
+    this.projectsService
+      .inviteUser(this.projectId, invite.email, invite.roles)
+      .subscribe(
+        (response: any) => {
+          this.dialogRef.close({ success: true, user: this.newUser });
+        },
+        (error: any) => {
+          this.dialogRef.close();
+        }
+      );
   }
 
   buildForm() {
     this.emailForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      projectAdmin: new FormControl({
-        value: this.projectAdmin,
+      projectApprover: new FormControl({
+        value: this.projectApprover,
         disabled: this.projectDisabled
       }),
-      projectObserve: new FormControl({
-        value: this.projectAdmin,
+      projectObserver: new FormControl({
+        value: this.projectObserver,
         disabled: this.projectDisabled
       }),
-      requestManage: new FormControl({
-        value: this.requestManage,
+      projectManager: new FormControl({
+        value: this.projectManager,
         disabled: this.projectDisabled
       }),
-      requestSubmit: new FormControl({
-        value: this.requestSubmit,
+      projectRequestor: new FormControl({
+        value: this.projectRequestor,
         disabled: this.requestDisabled
       })
     });

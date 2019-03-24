@@ -353,7 +353,6 @@ export class AuthenticationService {
     if (creds && creds.email && creds.token) {
       const token = this.decodeToken(creds.token);
       if (token) {
-        console.log('decoded token: ' + JSON.stringify(token, null, 2));
         this.subject.next({
           userName: creds.email,
           roles: creds.roles,

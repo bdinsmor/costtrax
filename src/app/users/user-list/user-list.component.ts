@@ -38,16 +38,16 @@ export class UserListComponent implements OnInit {
 
   emailForm: FormGroup;
   emailPattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
-  projectAdmin = false;
-  projectObserve = false;
-  requestManage = false;
-  requestSubmit = false;
+  projectManager = false;
+  projectObserver = false;
+  projectApprover = false;
+  projectRequestor = false;
   requestDisabled = false;
   projectDisabled = false;
   selectedItem: User;
   selectedIndex = -1;
   newUser: User = new User({});
-   selectedTags = [];
+  selectedTags = [];
 
   constructor(
     private changeDetector: ChangeDetectorRef,
@@ -70,20 +70,20 @@ export class UserListComponent implements OnInit {
   buildForm() {
     this.emailForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      projectAdmin: new FormControl({
-        value: this.projectAdmin,
+      projectManager: new FormControl({
+        value: this.projectManager,
         disabled: this.projectDisabled
       }),
-      projectObserve: new FormControl({
-        value: this.projectAdmin,
+      projectObserver: new FormControl({
+        value: this.projectObserver,
         disabled: this.projectDisabled
       }),
-      requestManage: new FormControl({
-        value: this.requestManage,
+      projectApprover: new FormControl({
+        value: this.projectApprover,
         disabled: this.projectDisabled
       }),
-      requestSubmit: new FormControl({
-        value: this.requestSubmit,
+      projectRequestor: new FormControl({
+        value: this.projectRequestor,
         disabled: this.requestDisabled
       })
     });
@@ -142,7 +142,7 @@ export class UserListComponent implements OnInit {
 
   saveRoleEdit(user: User) {
     this.projectsService
-      .updateUser(this.projectId, user.id, user.roles)
+      .updateUser(this.projectId, user.email, user.roles)
       .subscribe(
         (response: any) => {
           this.openSnackBar('User Updated', 'ok', 'OK');

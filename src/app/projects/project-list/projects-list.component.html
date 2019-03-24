@@ -3,19 +3,28 @@
     <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'"
       >Project</clr-dg-column
     >
-    <clr-dg-column [clrDgField]="'itemsPending'">Open Requests</clr-dg-column>
-    <clr-dg-column [clrDgField]="'age'" [clrDgSortOrder]="ascSort"
+    <clr-dg-column [clrDgField]="'meta.requestingOrgs'"
+      >Requesting Organization</clr-dg-column
+    >
+    <clr-dg-column [clrDgField]="'requestStats.pendingCount'"
+      >Open Requests</clr-dg-column
+    >
+
+    <clr-dg-column
+      [clrDgField]="'requestStats.pendingMaxAge'"
+      [clrDgSortOrder]="ascSort"
       >Oldest Open Request</clr-dg-column
     >
     <clr-dg-row
       class="pointer"
-      *clrDgItems="let item of (projects | async); let i = index"
+      *clrDgItems="let item of projects; let i = index"
       (click)="openProject(item)"
     >
       <clr-dg-cell>{{ item.name }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.itemsPending }}</clr-dg-cell>
-      <clr-dg-cell>{{ item.age }} days</clr-dg-cell>
+      <clr-dg-cell>{{ item.meta.requestingOrgs }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.requestStats.pendingCount }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.requestStats.pendingMaxAge }} days</clr-dg-cell>
     </clr-dg-row>
-    <clr-dg-footer>{{ (projects | async)?.length }} Projects</clr-dg-footer>
+    <clr-dg-footer>{{ projects.length }} Projects</clr-dg-footer>
   </clr-datagrid>
 </div>
