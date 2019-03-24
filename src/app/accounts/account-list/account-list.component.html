@@ -12,8 +12,10 @@
       class="pointer"
       *clrDgItems="let item of accounts; let i = index"
     >
-      <clr-dg-cell>{{ item.organization }}</clr-dg-cell>
-      <clr-dg-cell
+      <clr-dg-cell (click)="viewAccount(item)">{{
+        item.organization
+      }}</clr-dg-cell>
+      <clr-dg-cell (click)="viewAccount(item)"
         ><div *ngFor="let admin of item.admins">
           {{ admin.email }}
         </div></clr-dg-cell
@@ -22,9 +24,7 @@
         <div class="row justify-content-end" style="width:100px">
           <button
             *ngIf="item.isActive()"
-            class="ripple
-                            icon-30 icon-button
-                            pr-1"
+            class="ripple icon-30 icon-button pr-1"
             matTooltip="Mark Inactive"
             [disabled]="true"
             (click)="archiveAccount(item)"

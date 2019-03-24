@@ -54,12 +54,6 @@ export class LaborComponent implements OnInit, OnDestroy {
         '../../assets/icons/content-duplicate-18.svg'
       )
     );
-    this.matIconRegistry.addSvgIcon(
-      'notification_important',
-      this.domSanitizer.bypassSecurityTrustResourceUrl(
-        '../../assets/icons/notification_important-24.svg'
-      )
-    );
   }
 
   ngOnDestroy() {}

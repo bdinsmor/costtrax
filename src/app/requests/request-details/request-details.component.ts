@@ -1,19 +1,16 @@
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
 import { Location } from '@angular/common';
 import {
+  AfterContentInit,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   NgZone,
   OnDestroy,
-  OnInit
+  OnInit,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,16 +24,9 @@ import { AuthenticationService } from '../../core/authentication/authentication.
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { EquipmentService } from '../../equipment/equipment.service';
 import { ProjectsService } from '../../projects/projects.service';
-import {
-  Equipment,
-  Item,
-  ItemList,
-  Project,
-  Request
-} from '../../shared/model';
+import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
-import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
 import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
 
@@ -47,10 +37,10 @@ import { RequestApproveDialogComponent } from './../dialogs/request-approve-dial
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: appAnimations
 })
-export class RequestDetailsComponent implements OnInit, OnDestroy {
+export class RequestDetailsComponent
+  implements OnInit, OnDestroy, AfterViewInit, AfterContentInit {
   private config: MatSnackBarConfig;
   shrinkToolbar = false;
-
   duration = 3000;
   requestFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
@@ -96,6 +86,10 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     private scrollDispatcher: ScrollDispatcher,
     private ngZone: NgZone
   ) {}
+
+  ngAfterViewInit() {}
+
+  ngAfterContentInit(): void {}
 
   ngOnInit() {
     this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
@@ -318,6 +312,30 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     this.cancelRequest();
   }
 
+  saveRequest() {
+    if (
+      this.request.id &&
+      this.request.id !== '' &&
+      (this.notesFormGroup && !this.notesFormGroup.hasError('notValid'))
+    ) {
+      this.request.notes = this.notesFormGroup.value.notes;
+      this.request.startDate = new Date(this.notesFormGroup.value.dateRange[0]);
+      this.request.endDate = new Date(this.notesFormGroup.value.dateRange[1]);
+      this.requestsService.update(this.request).subscribe(
+        (response: any) => {
+          this.openSnackBar('Request Saved', 'ok', 'OK');
+        },
+        (error: any) => {
+          this.openSnackBar('Request Did Not Save', 'error', 'OK');
+        }
+      );
+    }
+  }
+
+  submitRequest() {
+    console.log('items: ' + JSON.stringify(this.request.itemsByType, null, 2));
+  }
+  /*
   submitRequest() {
     const dialogRef = this.dialog.open(RequestSubmitDialogComponent, {
       width: '40vw'
@@ -347,6 +365,8 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+  */
+
   save(notesValue, dateRange) {
     if (
       this.request.id &&
@@ -357,22 +377,11 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       this.request.startDate = new Date(dateRange[0]);
       this.request.endDate = new Date(dateRange[1]);
       this.requestsService.update(this.request).subscribe((response: any) => {
-        console.log('request status: ' + this.request.status);
         if (this.request.status !== 'PENDING') {
           this.equipmentService.sendDateChangeNotification();
         }
       });
     } else {
-    }
-  }
-
-  saveRequest() {
-    if (this.request.id && this.request.id !== '') {
-      this.requestsService
-        .patchLineItems(this.request.items)
-        .then((response: any) => {
-          this.openSnackBar('Request Saved!', 'OK', 'OK');
-        });
     }
   }
 
@@ -425,13 +434,13 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
     if (!this.project) {
       return;
     }
-    if (this.project.laborCostsEnabled) {
+    if (this.project.adjustments.labor.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'labor', label: 'Labor', sortOrder: 0 }
       ];
     }
-    if (this.project.activeCostsEnabled) {
+    if (this.project.adjustments.equipment.active.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -441,7 +450,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    if (this.project.standbyCostsEnabled) {
+    if (this.project.adjustments.equipment.standby.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -451,7 +460,7 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
         }
       ];
     }
-    if (this.project.rentalCostsEnabled) {
+    if (this.project.adjustments.equipment.rental.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -462,19 +471,19 @@ export class RequestDetailsComponent implements OnInit, OnDestroy {
       ];
     }
 
-    if (this.project.materialCostsEnabled) {
+    if (this.project.adjustments.material.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'material', label: 'Material', sortOrder: 4 }
       ];
     }
-    if (this.project.otherCostsEnabled) {
+    if (this.project.adjustments.other.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'other', label: 'Other', sortOrder: 6 }
       ];
     }
-    if (this.project.subcontractorCostsEnabled) {
+    if (this.project.adjustments.subcontractor.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'subcontractor', label: 'Subcontractor', sortOrder: 5 }

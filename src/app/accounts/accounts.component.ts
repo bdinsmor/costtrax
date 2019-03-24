@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Observable } from 'rxjs';
 
 import { Account } from '../shared/model';
 import { AccountFormComponent } from './account-form/account-form.component';
@@ -11,7 +12,7 @@ import { AccountService } from './accounts.service';
   styleUrls: ['./accounts.component.scss']
 })
 export class AccountsComponent implements OnInit, OnDestroy {
-  accounts: Account[];
+  accounts$: Observable<Account[]>;
   canCreateAccounts = false;
   private config: MatSnackBarConfig;
   duration = 3000;
@@ -48,8 +49,6 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   loadActiveAccounts() {
-    this.accountService.getActiveAccounts().subscribe(accts => {
-      this.accounts = accts;
-    });
+    this.accounts$ = this.accountService.getAdminAccounts();
   }
 }

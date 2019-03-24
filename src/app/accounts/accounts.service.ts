@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { Account } from '../shared/model';
+import { Account, User } from '../shared/model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
+  accounts: Account[];
   constructor(private http: HttpClient) {}
 
   create(account: Account): Observable<any> {
@@ -30,37 +31,33 @@ export class AccountService {
     return this.http.delete(environment.serverUrl + '/account/' + accountId);
   }
 
+  deleteUser(accountId: string, userId: string) {
+    return this.http.delete(
+      environment.serverUrl + '/account/' + accountId + '/user/' + userId
+    );
+  }
+
   update(account: Account) {
+    const admins = [];
+    account.users.forEach((u: User) => {
+      admins.push(u.email);
+    });
     return this.http.put(environment.serverUrl + '/account/' + account.id, {
       accountName: account.accountName,
-      email: account.email
+      accountAdmins: admins
     });
   }
 
-  getActiveAccounts(): Observable<Account[]> {
+  getAdminAccounts(): Observable<Account[]> {
     return this.http
-      .get(environment.serverUrl + '/account/admin?active=1')
+      .get(environment.serverUrl + '/account?role=AccountAdmin')
       .pipe(
         map((res: any) => {
           const accounts: Account[] = [];
           res.forEach((p: any) => {
             accounts.push(new Account(p));
           });
-          return accounts;
-        })
-      );
-  }
-
-  getArchivedAccountss(): Observable<Account[]> {
-    return this.http
-      .get(environment.serverUrl + '/account/admin?active=0')
-      .pipe(
-        map((res: any) => {
-          const accounts: Account[] = [];
-          res.forEach((p: any) => {
-            //   console.log('project name: ' + p.name);
-            accounts.push(new Account(p));
-          });
+          this.accounts = accounts;
           return accounts;
         })
       );
@@ -75,12 +72,22 @@ export class AccountService {
   }
 
   getAccount(id: string): Observable<Account> {
-    return this.http.get(environment.serverUrl + '/account/' + id).pipe(
-      map((res: any) => {
-        const json = res as any;
-        return json as Account;
-      })
-    );
+    if (this.accounts) {
+      let account: Account = null;
+      this.accounts.forEach((a: Account) => {
+        if (a.id === id) {
+          account = a;
+        }
+      });
+      return of(account);
+    } else {
+      return this.http.get(environment.serverUrl + '/account/' + id).pipe(
+        map((res: any) => {
+          const json = res as any;
+          return json as Account;
+        })
+      );
+    }
   }
 
   getAccounts(): Observable<Account[]> {

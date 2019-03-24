@@ -12,6 +12,8 @@ export interface Credentials {
   roles: string[];
   token: string;
   uberAdmin: boolean;
+  showCreateProject: boolean;
+  showCreateRequest: boolean;
   decodedToken: string;
   accounts: Account[];
 }
@@ -178,6 +180,34 @@ export class AuthenticationService {
     return loggedIn;
   }
 
+  showCreateProject(): boolean {
+    if (!this.credentials) {
+      return false;
+    }
+    const loggedIn =
+      !!this.credentials && this.isTokenExpired(this.credentials.token, 0);
+    if (!loggedIn) {
+      return false;
+    } else {
+      return this.credentials.showCreateProject;
+    }
+    return false;
+  }
+
+  showCreateRequest(): boolean {
+    if (!this.credentials) {
+      return false;
+    }
+    const loggedIn =
+      !!this.credentials && this.isTokenExpired(this.credentials.token, 0);
+    if (!loggedIn) {
+      return false;
+    } else {
+      return this.credentials.showCreateRequest;
+    }
+    return false;
+  }
+
   isUberAdmin(): boolean {
     if (!this.credentials) {
       return false;
@@ -323,11 +353,14 @@ export class AuthenticationService {
     if (creds && creds.email && creds.token) {
       const token = this.decodeToken(creds.token);
       if (token) {
+        console.log('decoded token: ' + JSON.stringify(token, null, 2));
         this.subject.next({
           userName: creds.email,
           roles: creds.roles,
-          uberAdmin: token.uberAdmin,
-          advantageId: token.advantageId
+          uberAdmin: token.showAccounts,
+          showAddProject: token.showAddProject,
+          showAddRequest: token.showAddRequest,
+          eqwVerified: token.eqwVerified
         });
       }
     } else {

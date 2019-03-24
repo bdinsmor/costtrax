@@ -1,0 +1,58 @@
+<div class="full-width">
+  <section class="full-width d-flex flex-row align-items-center">
+    <h5 class="no-top-margin pr-1">
+      ACCOUNT ADMINS
+    </h5>
+  </section>
+
+  <button
+    type="button"
+    class="btn btn-sm btn-primary mt-1"
+    (click)="addAccountAdmin()"
+  >
+    Add Account Admin
+  </button>
+  <section class="full-width d-flex flex-row align-items-center">
+    <div class="row no-margin-left font-italic small-text">
+      <i class="material-icons md-20 md-dark"> info </i>&nbsp;Added Admins will
+      be sent an email invitation to begin creating projects.
+    </div>
+  </section>
+
+  <div class="full-width mb-1">
+    <clr-datagrid>
+      <clr-dg-column>Email</clr-dg-column>
+      <clr-dg-column>Roles</clr-dg-column>
+      <clr-dg-column></clr-dg-column>
+
+      <clr-dg-row *ngFor="let user of users; let i = index">
+        <clr-dg-cell>
+          <div class="padding-label-top">{{ user.email }}</div>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <div class="padding-label-top" *ngIf="user.roles">
+            <mat-chip-list selectable="true">
+              <mat-chip *ngFor="let role of user.roles">{{
+                role | rolePrint
+              }}</mat-chip>
+            </mat-chip-list>
+          </div>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <div class="row justify-content-end">
+            <button
+              *ngIf="!user.expanded"
+              class="ripple icon-30 icon-button mr-1"
+              matTooltip="Remove"
+              (click)="removeUser(i, user)"
+            >
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </div>
+        </clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>{{ users.length }} Users</clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>

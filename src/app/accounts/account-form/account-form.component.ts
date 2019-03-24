@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 
-import { Account } from '../../shared/model';
+import { Account, User } from '../../shared/model';
 import { AccountService } from '../accounts.service';
 
 @Component({
@@ -15,6 +15,7 @@ export class AccountFormComponent implements OnInit {
   error: string;
   passwordError: string;
   accountForm: FormGroup;
+  accountUsers: User[];
   @Output()
   cancel = new EventEmitter();
   @Output()

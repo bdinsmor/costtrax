@@ -7,12 +7,9 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Papa } from 'ngx-papaparse';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
@@ -24,7 +21,6 @@ import { Equipment } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentService } from './equipment.service';
-import { EquipmentUploadDialogComponent } from './upload-equipment-dialog.component';
 
 @Component({
   selector: 'app-equipment',
@@ -34,7 +30,6 @@ import { EquipmentUploadDialogComponent } from './upload-equipment-dialog.compon
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EquipmentComponent implements OnInit, OnDestroy {
-  @ViewChild('file') file;
   @Input() items: Equipment[];
   @Input() projectId: string;
   @Input() state: string;
@@ -72,18 +67,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private equipmentService: EquipmentService,
-    private papaParse: Papa,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
     private changeDetector: ChangeDetectorRef
-  ) {
-    this.matIconRegistry.addSvgIcon(
-      'notification_important',
-      this.domSanitizer.bypassSecurityTrustResourceUrl(
-        '../../assets/icons/notification_important-24.svg'
-      )
-    );
-  }
+  ) {}
 
   ngOnInit() {
     this.buildForm();
@@ -142,8 +127,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   autoSave(autoSaveValue) {
     //   this.equipmentService.updateAutoSave(autoSaveValue);
   }
-
-  editConfiguration(index: number, e: Equipment) {}
 
   modelChanged(item: Equipment) {}
 
@@ -447,39 +430,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   }
   addMisc() {
     this.items = [...this.items, new Equipment({})];
-  }
-
-  uploadEquipment() {
-    this.file.nativeElement.click();
-  }
-
-  uploadEquipment2() {
-    const dialogRef = this.dialog.open(EquipmentUploadDialogComponent, {
-      width: '50vw',
-      disableClose: true,
-      data: {}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result.fileList) {
-        this.changeDetector.detectChanges();
-        this.changeDetector.markForCheck();
-      }
-    });
-  }
-
-  parse(files: FileList): void {
-    const file: File = files.item(0);
-    const reader: FileReader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = e => {
-      const csvStr = reader.result as string;
-      const parsed = this.papaParse.parse(csvStr, { header: true });
-      console.log('data: ' + JSON.stringify(parsed, null, 2));
-      const csv = parsed.data;
-
-      // do something with parsed CSV
-    };
   }
 
   saveChanges(index: number, item: Equipment) {

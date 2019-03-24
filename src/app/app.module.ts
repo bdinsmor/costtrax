@@ -1,4 +1,6 @@
+import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import en from '@angular/common/locales/en';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -6,8 +8,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ClarityModule } from '@clr/angular';
 import { TextMaskModule } from 'angular2-text-mask';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 
 import { environment } from '../environments/environment';
+import { AccountFormComponent } from './accounts/account-form/account-form.component';
 import { AccountsModule } from './accounts/accounts.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,9 +27,6 @@ import { ProjectFormDialogComponent } from './projects/project-form/project-form
 import { ProjectsModule } from './projects/projects.module';
 import { RequestsModule } from './requests/requests.module';
 import { SharedModule } from './shared';
-import { registerLocaleData } from '@angular/common';
-import en from '@angular/common/locales/en';
-import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 
 /** config angular i18n **/
 registerLocaleData(en);
@@ -60,7 +61,7 @@ registerLocaleData(en);
       enabled: environment.production
     })
   ],
-  entryComponents: [ProjectFormDialogComponent],
+  entryComponents: [ProjectFormDialogComponent, AccountFormComponent],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]
 })

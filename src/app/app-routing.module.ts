@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AccountFormComponent } from './accounts/account-form/account-form.component';
+import { AccountDetailsComponent } from './accounts/account-details/account-details.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { AuthenticationGuard } from './core';
 import { UberAdminGuard } from './core/authentication/uberAdmin.guard';
@@ -52,7 +52,7 @@ const routes: Routes = [
   },
   {
     path: 'accounts/:id',
-    component: AccountFormComponent,
+    component: AccountDetailsComponent,
     canActivate: [AuthenticationGuard, UberAdminGuard],
     data: {
       animation: 'details'

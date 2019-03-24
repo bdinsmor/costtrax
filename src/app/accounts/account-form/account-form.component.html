@@ -8,16 +8,6 @@
       novalidate
     >
       <div mat-dialog-title class="login-box full-width no-border header-bg">
-        <div
-          class="header header-6  align-items-center justify-content-center pb-5 pt-5"
-        >
-          <img
-            class="logo"
-            alt="logo"
-            width="350"
-            src="../assets/img/costtrax.png"
-          />
-        </div>
         <div class="px-2 pt-2 form-bg">
           <h3 class="pb-1 no-top-margin">ADD ADMIN ACCOUNT</h3>
           <div class="full-width pt-2">
@@ -37,26 +27,7 @@
             </mat-form-field>
           </div>
           <div class="full-width pt-1">
-            <mat-form-field class="full-width">
-              <input
-                matInput
-                placeholder="Email"
-                type="email"
-                formControlName="email"
-                required
-              />
-              <mat-error
-                *ngIf="
-                  accountForm.get('email').hasError('email') &&
-                  !accountForm.get('email').hasError('required')
-                "
-              >
-                Please enter a <strong>valid email address</strong>
-              </mat-error>
-              <mat-error *ngIf="accountForm.get('email').hasError('required')">
-                Email is <strong>required</strong>
-              </mat-error>
-            </mat-form-field>
+            <app-account-user-list [newAccount]="true"></app-account-user-list>
           </div>
 
           <br />

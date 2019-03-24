@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
@@ -201,33 +208,6 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     this.changeDetector.detectChanges();
   }
 
-  toggleCheckbox(type: string, event: any) {
-    switch (type) {
-      case 'equipment': {
-        this.project.equipmentCostsEnabled = !this.project
-          .equipmentCostsEnabled;
-        break;
-      }
-      case 'labor': {
-        this.project.laborCostsEnabled = !this.project.laborCostsEnabled;
-        break;
-      }
-      case 'material': {
-        this.project.materialCostsEnabled = !this.project.materialCostsEnabled;
-        break;
-      }
-      case 'other': {
-        this.project.otherCostsEnabled = !this.project.otherCostsEnabled;
-        break;
-      }
-      case 'subcontractor': {
-        this.project.subcontractorCostsEnabled = !this.project
-          .subcontractorCostsEnabled;
-        break;
-      }
-    }
-  }
-
   saveNew() {
     this.save.emit(this.projectFormGroup.value);
   }
@@ -238,48 +218,53 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
   saveProject() {
     const formData: any = this.projectFormGroup.value;
-
-    const formProject = new Project(formData);
     const projectData: any = {
       id: this.project.id,
       active: this.project.active,
       accountId: this.project.account.id,
       name: this.project.name,
-      zipcode: formProject.zipcode,
-      state: formProject.state,
-      description: formProject.description,
+      zipcode: formData.zipcode,
+      state: formData.state,
+      description: formData.projectInstructions,
       paymentTerms: this.project.paymentTerms,
-      materialCostsEnabled: formData.materialCheck,
-      activeCostsEnabled: formData.activeCheck,
-      standbyCostsEnabled: formData.standbyCheck,
-      rentalCostsEnabled: formData.rentalCheck,
-      laborCostsEnabled: formData.laborCheck,
-      otherCostsEnabled: formData.otherCheck,
-      subcontractorCostsEnabled: formData.subcontractorCheck,
-      adjustments: formProject.adjustments
+      adjustments: {}
     };
 
     projectData.adjustments.equipment = {
       active: {
+        enabled: formData.activeCheck,
         regionalAdjustmentsEnabled: formData.activeRegionalCheck,
-        markup: formData.activeMarkup || 10,
-        ownership: formData.activeOwnershipCost || 100,
-        operating: formData.activeOperatingCost || 100
+        markup: formData.activeMarkup,
+        ownership: formData.activeOwnershipCost,
+        operating: formData.activeOperatingCost
       },
       standby: {
+        enabled: formData.standbyCheck,
         regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
-        markup: formData.standbyMarkup || 10
+        markup: formData.standbyMarkup
       },
 
-      rental: { markup: formData.rentalMarkup || 10 }
+      rental: {
+        enabled: formData.rentalCheck,
+        markup: formData.rentalMarkup
+      }
     };
-
-    projectData.adjustments.material.markup = formData.materialMarkup || 10;
-    projectData.adjustments.other.markup = formData.otherMarkup || 10;
-    projectData.adjustments.subcontractor.markup =
-      formData.subcontractorMarkup || 10;
-    projectData.adjustments.labor.markup = formData.laborMarkup || 10;
-    console.log('project data: ' + JSON.stringify(projectData, null, 2));
+    projectData.adjustments.material = {
+      enabled: formData.materialCheck,
+      markup: formData.materialMarkup
+    };
+    projectData.adjustments.labor = {
+      enabled: formData.laborCheck,
+      markup: formData.laborMarkup
+    };
+    projectData.adjustments.other = {
+      enabled: formData.otherCheck,
+      markup: formData.otherMarkup
+    };
+    projectData.adjustments.subcontractor = {
+      enabled: formData.subcontractorCheck,
+      markup: formData.subcontractorMarkup
+    };
 
     /*
     activeFormula: new FormControl('FHWA'),
@@ -429,14 +414,20 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       ),
       materialMarkup: new FormControl(this.project.adjustments.material.markup),
       otherMarkup: new FormControl(this.project.adjustments.other.markup),
-      activeCheck: new FormControl(this.project.activeCostsEnabled),
-      standbyCheck: new FormControl(this.project.standbyCostsEnabled),
-      rentalCheck: new FormControl(this.project.rentalCostsEnabled),
-      laborCheck: new FormControl(this.project.laborCostsEnabled),
-      materialCheck: new FormControl(this.project.materialCostsEnabled),
-      otherCheck: new FormControl(this.project.otherCostsEnabled),
+      activeCheck: new FormControl(
+        this.project.adjustments.equipment.active.enabled
+      ),
+      standbyCheck: new FormControl(
+        this.project.adjustments.equipment.standby.enabled
+      ),
+      rentalCheck: new FormControl(
+        this.project.adjustments.equipment.rental.enabled
+      ),
+      laborCheck: new FormControl(this.project.adjustments.labor.enabled),
+      materialCheck: new FormControl(this.project.adjustments.material.enabled),
+      otherCheck: new FormControl(this.project.adjustments.other.enabled),
       subcontractorCheck: new FormControl(
-        this.project.subcontractorCostsEnabled
+        this.project.adjustments.subcontractor.enabled
       )
     });
   }

@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { PapaParseModule } from 'ngx-papaparse';
 
 import { DirectivesModule } from '../core/directives/directives';
 import { NgxCurrencyModule } from '../core/directives/ngx-currency';
@@ -12,7 +10,6 @@ import { SharedModule } from '../shared';
 import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentSelectComponent } from './equipment-select.component';
 import { EquipmentComponent } from './equipment.component';
-import { EquipmentUploadDialogComponent } from './upload-equipment-dialog.component';
 
 @NgModule({
   imports: [
@@ -22,25 +19,18 @@ import { EquipmentUploadDialogComponent } from './upload-equipment-dialog.compon
     MaterialModule,
     NgxCurrencyModule,
     DirectivesModule,
-    NgZorroAntdModule,
-    PapaParseModule,
     PipesModule
   ],
   declarations: [
     EquipmentComponent,
     EquipmentDeleteDialogComponent,
-    EquipmentUploadDialogComponent,
     EquipmentSelectComponent
   ],
   exports: [
     EquipmentComponent,
     EquipmentDeleteDialogComponent,
-    EquipmentUploadDialogComponent,
     EquipmentSelectComponent
   ],
-  entryComponents: [
-    EquipmentUploadDialogComponent,
-    EquipmentDeleteDialogComponent
-  ]
+  entryComponents: [EquipmentDeleteDialogComponent]
 })
 export class EquipmentModule {}

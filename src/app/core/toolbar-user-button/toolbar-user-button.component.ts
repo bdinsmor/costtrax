@@ -51,8 +51,7 @@ export class ToolbarUserButtonComponent
       .subscribe(message => {
         if (message && message.userName) {
           this.userName = message.userName;
-          this.accountSynced =
-            message.advantageId && message.advantageId !== '';
+          this.accountSynced = message.eqwVerified;
         } else {
           this.userName = '';
           this.accountSynced = false;

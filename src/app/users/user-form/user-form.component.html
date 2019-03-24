@@ -27,24 +27,43 @@
     </mat-form-field>
     <div *ngIf="type !== 'REQUESTOR'">
       <h5 class="mt-1 no-top-margin">Project Owner Roles</h5>
-        <div class="column">
+      <div class="column">
+        <mat-checkbox
+          type="checkbox"
+          id="adminCheck"
+          [(ngModel)]="newUser.projectAdmin"
+          [disabled]="newUser.isRequestor()"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="roleChanged(newUser, 'ProjectAdmin')"
+          ><span [class.muted-text]="!newUser.projectAdmin">Project Admin</span>
+        </mat-checkbox>
+      </div>
+      <div class="column">
+        <mat-checkbox
+          type="checkbox"
+          id="observeCheck"
+          [(ngModel)]="newUser.projectObserve"
+          [disabled]="newUser.isRequestor()"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="roleChanged(newUser, 'ProjectObserve')"
+          ><span [class.muted-text]="!newUser.projectObserve"
+            >Project Observer</span
+          >
+        </mat-checkbox>
+      </div>
 
-        <mat-checkbox type="checkbox" id="adminCheck" [(ngModel)]="newUser.projectAdmin" [disabled]="newUser.isRequestor()" [ngModelOptions]="{ standalone: true }"
-          (change)="roleChanged(newUser, 'ProjectAdmin')"><span [class.muted-text]="!newUser.projectAdmin">Project Admin</span>
+      <div class="column">
+        <mat-checkbox
+          type="checkbox"
+          id="requestorCheck"
+          [(ngModel)]="newUser.requestManage"
+          [disabled]="newUser.isRequestor()"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="roleChanged(newUser, 'RequestManage')"
+          ><span [class.muted-text]="!newUser.requestManage"
+            >Manage Requests</span
+          >
         </mat-checkbox>
-      </div>
-       <div class="column">
-      
-        <mat-checkbox type="checkbox" id="observeCheck" [(ngModel)]="newUser.projectObserve" [disabled]="newUser.isRequestor()" [ngModelOptions]="{ standalone: true }"
-          (change)="roleChanged(newUser, 'ProjectObserve')"><span [class.muted-text]="!newUser.projectObserve">Project Observer</span>
-        </mat-checkbox>
-      </div>
-      
-       <div class="column">
-        <mat-checkbox type="checkbox" id="requestorCheck" [(ngModel)]="newUser.requestManage" [disabled]="newUser.isRequestor()" [ngModelOptions]="{ standalone: true }"
-          (change)="roleChanged(newUser, 'RequestManage')"><span [class.muted-text]="!newUser.requestManage">Manage Requests</span>
-        </mat-checkbox>
-        
       </div>
     </div>
   </form>

@@ -1,0 +1,37 @@
+<h3 mat-dialog-title class="modal-title">
+  <span>Add User</span>
+</h3>
+<mat-dialog-content *ngIf="userForm">
+  <form class="full-width" [formGroup]="userForm">
+    <mat-form-field class="pass w-85" style="width:85%!important">
+      <input
+        class="full-width"
+        type="text"
+        matInput
+        formControlName="email"
+        autocomplete="email"
+        placeholder="Email to invite"
+        label="Email to invite"
+      />
+      <mat-error
+        *ngIf="
+          !userForm.controls.email.valid || userForm.get('email').untouched
+        "
+      >
+        <span translate>Valid Email is required</span>
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-outline" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    class="btn btn-primary"
+    (click)="addUser()"
+    [disabled]="userForm.invalid"
+  >
+    Add User
+  </button>
+</mat-dialog-actions>

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { ClrDatagridSortOrder } from '@clr/angular';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -7,6 +7,7 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
 import { appAnimations } from '../../core/animations';
 import { Account } from '../../shared/model';
 import { AccountService } from '../accounts.service';
+import { AccountDeleteDialogComponent } from './account-delete-dialog.component';
 
 @Component({
   selector: 'app-account-list',
@@ -25,8 +26,10 @@ export class AccountListComponent implements OnInit {
 
   constructor(
     public router: Router,
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit() {}
@@ -54,13 +57,26 @@ export class AccountListComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe(
         (response: any) => {
-          this.openSnackBar('Account marked COMPLETE!', 'ok', 'OK');
+          this.openSnackBar('Account Archived!', 'ok', 'OK');
           this.router.navigate(['../accounts']);
         },
         (error: any) => {
           this.openSnackBar('Error Archiving Account', 'error', 'OK');
         }
       );
+  }
+
+  removeAccount(account: Account) {
+    const dialogRef = this.dialog.open(AccountDeleteDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.accountService.delete(account.id).subscribe((response: any) => {
+          this.openSnackBar('Account Deleted!', 'ok', 'OK');
+          this.router.navigate(['../accounts']);
+        });
+      }
+    });
+    this.changeDetector.detectChanges();
   }
 
   confirmDeleteAccount() {

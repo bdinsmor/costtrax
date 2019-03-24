@@ -23,18 +23,7 @@ export class EquipmentService implements OnDestroy {
     return this.subject.asObservable();
   }
 
-  ngOnDestroy(): void { }
-
-  saveUploadedModel(projectId: string, item: Equipment): Observable<any> {
-    item.details.year = item.year;
-    return this.http.post(
-      environment.serverUrl + '/project/' + projectId + '/models',
-      {
-        modelId: item.modelId,
-        details: item.details
-      }
-    );
-  }
+  ngOnDestroy(): void {}
 
   saveRequestorModel(projectId: string, item: Equipment): Observable<any> {
     item.details.year = item.year;
@@ -134,21 +123,6 @@ export class EquipmentService implements OnDestroy {
           ownershipAdjustment,
           standbyFactor
         )
-      );
-    });
-    return forkJoin(returns);
-  }
-
-
-  uploadEquipment(
-    projectId: string,
-    equipment: Equipment[]
-  ): Observable<any> {
-    const returns = [];
-
-    equipment.forEach((e: Equipment) => {
-      returns.push(
-        this.saveUploadedModel(projectId, e)
       );
     });
     return forkJoin(returns);
@@ -627,6 +601,7 @@ export class EquipmentService implements OnDestroy {
 
   getRateData(state: string = '', choices: Equipment[], duration: number = 1) {
     const returns = [];
+    console.log('# choices: ' + choices.length);
     choices.forEach((e: Equipment) => {
       returns.push(this.getEquipmentRates(e, state));
     });

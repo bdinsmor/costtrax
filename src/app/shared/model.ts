@@ -781,14 +781,6 @@ export class Project {
   modifiedOn: Date;
   modifiedBy: string;
   numContractors: number;
-  materialCostsEnabled = true;
-  equipmentCostsEnabled = true;
-  activeCostsEnabled = true;
-  standbyCostsEnabled = true;
-  rentalCostsEnabled = true;
-  laborCostsEnabled = true;
-  otherCostsEnabled = true;
-  subcontractorCostsEnabled = true;
   users: User[];
   requestors: User[];
   requestorJSON: any[];
@@ -875,7 +867,6 @@ export class Project {
     let subcontractorTotal = 0;
     let otherTotal = 0;
     for (let i = 0; i < requestJSON.length; i++) {
-      // tslint:disable-next-line: no-use-before-declare
       const r = new Request(requestJSON[i]);
 
       total += +r.total;
@@ -990,24 +981,75 @@ export class Project {
     }
   }
 
+  buildCostEnabled(p: any) {
+    if (
+      p.adjustments &&
+      !p.adjustments.equipment.active.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('equipmentCostsEnabled') &&
+      (p.equipmentCostsEnabled ||
+        p.equipmentCostsEnabled === null ||
+        p.equipmentCostsEnabled === 'null')
+    ) {
+      this.adjustments.equipment.active.enabled = true;
+      this.adjustments.equipment.rental.enabled = true;
+      this.adjustments.equipment.standby.enabled = true;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.material.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('materialCostsEnabled') &&
+      p.materialCostsEnabled
+    ) {
+      this.adjustments.material.enabled = p.materialCostsEnabled;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.labor.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('laborCostsEnabled') &&
+      p.laborCostsEnabled
+    ) {
+      this.adjustments.labor.enabled = p.laborCostsEnabled;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.subcontractor.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('subcontractorCostsEnabled') &&
+      p.subcontractorCostsEnabled
+    ) {
+      this.adjustments.subcontractor.enabled = p.subcontractorCostsEnabled;
+    }
+    if (
+      p.adjustments &&
+      !p.adjustments.other.hasOwnProperty('enabled') &&
+      p.hasOwnProperty('otherCostsEnabled') &&
+      p.otherCostsEnabled
+    ) {
+      this.adjustments.other.enabled = p.otherCostsEnabled;
+    }
+  }
+
   buildDefaultAdjustments() {
     return {
-      subcontractor: { markup: 10 },
-      material: { markup: 10 },
-      other: { markup: 10 },
-      labor: {
-        markup: 10
-      },
       equipment: {
         active: {
+          enabled: true,
           regionalAdjustmentsEnabled: true,
           operating: 100,
           ownership: 100,
           markup: 10
         },
-        standby: { regionalAdjustmentsEnabled: true, markup: 10 },
-        rental: { markup: 10 }
-      }
+        standby: {
+          enabled: true,
+          regionalAdjustmentsEnabled: true,
+          markup: 10
+        },
+        rental: { enabled: true, markup: 10 }
+      },
+
+      labor: { markup: 10, enabled: true },
+      material: { markup: 10, enabled: true },
+      other: { markup: 10, enabled: true },
+      subcontractor: { markup: 10, enabled: true }
     };
   }
 
@@ -1026,47 +1068,44 @@ export class Project {
         const days = Math.abs(this.createdOn.getTime() - new Date().getTime());
         this.age = Math.ceil(days / (1000 * 3600 * 24));
       }
-
-      console.log('project form object:' + JSON.stringify(project, null, 2));
       this.paymentTerms = project.paymentTerms || 45;
       this.description =
         project.description || project.projectInstructions || '';
       this.numContractors = project.numContractors || 0;
       this.itemsPending = project.itemsPending || 0;
       this.itemsOverdue = project.itemsOverdue || 0;
-      this.materialCostsEnabled =
-        project.materialCostsEnabled || project.materialCheck;
-      this.activeCostsEnabled =
-        project.activeCostsEnabled || project.activeCheck;
-      this.standbyCostsEnabled =
-        project.standbyCostsEnabled || project.standbyCheck;
-      this.rentalCostsEnabled =
-        project.rentalCostsEnabled || project.rentalCheck;
-      this.subcontractorCostsEnabled =
-        project.subcontractorCostsEnabled || project.subcontractorCostsCheckbox;
-      this.laborCostsEnabled = project.laborCostsEnabled || project.laborCheck;
-      this.otherCostsEnabled = project.otherCostsEnabled || project.otherCheck;
+
       this.userJSON = project.users || [];
       if (!project.account && project.accountId) {
-        // tslint:disable-next-line: no-use-before-declare
         this.account = new Account({ id: project.accountId });
       } else {
-        // tslint:disable-next-line: no-use-before-declare
         this.account = project.account || new Account({});
       }
       this.roles = project.roles;
       this.adjustments = project.adjustments || this.buildDefaultAdjustments();
+
       if (!this.adjustments.labor) {
         this.adjustments.labor = {
+          enabled: true,
+          markup: 10
+        };
+      }
+
+      if (!this.adjustments.other) {
+        this.adjustments.other = {
+          enabled: true,
           markup: 10
         };
       }
 
       if (!this.adjustments.equipment.rental) {
         this.adjustments.equipment.rental = {
+          enabled: true,
           markup: 10
         };
       }
+
+      this.buildCostEnabled(project);
 
       this.itemsPending = 0;
       this.itemsOverdue = 0;
@@ -1116,8 +1155,7 @@ export class Account {
   organization: string;
   accountName: string;
   roles: string[];
-  users: Email[];
-  admins: Admin[];
+  users: User[];
   email: string;
   active = true;
   adminsList: string;
@@ -1134,7 +1172,6 @@ export class Account {
       this.roles = a.roles || [];
       this.email = a.email || '';
       this.users = a.users || [];
-      this.admins = a.admins || [];
       this.active = a.active || true;
     }
   }
@@ -1640,21 +1677,6 @@ export class Request {
       const lit: ItemList = this.itemsByType[i];
       if (lit.items && lit.items.length > 0) {
         return true;
-      }
-    }
-    return false;
-  }
-
-  hasNonDraftLineItems() {
-    for (let i = 0; i < this.itemsByType.length; i++) {
-      const lit: ItemList = this.itemsByType[i];
-      if (lit.items && lit.items.length > 0) {
-        for (let j = 0; j < lit.items.length; j++) {
-          const currentItem: Item = lit.items[j];
-          if (currentItem.status.toLowerCase() !== 'draft') {
-            return true;
-          }
-        }
       }
     }
     return false;

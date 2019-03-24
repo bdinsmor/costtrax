@@ -4,12 +4,10 @@
       <div class="full-width align-items-center row">
         <div class="align-items-center column">
           <h4 class="mt-0 pr-1">{{itemTypeDisplay}}</h4>
-          <h5 *ngIf="itemType ===
-            'equipment.active' || itemType ===
+          <h5 *ngIf="itemType === 'equipment.active' || itemType ===
             'equipment.rental' || itemType === 'equipment.standby'"
             class="no-top-margin">Location:
-            <span *ngIf="regionalAdjustmentsEnabled">{{project.state}}</span><span
-              *ngIf="!regionalAdjustmentsEnabled">none</span> | Ownership:
+            {{project.state}} | Ownership:
             {{project.adjustments.equipment.active.ownership}}%
             | Operating: {{project.adjustments.equipment.active.operating}}%</h5>
           <h5 *ngIf="!accountSynced && (itemType === 'equipment.active' ||
@@ -77,7 +75,7 @@
           itemType === 'equipment.standby' || itemType === 'equipment.rental')"
           class="row align-items-center">
           <h6 class="no-top-margin">powered by&nbsp;</h6>
-          <img alt="logo" height="28" src="../assets/img/ew.gif">
+          <img alt="logo" height="40" src="../assets/img/ew.gif">
           <h6 class="no-top-margin big-text">&nbsp;|&nbsp;</h6>
           <div class="px-1 row align-items-center">
             <mat-icon svgIcon="costtrax-check"></mat-icon>
@@ -125,88 +123,88 @@
           trackByFn" [clrDgItem]="item">
           <clr-dg-cell>{{item.status}}</clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved"
                 class="full-width" type="text" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
                 [(ngModel)]="item.details.employee.lastName"
                 [ngModelOptions]="{standalone: true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.employee.lastName}}</div>
+            <div *ngIf="!submitRequests">{{item.details.employee.lastName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved"
                 class="full-width" type="text" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
                 [(ngModel)]="item.details.employee.firstName"
                 [ngModelOptions]="{standalone: true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.employee.firstName}}</div>
+            <div *ngIf="!submitRequests">{{item.details.employee.firstName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved"
                 class="full-width" type="text" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
                 [(ngModel)]="item.details.trade" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.trade}}</div>
+            <div *ngIf="!submitRequests">{{item.details.trade}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved" currencyMask
                 class="full-width" type="text" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)" [(ngModel)]="item.details.rate"
                 [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.rate | currency}}</div>
+            <div *ngIf="!submitRequests">{{item.details.rate | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests" class="full-width"
                 type="number" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
                 [(ngModel)]="item.details.time1" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.time1 | number:
+            <div *ngIf="!submitRequests">{{item.details.time1 | number:
               '.1-2'}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests" class="full-width"
                 type="number" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
                 [(ngModel)]="item.details.time15" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.time15 | number:
+            <div *ngIf="!submitRequests">{{item.details.time15 | number:
               '.1-2'}}
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests" class="full-width"
                 type="number" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
                 [(ngModel)]="item.details.time2" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.time2 | number:
+            <div *ngIf="!submitRequests">{{item.details.time2 | number:
               '.1-2'}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved" currencyMask
                 class="full-width" type="text" (keypress)="laborChanged(item)"
                 (change)="laborChanged(item)"
                 [(ngModel)]="item.details.benefits"
                 [ngModelOptions]="{standalone: true}">
             </div>
-            <div *ngIf="!item.beingEdited">{{item.details.benefits | currency}}</div>
+            <div *ngIf="!submitRequests">{{item.details.benefits | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div>{{item.details.amount | currency}}</div>
@@ -236,23 +234,9 @@
                   color="accent">attach_file</mat-icon>
               </button>
               <span *ngIf="submitRequests">
-                <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                  icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
-                  <mat-icon color="accent">done</mat-icon>
-                </button>
-                <button *ngIf="!item.isDraft() && !item.beingEdited"
-                  class="ripple
-                  icon-button" matTooltip="Edit"
-                  (click)="editItem(i, item)">
-                  <mat-icon color="accent">edit</mat-icon>
-                </button>
-                <button class="ripple icon-button" *ngIf="item.beingEdited &&
-                  !item.isDraft()" matTooltip="Undo
-                  Edits" (click)="revertEdits(i,item)">
-                  <mat-icon color="warn">undo</mat-icon>
-                </button>
-                <button class="ripple icon-button" *ngIf="!item.beingEdited ||
-                  (item.beingEdited &&
+                
+                <button class="ripple icon-button" *ngIf="!submitRequests ||
+                  (submitRequests &&
                   item.isDraft())" matTooltip="Remove"
                   (click)="removeLineItem(i,item)">
                   <mat-icon color="warn">delete</mat-icon>
@@ -314,27 +298,27 @@
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <app-equipment-select type="make" [index]="i"
                 [initialValue]="item" cdkFocusInitial
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
-            <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.make}}</div>
+            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.make}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="item.beingEdited">
+            <div *ngIf="submitRequests">
               <app-equipment-select [makeId]="item.details.makeId"
                 [initialValue]="item" [index]="i"
                 (selected)="modelNewSelectionChanged($event,item,i)"
                 [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
             </div>
-            <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
+            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" *ngIf="item.misc">N/A</div>
             <div class="padding-label-top" *ngIf="!item.misc &&
-              !item.beingEdited">{{item.details.year}}</div>
-            <div *ngIf="!item.misc && item.beingEdited">
+              !submitRequests">{{item.details.year}}</div>
+            <div *ngIf="!item.misc && submitRequests">
               <ng-select [disabled]="!item.details.modelId"
                 [items]="item.details.years" dropdownPosition="top"
                 appendTo="body" (change)="yearSelectionChanged(item,i)"
@@ -353,11 +337,11 @@
 
           <clr-dg-cell>
             <div class="padding-label-top">
-              <div *ngIf="!item.beingEdited">{{item.details.hours | number:
+              <div *ngIf="!submitRequests">{{item.details.hours | number:
                 '.0-0'}}
               </div>
-              <input *ngIf="item.beingEdited" [disabled]="!submitRequests
-                || !item.beingEdited" type="number" style="width:55px"
+              <input *ngIf="submitRequests" [disabled]="!submitRequests
+                || !submitRequests" type="number" style="width:55px"
                 (change)="activeChanged(item)" [(ngModel)]="item.details.hours"
                 [ngModelOptions]="{standalone:
                 true}">
@@ -370,12 +354,12 @@
           </clr-dg-cell>
           <clr-dg-cell>
 
-            <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.transportation
+            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.transportation
               | currency}}
             </div>
-            <div class="padding-label-top" *ngIf="item.beingEdited">
+            <div class="padding-label-top" *ngIf="submitRequests">
               <input type="text" [disabled]="!submitRequests
-                || !item.beingEdited" currencyMask style="width:100px"
+                || !submitRequests" currencyMask style="width:100px"
                 (blur)="activeChanged(item)"
                 (keypress)="activeChanged(item)"
                 [(ngModel)]="item.details.transportation"
@@ -413,22 +397,9 @@
                   color="accent">attach_file</mat-icon>
               </button>
               <span *ngIf="submitRequests">
-                <button *ngIf="item.isDraft() || item.beingEdited" class="ripple
-                  icon-button" matTooltip="Save" (click)="saveChanges(i, item)">
-                  <mat-icon color="accent">done</mat-icon>
-                </button>
-                <button *ngIf="!item.isDraft() && !item.beingEdited"
-                  class="ripple
-                  icon-button" matTooltip="Edit" (click)="editItem(i, item)">
-                  <mat-icon color="accent">edit</mat-icon>
-                </button>
-                <button class="ripple icon-button" *ngIf="item.beingEdited &&
-                  !item.isDraft()" matTooltip="Undo
-                  Edits" (click)="revertEdits(i,item)">
-                  <mat-icon color="warn">undo</mat-icon>
-                </button>
-                <button class="ripple icon-button" *ngIf="!item.beingEdited ||
-                  (item.beingEdited &&
+                
+                <button class="ripple icon-button" *ngIf="!submitRequests ||
+                  (submitRequests &&
                   item.isDraft())" matTooltip="Remove"
                   (click)="removeLineItem(i,item)">
                   <mat-icon color="warn">delete</mat-icon>
@@ -779,27 +750,27 @@
                 </div>
               </clr-dg-cell>
               <clr-dg-cell>
-                <div *ngIf="item.beingEdited">
+                <div *ngIf="submitRequests">
                   <app-equipment-select type="make" [index]="i"
                     [initialValue]="item" cdkFocusInitial
                     (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
                 </div>
-                <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.make}}</div>
+                <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.make}}</div>
               </clr-dg-cell>
               <clr-dg-cell>
-                <div *ngIf="item.beingEdited">
+                <div *ngIf="submitRequests">
                   <app-equipment-select [makeId]="item.details.makeId"
                     [initialValue]="item" [index]="i"
                     (selected)="modelNewSelectionChanged($event,item,i)"
                     [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
                 </div>
-                <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
+                <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
               </clr-dg-cell>
               <clr-dg-cell>
                 <div class="padding-label-top" *ngIf="item.misc">N/A</div>
                 <div class="padding-label-top" *ngIf="!item.misc &&
-                  !item.beingEdited">{{item.details.year}}</div>
-                <div *ngIf="!item.misc && item.beingEdited">
+                  !submitRequests">{{item.details.year}}</div>
+                <div *ngIf="!item.misc && submitRequests">
                   <ng-select [disabled]="!item.details.modelId"
                     [items]="item.details.years" dropdownPosition="top"
                     appendTo="body" (change)="yearSelectionChanged(item,i)"
@@ -818,11 +789,11 @@
 
               <clr-dg-cell>
                 <div class="padding-label-top">
-                  <div *ngIf="!item.beingEdited">{{item.details.hours | number:
+                  <div *ngIf="!submitRequests">{{item.details.hours | number:
                     '.0-0'}}
                   </div>
-                  <input *ngIf="item.beingEdited" [disabled]="!submitRequests
-                    || !item.beingEdited" type="number" style="width:55px"
+                  <input *ngIf="submitRequests" [disabled]="!submitRequests
+                    || !submitRequests" type="number" style="width:55px"
                     (change)="standbyChanged(item)"
                     [(ngModel)]="item.details.hours"
                     [ngModelOptions]="{standalone: true}">
@@ -836,12 +807,12 @@
               </clr-dg-cell>
               <clr-dg-cell>
 
-                <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.transportation
+                <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.transportation
                   | currency}}
                 </div>
-                <div *ngIf="item.beingEdited" class="padding-label-top">
+                <div *ngIf="submitRequests" class="padding-label-top">
                   <input type="text" [disabled]="!submitRequests
-                    || !item.beingEdited" currencyMask
+                    || !submitRequests" currencyMask
                     (blur)="standbyChanged(item)" style="width:100px"
                     (keypress)="standbyChanged(item)"
                     [(ngModel)]="item.details.transportation"
@@ -881,29 +852,9 @@
                       item.attachments.length === 0)" color="accent">attach_file</mat-icon>
                   </button>
                   <span *ngIf="submitRequests">
-                    <button *ngIf="!item.isDraft() && !item.beingEdited"
-                      class="ripple
-                      icon-button" matTooltip="Edit" (click)="editItem(i,
-                      item)">
-                      <mat-icon color="accent">edit</mat-icon>
-                    </button>
-
-                    <button *ngIf="item.isDraft() || item.beingEdited"
-                      class="ripple
-                      icon-button" matTooltip="Save" (click)="saveChanges(i,
-                      item)">
-                      <mat-icon color="accent">done</mat-icon>
-                    </button>
-                    <button class="ripple icon-button" *ngIf="item.beingEdited
-                      &&
-                      !item.isDraft()" matTooltip="Undo
-                      Edits"
-                      (click)="revertEdits(i,item)">
-                      <mat-icon color="warn">undo</mat-icon>
-                    </button>
-                    <button class="ripple icon-button" *ngIf="!item.beingEdited
+                    <button class="ripple icon-button" *ngIf="!submitRequests
                       ||
-                      (item.beingEdited &&
+                      (submitRequests &&
                       item.isDraft())"
                       matTooltip="Remove" (click)="removeLineItem(i,item)">
                       <mat-icon color="warn">delete</mat-icon>
@@ -1182,21 +1133,21 @@
                 </clr-dg-cell>
                 <clr-dg-cell>
 
-                  <div *ngIf="item.beingEdited">
+                  <div *ngIf="submitRequests">
                     <app-equipment-select type="make" [index]="i"
                       [initialValue]="item" cdkFocusInitial
                       (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
                   </div>
-                  <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.make}}</div>
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.make}}</div>
                 </clr-dg-cell>
                 <clr-dg-cell>
-                  <div *ngIf="item.beingEdited">
+                  <div *ngIf="submitRequests">
                     <app-equipment-select [makeId]="item.details.makeId"
                       [initialValue]="item" [index]="i"
                       (selected)="modelNewSelectionChanged($event,item,i)"
                       [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
                   </div>
-                  <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.model}}</div>
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
                 </clr-dg-cell>
 
                 <clr-dg-cell>
@@ -1204,23 +1155,23 @@
                   </div>
                 </clr-dg-cell>
                 <clr-dg-cell>
-                  <div class="padding-label-top" *ngIf="item.beingEdited">
+                  <div class="padding-label-top" *ngIf="submitRequests">
                     <input class="w-85" type="text" bsDaterangepicker
                       [bsConfig]="bsConfig"
                       (bsValueChange)="dateRangeChanged(item, $event)"
                       [(ngModel)]="item.details.dateRange">
 
                   </div>
-                  <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.dateRange
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.dateRange
                     | dates: 'M/dd/yy'}}</div>
                 </clr-dg-cell>
 
                 <clr-dg-cell>
-                  <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.invoice
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.invoice
                     | currency}}</div>
-                  <div class="padding-label-top" *ngIf="item.beingEdited">
+                  <div class="padding-label-top" *ngIf="submitRequests">
                     <input type="text" [disabled]="!submitRequests
-                      || !item.beingEdited" currencyMask style="width:100px"
+                      || !submitRequests" currencyMask style="width:100px"
                       (blur)="rentalChanged(item)"
                       (keypress)="rentalChanged(item)"
                       [(ngModel)]="item.details.invoice"
@@ -1229,12 +1180,12 @@
                 </clr-dg-cell>
                 <clr-dg-cell>
 
-                  <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.transportation
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.transportation
                     | currency}}
                   </div>
-                  <div class="padding-label-top" *ngIf="item.beingEdited">
+                  <div class="padding-label-top" *ngIf="submitRequests">
                     <input type="text" [disabled]="!submitRequests
-                      || !item.beingEdited" currencyMask style="width:100px"
+                      || !submitRequests" currencyMask style="width:100px"
                       (blur)="rentalChanged(item)"
                       (keypress)="rentalChanged(item)"
                       [(ngModel)]="item.details.transportation"
@@ -1242,11 +1193,11 @@
                   </div>
                 </clr-dg-cell>
                 <clr-dg-cell>
-                  <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.invoice_operating
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.invoice_operating
                     | currency}}</div>
-                  <div class="padding-label-top" *ngIf="item.beingEdited">
+                  <div class="padding-label-top" *ngIf="submitRequests">
                     <input type="text" [disabled]="!submitRequests
-                      || !item.beingEdited" currencyMask style="width:100px"
+                      || !submitRequests" currencyMask style="width:100px"
                       (blur)="rentalChanged(item)"
                       [(ngModel)]="item.details.invoice_operating"
                       (keypress)="rentalChanged(item)"
@@ -1256,12 +1207,12 @@
                 </clr-dg-cell>
                 <clr-dg-cell>
                   <div>
-                    <div class="padding-label-top" *ngIf="!item.beingEdited">{{item.details.hours
+                    <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.hours
                       | number: '.0-0'}}
                     </div>
-                    <div class="padding-label-top" *ngIf="item.beingEdited">
+                    <div class="padding-label-top" *ngIf="submitRequests">
                       <input [disabled]="!submitRequests
-                        || !item.beingEdited" type="number" style="width:55px"
+                        || !submitRequests" type="number" style="width:55px"
                         (change)="rentalChanged(item)"
                         [(ngModel)]="item.details.hours"
                         [ngModelOptions]="{standalone: true}">
@@ -1303,35 +1254,9 @@
                         item.attachments.length === 0)" color="accent">attach_file</mat-icon>
                     </button>
                     <span *ngIf="submitRequests">
-                      <button *ngIf="item.isDraft() || item.beingEdited"
-                        [class.icon-button]="item && item.details.startDate &&
-                        item.details.endDate && (item.details.endDate >=
-                        item.details.startDate)"
-                        class=" icon-button" matTooltip="Save" [disabled]="!item
-                        || !item.details.startDate ||
-                        !item.details.endDate || item.details.endDate
-                        <item.details.startDate"
-                          (click)="saveChanges(i, item)">
-                          <mat-icon color="accent" [class.disabled-icon]="!item
-                            ||
-                            !item.details.startDate || !item.details.endDate ||
-                            item.details.endDate <item.details.startDate">done</mat-icon>
-                        </button>
-                        <button *ngIf="item && !item.isDraft() &&
-                          !item.beingEdited" class="ripple
-                          icon-button" matTooltip="Edit" (click)="editItem(i,
-                          item)">
-                          <mat-icon color="accent">edit</mat-icon>
-                        </button>
+                      
                         <button class="ripple icon-button"
-                          *ngIf="item.beingEdited
-                          && !item.isDraft()" matTooltip="Undo
-                          Edits"
-                          (click)="revertEdits(i,item)">
-                          <mat-icon color="warn">undo</mat-icon>
-                        </button>
-                        <button class="ripple icon-button"
-                          *ngIf="!item.beingEdited || (item.beingEdited &&
+                          *ngIf="!submitRequests || (submitRequests &&
                           item.isDraft())"
                           matTooltip="Remove" (click)="removeLineItem(i,item)">
                           <mat-icon color="warn">delete</mat-icon>
@@ -1545,24 +1470,24 @@
                       trackByFn" [clrDgItem]="item">
                       <clr-dg-cell>{{item.status}}</clr-dg-cell>
                       <clr-dg-cell>
-                        <div *ngIf="!item.beingEdited">{{item.details.description
+                        <div *ngIf="!submitRequests">{{item.details.description
                           |
                           truncate: 25}}
                         </div>
-                        <input *ngIf="item.beingEdited"
+                        <input *ngIf="submitRequests"
                           [disabled]="!submitRequests ||
-                          !item.beingEdited" class="full-width" type="text"
+                          !submitRequests" class="full-width" type="text"
                           (change)="materialChanged(item)"
                           [(ngModel)]="item.details.description"
                           [ngModelOptions]="{standalone: true}">
                       </clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited" style="width:75px">{{item.details.units}}</div>
-                          <input *ngIf="item.beingEdited" style="width:75px"
+                          <div *ngIf="!submitRequests" style="width:75px">{{item.details.units}}</div>
+                          <input *ngIf="submitRequests" style="width:75px"
                             [disabled]="!submitRequests
                             ||
-                            !item.beingEdited"
+                            !submitRequests"
                             class="w-55" (change)="materialChanged(item)"
                             type="number" [(ngModel)]="item.details.units"
                             [ngModelOptions]="{standalone:
@@ -1571,14 +1496,14 @@
                       </clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited" style="width:100px">{{item.details.unitCost
+                          <div *ngIf="!submitRequests" style="width:100px">{{item.details.unitCost
                             |
                             currency}}
                           </div>
-                          <input type="text" *ngIf="item.beingEdited"
+                          <input type="text" *ngIf="submitRequests"
                             style="width:100px" [disabled]="!submitRequests
                             ||
-                            !item.beingEdited"
+                            !submitRequests"
                             (blur)="materialChanged(item)"
                             (keypress)="materialChanged(item)" currencyMask
                             [(ngModel)]="item.details.unitCost"
@@ -1587,11 +1512,11 @@
                       </clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited" style="width:100px">{{item.subtotal
+                          <div *ngIf="!submitRequests" style="width:100px">{{item.subtotal
                             | currency}}</div>
-                          <input type="text" *ngIf="item.beingEdited"
+                          <input type="text" *ngIf="submitRequests"
                             style="width:100px" [disabled]="!submitRequests
-                            || !item.beingEdited"
+                            || !submitRequests"
                             (blur)="materialChanged(item)"
                             (keypress)="materialChanged(item)" currencyMask
                             [(ngModel)]="item.subtotal"
@@ -1629,28 +1554,9 @@
                               item.attachments.length === 0)" color="accent">attach_file</mat-icon>
                           </button>
                           <span *ngIf="submitRequests">
-                            <button *ngIf="item.isDraft() || item.beingEdited"
-                              class="ripple
-                              icon-button" matTooltip="Save"
-                              (click)="saveChanges(i, item)">
-                              <mat-icon color="accent">done</mat-icon>
-                            </button>
-                            <button *ngIf="!item.isDraft() && !item.beingEdited"
-                              class="ripple
-                              icon-button" matTooltip="Edit"
-                              (click)="editItem(i,
-                              item)">
-                              <mat-icon color="accent">edit</mat-icon>
-                            </button>
+                           
                             <button class="ripple icon-button"
-                              *ngIf="item.beingEdited && !item.isDraft()"
-                              matTooltip="Undo
-                              Edits"
-                              (click)="revertEdits(i,item)">
-                              <mat-icon color="warn">undo</mat-icon>
-                            </button>
-                            <button class="ripple icon-button"
-                              *ngIf="!item.beingEdited || (item.beingEdited &&
+                              *ngIf="!submitRequests || (submitRequests &&
                               item.isDraft())"
                               matTooltip="Remove"
                               (click)="removeLineItem(i,item)">
@@ -1697,11 +1603,11 @@
                       <clr-dg-cell>{{item.status}}</clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited" style="width:100px">{{item.details.type}}</div>
-                          <input *ngIf="item.beingEdited"
+                          <div *ngIf="!submitRequests" style="width:100px">{{item.details.type}}</div>
+                          <input *ngIf="submitRequests"
                             [disabled]="!submitRequests
                             ||
-                            !item.beingEdited" class="full-width"
+                            !submitRequests" class="full-width"
                             style="width:100px" type="text"
                             (change)="otherChanged(item)"
                             [(ngModel)]="item.details.type"
@@ -1710,22 +1616,22 @@
                       </clr-dg-cell>
                       <clr-dg-cell>
 
-                        <div *ngIf="!item.beingEdited" style="width:175px">{{item.details.description}}</div>
-                        <input *ngIf="item.beingEdited" style="width:175px"
+                        <div *ngIf="!submitRequests" style="width:175px">{{item.details.description}}</div>
+                        <input *ngIf="submitRequests" style="width:175px"
                           [disabled]="!submitRequests ||
-                          !item.beingEdited" class="full-width"
+                          !submitRequests" class="full-width"
                           type="text" (change)="otherChanged(item)"
                           [(ngModel)]="item.details.description"
                           [ngModelOptions]="{standalone: true}">
                       </clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited" style="width:100px">{{item.subtotal
+                          <div *ngIf="!submitRequests" style="width:100px">{{item.subtotal
                             | currency}}</div>
                           <input type="text" style="width:100px"
-                            *ngIf="item.beingEdited" [disabled]="!submitRequests
+                            *ngIf="submitRequests" [disabled]="!submitRequests
                             ||
-                            !item.beingEdited"
+                            !submitRequests"
                             (blur)="otherChanged(item)"
                             (keypress)="otherChanged(item)" currencyMask
                             [(ngModel)]="item.subtotal"
@@ -1761,28 +1667,9 @@
                               item.attachments.length === 0)" color="accent">attach_file</mat-icon>
                           </button>
                           <span *ngIf="submitRequests">
-                            <button *ngIf="item.isDraft() || item.beingEdited"
-                              class="ripple
-                              icon-button" matTooltip="Save"
-                              (click)="saveChanges(i, item)">
-                              <mat-icon color="accent">done</mat-icon>
-                            </button>
-                            <button *ngIf="!item.isDraft() && !item.beingEdited"
-                              class="ripple
-                              icon-button" matTooltip="Edit"
-                              (click)="editItem(i,
-                              item)">
-                              <mat-icon color="accent">edit</mat-icon>
-                            </button>
+                            
                             <button class="ripple icon-button"
-                              *ngIf="item.beingEdited && !item.isDraft()"
-                              matTooltip="Undo
-                              Edits"
-                              (click)="revertEdits(i,item)">
-                              <mat-icon color="warn">undo</mat-icon>
-                            </button>
-                            <button class="ripple icon-button"
-                              *ngIf="!item.beingEdited || (item.beingEdited &&
+                              *ngIf="!submitRequests || (submitRequests &&
                               item.isDraft())"
                               matTooltip="Remove"
                               (click)="removeLineItem(i,item)">
@@ -1829,32 +1716,32 @@
                       <clr-dg-cell>{{item.status}}</clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited">{{item.details.subcontractor}}</div>
-                          <input *ngIf="item.beingEdited"
+                          <div *ngIf="!submitRequests">{{item.details.subcontractor}}</div>
+                          <input *ngIf="submitRequests"
                             [disabled]="!submitRequests
                             ||
-                            (!item.beingEdited)" class="full-width"
+                            (!submitRequests)" class="full-width"
                             type="text" (change)="subcontractorChanged(item)"
                             [(ngModel)]="item.details.subcontractor"
                             [ngModelOptions]="{standalone: true}">
                         </div>
                       </clr-dg-cell>
                       <clr-dg-cell>
-                        <div *ngIf="!item.beingEdited">{{item.details.description}}</div>
-                        <input *ngIf="item.beingEdited"
+                        <div *ngIf="!submitRequests">{{item.details.description}}</div>
+                        <input *ngIf="submitRequests"
                           [disabled]="!submitRequests ||
-                          (!item.beingEdited)" class="full-width" type="text"
+                          (!submitRequests)" class="full-width" type="text"
                           (change)="subcontractorChanged(item)"
                           [(ngModel)]="item.details.description"
                           [ngModelOptions]="{standalone: true}">
                       </clr-dg-cell>
                       <clr-dg-cell>
                         <div>
-                          <div *ngIf="!item.beingEdited" style="width:100px">{{item.subtotal
+                          <div *ngIf="!submitRequests" style="width:100px">{{item.subtotal
                             | currency}}</div>
-                          <input type="text" *ngIf="item.beingEdited"
+                          <input type="text" *ngIf="submitRequests"
                             style="width:100px" [disabled]="!submitRequests ||
-                            (!item.beingEdited)"
+                            (!submitRequests)"
                             (blur)="subcontractorChanged(item)"
                             (keypress)="subcontractorChanged(item)" currencyMask
                             [(ngModel)]="item.subtotal"
@@ -1892,28 +1779,9 @@
                               item.attachments.length === 0)" color="accent">attach_file</mat-icon>
                           </button>
                           <span *ngIf="submitRequests">
-                            <button *ngIf="item.isDraft() || item.beingEdited"
-                              class="ripple
-                              icon-button" matTooltip="Save"
-                              (click)="saveChanges(i, item)">
-                              <mat-icon color="accent">done</mat-icon>
-                            </button>
-                            <button *ngIf="!item.isDraft() && !item.beingEdited"
-                              class="ripple
-                              icon-button" matTooltip="Edit"
-                              (click)="editItem(i,
-                              item)">
-                              <mat-icon color="accent">edit</mat-icon>
-                            </button>
+                            
                             <button class="ripple icon-button"
-                              *ngIf="item.beingEdited && !item.isDraft()"
-                              matTooltip="Undo
-                              Edits"
-                              (click)="revertEdits(i,item)">
-                              <mat-icon color="warn">undo</mat-icon>
-                            </button>
-                            <button class="ripple icon-button"
-                              *ngIf="!item.beingEdited || (item.beingEdited &&
+                              *ngIf="!submitRequests || (submitRequests &&
                               item.isDraft())"
                               matTooltip="Remove"
                               (click)="removeLineItem(i,item)">

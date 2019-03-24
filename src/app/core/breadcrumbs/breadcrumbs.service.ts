@@ -20,9 +20,25 @@ export class BreadcrumbService {
     this.crumbs.push({ path: '/projects', display: 'Projects' } as Breadcrumb);
   }
 
+  setAccounts() {
+    this.crumbs = [];
+    this.crumbs.push({ path: '/home', display: 'Home' } as Breadcrumb);
+    this.crumbs.push({ path: '/accounts', display: 'Accounts' } as Breadcrumb);
+  }
+
   addHome() {
     this.crumbs = [];
     this.crumbs.push({ path: '/home', display: 'Home' } as Breadcrumb);
+  }
+
+  addAccount(accountId: string, accountName: string) {
+    this.setAccounts();
+    console.log('accountId: ' + accountId + ' accountName:  ' + accountName);
+    this.crumbs.push({
+      path: '/accounts/' + accountId,
+      display: accountName
+    } as Breadcrumb);
+    this.sendBreadcrumbs();
   }
 
   addProjects() {

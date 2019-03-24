@@ -1,0 +1,24 @@
+<div cdkScrollable class="full-width content-container">
+  <app-breadcrumbs></app-breadcrumbs>
+  <div class="px-1 full-width" *ngIf="account">
+    <div class="full-width">
+      <div class="px-2 card-header">
+        <div class="full-width row align-items-center justify-content-between">
+          <h1 class="project-label no-top-margin">
+            {{ account.organization }}
+          </h1>
+          <div class="spacer"></div>
+        </div>
+      </div>
+      <div class="mt-1 full-width"></div>
+    </div>
+  </div>
+  <div class="px-2" *ngIf="account">
+    <app-account-user-list
+      [newAccount]="false"
+      [accountId]="account.id"
+      [users]="account.users"
+      (changed)="accountChanged()"
+    ></app-account-user-list>
+  </div>
+</div>

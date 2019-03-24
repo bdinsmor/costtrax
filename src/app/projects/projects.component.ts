@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
 
 import { AuthenticationService } from '../core';
@@ -51,58 +52,23 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.refreshProjects();
     this.titleService.setTitle('CostTrax');
     this.accounts$ = this.projectsService.getAccounts();
-    this.projectsService.getProjectRoles().subscribe((r: String[]) => {
-      if (!r || r.length === 0) {
-        this.requestsService.getAccounts().subscribe((accounts: Account[]) => {
-          if (accounts.length > 0) {
-            for (let i = 0; i < accounts.length; i++) {
-              const a: Account = accounts[i];
-              if (a.roles) {
-                for (let j = 0; j < a.roles.length; j++) {
-                  const role = a.roles[j];
-                  if (
-                    role === 'AccountAdmin' ||
-                    role === 'ProjectManage' ||
-                    role === 'ProjectAdmin'
-                  ) {
-                    this.canCreateProjects = true;
-                    break;
-                  }
-                }
-              }
-            }
-            this.authService.setUserAccounts(accounts);
-          } else {
-            this.canCreateProjects = false;
-          }
-          this.changeDetector.detectChanges();
-        });
-      } else {
-        for (let j = 0; j < r.length; j++) {
-          const role = r[j];
-          if (
-            role === 'AccountAdmin' ||
-            role === 'ProjectManage' ||
-            role === 'ProjectAdmin'
-          ) {
-            this.canCreateProjects = true;
-            break;
-          }
+    this.authService
+      .getCreds()
+      .pipe(untilDestroyed(this))
+      .subscribe(message => {
+        if (
+          message &&
+          message.hasOwnProperty('showAddRequest') &&
+          message.hasOwnProperty('showAddProject')
+        ) {
+          this.canSubmitRequests = message.showAddRequest;
+          this.canCreateProjects = message.showAddProject;
+        } else {
+          this.canSubmitRequests = false;
+          this.canCreateProjects = false;
         }
-
         this.changeDetector.detectChanges();
-      }
-    });
-    this.projectsService.getProjectsForRequests().subscribe((p: Project[]) => {
-      this.requestableProjects = p;
-      if (p.length > 0) {
-        this.canSubmitRequests = true;
-      } else {
-        this.canSubmitRequests = false;
-      }
-
-      this.changeDetector.detectChanges();
-    });
+      });
   }
 
   createProjectForm() {

@@ -9,6 +9,6 @@
       </button>
     </div>
 
-    <app-account-list [accounts]="accounts"> </app-account-list>
+    <app-account-list [accounts]="accounts$ | async"> </app-account-list>
   </div>
 </div>

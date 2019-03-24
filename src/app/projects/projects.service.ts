@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Observable, of, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Account, Project } from '../shared/model';
@@ -10,9 +11,16 @@ import { Account, Project } from '../shared/model';
   providedIn: 'root'
 })
 export class ProjectsService {
+  private config: MatSnackBarConfig;
+  duration = 3000;
   onFilterChanged: Subject<any> = new Subject();
   projects: Project[] = [];
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public snackBar: MatSnackBar) {}
+
+  openSnackBar(message: string, type: string, action: string) {
+    this.config = { duration: this.duration };
+    this.snackBar.open(message, action, this.config);
+  }
 
   findById(id: string): Observable<Project> {
     if (!this.projects || this.projects.length === 0) {
@@ -75,9 +83,6 @@ export class ProjectsService {
   }
 
   updateProject(project: any) {
-    console.log(
-      '\n\n\nupdated project json: ' + JSON.stringify(project, null, 2)
-    );
     return this.http.put(
       environment.serverUrl + '/project/' + project.id,
       project
@@ -86,49 +91,68 @@ export class ProjectsService {
 
   getActiveProjects(): Observable<Project[]> {
     return this.http.get(environment.serverUrl + '/project?active=1').pipe(
-      map((res: any) => {
-        const projects: Project[] = [];
-        res.forEach((p: any) => {
-          //   console.log('project name: ' + p.name);
-          projects.push(new Project(p));
-        });
-        projects.sort((n1, n2) => {
-          if (n2.age > n1.age) {
-            return -1;
-          }
+      catchError(e => {
+        this.openSnackBar('Could not load Projects', 'OK', 'OK');
+        return of([]);
+      }),
+      map(
+        (res: any) => {
+          const projects: Project[] = [];
+          res.forEach((p: any) => {
+            //   console.log('project name: ' + p.name);
+            projects.push(new Project(p));
+          });
+          projects.sort((n1, n2) => {
+            if (n2.age > n1.age) {
+              return -1;
+            }
 
-          if (n2.age < n1.age) {
-            return 1;
-          }
+            if (n2.age < n1.age) {
+              return 1;
+            }
 
-          return 0;
-        });
-        return projects;
-      })
+            return 0;
+          });
+          return projects;
+        },
+        (err: any) => {
+          console.log('got error!');
+          return [];
+        }
+      )
     );
   }
 
   getArchivedProjects(): Observable<Project[]> {
     return this.http.get(environment.serverUrl + '/project?active=0').pipe(
-      map((res: any) => {
-        const projects: Project[] = [];
-        res.forEach((p: any) => {
-          //   console.log('project name: ' + p.name);
-          projects.push(new Project(p));
-        });
-        projects.sort((n1, n2) => {
-          if (n2.age > n1.age) {
-            return 1;
-          }
+      catchError(e => {
+        this.openSnackBar('Could not load Projects', 'OK', 'OK');
+        return of([]);
+      }),
+      map(
+        (res: any) => {
+          const projects: Project[] = [];
+          res.forEach((p: any) => {
+            //   console.log('project name: ' + p.name);
+            projects.push(new Project(p));
+          });
+          projects.sort((n1, n2) => {
+            if (n2.age > n1.age) {
+              return 1;
+            }
 
-          if (n2.age < n1.age) {
-            return -1;
-          }
+            if (n2.age < n1.age) {
+              return -1;
+            }
 
-          return 0;
-        });
-        return projects;
-      })
+            return 0;
+          });
+          return projects;
+        },
+        (err: any) => {
+          return [];
+        }
+      )
     );
   }
 

@@ -52,25 +52,16 @@
         </div>
       </div>
       <div *ngIf="project" class="row mt-1 align-items-center">
-        <button
-          type="button"
-          *ngIf="canSubmitRequests"
-          (click)="createRequest()"
-          matTooltip="Create Request"
-          class="btn ripple btn-primary"
+        <button type="button" *ngIf="canSubmitRequests" (click)="createRequest()" matTooltip="Create Request" class="btn ripple btn-primary"
           color="primary">
           <clr-icon class="is-solid" shape="add"></clr-icon>
           <span>&nbsp;Request</span>
         </button>
-        <button
-          type="button"
-          matTooltip="Archive Project"
-          *ngIf="canChangeSettings &&
+        <button type="button" matTooltip="Archive Project" *ngIf="canChangeSettings &&
           (project.draftRequests &&
           project.draftRequests.length === 0 &&
           (project.pendingRequests && project.pendingRequests.length === 0))"
-          (click)="completeProject()"
-          class="btn btn-success">
+          (click)="completeProject()" class="btn btn-success">
           <clr-icon class="hidden-md-up is-solid" shape="archive"></clr-icon>
           <span class="hidden-sm-down">Archive Project</span>
         </button>
@@ -78,43 +69,16 @@
         <section class="row align-items-center pr-1">
           <h5 class="no-top-margin">View Project Total Costs for:&nbsp;</h5>
           <div class="checkbox checkbox-padding" *ngIf="canSubmitRequests">
-            <input
-              type="checkbox"
-              [(ngModel)]="draftCosts"
-              (change)="calculateCosts()"
-              id="check1"
-              checked
-              />
-            <label
-              for="check1"
-              class="no-bottom-margin"
-              [class.cost-selection]="draftCosts">DRAFT</label>
+            <input type="checkbox" [(ngModel)]="draftCosts" (change)="calculateCosts()" id="check1" checked />
+            <label for="check1" class="no-bottom-margin" [class.cost-selection]="draftCosts">DRAFT</label>
           </div>
           <div class="checkbox checkbox-padding">
-            <input
-              type="checkbox"
-              [(ngModel)]="pendingCosts"
-              (change)="calculateCosts()"
-              id="check2"
-              checked
-              />
-            <label
-              for="check2"
-              class="no-bottom-margin"
-              [class.cost-selection]="pendingCosts">PENDING</label>
+            <input type="checkbox" [(ngModel)]="pendingCosts" (change)="calculateCosts()" id="check2" checked />
+            <label for="check2" class="no-bottom-margin" [class.cost-selection]="pendingCosts">PENDING</label>
           </div>
           <div class="checkbox checkbox-padding">
-            <input
-              type="checkbox"
-              id="check3"
-              (change)="calculateCosts()"
-              [(ngModel)]="completeCosts"
-              checked
-              />
-            <label
-              for="check3"
-              class="no-bottom-margin"
-              [class.cost-selection]="completeCosts">COMPLETE</label>
+            <input type="checkbox" id="check3" (change)="calculateCosts()" [(ngModel)]="completeCosts" checked />
+            <label for="check3" class="no-bottom-margin" [class.cost-selection]="completeCosts">COMPLETE</label>
           </div>
         </section>
       </div>
@@ -127,51 +91,31 @@
             Draft Requests <strong>({{ project.draftRequests.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
-            <app-requests
-              [items]="project.draftRequests"
-              [projectId]="project.id"
-              [projectName]="project.name"
-              [status]="'DRAFT'"
-              (changed)="refreshItems()"
-              (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"></app-requests>
+            <app-requests [items]="project.draftRequests" [projectId]="project.id" [projectName]="project.name"
+              [status]="'DRAFT'" (changed)="refreshItems()" (duplicated)="refreshItems()" [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
-        <clr-tab
-          *ngIf="project.pendingRequests && project.pendingRequests.length> 0"
-          >
+        <clr-tab *ngIf="project.pendingRequests && project.pendingRequests.length> 0">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="tasks"></clr-icon>
             Pending Requests
             <strong>({{ project.pendingRequests.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
-            <app-requests
-              [items]="project.pendingRequests"
-              [projectId]="project.id"
-              [projectName]="project.name"
-              [status]="'PENDING'"
-              (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"></app-requests>
+            <app-requests [items]="project.pendingRequests" [projectId]="project.id" [projectName]="project.name"
+              [status]="'PENDING'" (duplicated)="refreshItems()" [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
-        <clr-tab
-          *ngIf="project.completeRequests && project.completeRequests.length> 0
-          "
-          >
+        <clr-tab *ngIf="project.completeRequests && project.completeRequests.length> 0
+          ">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="check"></clr-icon>
             Complete Requests
             <strong>({{ project.completeRequests.length }})</strong>
           </button>
           <clr-tab-content *clrIfActive>
-            <app-requests
-              [items]="project.completeRequests"
-              [projectId]="project.id"
-              [projectName]="project.name"
-              [status]="'COMPLETE'"
-              (duplicated)="refreshItems()"
-              [submitRequests]="canSubmitRequests"></app-requests>
+            <app-requests [items]="project.completeRequests" [projectId]="project.id" [projectName]="project.name"
+              [status]="'COMPLETE'" (duplicated)="refreshItems()" [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
         <clr-tab *ngIf="isUserAdmin">
@@ -181,11 +125,7 @@
           </button>
           <clr-tab-content *clrIfActive>
             <div class="px-2 full-width">
-              <app-user-list
-                [users]="project.requestors"
-                [projectId]="project.id"
-                [type]="'REQUESTOR'"
-                [newProject]="newProject"
+              <app-user-list [users]="project.requestors" [projectId]="project.id" [type]="'REQUESTOR'" [newProject]="newProject"
                 (changed)="refreshUsers()"></app-user-list>
             </div>
           </clr-tab-content>
@@ -197,11 +137,7 @@
           </button>
           <clr-tab-content *clrIfActive>
             <div class="px-2 full-width">
-              <app-user-list
-                [users]="project.users"
-                [type]="'USERS'"
-                [projectId]="project.id"
-                [newProject]="newProject"
+              <app-user-list [users]="project.users" [type]="'USERS'" [projectId]="project.id" [newProject]="newProject"
                 (changed)="refreshUsers()"></app-user-list>
             </div>
           </clr-tab-content>
@@ -211,8 +147,7 @@
             <clr-icon shape="ruler-pencil"></clr-icon>&nbsp;Project Assets
           </button>
           <clr-tab-content *clrIfActive>
-            <app-equipment [projectId]="project.id"
-              [adjustments]="project.adjustments" [state]="project.state"></app-equipment>
+            <app-equipment [projectId]="project.id" [adjustments]="project.adjustments" [state]="project.state"></app-equipment>
             <app-labor [projectId]="project.id"></app-labor>
           </clr-tab-content>
         </clr-tab>
@@ -227,22 +162,13 @@
                   <div class="row no-margin-left align-items-center">
                     <label class="no-bottom-margin" for="pr-1">Zip Code:</label>
                     <div class="pl-1 pr-1">
-                      <input
-                        type="text"
-                        name="zipcode"
-                        size="7"
-                        maxlength="9"
-                        formControlName="zipcode"
-                        placeholder="project zip code"
-                        />
+                      <input type="text" name="zipcode" size="7" maxlength="9" formControlName="zipcode" placeholder="project zip code" />
                     </div>
                     <label class="required no-bottom-margin pr-1">State:
                     </label>
                     <div class="w-25">
                       <ng-select class="full-width" formControlName="state">
-                        <ng-option
-                          *ngFor="let state of states"
-                          [value]="state.value">{{ state.label }}</ng-option>
+                        <ng-option *ngFor="let state of states" [value]="state.value">{{ state.label }}</ng-option>
                       </ng-select>
                     </div>
                   </div>
@@ -261,10 +187,7 @@
                       any relevant instructions or information
                       for users submitting requests on this project.
                     </div>
-                    <textarea
-                      id="formFields_8"
-                      rows="3"
-                      formControlName="projectInstructions"></textarea>
+                    <textarea id="formFields_8" rows="3" formControlName="projectInstructions"></textarea>
                   </div>
                 </section>
                 <section class="form-block">
@@ -272,15 +195,9 @@
 
                   <div class="cost-section mb-1" *ngIf="accountSynced">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="activeCheck"
-                        (change)="toggleCheckbox('equipment', $event)"
-                        formControlName="activeCheck">
+                      <mat-checkbox type="checkbox" matRipple id="activeCheck" formControlName="activeCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Equipment, Active
                       </h4>
@@ -288,16 +205,8 @@
 
                     <div class="cost-content px-1 pb-1">
                       <label class="bold-label">Formula:</label>
-                      <ng-select
-                        class="w-25"
-                        [items]="activeFormulas"
-                        bindValue="name"
-                        bindLabel="label"
-                        placeholder="Choose Formula"
-                        clearAllText="Clear"
-                        [closeOnSelect]="true"
-                        [hideSelected]="true"
-                        appendTo="body"
+                      <ng-select class="w-25" [items]="activeFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
+                        clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
                         formControlName="activeFormula">
                       </ng-select>
                       <div class="row no-margin-left font-italic small-text">
@@ -309,64 +218,39 @@
                       <label class="bold-label">Rate Adjustments:</label>
                       <div class="px-1">
                         <div class="checkbox">
-                          <input
-                            type="checkbox"
-                            matRipple
-                            id="activeRegionalCheck"
-                            formControlName="activeRegionalCheck"
-                            />
+                          <input type="checkbox" matRipple id="activeRegionalCheck" formControlName="activeRegionalCheck" />
                           <label for="activeRegionalCheck">Use regional
                             adjustment for
-                            <span
-                              *ngIf="projectFormGroup &&
+                            <span *ngIf="projectFormGroup &&
                               projectFormGroup.get('state') &&
                               projectFormGroup.get('state').value"
                               [innerHTML]="findState(projectFormGroup.get('state').value)"></span></label>
                         </div>
-                        <div
-                          class="row no-margin-left pb-1 w-50
+                        <div class="row no-margin-left pb-1 w-50
                           align-items-center">
                           <label class="no-bottom-margin">Reimbursable %,
                             Ownership Cost:</label>
                           <div class="spacer"></div>
-                          <nz-input-number
-                            formControlName="activeOwnershipCost"
-                            [nzMin]="1"
-                            [nzMax]="100"
-                            [nzStep]="1"
-                            [nzFormatter]="formatterPercent"
-                            [nzParser]="parserPercent"></nz-input-number>
+                          <nz-input-number formControlName="activeOwnershipCost" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                         </div>
-                        <div
-                          class="row no-margin-left pb-1 w-50
+                        <div class="row no-margin-left pb-1 w-50
                           align-items-center">
                           <label class="no-bottom-margin">Reimbursable %,
                             Operating Cost:</label>
                           <div class="spacer"></div>
-                          <nz-input-number
-                            formControlName="activeOperatingCost"
-                            [nzMin]="1"
-                            [nzMax]="100"
-                            [nzStep]="1"
-                            [nzFormatter]="formatterPercent"
-                            [nzParser]="parserPercent"></nz-input-number>
+                          <nz-input-number formControlName="activeOperatingCost" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                         </div>
                       </div>
                     </div>
                     <div class="cost-content px-1 pb-1">
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
-                        <nz-input-number
-                          formControlName="activeMarkup"
-                          [nzMin]="1"
-                          [nzMax]="100"
-                          [nzStep]="1"
-                          [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"></nz-input-number>
+                        <nz-input-number formControlName="activeMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                         <div class="spacer"></div>
-                        <div
-                          class="row no-margin-left font-italic small-text"
-                          style="padding-right: 1rem">
+                        <div class="row no-margin-left font-italic small-text" style="padding-right: 1rem">
                           <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
                           Adjustments will be applied anywhere rates
                           are displayed<br />
@@ -379,31 +263,17 @@
 
                   <div class="cost-section mb-1" *ngIf="accountSynced">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="standbyCheck"
-                        (change)="toggleCheckbox('standby', $event)"
-                        formControlName="standbyCheck">
+                      <mat-checkbox type="checkbox" matRipple id="standbyCheck" formControlName="standbyCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Equipment, Standby
                       </h4>
                     </div>
                     <div class="cost-content px-1 pb-1">
                       <label class="bold-label">Formula:</label>
-                      <ng-select
-                        class="w-50"
-                        [items]="standbyFormulas"
-                        bindValue="name"
-                        bindLabel="label"
-                        placeholder="Choose Formula"
-                        clearAllText="Clear"
-                        [closeOnSelect]="true"
-                        [hideSelected]="true"
-                        appendTo="body"
+                      <ng-select class="w-50" [items]="standbyFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
+                        clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
                         formControlName="standbyFormula">
                       </ng-select>
                       <div class="row no-margin-left font-italic small-text">
@@ -414,16 +284,10 @@
                       <label class="bold-label">Rate Adjustments:</label>
                       <div class="px-1">
                         <div class="checkbox">
-                          <input
-                            type="checkbox"
-                            matRipple
-                            id="standbyRegionalCheck"
-                            formControlName="standbyRegionalCheck"
-                            />
+                          <input type="checkbox" matRipple id="standbyRegionalCheck" formControlName="standbyRegionalCheck" />
                           <label for="standbyRegionalCheck">Use regional
                             adjustment for
-                            <span
-                              *ngIf="projectFormGroup &&
+                            <span *ngIf="projectFormGroup &&
                               projectFormGroup.get('state') &&
                               projectFormGroup.get('state').value"
                               [innerHTML]="findState(projectFormGroup.get('state').value)"></span></label>
@@ -433,17 +297,10 @@
                     <div class="cost-content px-1 pb-1">
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
-                        <nz-input-number
-                          formControlName="standbyMarkup"
-                          [nzMin]="1"
-                          [nzMax]="100"
-                          [nzStep]="1"
-                          [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"></nz-input-number>
+                        <nz-input-number formControlName="standbyMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                         <div class="spacer"></div>
-                        <div
-                          class="row no-margin-left font-italic small-text"
-                          style="padding-right: 1rem">
+                        <div class="row no-margin-left font-italic small-text" style="padding-right: 1rem">
                           <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
                           Adjustments will be applied anywhere rates
                           are displayed<br />
@@ -455,15 +312,9 @@
                   </div>
                   <div class="cost-section mb-1" *ngIf="accountSynced">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="rentalCheck"
-                        (change)="toggleCheckbox('rental', $event)"
-                        formControlName="rentalCheck">
+                      <mat-checkbox type="checkbox" matRipple id="rentalCheck" formControlName="rentalCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Equipment, Rental
                       </h4>
@@ -477,27 +328,16 @@
                     <div class="cost-content px-1 pb-1">
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
-                        <nz-input-number
-                          formControlName="rentalMarkup"
-                          [nzMin]="1"
-                          [nzMax]="100"
-                          [nzStep]="1"
-                          [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"></nz-input-number>
+                        <nz-input-number formControlName="rentalMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
                   <div class="cost-section mb-1">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="materialCheck"
-                        (change)="toggleCheckbox('material', $event)"
-                        formControlName="materialCheck">
+                      <mat-checkbox type="checkbox" matRipple id="materialCheck" formControlName="materialCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Material
                       </h4>
@@ -511,27 +351,16 @@
                     <div class="cost-content px-1 pb-1">
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
-                        <nz-input-number
-                          formControlName="materialMarkup"
-                          [nzMin]="1"
-                          [nzMax]="100"
-                          [nzStep]="1"
-                          [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"></nz-input-number>
+                        <nz-input-number formControlName="materialMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
                   <div class="cost-section mb-1">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="laborCheck"
-                        (change)="toggleCheckbox('labor', $event)"
-                        formControlName="laborCheck">
+                      <mat-checkbox type="checkbox" matRipple id="laborCheck" formControlName="laborCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Labor
                       </h4>
@@ -545,27 +374,16 @@
                     <div class="cost-content px-1 pb-1">
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
-                        <nz-input-number
-                          formControlName="laborMarkup"
-                          [nzMin]="1"
-                          [nzMax]="100"
-                          [nzStep]="1"
-                          [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"></nz-input-number>
+                        <nz-input-number formControlName="laborMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
                   <div class="cost-section mb-1">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="subcontractorCheck"
-                        (change)="toggleCheckbox('subcontractor', $event)"
-                        formControlName="subcontractorCheck">
+                      <mat-checkbox type="checkbox" matRipple id="subcontractorCheck" formControlName="subcontractorCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Subcontractor
                       </h4>
@@ -579,27 +397,16 @@
                     <div class="cost-content px-1 pb-1">
                       <div class="bold-label">Markup:</div>
                       <div class="row no-margin-left">
-                        <nz-input-number
-                          formControlName="subcontractorMarkup"
-                          [nzMin]="1"
-                          [nzMax]="100"
-                          [nzStep]="1"
-                          [nzFormatter]="formatterPercent"
-                          [nzParser]="parserPercent"></nz-input-number>
+                        <nz-input-number formControlName="subcontractorMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+                          [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
                       </div>
                     </div>
                   </div>
                   <div class="cost-section mb-1">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox
-                        type="checkbox"
-                        matRipple
-                        id="otherCheck"
-                        (change)="toggleCheckbox('other', $event)"
-                        formControlName="otherCheck">
+                      <mat-checkbox type="checkbox" matRipple id="otherCheck" formControlName="otherCheck">
                       </mat-checkbox>
-                      <h4
-                        class="pl-1 no-top-margin no-bottom-margin
+                      <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
                         Other
                       </h4>
@@ -616,16 +423,10 @@
             </div>
 
             <div class="p-20 d-flex flex-row flex-row-reverse">
-              <button
-                class="btn btn-primary"
-                (click)="saveProject()"
-                [disabled]="!projectFormGroup.dirty">
+              <button class="btn btn-primary" (click)="saveProject()" [disabled]="!projectFormGroup.dirty">
                 Save
               </button>
-              <button
-                class="btn btn-outline-warning"
-                (click)="revertChanges()"
-                [disabled]="!projectFormGroup.dirty">
+              <button class="btn btn-outline-warning" (click)="revertChanges()" [disabled]="!projectFormGroup.dirty">
                 Cancel
               </button>
             </div>
