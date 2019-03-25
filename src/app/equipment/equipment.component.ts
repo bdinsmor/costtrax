@@ -467,7 +467,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   revertEdits(index: number, item: Equipment) {
     item = new Equipment(item.revert);
-    item.status = 'complete';
     this.items[index] = item;
   }
 
@@ -475,12 +474,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     if (!this.selectedItem) {
       return;
     }
-    if (
-      (!this.selectedItem.id || this.selectedItem.id === '') &&
-      this.selectedItem.isDraft()
-    ) {
+    if (!this.selectedItem.id || this.selectedItem.id === '') {
       this.items.splice(this.selectedIndex, 1);
-
       return;
     }
 

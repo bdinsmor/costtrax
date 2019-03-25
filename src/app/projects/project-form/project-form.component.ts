@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { Account, Item, Project, User } from '../../shared/model';
+import { ProjectRequestDialogComponent } from '../project-request-dialog.component';
 import { ProjectsService } from '../projects.service';
 import { RequestsService } from './../../requests/requests.service';
 import { ProjectCompleteDialogComponent } from './../project-complete-dialog.component';
@@ -123,8 +124,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
-          this.accountSynced =
-            message.advantageId && message.advantageId !== '';
+          this.accountSynced = message.eqwVerified;
         } else {
           this.accountSynced = false;
         }
@@ -359,13 +359,24 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
   createRequest() {
     if (this.project && this.project.id) {
-      this.requestsService
-        .grabRequestId(this.project.id)
-        .subscribe((data: any) => {
-          if (data && data.id && data.id !== '') {
-            this.router.navigate(['./requests', data.id]);
-          }
-        });
+      const dialogRef = this.dialog.open(ProjectRequestDialogComponent, {
+        data: { projectId: this.project.id },
+        width: '40vw'
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && result.success) {
+          const startDate = result.dateRange[0];
+          const endDate = result.dateRange[1];
+          this.requestsService
+            .grabRequestId(this.project.id, startDate, endDate)
+            .subscribe((data: any) => {
+              if (data && data.id && data.id !== '') {
+                this.router.navigate(['./requests', data.id]);
+              }
+            });
+        }
+      });
     }
   }
 

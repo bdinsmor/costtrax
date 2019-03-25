@@ -263,9 +263,7 @@
               [disabled]="
                 signatureFormGroup.invalid ||
                 notesFormGroup.hasError('notValid') ||
-                !project ||
-                !request.hasLineItems() ||
-                !request.isDraft()
+                !project
               "
               class="ripple
                         btn
@@ -491,7 +489,9 @@
               "
             >
               <td class="left">Active Subtotal</td>
-              <td class="left">{{ request.activeSubtotal | currency }}</td>
+              <td class="left">
+                {{ request.equipmentActiveSubtotal | currency }}
+              </td>
               <td></td>
             </tr>
             <tr
@@ -517,7 +517,9 @@
               "
             >
               <td class="left">Standby Subtotal</td>
-              <td class="left">{{ request.standbySubtotal | currency }}</td>
+              <td class="left">
+                {{ request.equipmentStandbySubtotal | currency }}
+              </td>
               <td></td>
             </tr>
             <tr
@@ -543,7 +545,9 @@
               "
             >
               <td class="left">Rental Subtotal</td>
-              <td class="left">{{ request.rentalSubtotal | currency }}</td>
+              <td class="left">
+                {{ request.equipmentRentalSubtotal | currency }}
+              </td>
               <td></td>
             </tr>
             <tr

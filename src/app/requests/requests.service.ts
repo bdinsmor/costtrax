@@ -1,13 +1,12 @@
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { saveAs } from 'file-saver';
 import { UploadFile } from 'ng-zorro-antd';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Account, Item, Project, Request } from '../shared/model';
-import { saveAs } from 'file-saver';
-import { DateTime } from 'luxon';
 
 @Injectable({
   providedIn: 'root'
@@ -145,9 +144,11 @@ export class RequestsService {
     );
   }
 
-  grabRequestId(projectId: string) {
+  grabRequestId(projectId: string, startDate: string, endDate: string) {
     return this.http.post(environment.serverUrl + '/request', {
-      projectId: projectId
+      projectId: projectId,
+      startDate: startDate,
+      endDate: endDate
     });
   }
 
@@ -262,7 +263,7 @@ export class RequestsService {
 
   approveLineItemWithChanges(lineItem: Item) {
     const data = {
-      amountApproved: lineItem.finalAmount,
+      amountApproved: lineItem.totalAdjusted,
       changeReason: lineItem.changeReason
     };
     return this.http.put(

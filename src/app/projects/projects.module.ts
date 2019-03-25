@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import { CoreModule } from '../core';
 import { DirectivesModule } from '../core/directives/directives';
@@ -62,7 +63,8 @@ registerLocaleData(en);
     UsersModule,
     RequestsModule,
     ClarityModule,
-    PipesModule
+    PipesModule,
+    BsDatepickerModule.forRoot()
   ],
   exports: [
     ProjectsComponent,

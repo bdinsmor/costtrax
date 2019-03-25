@@ -25,7 +25,7 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   makeId: string;
   @Input()
-  make: string;
+  manufacturerName: string;
   @Input()
   shouldDisable = false;
   @Input()
@@ -55,12 +55,15 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
     if (this.type === 'make') {
       this.makeSearch();
-      this.placeholder = 'Select Make';
+      this.placeholder = 'Select Manufacturer';
     } else {
       this.modelSearch();
       this.placeholder = 'Select Model';
     }
     if (this.initialValue) {
+      console.log(
+        'details: ' + JSON.stringify(this.initialValue.details, null, 2)
+      );
       this.selectedItem = new Equipment(this.initialValue.details);
     } else if (this.initialEquipment) {
       this.selectedItem = new Equipment(this.initialEquipment);

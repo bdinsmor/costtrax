@@ -142,7 +142,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   itemTypeDisplay: string;
 
-  accountSynced = false;
+  accountSynced = true;
   /*
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
@@ -178,12 +178,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       .getCreds()
       .pipe(untilDestroyed(this))
       .subscribe(message => {
-        if (message && message.advantageId) {
-          this.accountSynced =
-            message.advantageId && message.advantageId !== '';
+        if (message && message.eqwVerified) {
+          this.accountSynced = message.eqwVerified;
         } else {
-          this.accountSynced = false;
+          this.accountSynced = true;
         }
+        this.accountSynced = true;
         this.changeDetector.detectChanges();
       });
 
@@ -198,7 +198,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.itemList = new ItemList('', []);
     } else {
       this.itemType = this.itemList.type;
-      this.refreshPending();
     }
     this.changeDetector.detectChanges();
     this.checkPermissions();
@@ -691,7 +690,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   makeNewSelectionChanged(event: any, item: Item) {
     if (item && item.details && event && event.item) {
-      item.details.makeId = event.item.makeId;
+      item.details.manufacturerId = event.item.makeId;
       item.details.modelId = null;
       item.details.model = null;
       item.misc =
@@ -781,7 +780,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   modelNewSelectionChanged(event: any, item: Item, index: number) {
     let yearSelected = false;
     if (!event || !event.item) {
-      item.details.makeId = item.details.makeId;
+      item.details.manufacturerId = item.details.manufacturerId;
       item.details.sizeClassName = '';
       item.details.subSize = '';
       item.details.subSize = '';
@@ -1074,10 +1073,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             firstName: ''
           },
           rate: 0,
-          time1: 0,
-          time15: 0,
-          time2: 0,
-          benefits: 0
+          multiplier: 0,
+          hours: 0,
+          fringe: 0
         }
       });
     } else if (
@@ -1269,7 +1267,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         case 'type':
           return compare(a.type, b.type, isAsc);
         case 'finalAmount':
-          return compare(+a.finalAmount, +b.finalAmount, isAsc);
+          return compare(+a.totalAdjusted, +b.totalAdjusted, isAsc);
         case 'amount':
           return compare(+a.amount, +b.amount, isAsc);
         case 'age':
@@ -1400,7 +1398,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       id: item.id,
       requestId: item.requestId,
       type: item.type,
-      status: item.status.toLowerCase(),
       amount: Number(item.amount).toFixed(2),
       details: item.details
     };
@@ -1434,23 +1431,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   get amountChanged() {
-    return +this.selectedItem.finalAmount - +this.selectedItem.amount;
+    return +this.selectedItem.totalAdjusted - +this.selectedItem.amount;
   }
 
   createEquipmentForm() {
     this.equipmentFormGroup = new FormGroup({
       selectedMachineControl: new FormControl('')
     });
-  }
-
-  refreshPending() {
-    for (let i = 0; i < this.itemList.items.length; i++) {
-      if (this.itemList.items[i].status.toLowerCase() === 'pending') {
-        this.hasPending = true;
-        return;
-      }
-    }
-    this.hasPending = false;
   }
 
   editLineItem(index: number, it: Item) {
@@ -1494,8 +1481,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (item) {
-          this.selectedItem.status = 'Complete';
-          this.selectedItem.finalAmount = this.selectedItem.amount;
+          this.selectedItem.totalAdjusted = this.selectedItem.amount;
           this.selectedItem.approvedOn = new Date();
           this.requestsService.approveLineItemAsIs(this.selectedItem).subscribe(
             (approveResponse: any) => {
@@ -1527,9 +1513,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (result.changes) {
-          this.selectedItem.status = 'Complete';
           this.selectedItem.changeReason = result.changes.changeReason;
-          this.selectedItem.finalAmount = result.changes.finalAmount;
+          this.selectedItem.totalAdjusted = result.changes.finalAmount;
           this.selectedItem.approvedOn = new Date();
           this.requestsService
             .approveLineItemWithChanges(this.selectedItem)
@@ -1550,9 +1535,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-  requestMoreInfo(item: Item) {
-    item.status = 'RequestMoreInfo';
   }
 
   addMiscEquipment() {

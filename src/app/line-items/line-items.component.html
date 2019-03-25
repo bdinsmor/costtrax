@@ -100,28 +100,22 @@
       </div>
 
       <clr-datagrid *ngIf="itemType === 'labor'">
-        <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.employee.lastName'"
           style="width:150px">Last Name</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.employee.firstName'"
           style="width:150px">First Name</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.trade'" style="width:150px">Trade
+        <clr-dg-column [clrDgField]="'details.class'" style="width:150px">Trade
           / Class</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.rate'" style="width:100px">Hourly
+        <clr-dg-column [clrDgField]="'details.rate'" style="width:250px">Hourly
           Rate</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time1'" style="width:115px">Time x
-          1.0</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time15'" style="width:115px">Time
-          x 1.5</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.time2'" style="width:115px">Time x
-          2.0</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.benefits'">Fringe Benefits</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.multiplier'" style="width:155px">Multiplier</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.hours'" style="width:155px">Hours</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.fringe'">Fringe Benefits</clr-dg-column>
         <clr-dg-column [clrDgField]="'amount'">Total</clr-dg-column>
         <clr-dg-column></clr-dg-column>
         <clr-dg-row *clrDgItems="let item of itemList.items; let i=
           index;trackBy:
           trackByFn" [clrDgItem]="item">
-          <clr-dg-cell>{{item.status}}</clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved"
@@ -150,7 +144,7 @@
                 [(ngModel)]="item.details.trade" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!submitRequests">{{item.details.trade}}</div>
+            <div *ngIf="!submitRequests">{{item.details.class}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
@@ -167,10 +161,10 @@
               <input [disabled]="!submitRequests" class="full-width"
                 type="number" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
-                [(ngModel)]="item.details.time1" [ngModelOptions]="{standalone:
+                [(ngModel)]="item.details.multiplier" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!submitRequests">{{item.details.time1 | number:
+            <div *ngIf="!submitRequests">{{item.details.multiplier | number:
               '.1-2'}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -178,33 +172,22 @@
               <input [disabled]="!submitRequests" class="full-width"
                 type="number" (change)="laborChanged(item)"
                 (keypress)="laborChanged(item)"
-                [(ngModel)]="item.details.time15" [ngModelOptions]="{standalone:
+                [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone:
                 true}">
             </div>
-            <div *ngIf="!submitRequests">{{item.details.time15 | number:
+            <div *ngIf="!submitRequests">{{item.details.hours | number:
               '.1-2'}}
             </div>
-          </clr-dg-cell>
-          <clr-dg-cell>
-            <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests" class="full-width"
-                type="number" (change)="laborChanged(item)"
-                (keypress)="laborChanged(item)"
-                [(ngModel)]="item.details.time2" [ngModelOptions]="{standalone:
-                true}">
-            </div>
-            <div *ngIf="!submitRequests">{{item.details.time2 | number:
-              '.1-2'}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved" currencyMask
                 class="full-width" type="text" (keypress)="laborChanged(item)"
                 (change)="laborChanged(item)"
-                [(ngModel)]="item.details.benefits"
+                [(ngModel)]="item.details.fringe"
                 [ngModelOptions]="{standalone: true}">
             </div>
-            <div *ngIf="!submitRequests">{{item.details.benefits | currency}}</div>
+            <div *ngIf="!submitRequests">{{item.details.fringe | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div>{{item.details.amount | currency}}</div>
@@ -235,16 +218,12 @@
               </button>
               <span *ngIf="submitRequests">
                 
-                <button class="ripple icon-button" *ngIf="!submitRequests ||
-                  (submitRequests &&
-                  item.isDraft())" matTooltip="Remove"
+                <button class="ripple icon-button" *ngIf="submitRequests" matTooltip="Remove"
                   (click)="removeLineItem(i,item)">
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="(manageRequests &&
-                item.status.toLowerCase()===
-                'pending')">
+              <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests"
                   color="primary" matTooltip="Approve
                   As Is"
@@ -290,12 +269,9 @@
             <div *ngIf="(manageRequests || manageProject) &&
               item.rateVerified()" class="padding-label-top row pl-1"
               style="padding-left: 10px !important">
-              <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
+              <mat-icon svgIcon="costtrax-check"></mat-icon>
             </div>
-            <div *ngIf="(!manageRequests && !manageProject) ||
-              !item.rateVerified()" class="padding-label-top row pl-1">
-              {{item.status}}
-            </div>
+            
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
@@ -303,14 +279,14 @@
                 [initialValue]="item" cdkFocusInitial
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
-            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.make}}</div>
+            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <app-equipment-select [makeId]="item.details.makeId"
+              <app-equipment-select [makeId]="item.details.manufacturerId"
                 [initialValue]="item" [index]="i"
                 (selected)="modelNewSelectionChanged($event,item,i)"
-                [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
+                [shouldDisable]="!item.details.manufacturerId" type="model"></app-equipment-select>
             </div>
             <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
           </clr-dg-cell>
@@ -398,16 +374,12 @@
               </button>
               <span *ngIf="submitRequests">
                 
-                <button class="ripple icon-button" *ngIf="!submitRequests ||
-                  (submitRequests &&
-                  item.isDraft())" matTooltip="Remove"
+                <button class="ripple icon-button" *ngIf="submitRequests" matTooltip="Remove"
                   (click)="removeLineItem(i,item)">
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="(manageRequests &&
-                item.status.toLowerCase()===
-                'pending')">
+              <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests"
                   color="primary" matTooltip="Approve
                   As Is"
@@ -742,12 +714,9 @@
                 <div *ngIf="(manageRequests || manageProject) &&
                   item.rateVerified()" class="padding-label-top row"
                   style="padding-left:10px">
-                  <mat-icon svgIcon="costtrax-check"></mat-icon>&nbsp;&nbsp;{{item.status}}
+                  <mat-icon svgIcon="costtrax-check"></mat-icon>
                 </div>
-                <div *ngIf="(!manageRequests && !manageProject) ||
-                  !item.rateVerified()" class="padding-label-top row pl-1">
-                  {{item.status}}
-                </div>
+                
               </clr-dg-cell>
               <clr-dg-cell>
                 <div *ngIf="submitRequests">
@@ -755,14 +724,14 @@
                     [initialValue]="item" cdkFocusInitial
                     (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
                 </div>
-                <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.make}}</div>
+                <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
               </clr-dg-cell>
               <clr-dg-cell>
                 <div *ngIf="submitRequests">
-                  <app-equipment-select [makeId]="item.details.makeId"
+                  <app-equipment-select [makeId]="item.details.manufacturerId"
                     [initialValue]="item" [index]="i"
                     (selected)="modelNewSelectionChanged($event,item,i)"
-                    [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
+                    [shouldDisable]="!item.details.manufacturerId" type="model"></app-equipment-select>
                 </div>
                 <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
               </clr-dg-cell>
@@ -852,17 +821,12 @@
                       item.attachments.length === 0)" color="accent">attach_file</mat-icon>
                   </button>
                   <span *ngIf="submitRequests">
-                    <button class="ripple icon-button" *ngIf="!submitRequests
-                      ||
-                      (submitRequests &&
-                      item.isDraft())"
+                    <button class="ripple icon-button"
                       matTooltip="Remove" (click)="removeLineItem(i,item)">
                       <mat-icon color="warn">delete</mat-icon>
                     </button>
                   </span>
-                  <span *ngIf="(manageRequests &&
-                    item.status.toLowerCase()===
-                    'pending')">
+                  <span *ngIf="manageRequests">
                     <button class="ripple icon-button"
                       [disabled]="!manageRequests" color="primary"
                       matTooltip="Approve
@@ -1124,12 +1088,8 @@
                       svgIcon="costtrax-check"></mat-icon>
                     <mat-icon class="icon" *ngIf="!item.rateVerified()"
                       color="warn">priority_high</mat-icon>
-                    &nbsp;&nbsp;{{item.status}}
                   </div>
-                  <div *ngIf="!manageRequests && !manageProject"
-                    class="padding-label-top row pl-1">
-                    {{item.status}}
-                  </div>
+                  
                 </clr-dg-cell>
                 <clr-dg-cell>
 
@@ -1138,14 +1098,14 @@
                       [initialValue]="item" cdkFocusInitial
                       (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
                   </div>
-                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.make}}</div>
+                  <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
                 </clr-dg-cell>
                 <clr-dg-cell>
                   <div *ngIf="submitRequests">
-                    <app-equipment-select [makeId]="item.details.makeId"
+                    <app-equipment-select [makeId]="item.details.manufacturerId"
                       [initialValue]="item" [index]="i"
                       (selected)="modelNewSelectionChanged($event,item,i)"
-                      [shouldDisable]="!item.details.makeId" type="model"></app-equipment-select>
+                      [shouldDisable]="!item.details.manufacturerId" type="model"></app-equipment-select>
                   </div>
                   <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
                 </clr-dg-cell>
@@ -1256,15 +1216,12 @@
                     <span *ngIf="submitRequests">
                       
                         <button class="ripple icon-button"
-                          *ngIf="!submitRequests || (submitRequests &&
-                          item.isDraft())"
+                          *ngIf="submitRequests"
                           matTooltip="Remove" (click)="removeLineItem(i,item)">
                           <mat-icon color="warn">delete</mat-icon>
                         </button>
                       </span>
-                      <span *ngIf="(manageRequests &&
-                        item.status.toLowerCase()===
-                        'pending')">
+                      <span *ngIf="manageRequests">
                         <button class="ripple icon-button"
                           [disabled]="!manageRequests" color="primary"
                           matTooltip="Approve
@@ -1456,7 +1413,6 @@
                       Items</clr-dg-footer>
                   </clr-datagrid>
                   <clr-datagrid *ngIf="itemType === 'material'">
-                    <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
                     <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
                     <clr-dg-column [clrDgField]="'details.units'"
                       style="width:55px">Units</clr-dg-column>
@@ -1468,11 +1424,8 @@
                     <clr-dg-row *clrDgItems="let item of itemList.items; let i=
                       index;trackBy:
                       trackByFn" [clrDgItem]="item">
-                      <clr-dg-cell>{{item.status}}</clr-dg-cell>
                       <clr-dg-cell>
-                        <div *ngIf="!submitRequests">{{item.details.description
-                          |
-                          truncate: 25}}
+                        <div *ngIf="!submitRequests">{{item.details.description}}
                         </div>
                         <input *ngIf="submitRequests"
                           [disabled]="!submitRequests ||
@@ -1556,16 +1509,13 @@
                           <span *ngIf="submitRequests">
                            
                             <button class="ripple icon-button"
-                              *ngIf="!submitRequests || (submitRequests &&
-                              item.isDraft())"
+                              *ngIf="submitRequests"
                               matTooltip="Remove"
                               (click)="removeLineItem(i,item)">
                               <mat-icon color="warn">delete</mat-icon>
                             </button>
                           </span>
-                          <span *ngIf="(manageRequests &&
-                            item.status.toLowerCase()===
-                            'pending')">
+                          <span *ngIf="manageRequests">
                             <button class="ripple icon-button"
                               [disabled]="!manageRequests" color="primary"
                               matTooltip="Approve
@@ -1591,7 +1541,6 @@
                       Items</clr-dg-footer>
                   </clr-datagrid>
                   <clr-datagrid *ngIf="itemType === 'other'">
-                    <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
                     <clr-dg-column [clrDgField]="'details.type'">Type</clr-dg-column>
                     <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
                     <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
@@ -1600,7 +1549,6 @@
                     <clr-dg-row *clrDgItems="let item of itemList.items; let i=
                       index;trackBy:
                       trackByFn" [clrDgItem]="item">
-                      <clr-dg-cell>{{item.status}}</clr-dg-cell>
                       <clr-dg-cell>
                         <div>
                           <div *ngIf="!submitRequests" style="width:100px">{{item.details.type}}</div>
@@ -1669,16 +1617,13 @@
                           <span *ngIf="submitRequests">
                             
                             <button class="ripple icon-button"
-                              *ngIf="!submitRequests || (submitRequests &&
-                              item.isDraft())"
+                              *ngIf="submitRequests"
                               matTooltip="Remove"
                               (click)="removeLineItem(i,item)">
                               <mat-icon color="warn">delete</mat-icon>
                             </button>
                           </span>
-                          <span *ngIf="(manageRequests &&
-                            item.status.toLowerCase()===
-                            'pending')">
+                          <span *ngIf="manageRequests">
                             <button class="ripple icon-button"
                               [disabled]="!manageRequests" color="success"
                               matTooltip="Approve
@@ -1704,7 +1649,6 @@
                       Items</clr-dg-footer>
                   </clr-datagrid>
                   <clr-datagrid *ngIf="itemType === 'subcontractor'">
-                    <clr-dg-column [clrDgField]="'status'">Status</clr-dg-column>
                     <clr-dg-column [clrDgField]="'details.subcontractor'">Subcontractor</clr-dg-column>
                     <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
                     <clr-dg-column [clrDgField]="'subtotal'">Subtotal</clr-dg-column>
@@ -1713,7 +1657,6 @@
                     <clr-dg-row *clrDgItems="let item of itemList.items; let i=
                       index;trackBy:
                       trackByFn" [clrDgItem]="item">
-                      <clr-dg-cell>{{item.status}}</clr-dg-cell>
                       <clr-dg-cell>
                         <div>
                           <div *ngIf="!submitRequests">{{item.details.subcontractor}}</div>
@@ -1781,16 +1724,13 @@
                           <span *ngIf="submitRequests">
                             
                             <button class="ripple icon-button"
-                              *ngIf="!submitRequests || (submitRequests &&
-                              item.isDraft())"
+                              *ngIf="submitRequests"
                               matTooltip="Remove"
                               (click)="removeLineItem(i,item)">
                               <mat-icon color="warn">delete</mat-icon>
                             </button>
                           </span>
-                          <span *ngIf="(manageRequests &&
-                            item.status.toLowerCase()===
-                            'pending')">
+                          <span *ngIf="manageRequests">
                             <button class="ripple icon-button"
                               [disabled]="!manageRequests" color="primary"
                               matTooltip="Approve

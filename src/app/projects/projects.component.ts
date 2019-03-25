@@ -58,11 +58,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       .getCreds()
       .pipe(untilDestroyed(this))
       .subscribe(message => {
-        if (
-          message &&
-          message.hasOwnProperty('showAddRequest') &&
-          message.hasOwnProperty('showAddProject')
-        ) {
+        if (message) {
           this.canSubmitRequests = message.showAddRequest;
           this.canCreateProjects = message.showAddProject;
         } else {
@@ -87,6 +83,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   refreshProjects() {
+    this.projectsService.getProjectsForRequests().subscribe((p: Project[]) => {
+      this.requestableProjects = p;
+      this.changeDetector.detectChanges();
+    });
+
     this.projectsService
       .getAllProjects()
       .pipe(untilDestroyed(this))
@@ -123,9 +124,13 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        if (result.projectId) {
+        if (result.projectId && result.dateRange) {
           this.requestsService
-            .grabRequestId(result.projectId)
+            .grabRequestId(
+              result.projectId,
+              result.dateRange[0],
+              result.dateRange[1]
+            )
             .subscribe((data: any) => {
               if (data && data.id && data.id !== '') {
                 this.router.navigate(['./requests', data.id]);

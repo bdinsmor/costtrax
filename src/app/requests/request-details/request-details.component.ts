@@ -146,50 +146,6 @@ export class RequestDetailsComponent
         },
         err => {}
       );
-    } else {
-      this.request = new Request({});
-      this.breadcrumbService.addHome();
-      this.request.status = 'DRAFT';
-      this.notesFormGroup = new FormGroup({
-        notes: new FormControl('')
-      });
-      this.projectChoices = this.projectsService.getProjectsForRequests();
-      this.projectsService
-        .getProjectsForRequests()
-        .subscribe((projects: Project[]) => {
-          if (
-            this.route.snapshot.queryParams.projectId &&
-            this.route.snapshot.queryParams.projectId !== ''
-          ) {
-            this.projectsService
-              .getProject(this.route.snapshot.queryParams.projectId)
-              .subscribe((p: Project) => {
-                this.project = p;
-                this.request.project = p;
-                this.breadcrumbService.addProject(p.id, p.name);
-                this.breadcrumbService.addNewRequest();
-                this.checkPermissions();
-                this.buildItemTypes();
-                this.requestFormGroup = new FormGroup({
-                  selectedProjectControl: new FormControl(
-                    this.findSelectedProject(projects, p)
-                  )
-                });
-
-                this.requestsService
-                  .grabRequestId(p.id)
-                  .subscribe((data: any) => {
-                    this.request.id = data.id;
-                  });
-                this.changeDetector.detectChanges();
-              });
-          } else {
-            this.breadcrumbService.addNewRequest();
-            this.changeDetector.detectChanges();
-          }
-        });
-
-      this.editMode = true;
     }
   }
 
@@ -266,14 +222,6 @@ export class RequestDetailsComponent
     }
   }
 
-  getRequestId() {
-    this.requestsService
-      .grabRequestId(this.project.id)
-      .subscribe((data: any) => {
-        this.request.id = data.id;
-      });
-  }
-
   notesChanged() {}
 
   exportRecapitulation() {
@@ -321,14 +269,15 @@ export class RequestDetailsComponent
       this.request.notes = this.notesFormGroup.value.notes;
       this.request.startDate = new Date(this.notesFormGroup.value.dateRange[0]);
       this.request.endDate = new Date(this.notesFormGroup.value.dateRange[1]);
-      this.requestsService.update(this.request).subscribe(
+      console.log('request: ' + JSON.stringify(this.request, null, 2));
+      /* this.requestsService.update(this.request).subscribe(
         (response: any) => {
           this.openSnackBar('Request Saved', 'ok', 'OK');
         },
         (error: any) => {
           this.openSnackBar('Request Did Not Save', 'error', 'OK');
         }
-      );
+      ); */
     }
   }
 
@@ -408,7 +357,7 @@ export class RequestDetailsComponent
 
     if (!this.project) {
       this.request.itemsByType = [];
-      this.request.items = [];
+      this.request.lineItems = [];
       this.buildItemTypes();
       this.changeDetector.detectChanges();
       return;
@@ -417,16 +366,6 @@ export class RequestDetailsComponent
     this.request = new Request({});
 
     this.request.status = 'DRAFT';
-
-    this.requestsService
-      .grabRequestId(this.project.id)
-      .subscribe((data: any) => {
-        this.request.id = data.id;
-        this.request.itemsByType = [];
-        this.request.items = [];
-        this.buildItemTypes();
-        this.changeDetector.detectChanges();
-      });
   }
 
   buildItemTypes() {

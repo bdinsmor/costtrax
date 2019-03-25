@@ -39,7 +39,7 @@ export class LineItemApproveDialogComponent implements OnInit {
   }
 
   get amountChanged() {
-    return +this.selectedItem.finalAmount - +this.selectedItem.amount;
+    return +this.selectedItem.totalAdjusted - +this.selectedItem.amount;
   }
 
   cancel() {
@@ -49,7 +49,7 @@ export class LineItemApproveDialogComponent implements OnInit {
   confirm() {
     if (this.modalType === 'ApprovedWithChange') {
       const changes = {
-        finalAmount: this.selectedItem.finalAmount,
+        totalAdjusted: this.selectedItem.totalAdjusted,
         changeReason: this.changeFormGroup.value.reasonControl
       };
       this.dialogRef.close({ success: true, changes: changes });

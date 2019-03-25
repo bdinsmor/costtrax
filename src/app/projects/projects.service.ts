@@ -149,10 +149,10 @@ export class ProjectsService {
     return this.http.get(environment.serverUrl + '/project').pipe(
       map((res: any) => {
         const projects: Project[] = [];
-        res.forEach((p: any) => {
-          if (p.roles) {
-            for (let i = 0; i < p.roles.length; i++) {
-              if (p.roles[i] === 'ProjectRequestor') {
+        res.results.forEach((p: any) => {
+          if (p.projectRoles) {
+            for (let i = 0; i < p.projectRoles.length; i++) {
+              if (p.projectRoles[i] === 'ProjectRequestor') {
                 projects.push(new Project(p));
               }
             }

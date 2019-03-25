@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
 import { Project } from 'src/app/shared/model';
 
 @Component({
@@ -10,16 +11,26 @@ import { Project } from 'src/app/shared/model';
 })
 export class ProjectRequestDialogComponent implements OnInit {
   projects: Project[];
+  projectId: string;
   projectForm: FormGroup;
+  dateFormGroup: FormGroup;
+  colorTheme = 'theme-dark-blue';
+  bsConfig: Partial<BsDatepickerConfig>;
 
   constructor(
+    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
   ngOnInit() {
+    this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
+    if (this.data.projects) {
+    }
+    this.projects = this.data.projects || [];
+    this.projectId = this.data.projectId || '';
+
     this.createProjectForm();
-    this.projects = this.data.projects;
   }
 
   cancel() {
@@ -27,16 +38,17 @@ export class ProjectRequestDialogComponent implements OnInit {
   }
 
   confirm() {
-    const selectedProjectId: string = this.projectForm.value
-      .selectedProjectControl;
-    if (selectedProjectId && selectedProjectId !== '') {
-      this.dialogRef.close({ success: true, projectId: selectedProjectId });
-    }
+    this.dialogRef.close({
+      success: true,
+      projectId: this.projectForm.value.selectedProjectControl,
+      dateRange: this.projectForm.value.dateRange
+    });
   }
 
   createProjectForm() {
     this.projectForm = new FormGroup({
-      selectedProjectControl: new FormControl('', Validators.required)
+      selectedProjectControl: new FormControl(null, Validators.required),
+      dateRange: new FormControl('', Validators.required)
     });
   }
 }

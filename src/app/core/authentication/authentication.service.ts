@@ -352,6 +352,7 @@ export class AuthenticationService {
   sendCreds(creds: Credentials) {
     if (creds && creds.email && creds.token) {
       const token = this.decodeToken(creds.token);
+      //  console.log('dc: ' + JSON.stringify(token, null, 2));
       if (token) {
         this.subject.next({
           userName: creds.email,

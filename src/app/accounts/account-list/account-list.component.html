@@ -7,7 +7,7 @@
     <clr-dg-column [clrDgField]="'email'" [clrDgSortBy]="'name'"
       >Email</clr-dg-column
     >
-    <clr-dg-column style="width:100px">Actions</clr-dg-column>
+    <clr-dg-column style="width:60px">Actions</clr-dg-column>
     <clr-dg-row
       class="pointer"
       *clrDgItems="let item of accounts; let i = index"
@@ -21,16 +21,7 @@
         </div></clr-dg-cell
       >
       <clr-dg-cell>
-        <div class="row justify-content-end" style="width:100px">
-          <button
-            *ngIf="item.isActive()"
-            class="ripple icon-30 icon-button pr-1"
-            matTooltip="Mark Inactive"
-            [disabled]="true"
-            (click)="archiveAccount(item)"
-          >
-            <mat-icon color="accent">archive</mat-icon>
-          </button>
+        <div class="row justify-content-end" style="width:60px">
           <button
             class="ripple icon-button icon-30 pr-1"
             matTooltip="Remove"
