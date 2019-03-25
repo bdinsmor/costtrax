@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
   styleUrls: ['./configuration-dialog.component.scss']
 })
 export class ConfigurationDialogComponent implements OnInit {
-  configurations: any[];
+  configurations: any;
   selected = [];
   constructor(
     public dialogRef: MatDialogRef<any>,

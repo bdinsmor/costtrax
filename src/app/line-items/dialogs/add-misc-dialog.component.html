@@ -1,38 +1,20 @@
 <h3 mat-dialog-title>Add Miscellaneous Model</h3>
 <mat-dialog-content>
-  <div
-    class="px-2 pb-2 full-width justify-content-center
+  <div class="px-2 pb-2 full-width justify-content-center
     align-items-center">
     <div>
       <h4 class="pb-1">Category:</h4>
-      <ng-select
-        appendTo="body"
-        [items]="categoryResults$ | async"
-        (change)="categoryChanged()"
-        bindLabel="categoryName"
-        bindValue="categoryId"
-        placeholder="Choose Category"
-        clearAllText="Clear"
-        [closeOnSelect]="true"
-        [hideSelected]="true"
-        [(ngModel)]="miscCategoryId"
+      <ng-select appendTo="body" [items]="categoryResults$ | async" (change)="categoryChanged()"
+        bindLabel="categoryName" bindValue="categoryId" placeholder="Choose Category" clearAllText="Clear"
+        [closeOnSelect]="true" [hideSelected]="true" [(ngModel)]="miscCategoryId"
         [ngModelOptions]="{ standalone: true }">
       </ng-select>
     </div>
     <div>
       <h4 class="pb-1">Subtype:</h4>
-      <ng-select
-        appendTo="body"
-        [items]="subtypeResults$ | async"
-        [disabled]="!miscCategoryId"
-        (change)="subtypeSelected()"
-        bindLabel="subtypeName"
-        placeholder="Choose
-        subtype"
-        clearAllText="Clear"
-        [closeOnSelect]="true"
-        [hideSelected]="true"
-        [(ngModel)]="miscEquipment"
+      <ng-select appendTo="body" [items]="subtypeResults$ | async" [disabled]="!miscCategoryId"
+        (change)="subtypeSelected()" bindLabel="subtypeName" placeholder="Choose
+        subtype" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [(ngModel)]="miscEquipment"
         [ngModelOptions]="{ standalone: true }">
       </ng-select>
     </div>
@@ -74,38 +56,27 @@
         !loading">
         Please select a Subtype to view available configurations.
       </h6>
-      <h6 *ngIf="!loading && configurations && configurations.values.length ===
+      <h6 *ngIf="!loading && configurations && configurations.count ===
         0">
         No configurations found for this model.
       </h6>
-      <clr-datagrid
-        *ngIf="!loading && configurations && configurations.values.length> 0"
-        class="datagrid-compact"
-        #lineItemConfigurationGrid
-        >
+      <clr-datagrid *ngIf="!loading && configurations && configurations.count > 0" class="datagrid-compact"
+        #lineItemConfigurationGrid>
         <clr-dg-placeholder>No data found</clr-dg-placeholder>
         <clr-dg-column style="width:60px"></clr-dg-column>
-        <clr-dg-column
-          *ngFor="let column of configurations.columns"
-          [clrDgField]="column.name"
+        <clr-dg-column *ngFor="let column of configurations.columns" [clrDgField]="column.name"
           [clrDgSorted]="column.name === 'name'">
           <div>{{ column.name }}</div>
         </clr-dg-column>
 
-        <clr-dg-row
-          *clrDgItems="let configuration of configurations.values"
+        <clr-dg-row *clrDgItems="let configuration of configurations.results;let index = index"
           [clrDgItem]="configuration">
-          <clr-dg-cell style="width:60px"><button
-              type="button"
-              mat-icon-button
-              color="accent"
+          <clr-dg-cell style="width:60px"><button type="button" mat-icon-button color="accent"
               (click)="confirm(configuration)">
               <mat-icon color="accent">radio_button_unchecked</mat-icon>
             </button>
           </clr-dg-cell>
-          <clr-dg-cell
-            class="padding-label-top pointer"
-            (click)="confirm(configuration)"
+          <clr-dg-cell class="padding-label-top pointer" (click)="confirm(configuration)"
             *ngFor="let column of configurations.columns">{{
             configuration[column.name] }}
           </clr-dg-cell>
@@ -115,10 +86,7 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button
-    type="button"
-    class="btn btn-outline-danger"
-    (click)="cancel()">
+  <button type="button" class="btn btn-outline-danger" (click)="cancel()">
     Cancel
   </button>
 </mat-dialog-actions>

@@ -583,9 +583,9 @@ export class Item {
   }
 
   rateVerified(): boolean {
-    if (this.type === 'equipment.active' || this.type === 'equipment.standby') {
+    if (this.type === 'equipmentActive' || this.type === 'equipmentStandby') {
       return this.amount > 0;
-    } else if (this.type === 'equipment.rental') {
+    } else if (this.type === 'equipmentRental') {
       return this.details.rateVerified;
     }
   }
@@ -606,9 +606,9 @@ export class Item {
 
   detailsDisplay() {
     if (
-      this.type.toLowerCase() === 'equipment.active' ||
-      this.type.toLowerCase() === 'equipment.standby' ||
-      this.type.toLowerCase() === 'equipment.rental'
+      this.type.toLowerCase() === 'equipmentActive' ||
+      this.type.toLowerCase() === 'equipmentStandby' ||
+      this.type.toLowerCase() === 'equipmentRental'
     ) {
       return this.details.make + ' ' + this.details.model;
     } else {
@@ -620,12 +620,12 @@ export class Item {
     if (!this.type) {
       this.displayType = 'Other';
     }
-    if (this.type.toLowerCase() === 'equipment.active') {
+    if (this.type.toLowerCase() === 'equipmentActive') {
       this.displayType = 'Equipment|Active';
       this.calculateActiveComps();
-    } else if (this.type.toLowerCase() === 'equipment.standby') {
+    } else if (this.type.toLowerCase() === 'equipmentStandby') {
       this.displayType = 'Equipment|Standby';
-    } else if (this.type.toLowerCase() === 'equipment.rental') {
+    } else if (this.type.toLowerCase() === 'equipmentRental') {
       this.displayType = 'Equipment|Rental';
       this.calculateRentalComps();
     } else if (this.type.toLowerCase() === 'labor') {
@@ -640,14 +640,14 @@ export class Item {
   }
 
   setAmounts() {
-    if (!this.details.fhwa) {
-      this.details.fhwa = 0;
+    if (!this.details.rate) {
+      this.details.rate = 0;
     }
     if (!this.details.method) {
       this.details.method = 0;
     }
-    if (!this.details.transportation) {
-      this.details.transportation = 0;
+    if (!this.details.transport) {
+      this.details.transport = 0;
     }
     if (!this.details.hours) {
       this.details.hours = 0;
@@ -693,7 +693,7 @@ export class Item {
       this.approvedBy = data.approvedBy || '';
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
-      this.attachments = data.attachments;
+      this.attachments = data.attachments || [];
 
       this.buildRentalDates();
 
@@ -909,16 +909,16 @@ export class Project {
       return this.buildDefaultAdjustments();
     }
     if (
-      this.adjustments.equipment.active &&
-      !this.adjustments.equipment.active.operating
+      this.adjustments.equipmentActive &&
+      !this.adjustments.equipmentActive.operating
     ) {
-      this.adjustments.equipment.active.operating = 100;
+      this.adjustments.equipmentActive.operating = 100;
     }
     if (
-      this.adjustments.equipment.active &&
-      !this.adjustments.equipment.active.ownership
+      this.adjustments.equipmentActive &&
+      !this.adjustments.equipmentActive.ownership
     ) {
-      this.adjustments.equipment.active.ownership = 100;
+      this.adjustments.equipmentActive.ownership = 100;
     }
 
     if (
@@ -950,32 +950,32 @@ export class Project {
     }
     if (
       this.adjustments.equipment &&
-      this.adjustments.equipment.active &&
-      this.adjustments.equipment.active.markup &&
-      Number(this.adjustments.equipment.active.markup) < 1
+      this.adjustments.equipmentActive &&
+      this.adjustments.equipmentActive.markup &&
+      Number(this.adjustments.equipmentActive.markup) < 1
     ) {
-      this.adjustments.equipment.active.markup = +Number(
-        this.adjustments.equipment.active.markupPercent * 100
+      this.adjustments.equipmentActive.markup = +Number(
+        this.adjustments.equipmentActive.markupPercent * 100
       ).toFixed(0);
     }
     if (
       this.adjustments.equipment &&
-      this.adjustments.equipment.standby &&
-      this.adjustments.equipment.standby.markup &&
-      Number(this.adjustments.equipment.standby.markup) < 1
+      this.adjustments.equipmentStandby &&
+      this.adjustments.equipmentStandby.markup &&
+      Number(this.adjustments.equipmentStandby.markup) < 1
     ) {
-      this.adjustments.equipment.standby.markup = +Number(
-        this.adjustments.equipment.standby.markupPercent * 100
+      this.adjustments.equipmentStandby.markup = +Number(
+        this.adjustments.equipmentStandby.markupPercent * 100
       ).toFixed(0);
     }
     if (
       this.adjustments.equipment &&
-      this.adjustments.equipment.rental &&
-      this.adjustments.equipment.rental.markup &&
-      Number(this.adjustments.equipment.rental.markup) < 1
+      this.adjustments.equipmentRental &&
+      this.adjustments.equipmentRental.markup &&
+      Number(this.adjustments.equipmentRental.markup) < 1
     ) {
-      this.adjustments.equipment.rental.markup = +Number(
-        this.adjustments.equipment.rental.markupPercent * 100
+      this.adjustments.equipmentRental.markup = +Number(
+        this.adjustments.equipmentRental.markupPercent * 100
       ).toFixed(0);
     }
     if (
@@ -990,32 +990,32 @@ export class Project {
   }
 
   buildMarkup() {
-    if (this.adjustments.equipment.active) {
-      this.adjustments.equipment.active.markup = +Number(
-        this.adjustments.equipment.active.markupPercent * 100
+    if (this.adjustments.equipmentActive) {
+      this.adjustments.equipmentActive.markup = +Number(
+        this.adjustments.equipmentActive.markupPercent * 100
       ).toFixed(0);
-      this.adjustments.equipment.active.operating =
-        100 * +this.adjustments.equipment.active.operatingPercent;
-      this.adjustments.equipment.active.ownership =
-        100 * +this.adjustments.equipment.active.ownershipPercent;
+      this.adjustments.equipmentActive.operating =
+        100 * +this.adjustments.equipmentActive.operatingPercent;
+      this.adjustments.equipmentActive.ownership =
+        100 * +this.adjustments.equipmentActive.ownershipPercent;
     }
-    if (this.adjustments.equipment.standby) {
-      this.adjustments.equipment.standby.markup = +Number(
-        this.adjustments.equipment.standby.markupPercent * 100
+    if (this.adjustments.equipmentStandby) {
+      this.adjustments.equipmentStandby.markup = +Number(
+        this.adjustments.equipmentStandby.markupPercent * 100
       ).toFixed(0);
-      if (this.adjustments.equipment.standby.operatingPercent) {
-        this.adjustments.equipment.standby.operating =
-          100 * +this.adjustments.equipment.standby.operatingPercent;
+      if (this.adjustments.equipmentStandby.operatingPercent) {
+        this.adjustments.equipmentStandby.operating =
+          100 * +this.adjustments.equipmentStandby.operatingPercent;
       }
-      if (this.adjustments.equipment.standby.ownershipPercent) {
-        this.adjustments.equipment.standby.ownership = +Number(
-          100 * +this.adjustments.equipment.standby.ownershipPercent
+      if (this.adjustments.equipmentStandby.ownershipPercent) {
+        this.adjustments.equipmentStandby.ownership = +Number(
+          100 * +this.adjustments.equipmentStandby.ownershipPercent
         ).toFixed(0);
       }
     }
-    if (this.adjustments.equipment.rental) {
-      this.adjustments.equipment.rental.markup = +Number(
-        100 * +this.adjustments.equipment.rental.markupPercent
+    if (this.adjustments.equipmentRental) {
+      this.adjustments.equipmentRental.markup = +Number(
+        100 * +this.adjustments.equipmentRental.markupPercent
       ).toFixed(0);
     }
     if (this.adjustments.labor) {
@@ -1043,15 +1043,15 @@ export class Project {
   buildCostEnabled(p: any) {
     if (
       p.adjustments &&
-      !p.adjustments.equipment.active.hasOwnProperty('enabled') &&
+      !p.adjustments.equipmentActive.hasOwnProperty('enabled') &&
       p.hasOwnProperty('equipmentCostsEnabled') &&
       (p.equipmentCostsEnabled ||
         p.equipmentCostsEnabled === null ||
         p.equipmentCostsEnabled === 'null')
     ) {
-      this.adjustments.equipment.active.enabled = true;
-      this.adjustments.equipment.rental.enabled = true;
-      this.adjustments.equipment.standby.enabled = true;
+      this.adjustments.equipmentActive.enabled = true;
+      this.adjustments.equipmentRental.enabled = true;
+      this.adjustments.equipmentStandby.enabled = true;
     }
     if (
       p.adjustments &&
@@ -1089,30 +1089,28 @@ export class Project {
 
   buildDefaultAdjustments() {
     return {
-      equipment: {
-        active: {
-          enabled: true,
-          regionalAdjustmentsEnabled: true,
-          operating: 100,
-          ownership: 100,
-          markup: 10,
-          operatingPercent: 1,
-          ownershipPercent: 1,
-          markupPerect: 0.1
-        },
-        standby: {
-          enabled: true,
-          regionalAdjustmentsEnabled: true,
-          markup: 10,
-          markupPerect: 0.1
-        },
-        rental: { enabled: true, markup: 10, markupPerect: 0.1 }
+      equipmentActive: {
+        enabled: true,
+        regionalAdjustmentsEnabled: true,
+        operating: 100,
+        ownership: 100,
+        markup: 10,
+        operatingPercent: 1,
+        ownershipPercent: 1,
+        markupPercent: 0.1
       },
+      equipmentStandby: {
+        enabled: true,
+        regionalAdjustmentsEnabled: true,
+        markup: 10,
+        markupPercent: 0.1
+      },
+      equipmentRental: { enabled: true, markup: 10, markupPercent: 0.1 },
 
-      labor: { markup: 10, markupPerect: 0.1, enabled: true },
-      material: { markup: 10, markupPerect: 0.1, enabled: true },
-      other: { markup: 10, markupPerect: 0.1, enabled: true },
-      subcontractor: { markup: 10, markupPerect: 0.1, enabled: true }
+      labor: { markup: 10, markupPercent: 0.1, enabled: true },
+      material: { markup: 10, markupPercent: 0.1, enabled: true },
+      other: { markup: 10, markupPercent: 0.1, enabled: true },
+      subcontractor: { markup: 10, markupPercent: 0.1, enabled: true }
     };
   }
 
@@ -1120,6 +1118,15 @@ export class Project {
     {
       this.id = project.id || '';
       this.meta = project.meta || {};
+      if (!project.meta) {
+        project.meta = {
+          name: '',
+          paymentTerms: 45,
+          description: '',
+          state: 'GA',
+          zipcode: 30332
+        };
+      }
       this.requestStats = project.requestStats || {};
       if (!this.requestStats.pendingMaxAge) {
         this.requestStats.pendingMaxAge = 0;
@@ -1170,8 +1177,8 @@ export class Project {
         };
       }
 
-      if (!this.adjustments.equipment.rental) {
-        this.adjustments.equipment.rental = {
+      if (!this.adjustments.equipmentRental) {
+        this.adjustments.equipmentRental = {
           enabled: true,
           markup: 10,
           markupPerect: 0.1
@@ -1469,7 +1476,7 @@ export class Equipment {
 
   buildRates(duration: number = 1) {
     if (
-      this.type === 'equipment.rental' &&
+      this.type === 'equipmentRental' &&
       this.nationalAverages &&
       this.nationalAverages.length > 0
     ) {
@@ -1493,13 +1500,13 @@ export class Utils {
   static getItemDisplayType(itemType) {
     itemType = itemType.toLowerCase();
     switch (itemType) {
-      case 'equipment.active': {
+      case 'equipmentactive': {
         return 'Equipment|Active';
       }
-      case 'equipment.standby': {
+      case 'equipmentstandby': {
         return 'Equipment|Standby';
       }
-      case 'equipment.rental': {
+      case 'equipmentrental': {
         return 'Equipment|Rental';
       }
       case 'material': {
@@ -1533,20 +1540,20 @@ export class ItemList {
       this.sortOrder = 6;
     }
     if (
-      this.type.toLowerCase() === 'equipment.active' ||
-      this.type.toLowerCase() === 'active'
+      this.type.toLowerCase() === 'equipmentActive' ||
+      this.type.toLowerCase() === 'equipmentactive'
     ) {
       this.displayType = 'Equipment|Active';
       this.sortOrder = 1;
     } else if (
-      this.type.toLowerCase() === 'equipment.standby' ||
-      this.type.toLowerCase() === 'standby'
+      this.type.toLowerCase() === 'equipmentStandby' ||
+      this.type.toLowerCase() === 'equipmentstandby'
     ) {
       this.displayType = 'Equipment|Standby';
       this.sortOrder = 2;
     } else if (
-      this.type.toLowerCase() === 'equipment.rental' ||
-      this.type.toLowerCase() === 'rental'
+      this.type.toLowerCase() === 'equipmentRental' ||
+      this.type.toLowerCase() === 'equipmentrental'
     ) {
       this.displayType = 'Equipment|Rental';
       this.sortOrder = 3;
@@ -1752,11 +1759,11 @@ export class Request {
       for (let j = 0; j < items.length; j++) {
         const currentItem: Item = items[j];
 
-        if (currentItem.type === 'equipment.rental') {
+        if (currentItem.type === 'equipmentRental') {
           // rentalTotal += Number(lt);
-        } else if (currentItem.type === 'equipment.active') {
+        } else if (currentItem.type === 'equipmentActive') {
           //  activeTotal += Number(lt);
-        } else if (currentItem.type === 'equipment.standby') {
+        } else if (currentItem.type === 'equipmentStandby') {
           //  standbyTotal += Number(lt);
         } else if (currentItem.type === 'other') {
           // otherSubtotal += Number(lt);
@@ -1784,15 +1791,15 @@ export class Request {
       this.project.adjustments.equipment
     ) {
       this.activeMarkup =
-        +this.project.adjustments.equipment.active.markupPercent *
+        +this.project.adjustments.equipmentActive.markupPercent *
         +this.equipmentActiveSubtotal;
 
       this.standbyMarkup =
-        +this.project.adjustments.equipment.standby.markup *
+        +this.project.adjustments.equipmentStandby.markup *
         +this.equipmentStandbySubtotal;
 
       this.rentalMarkup =
-        +this.project.adjustments.equipment.rental.markupPercent *
+        +this.project.adjustments.equipmentRental.markupPercent *
         +this.equipmentRentalSubtotal;
     }
     this.equipmentTotal =
@@ -1907,13 +1914,13 @@ export class Request {
     } else {
       if (this.project && this.project.adjustments) {
         this.activeMarkup =
-          +this.project.adjustments.equipment.active.markupPercent *
+          +this.project.adjustments.equipmentActive.markupPercent *
           +this.equipmentActiveSubtotal;
         this.standbyMarkup =
-          +this.project.adjustments.equipment.standby.markupPercent *
+          +this.project.adjustments.equipmentStandby.markupPercent *
           +this.equipmentStandbySubtotal;
         this.rentalMarkup =
-          +this.project.adjustments.equipment.rental.markupPercent *
+          +this.project.adjustments.equipmentRental.markupPercent *
           +this.equipmentRentalSubtotal;
       }
 
@@ -1957,7 +1964,7 @@ export class Request {
         this.project.adjustments.material
       ) {
         this.materialMarkup =
-          +this.project.adjustments.equipment.material.markupPercent *
+          +this.project.adjustments.material.markupPercent *
           +this.materialSubtotal;
       }
       if (

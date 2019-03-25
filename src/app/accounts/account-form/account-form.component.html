@@ -1,53 +1,30 @@
 <div class="full-height no-top-margin full-width">
-  <div
-    class="row full-height no-row-margins no-row-padding full-width justify-content-center align-items-center"
-  >
-    <form
-      class="full-width no-top-padding no-top-margin"
-      [formGroup]="accountForm"
-      novalidate
-    >
+  <div class="row full-height no-row-margins no-row-padding full-width justify-content-center align-items-center">
+    <form class="full-width no-top-padding no-top-margin" [formGroup]="accountForm" novalidate>
       <div mat-dialog-title class="login-box full-width no-border header-bg">
         <div class="px-2 pt-2 form-bg">
           <h3 class="pb-1 no-top-margin">ADD ADMIN ACCOUNT</h3>
           <div class="full-width pt-2">
             <mat-form-field class="full-width">
-              <input
-                matInput
-                placeholder="Accout Name"
-                type="text"
-                formControlName="accountName"
-                required
-              />
-              <mat-error
-                *ngIf="accountForm.get('accountName').hasError('required')"
-              >
+              <input matInput placeholder="Accout Name" type="text" formControlName="accountName" required />
+              <mat-error *ngIf="accountForm.get('accountName').hasError('required')">
                 Account Name is <strong>required</strong>
               </mat-error>
             </mat-form-field>
           </div>
           <div class="full-width pt-1">
-            <app-account-user-list [newAccount]="true"></app-account-user-list>
+            <app-account-user-list [users]="account.users" [newAccount]="true"></app-account-user-list>
           </div>
 
           <br />
 
           <div class="footer d-flex row justify-content-center pb-2">
-            <button
-              class="btn btn-warning ripple login-btn"
-              (click)="cancelAccount()"
-            >
+            <button class="btn btn-warning ripple login-btn" (click)="cancelAccount()">
               <span>Cancel</span>
             </button>
-            <button
-              class="btn btn-primary ripple btn-dark login-btn"
-              (click)="createAccount()"
-              [disabled]="accountForm.invalid || isLoading"
-            >
-              <app-loader
-                class="inline-loader"
-                [isLoading]="isLoading"
-              ></app-loader>
+            <button class="btn btn-primary ripple btn-dark login-btn" (click)="createAccount()"
+              [disabled]="accountForm.invalid || isLoading">
+              <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
               <span>Add Account</span>
             </button>
           </div>

@@ -6,7 +6,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
@@ -92,7 +92,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            'Could not load requestor\'s saved models for this project' + error
+            "Could not load requestor's saved models for this project" + error
           );
         }
       );
@@ -139,8 +139,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             .getConfiguration(response.modelId)
             .subscribe((configurations: any) => {
               this.configurations = configurations;
-              if (configurations && configurations.values.length === 1) {
-                this.selected = configurations.values[0];
+              if (configurations && configurations.count === 1) {
+                this.selected = configurations.results[0];
               } else {
                 this.showConfigurations = true;
               }
@@ -189,11 +189,11 @@ export class EquipmentComponent implements OnInit, OnDestroy {
           updatedItem.details.id = item.details.id;
           updatedItem.details.vin = item.details.vin;
           updatedItem.details.configurations = configurations;
-          if (configurations && configurations.values.length === 1) {
+          if (configurations && configurations.count === 1) {
             updatedItem.details.selectedConfiguration =
-              configurations.values[0];
+              configurations.results[0];
             updatedItem.calculateHourlyRates();
-          } else if (configurations && configurations.values.length > 1) {
+          } else if (configurations && configurations.count > 1) {
             this.selectedItem = updatedItem;
             this.selectedIndex = event.index;
           } else {
@@ -261,7 +261,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
 
   yearSelectionChanged(item: Equipment, index: number) {
     if (!item.year || item.year === '') {
-      item.details.fhwa = 0;
+      item.details.rate = 0;
       item.resetSelectedConfiguration();
       return;
     }
@@ -269,29 +269,28 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     this.equipmentService
       .getConfiguration(item.modelId, item.year)
       .subscribe((configurations: any) => {
-        if (configurations && configurations.values.length > 1) {
+        if (configurations && configurations.count > 1) {
           this.selectedItem = item;
           this.selectedIndex = index;
           this.selectedItem.details.configurations = configurations;
           this.selectConfiguration(configurations);
-        } else if (configurations && configurations.values.length === 1) {
-          const sc = configurations.values[0];
+        } else if (configurations && configurations.count === 1) {
+          const sc = configurations.results[0];
 
           this.equipmentService
             .getRateDataForConfig(
-              sc.configurationId,
+              sc.modelId,
+              sc.configurationSequence,
               item.year,
               this.state,
               '',
-              +(this.adjustments.equipment.active.operating / 100),
-              +(this.adjustments.equipment.active.ownership / 100),
+              +this.adjustments.equipmentActive.operatingPercent,
+              +this.adjustments.equipmentActive.ownershipPercent,
               this.standbyFactor
             )
             .subscribe((data: any) => {
               sc.rates = data;
-              if (
-                this.adjustments.equipment.active.regionalAdjustmentsEnabled
-              ) {
+              if (this.adjustments.equipmentActive.regionalAdjustmentsEnabled) {
                 sc.rates.fhwa = +Number(
                   +sc.rates.monthlyOwnershipCostAdjustedRate +
                     +sc.rates.hourlyOperatingCostAdjusted
@@ -355,19 +354,18 @@ export class EquipmentComponent implements OnInit, OnDestroy {
           const sc = result.configuration;
           this.equipmentService
             .getRateDataForConfig(
-              sc.configurationId,
+              sc.modelId,
+              sc.configurationSequence,
               this.selectedItem.year,
               this.state,
               '',
-              +(this.adjustments.equipment.active.operating / 100),
-              +(this.adjustments.equipment.active.ownership / 100),
+              +this.adjustments.equipmentActive.operatingPercent,
+              +this.adjustments.equipmentActive.ownershipPercent,
               this.standbyFactor
             )
             .subscribe((data: any) => {
               sc.rates = data;
-              if (
-                this.adjustments.equipment.active.regionalAdjustmentsEnabled
-              ) {
+              if (this.adjustments.equipmentActive.regionalAdjustmentsEnabled) {
                 sc.rates.fhwa = +Number(
                   +sc.rates.monthlyOwnershipCostAdjustedRate +
                     +sc.rates.hourlyOperatingCostAdjusted

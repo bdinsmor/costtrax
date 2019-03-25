@@ -1,33 +1,24 @@
 <div class="full-width px-1">
   <clr-datagrid>
     <clr-dg-placeholder>Loading Accounts...</clr-dg-placeholder>
-    <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'"
-      >Account</clr-dg-column
-    >
-    <clr-dg-column [clrDgField]="'email'" [clrDgSortBy]="'name'"
-      >Email</clr-dg-column
-    >
-    <clr-dg-column style="width:60px">Actions</clr-dg-column>
-    <clr-dg-row
-      class="pointer"
-      *clrDgItems="let item of accounts; let i = index"
-    >
+    <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'">Account</clr-dg-column>
+    <clr-dg-column [clrDgField]="'email'" [clrDgSortBy]="'name'">Email</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
+    <clr-dg-row class="pointer" matTooltip="Click to view/edit users and their roles"
+      *clrDgItems="let item of accounts; let i = index">
       <clr-dg-cell (click)="viewAccount(item)">{{
-        item.organization
-      }}</clr-dg-cell>
-      <clr-dg-cell (click)="viewAccount(item)"
-        ><div *ngFor="let admin of item.admins">
+          item.organization
+        }}</clr-dg-cell>
+      <clr-dg-cell (click)="viewAccount(item)">
+        <div *ngFor="let admin of item.users">
           {{ admin.email }}
-        </div></clr-dg-cell
-      >
+        </div>
+
+      </clr-dg-cell>
       <clr-dg-cell>
         <div class="row justify-content-end" style="width:60px">
-          <button
-            class="ripple icon-button icon-30 pr-1"
-            matTooltip="Remove"
-            [disabled]="true"
-            (click)="removeAccount(item)"
-          >
+          <button class="ripple icon-button icon-30 pr-1" matTooltip="Remove" [disabled]="true"
+            (click)="removeAccount(item)">
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>

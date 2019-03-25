@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { UploadFile } from 'ng-zorro-antd';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { DateTime } from 'luxon';
 
 import { environment } from '../../environments/environment';
 import { Account, Item, Project, Request } from '../shared/model';
@@ -55,9 +56,13 @@ export class RequestsService {
     );
   }
 
-  deleteAttachment(attachmentId: string) {
+  deleteAttachment(requestId: string, attachmentId: string) {
     return this.http.delete(
-      environment.serverUrl + '/attachment/' + attachmentId
+      environment.serverUrl +
+        '/request/' +
+        requestId +
+        'attachment/' +
+        attachmentId
     );
   }
 
@@ -145,6 +150,8 @@ export class RequestsService {
   }
 
   grabRequestId(projectId: string, startDate: string, endDate: string) {
+    startDate = DateTime.fromJSDate(new Date(startDate)).toLocaleString();
+    endDate = DateTime.fromJSDate(new Date(endDate)).toLocaleString();
     return this.http.post(environment.serverUrl + '/request', {
       projectId: projectId,
       startDate: startDate,
@@ -180,30 +187,6 @@ export class RequestsService {
       );
   }
 
-  patchLineItems(lineItems: any) {
-    let promises: Promise<any>;
-    promises = Promise.all(
-      lineItems.map(async (lineItem: any) =>
-        this.http
-          .patch(environment.serverUrl + '/lineitem/' + lineItem.id, lineItem)
-          .toPromise()
-      )
-    );
-    return promises;
-  }
-
-  saveLineItems(lineItems: any) {
-    let promises: Promise<any>;
-    promises = Promise.all(
-      lineItems.map(async (lineItem: any) =>
-        this.http
-          .post(environment.serverUrl + '/lineitem', lineItem)
-          .toPromise()
-      )
-    );
-    return promises;
-  }
-
   submitRequest(requestId: string, requestNotes: string, eSig: string) {
     return this.http.put(
       environment.serverUrl + '/request/' + requestId + '/submit',
@@ -214,64 +197,10 @@ export class RequestsService {
     );
   }
 
-  getLineItem(id: string) {
-    return this.http.get(environment.serverUrl + '/lineitem/' + id);
-  }
-
-  deleteLineItem(lineItemId: string) {
-    return this.http.delete(environment.serverUrl + '/lineitem/' + lineItemId);
-  }
-
-  updateLineItem(item: Item) {
-    return this.http.patch(
-      environment.serverUrl + '/lineitem/' + item.id,
-      item
-    );
-  }
-
   approve(requestId: string) {
     return this.http.put(
       environment.serverUrl + '/request/' + requestId + '/approve',
       {}
-    );
-  }
-
-  approveLineItemAsIs(lineItem: Item) {
-    return this.http.put(
-      environment.serverUrl + '/lineitem/' + lineItem.id + '/approve-as-is',
-      {}
-    );
-  }
-
-  approveLineItemsAsIs(lineItems: Item[]) {
-    let promises: Promise<any>;
-    promises = Promise.all(
-      lineItems.map(async (lineItem: any) =>
-        this.http
-          .put(
-            environment.serverUrl +
-              '/lineitem/' +
-              lineItem.id +
-              '/approve-as-is',
-            {}
-          )
-          .toPromise()
-      )
-    );
-    return promises;
-  }
-
-  approveLineItemWithChanges(lineItem: Item) {
-    const data = {
-      amountApproved: lineItem.totalAdjusted,
-      changeReason: lineItem.changeReason
-    };
-    return this.http.put(
-      environment.serverUrl +
-        '/lineitem/' +
-        lineItem.id +
-        '/approve-with-change',
-      data
     );
   }
 }

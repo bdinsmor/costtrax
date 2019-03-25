@@ -4,31 +4,16 @@
     <div *ngIf="!projectId || projectId === ''" class="pb-2">
       <h4 class="no-top-margin pb-1">Select Project:</h4>
       <div>
-        <ng-select
-          required
-          [items]="projects"
-          bindValue="id"
-          bindLabel="meta.name"
-          placeholder="Choose Project"
-          clearAllText="Clear"
-          [closeOnSelect]="true"
-          [hideSelected]="true"
-          appendTo="body"
-          cdkInitialFocus
-          formControlName="selectedProjectControl"
-        >
+        <ng-select required [items]="projects" bindValue="id" bindLabel="meta.name" placeholder="Choose Project"
+          clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body" cdkInitialFocus
+          formControlName="selectedProjectControl">
         </ng-select>
       </div>
     </div>
     <div class="full-width">
       <h4 class="no-top-margin pb-1">Request Dates:</h4>
-      <input
-        class="date-range-picker form-control full-width"
-        bsDaterangepicker
-        [bsConfig]="bsConfig"
-        placement="right"
-        formControlName="dateRange"
-      />
+      <input class="date-range-picker form-control full-width" bsDaterangepicker [bsConfig]="bsConfig" placement="right"
+        formControlName="dateRange" />
     </div>
   </div>
 </mat-dialog-content>
@@ -36,12 +21,7 @@
   <button class="btn btn-warning-outline" type="button" (click)="cancel()">
     Cancel
   </button>
-  <button
-    class="btn btn-primary"
-    type="button"
-    [disabled]="!projectForm.valid"
-    (click)="confirm()"
-  >
+  <button class="btn btn-primary" type="button" [disabled]="!projectForm.valid" (click)="confirm()">
     Ok
   </button>
 </mat-dialog-actions>

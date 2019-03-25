@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { appAnimations } from 'src/app/core/animations';
@@ -53,6 +61,7 @@ export class AccountUserListComponent implements OnInit {
       if (result && result.success) {
         this.users.push(result.user);
         if (!this.newAccount) {
+          console.log('not new account...');
           this.changed.emit({});
         } else {
           this.changeDetector.detectChanges();

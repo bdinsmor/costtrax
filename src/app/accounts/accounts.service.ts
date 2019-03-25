@@ -16,13 +16,15 @@ export class AccountService {
   create(account: Account): Observable<any> {
     const pb = {
       organization: account.accountName,
-      users: [{ email: account.email }]
+      accountAdmins: account.users.map((user: any) => {
+        return user.email;
+      })
     };
     return this.http.post(environment.serverUrl + '/account', pb);
   }
 
   archive(accountId: string) {
-    return this.http.put(environment.serverUrl + '/account/' + accountId, {
+    return this.http.post(environment.serverUrl + '/account/' + accountId, {
       active: false
     });
   }
@@ -40,12 +42,14 @@ export class AccountService {
   update(account: Account) {
     const admins = [];
     account.users.forEach((u: User) => {
-      admins.push(u.email);
+      admins.push({ email: u.email, roles: u.roles });
     });
-    return this.http.put(environment.serverUrl + '/account/' + account.id, {
-      accountName: account.accountName,
-      accountAdmins: admins
-    });
+    return this.http.post(
+      environment.serverUrl + '/account/' + account.id + '/users',
+      {
+        users: admins
+      }
+    );
   }
 
   getAdminAccounts(): Observable<Account[]> {

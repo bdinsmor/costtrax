@@ -39,6 +39,7 @@ export class TokenInterceptor implements HttpInterceptor {
       this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (!request.url.includes(environment.attachmentURL)) {
+      // console.log("token:\n\n " + token);
       headerSettings['Authorization'] = 'Bearer ' + token;
       headerSettings['Cache-Control'] = 'no-cache';
       headerSettings['Pragma'] = 'no-cache';

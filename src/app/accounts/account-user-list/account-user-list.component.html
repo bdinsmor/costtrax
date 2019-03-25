@@ -5,20 +5,15 @@
     </h5>
   </section>
 
-  <button
-    type="button"
-    class="btn btn-sm btn-primary mt-1"
-    (click)="addAccountAdmin()"
-  >
+  <button type="button" class="btn btn-sm btn-primary mt-1" (click)="addAccountAdmin()">
     Add Account Admin
   </button>
   <section class="full-width d-flex flex-row align-items-center">
-    <div class="row no-margin-left font-italic small-text">
-      <i class="material-icons md-20 md-dark"> info </i>&nbsp;Added Admins will
-      be sent an email invitation to begin creating projects.
+    <div class="row no-margin-left font-italic small-text align-items-center">
+      <i class="material-icons md-20 md-dark"> info </i>&nbsp;Admins will
+      receive an email invitation.
     </div>
   </section>
-
   <div class="full-width mb-1">
     <clr-datagrid>
       <clr-dg-column>Email</clr-dg-column>
@@ -27,11 +22,13 @@
 
       <clr-dg-row *ngFor="let user of users; let i = index">
         <clr-dg-cell>
-          <div class="padding-label-top">{{ user.email }}</div>
+          <div *ngIf="newAccount" [matTooltip]="user.email" class="padding-label-top">{{ user.email | truncate: 30 }}
+          </div>
+          <div *ngIf="!newAccount" class="padding-label-top">{{ user.email}}</div>
         </clr-dg-cell>
         <clr-dg-cell>
           <div class="padding-label-top" *ngIf="user.roles">
-            <mat-chip-list selectable="true">
+            <mat-chip-list selectable="false">
               <mat-chip *ngFor="let role of user.roles">{{
                 role | rolePrint
               }}</mat-chip>
@@ -39,16 +36,10 @@
           </div>
         </clr-dg-cell>
         <clr-dg-cell>
-          <div class="row justify-content-end">
-            <button
-              *ngIf="!user.expanded"
-              class="ripple icon-30 icon-button mr-1"
-              matTooltip="Remove"
-              (click)="removeUser(i, user)"
-            >
-              <mat-icon color="warn">delete</mat-icon>
-            </button>
-          </div>
+          <button *ngIf="!user.expanded" class="ripple icon-30 icon-button" matTooltip="Remove"
+            (click)="removeUser(i, user)">
+            <mat-icon color="warn">delete</mat-icon>
+          </button>
         </clr-dg-cell>
       </clr-dg-row>
 

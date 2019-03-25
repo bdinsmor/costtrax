@@ -8,9 +8,14 @@ import {
   Component,
   NgZone,
   OnDestroy,
-  OnInit,
+  OnInit
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +29,13 @@ import { AuthenticationService } from '../../core/authentication/authentication.
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { EquipmentService } from '../../equipment/equipment.service';
 import { ProjectsService } from '../../projects/projects.service';
-import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
+import {
+  Equipment,
+  Item,
+  ItemList,
+  Project,
+  Request
+} from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestsService } from '../requests.service';
@@ -379,31 +390,31 @@ export class RequestDetailsComponent
         { value: 'labor', label: 'Labor', sortOrder: 0 }
       ];
     }
-    if (this.project.adjustments.equipment.active.enabled) {
+    if (this.project.adjustments.equipmentActive.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
-          value: 'equipment.active',
+          value: 'equipmentActive',
           label: 'Equipment|Active',
           sortOrder: 1
         }
       ];
     }
-    if (this.project.adjustments.equipment.standby.enabled) {
+    if (this.project.adjustments.equipmentStandby.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
-          value: 'equipment.standby',
+          value: 'equipmentStandby',
           label: 'Equipment|Standby',
           sortOrder: 2
         }
       ];
     }
-    if (this.project.adjustments.equipment.rental.enabled) {
+    if (this.project.adjustments.equipmentRental.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
-          value: 'equipment.rental',
+          value: 'equipmentRental',
           label: 'Equipment|Rental',
           sortOrder: 3
         }
@@ -499,44 +510,5 @@ export class RequestDetailsComponent
         this.changeDetector.detectChanges();
       }
     });
-  }
-
-  approveAll(event: any) {
-    this.selectedItems = [];
-
-    this.selectedItemType = event.itemType;
-    for (let i = 0; i < this.request.itemsByType.length; i++) {
-      const lit: ItemList = this.request.itemsByType[i];
-
-      if (lit.type === event.itemType) {
-        this.selectedItems = lit.items;
-        break;
-      }
-    }
-    if (this.selectedItems && this.selectedItems.length > 0) {
-      const dialogRef = this.dialog.open(RequestApproveDialogComponent, {
-        data: {
-          approveAll: true
-        }
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result && result.success) {
-          this.requestsService
-            .approveLineItemsAsIs(this.selectedItems)
-            .then((response: any) => {
-              this.openSnackBar(
-                this.selectedItems.length + ' Line Items Approved',
-                'ok',
-                'OK'
-              );
-              this.refreshRequest();
-            })
-            .catch((error: any) => {
-              this.openSnackBar('Line Items Were NOT approved', 'error', 'OK');
-            });
-          this.changeDetector.detectChanges();
-        }
-      });
-    }
   }
 }

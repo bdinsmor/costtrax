@@ -266,26 +266,26 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     /*
     activeFormula: new FormControl('FHWA'),
       activeMarkup: new FormControl(
-        this.project.adjustments.equipment.active.markup
+        this.project.adjustments.equipmentActive.markup
       ),
       standbyFormula: new FormControl('50OWNER'),
       standbyMarkup: new FormControl(
-        this.project.adjustments.equipment.standby.markup
+        this.project.adjustments.equipmentStandby.markup
       ),
       activeRegionalCheck: new FormControl(
-        this.project.adjustments.equipment.active.regionalAdjustmentsEnabled
+        this.project.adjustments.equipmentActive.regionalAdjustmentsEnabled
       ),
       standbyRegionalCheck: new FormControl(
-        this.project.adjustments.equipment.standby.regionalAdjustmentsEnabled
+        this.project.adjustments.equipmentStandby.regionalAdjustmentsEnabled
       ),
       rentalMarkup: new FormControl(
-        this.project.adjustments.equipment.rental.markup
+        this.project.adjustments.equipmentRental.markup
       ),
       activeOwnershipCost: new FormControl(
-        this.project.adjustments.equipment.active.ownership
+        this.project.adjustments.equipmentActive.ownership
       ),
       activeOperatingCost: new FormControl(
-        this.project.adjustments.equipment.active.operating
+        this.project.adjustments.equipmentActive.operating
       ),
       laborMarkup: new FormControl(this.project.adjustments.labor.markup),
       subcontractorMarkup: new FormControl(
@@ -395,26 +395,26 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       projectInstructions: new FormControl(this.project.description),
       activeFormula: new FormControl('FHWA'),
       activeMarkup: new FormControl(
-        this.project.adjustments.equipment.active.markup
+        this.project.adjustments.equipmentActive.markup
       ),
       standbyFormula: new FormControl('50OWNER'),
       standbyMarkup: new FormControl(
-        this.project.adjustments.equipment.standby.markup
+        this.project.adjustments.equipmentStandby.markup
       ),
       activeRegionalCheck: new FormControl(
-        this.project.adjustments.equipment.active.regionalAdjustmentsEnabled
+        this.project.adjustments.equipmentActive.regionalAdjustmentsEnabled
       ),
       standbyRegionalCheck: new FormControl(
-        this.project.adjustments.equipment.standby.regionalAdjustmentsEnabled
+        this.project.adjustments.equipmentStandby.regionalAdjustmentsEnabled
       ),
       rentalMarkup: new FormControl(
-        this.project.adjustments.equipment.rental.markup
+        this.project.adjustments.equipmentRental.markup
       ),
       activeOwnershipCost: new FormControl(
-        this.project.adjustments.equipment.active.ownership
+        this.project.adjustments.equipmentActive.ownership
       ),
       activeOperatingCost: new FormControl(
-        this.project.adjustments.equipment.active.operating
+        this.project.adjustments.equipmentActive.operating
       ),
       laborMarkup: new FormControl(this.project.adjustments.labor.markup),
       subcontractorMarkup: new FormControl(
@@ -423,13 +423,13 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       materialMarkup: new FormControl(this.project.adjustments.material.markup),
       otherMarkup: new FormControl(this.project.adjustments.other.markup),
       activeCheck: new FormControl(
-        this.project.adjustments.equipment.active.enabled
+        this.project.adjustments.equipmentActive.enabled
       ),
       standbyCheck: new FormControl(
-        this.project.adjustments.equipment.standby.enabled
+        this.project.adjustments.equipmentStandby.enabled
       ),
       rentalCheck: new FormControl(
-        this.project.adjustments.equipment.rental.enabled
+        this.project.adjustments.equipmentRental.enabled
       ),
       laborCheck: new FormControl(this.project.adjustments.labor.enabled),
       materialCheck: new FormControl(this.project.adjustments.material.enabled),

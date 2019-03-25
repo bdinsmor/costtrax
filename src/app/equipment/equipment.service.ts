@@ -141,7 +141,8 @@ export class EquipmentService implements OnDestroy {
     items.forEach((e: Item) => {
       returns.push(
         this.getRateDataForConfig(
-          e.details.selectedConfiguration.configurationId,
+          e.details.selectedConfiguration.modelId,
+          e.details.selectedConfiguration.configurationSequence,
           e.details.year,
           state,
           date,
@@ -180,7 +181,7 @@ export class EquipmentService implements OnDestroy {
     const url: string =
       environment.serverUrl +
       '/equipment/cost-recovery/' +
-      equipment.details.selectedConfiguration.configurationId;
+      equipment.details.selectedConfiguration.configurationSequence;
 
     const options = { params: params };
 
@@ -193,7 +194,8 @@ export class EquipmentService implements OnDestroy {
   }
 
   getRateDataForConfig(
-    configId: string,
+    modelId: string,
+    configurationSequence: string,
     year: string = '',
     state: string = '',
     date: string = '',
@@ -201,13 +203,14 @@ export class EquipmentService implements OnDestroy {
     ownershipAdjustment: number = 1,
     standbyFactor: number = 0.5
   ): Observable<any> {
-    if (!configId || configId === '') {
+    if (!configurationSequence || configurationSequence === '') {
       return of({});
     }
     let params = new HttpParams();
     if (!date || date === '') {
       date = new Date().toUTCString();
     }
+    console.log('configurationSequence: ' + configurationSequence);
     params = params.set('date', format(date, 'YYYY-MM-DD'));
     if (year && (year !== '' || year !== undefined)) {
       params = params.set('year', String(year));
@@ -215,12 +218,13 @@ export class EquipmentService implements OnDestroy {
     if (state && state !== '') {
       params = params.set('state', state);
     }
+    params = params.set('modelId', String(modelId));
     params = params.set('operatingAdjustment', String(operatingAdjustment));
     params = params.set('ownershipAdjustment', String(ownershipAdjustment));
     params = params.set('standbyFactor', String(standbyFactor));
+    params = params.set('configurationSequence', String(configurationSequence));
 
-    const url: string =
-      environment.serverUrl + '/equipment/cost-recovery/' + configId;
+    const url: string = environment.serverUrl + '/equipment/cost-recovery';
     const options = { params: params };
     return this.http.get(url, options);
   }
@@ -244,14 +248,13 @@ export class EquipmentService implements OnDestroy {
           res === 'Query not covered at this time' ||
           res === 'Query not covered by EquipmentWatch at this time'
         ) {
-          return { columns: [], values: [] };
+          return { count: 0, results: [] };
         }
-
         const specColumns = {};
         let cols = [];
-        for (let i = 0; i < res.length; i++) {
-          const specs = res[i].specs;
-          res[i].selected = false;
+        for (let i = 0; i < res.results.length; i++) {
+          const specs = res.results[i].specs;
+          res.results[i].selected = false;
           for (let j = 0; j < specs.length; j++) {
             const spec = specs[j];
             const specNameFriendly = spec.specNameFriendly;
@@ -260,7 +263,7 @@ export class EquipmentService implements OnDestroy {
               specColumns[specNameFriendly] = true;
               cols.push(specNameFriendly);
             }
-            res[i][specNameFriendly] = spec.specValue || '';
+            res.results[i][specNameFriendly] = spec.specValue || '';
           }
         }
         cols = cols.sort();
@@ -268,16 +271,16 @@ export class EquipmentService implements OnDestroy {
         for (let i = 0; i < res.length; i++) {
           for (let k = 0; k < cols.length; k++) {
             const col = cols[k] as string;
-            if (!res[i][col]) {
-              res[i][col] = '';
+            if (!res.results[i][col]) {
+              res.results[i][col] = '';
             }
           }
-          delete res[i].specs;
         }
         for (let k = 0; k < cols.length; k++) {
           updatedCols.push({ name: cols[k] });
         }
-        return { columns: updatedCols, values: res };
+        res.columns = updatedCols;
+        return res;
       })
     );
   }
@@ -309,14 +312,13 @@ export class EquipmentService implements OnDestroy {
           res === 'Query not covered at this time' ||
           res === 'Query not covered by EquipmentWatch at this time'
         ) {
-          return { columns: [], values: [] };
+          return { count: 0, results: [] };
         }
-
         const specColumns = {};
         let cols = [];
-        for (let i = 0; i < res.length; i++) {
-          const specs = res[i].specs;
-          res[i].selected = false;
+        for (let i = 0; i < res.results.length; i++) {
+          const specs = res.results[i].specs;
+          res.results[i].selected = false;
           for (let j = 0; j < specs.length; j++) {
             const spec = specs[j];
             const specNameFriendly = spec.specNameFriendly;
@@ -325,7 +327,7 @@ export class EquipmentService implements OnDestroy {
               specColumns[specNameFriendly] = true;
               cols.push(specNameFriendly);
             }
-            res[i][specNameFriendly] = spec.specValue || '';
+            res.results[i][specNameFriendly] = spec.specValue || '';
           }
         }
         cols = cols.sort();
@@ -333,16 +335,16 @@ export class EquipmentService implements OnDestroy {
         for (let i = 0; i < res.length; i++) {
           for (let k = 0; k < cols.length; k++) {
             const col = cols[k] as string;
-            if (!res[i][col]) {
-              res[i][col] = '';
+            if (!res.results[i][col]) {
+              res.results[i][col] = '';
             }
           }
-          delete res[i].specs;
         }
         for (let k = 0; k < cols.length; k++) {
           updatedCols.push({ name: cols[k] });
         }
-        return { columns: updatedCols, values: res };
+        res.columns = updatedCols;
+        return res;
       })
     );
   }

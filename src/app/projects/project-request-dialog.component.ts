@@ -1,5 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
 import { Project } from 'src/app/shared/model';
@@ -46,9 +51,15 @@ export class ProjectRequestDialogComponent implements OnInit {
   }
 
   createProjectForm() {
-    this.projectForm = new FormGroup({
-      selectedProjectControl: new FormControl(null, Validators.required),
-      dateRange: new FormControl('', Validators.required)
-    });
+    if (!this.projectId || this.projectId === '') {
+      this.projectForm = new FormGroup({
+        selectedProjectControl: new FormControl(null, Validators.required),
+        dateRange: new FormControl('', Validators.required)
+      });
+    } else {
+      this.projectForm = new FormGroup({
+        dateRange: new FormControl('', Validators.required)
+      });
+    }
   }
 }

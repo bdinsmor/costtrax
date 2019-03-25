@@ -1,10 +1,6 @@
 <h3 mat-dialog-title>{{ modalTitle }}</h3>
 <mat-dialog-content>
-  <form
-    *ngIf="selectedItem"
-    class="full-width px-1"
-    [formGroup]="changeFormGroup"
-  >
+  <form *ngIf="selectedItem" class="full-width px-1" [formGroup]="changeFormGroup">
     <div class="px-1 pb-2 bg-white">
       <ng-container *ngIf="selectedItem.type === 'material'">
         <div class="row flex-wrap full-width">
@@ -40,7 +36,7 @@
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'equipment.active'">
+      <ng-container *ngIf="selectedItem.type === 'equipmentActive'">
         <div class="full-width row align-items-center">
           <div class="full-width row align-items-center">
             <div class="column flex-wrap px-1">
@@ -65,7 +61,7 @@
             </div>
             <div class="column flex-wrap px-2">
               <h6 class="row-details">TRANSPORT</h6>
-              <div>{{ selectedItem.details.transportation | currency }}</div>
+              <div>{{ selectedItem.details.transport | currency }}</div>
             </div>
           </div>
           <div class="full-width row align-items-center">
@@ -77,7 +73,7 @@
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'equipment.standby'">
+      <ng-container *ngIf="selectedItem.type === 'equipmentStandby'">
         <div class="full-width row align-items-center">
           <div class="full-width row align-items-center">
             <div class="column flex-wrap px-1">
@@ -102,7 +98,7 @@
             </div>
             <div class="column flex-wrap px-2">
               <h6 class="row-details">TRANSPORT</h6>
-              <div>{{ selectedItem.details.transportation | currency }}</div>
+              <div>{{ selectedItem.details.transport | currency }}</div>
             </div>
           </div>
           <div class="full-width row align-items-center">
@@ -114,7 +110,7 @@
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'equipment.rental'">
+      <ng-container *ngIf="selectedItem.type === 'equipmentRental'">
         <div class="full-width row align-items-center">
           <div class="full-width row align-items-center">
             <div class="column flex-wrap px-1">
@@ -133,7 +129,7 @@
             <div class="column flex-wrap px-2">
               <h6 class="row-details">TRANSPORT</h6>
               <div>
-                {{ selectedItem.details.transportation || 0 | currency }}
+                {{ selectedItem.details.transport || 0 | currency }}
               </div>
             </div>
             <div class="column flex-wrap px-2">
@@ -202,17 +198,13 @@
         </div>
       </ng-container>
 
-      <div
-        *ngIf="modalType === 'ApprovedWithChange'"
-        class="column
-        align-items-center"
-      >
+      <div *ngIf="modalType === 'ApprovedWithChange'" class="column
+        align-items-center">
         <div class="column flex-wrap">
           <h4 class="amount-label">
             <strong>Amount Submitted:&nbsp;&nbsp;</strong>
           </h4>
-          <label class="amount-label amount-submitted"
-            >{{ selectedItem.amount | currency }}
+          <label class="amount-label amount-submitted">{{ selectedItem.amount | currency }}
           </label>
         </div>
         <div class="column flex-wrap">
@@ -220,14 +212,8 @@
             <strong>Amount Approved:&nbsp;&nbsp;</strong>
           </h4>
 
-          <input
-            class="amount-text"
-            type="text"
-            formControlName="ammountControl"
-            [(ngModel)]="selectedItem.totalAdjusted"
-            currencyMask
-            placeholder="Amount Approved"
-          />
+          <input class="amount-text" type="text" formControlName="ammountControl"
+            [(ngModel)]="selectedItem.totalAdjusted" currencyMask placeholder="Amount Approved" />
         </div>
       </div>
       <div *ngIf="modalType === 'ApprovedAsIs'" class="w-75">
@@ -235,43 +221,29 @@
           <h4 class="amount-label">
             <strong>Amount Submitted:&nbsp;&nbsp;</strong>
           </h4>
-          <label class="amount-label amount-submitted"
-            >{{ selectedItem.amount | currency }}
+          <label class="amount-label amount-submitted">{{ selectedItem.amount | currency }}
           </label>
         </div>
       </div>
     </div>
     <div *ngIf="modalType === 'ApprovedWithChange'" class="full-width">
       <h4 class="amount-label" [ngClass]="amountChanged >= 0 ? 'green' : 'red'">
-        <strong>Change Amount:&nbsp;&nbsp;</strong
-        >{{ amountChanged | currency }}
+        <strong>Change Amount:&nbsp;&nbsp;</strong>{{ amountChanged | currency }}
       </h4>
 
       <h4 class="amount-label"><strong>Change Reason:&nbsp;&nbsp;</strong></h4>
-      <textarea
-        id="changeReason"
-        rows="5"
-        [(ngModel)]="selectedItem.changeReason"
-        formControlName="reasonControl"
-      ></textarea>
+      <textarea id="changeReason" rows="5" [(ngModel)]="selectedItem.changeReason"
+        formControlName="reasonControl"></textarea>
     </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button class="btn btn-outline-danger" (click)="cancel()">Cancel</button>
-  <button
-    class="btn btn-primary mr-1"
-    *ngIf="modalType === 'ApprovedAsIs'"
-    (click)="confirm()"
-  >
+  <button class="btn btn-primary mr-1" *ngIf="modalType === 'ApprovedAsIs'" (click)="confirm()">
     {{ modalSubmitLabel }}
   </button>
-  <button
-    class="btn btn-primary mr-1"
-    *ngIf="modalType === 'ApprovedWithChange'"
-    (click)="confirm()"
-    [disabled]="!changeFormGroup.valid"
-  >
+  <button class="btn btn-primary mr-1" *ngIf="modalType === 'ApprovedWithChange'" (click)="confirm()"
+    [disabled]="!changeFormGroup.valid">
     {{ modalSubmitLabel }}
   </button>
 </mat-dialog-actions>

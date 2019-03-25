@@ -13,9 +13,9 @@ import { AccountService } from '../accounts.service';
 export class AccountFormComponent implements OnInit {
   isLoading = false;
   error: string;
-  passwordError: string;
   accountForm: FormGroup;
   accountUsers: User[];
+  account: Account;
   @Output()
   cancel = new EventEmitter();
   @Output()
@@ -24,15 +24,18 @@ export class AccountFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     public dialogRef: MatDialogRef<any>
-  ) {
+  ) {}
+
+  ngOnInit() {
+    this.account = new Account({});
     this.createForm();
   }
 
-  ngOnInit() {}
-
   createAccount() {
-    const account: Account = new Account(this.accountForm.value);
-    this.accountService.create(account).subscribe((res: any) => {
+    this.account.accountName = this.accountForm.value.accountName;
+    this.account.organization = this.account.accountName;
+    console.log('users: ' + JSON.stringify(this.account, null, 2));
+    this.accountService.create(this.account).subscribe((res: any) => {
       if (res) {
         this.dialogRef.close({ success: true });
       } else {
@@ -47,7 +50,6 @@ export class AccountFormComponent implements OnInit {
 
   createForm() {
     this.accountForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
       accountName: ['', Validators.required]
     });
   }

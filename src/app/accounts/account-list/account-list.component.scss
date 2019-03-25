@@ -1,5 +1,5 @@
 .pass {
-    width: 85% !important;
+  width: 85% !important;
 }
 
 input[type='date'],
@@ -20,7 +20,7 @@ input[type='time'],
 input[type='time']:not([readonly]):focus,
 input[type='url'],
 input[type='url']:not([readonly]):focus {
-    border: none !important;
+  border: none !important;
 }
 
 input[type='date']:not([readonly]),
@@ -32,17 +32,26 @@ input[type='tel']:not([readonly]),
 input[type='text']:not([readonly]),
 input[type='time']:not([readonly]),
 input[type='url']:not([readonly]) {
-    background: inherit !important;
+  background: inherit !important;
+}
+
+.small-text {
+  font-size: 75%;
+  font-weight: bold;
 }
 
 .toggle-switch label {
-    min-width: 125px !important;
+  min-width: 125px !important;
 }
 
 .vh-35 {
-    max-height: 35vh !important;
+  max-height: 35vh !important;
 }
 
 .vh-40 {
-    max-height: 40vh !important;
+  max-height: 40vh !important;
+}
+
+.mat-chip.mat-standard-chip.mat-chip-disabled {
+  opacity: 0.75 !important;
 }

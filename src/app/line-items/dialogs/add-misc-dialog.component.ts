@@ -12,7 +12,7 @@ import { Equipment } from './../../shared/model';
   styleUrls: ['./add-misc-dialog.component.scss']
 })
 export class AddMiscDialogComponent implements OnInit, OnDestroy {
-  configurations: any[];
+  configurations: any;
   miscCategoryId: string;
   miscSubtypeId: string;
   miscSizeClass: any;

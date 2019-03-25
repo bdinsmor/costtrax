@@ -14,7 +14,7 @@
       <div class="col align-items-center">
         <label class="required pr-2">Project Name: </label>
         <div class="full-width">
-          <input type="text" name="projectName" class="w-50" formControlName="projectName" placeholder="project name"
+          <input cdkFocusInitial type="text" name="projectName" class="w-50" formControlName="projectName" placeholder="project name"
             required />
         </div>
       </div>
@@ -279,7 +279,7 @@
   <button type="button" class="btn btn-warning-outline" (click)="cancelCreate()">
     Cancel
   </button>
-  <button type="button" class="btn btn-primary" (click)="saveNew()" cdkFocusInitial [disabled]="!projectFormGroup.valid">
+  <button type="button" class="btn btn-primary" (click)="saveNew()" [disabled]="!projectFormGroup.valid">
     <clr-icon shape="check"></clr-icon>&nbsp;Save Project
   </button>
 </mat-dialog-actions>

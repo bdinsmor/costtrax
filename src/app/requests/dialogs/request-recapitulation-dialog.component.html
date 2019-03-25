@@ -6,11 +6,7 @@
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Labor</h5>
       </div>
-      <table
-        cellpadding="0"
-        cellspacing="0"
-        class="table table-compact recap-table"
-      >
+      <table cellpadding="0" cellspacing="0" class="table table-compact recap-table">
         <tbody>
           <tr>
             <td class="small-text left strong">Total, Labor</td>
@@ -51,11 +47,7 @@
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Equipment</h5>
       </div>
-      <table
-        cellpadding="0"
-        cellspacing="0"
-        class="table table-compact recap-table"
-      >
+      <table cellpadding="0" cellspacing="0" class="table table-compact recap-table">
         <tbody>
           <tr>
             <td class="small-text left strong">Total, Equipment</td>
@@ -76,7 +68,7 @@
           </tr>
           <tr>
             <td class="small-text left">
-              Active Markup ({{ project.adjustments.equipment.active.markup }}%)
+              Active Markup ({{ project.adjustments.equipmentActive.markup }}%)
             </td>
             <td class="small-text right">
               {{ request.activeMarkup | currency }}
@@ -93,7 +85,7 @@
           <tr>
             <td class="small-text left">
               Standby Markup ({{
-                project.adjustments.equipment.standby.markup
+                project.adjustments.equipmentStandby.markup
               }}%)
             </td>
             <td class="small-text right">
@@ -110,7 +102,7 @@
           </tr>
           <tr>
             <td class="small-text left">
-              Rental Markup ({{ project.adjustments.equipment.rental.markup }}%)
+              Rental Markup ({{ project.adjustments.equipmentRental.markup }}%)
             </td>
             <td class="small-text right">
               {{ request.rentalMarkup | currency }}
@@ -124,11 +116,7 @@
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Materials</h5>
       </div>
-      <table
-        cellpadding="0"
-        cellspacing="0"
-        class="table table-compact recap-table"
-      >
+      <table cellpadding="0" cellspacing="0" class="table table-compact recap-table">
         <tbody>
           <tr>
             <td class="small-text left strong">Total, Materials</td>
@@ -163,13 +151,7 @@
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Subcontractor</h5>
       </div>
-      <table
-        cellpadding="0"
-        cellspacing="0"
-        cellpadding="0"
-        cellspacing="0"
-        class="table table-compact recap-table"
-      >
+      <table cellpadding="0" cellspacing="0" cellpadding="0" cellspacing="0" class="table table-compact recap-table">
         <tbody>
           <tr>
             <td class="small-text left strong">Total, Subcontractor</td>
@@ -206,11 +188,7 @@
       <div class="card-header no-br">
         <h5 class="strong no-top-margin">Other</h5>
       </div>
-      <table
-        cellpadding="0"
-        cellspacing="0"
-        class="table table-compact recap-table"
-      >
+      <table cellpadding="0" cellspacing="0" class="table table-compact recap-table">
         <tbody>
           <tr>
             <td class="small-text left strong">Total, Other</td>
