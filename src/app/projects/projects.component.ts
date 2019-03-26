@@ -108,7 +108,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        this.openSnackBar(result.project.name + ' saved!', 'ok', 'OK');
+        this.openSnackBar(result.project.meta.name + ' saved!', 'ok', 'OK');
         this.refreshProjects();
       }
     });

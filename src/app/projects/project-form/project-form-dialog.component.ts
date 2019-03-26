@@ -23,6 +23,8 @@ import { Observable } from 'rxjs';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { Account, Project } from '../../shared/model';
 import { ProjectsService } from '../projects.service';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatChipInputEvent } from '@angular/material';
 
 @Component({
   selector: 'app-project-dialog-form',
@@ -39,6 +41,11 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private changeDetector: ChangeDetectorRef
   ) {}
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   accounts$: Observable<Account[]>;
   projectFormGroup: FormGroup;
   project: Project;
@@ -51,80 +58,31 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   private config: MatSnackBarConfig;
   duration = 3000;
   zipPattern = new RegExp(/^\d{5}(?:\d{2})?$/);
+  requestingOrgs: string[] = [];
+  locations: [] = [];
 
-  states = [
-    { label: 'Alabama', value: 'AL' },
-    { label: 'Alaska', value: 'AK' },
-    { label: 'Arizona', value: 'AZ' },
-    { label: 'Arkansas', value: 'AR' },
-    { label: 'California', value: 'CA' },
-    { label: 'Colorado', value: 'CO' },
-    { label: 'Connecticut', value: 'CT' },
-    { label: 'Delaware', value: 'DE' },
-    { label: 'District of Columbia', value: 'DC' },
-    { label: 'Florida', value: 'FL' },
-    { label: 'Georgia', value: 'GA' },
-    { label: 'Hawaii', value: 'HI' },
-    { label: 'Idaho', value: 'ID' },
-    { label: 'Illinois', value: 'IL' },
-    { label: 'Indiana', value: 'IN' },
-    { label: 'Iowa', value: 'IA' },
-    { label: 'Kansas', value: 'KS' },
-    { label: 'Kentucky', value: 'KY' },
-    { label: 'Lousiana', value: 'LA' },
-    { label: 'Maine', value: 'ME' },
-    { label: 'Maryland', value: 'MD' },
-    { label: 'Massachusetts', value: 'MA' },
-    { label: 'Michigan', value: 'MI' },
-    { label: 'Minnesota', value: 'MN' },
-    { label: 'Mississippi', value: 'MS' },
-    { label: 'Missouri', value: 'MO' },
-    { label: 'Montana', value: 'MT' },
-    { label: 'Nebraska', value: 'NE' },
-    { label: 'Nevada', value: 'NV' },
-    { label: 'New Hampshire', value: 'NH' },
-    { label: 'New Jersey', value: 'NJ' },
-    { label: 'New Mexico', value: 'NM' },
-    { label: 'New York', value: 'NY' },
-    { label: 'North Carolina', value: 'NC' },
-    { label: 'North Dakota', value: 'ND' },
-    { label: 'Ohio', value: 'OH' },
-    { label: 'Oklahoma', value: 'OK' },
-    { label: 'Oregon', value: 'OR' },
-    { label: 'Pennsylvania', value: 'PA' },
-    { label: 'Rhode Island', value: 'RI' },
-    { label: 'South Carolina', value: 'SC' },
-    { label: 'South Dakota', value: 'SD' },
-    { label: 'Tennessee', value: 'TN' },
-    { label: 'Texas', value: 'TX' },
-    { label: 'Utah', value: 'UT' },
-    { label: 'Vermont', value: 'VT' },
-    { label: 'Virginia', value: 'VA' },
-    { label: 'Washington', value: 'WA' },
-    { label: 'West Virginia', value: 'WV' },
-    { label: 'Wisconsin', value: 'WI' },
-    { label: 'Wyoming', value: 'WY' }
-  ];
   isLoaded = false;
   activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
   standbyFormulas = [{ name: '50OWNER', label: '50% Ownership Cost' }];
   formatterPercent = value => `${value} %`;
   parserPercent = value => value.replace(' %', '');
 
-  findState(abbr: string) {
-    if (!abbr || abbr === '') {
-      return '';
-    }
-
-    const st = this.states.find((s: any) => s.value === abbr.toUpperCase());
-    if (st) {
-      return st.label;
-    } else {
-      return '';
-    }
-  }
-
   ngOnInit() {
+    this.projectsService
+      .getCostLocations()
+      .pipe(untilDestroyed(this))
+      .subscribe((list: any) => {
+        this.locations = list.results.map((item: any) => {
+          let label = '';
+          if (item.city && item.city != null && item.city !== '') {
+            label = item.city + ' ';
+          }
+          label = label + item.region;
+          item.label = label;
+          return item;
+        });
+      });
+
     this.authenticationService
       .getCreds()
       .pipe(untilDestroyed(this))
@@ -156,6 +114,29 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {}
 
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our fruit
+    if ((value || '').trim()) {
+      this.requestingOrgs.push(value);
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  remove(value): void {
+    const index = this.requestingOrgs.indexOf(value);
+
+    if (index >= 0) {
+      this.requestingOrgs.splice(index, 1);
+    }
+  }
+
   resetForm() {
     this.project = new Project({ id: '1' });
     this.project.users = [];
@@ -183,35 +164,42 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     const projectData: any = {
       accountId: formData.selectedAccount,
       active: true,
-      name: formData.projectName,
-      zipcode: formData.zipcode,
-      state: formData.state,
-      description: formData.projectInstructions,
-      paymentTerms: 45,
+      meta: {
+        name: formData.projectName,
+        description: formData.projectInstructions,
+        paymentTerms: 45,
+        requestingOrgs: this.requestingOrgs
+      },
+
       adjustments: {},
 
       users: this.trimUsers()
     };
 
-    projectData.adjustments.equipment = {
-      active: {
-        enabled: formData.activeCheck,
-        regionalAdjustmentsEnabled: formData.activeRegionalCheck,
-        markup: formData.activeMarkup,
-        ownership: formData.activeOwnershipCost,
-        operating: formData.activeOperatingCost
-      },
-      standby: {
-        enabled: formData.standbyCheck,
-        regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
-        markup: formData.standbyMarkup
-      },
+    projectData.adjustments.zipcode = formData.zipcode;
+    projectData.adjustments.city = formData.location.city;
+    projectData.adjustments.cityId = formData.location.cityId;
+    projectData.adjustments.region = formData.location.region;
+    projectData.adjustments.regionId = formData.location.regionId;
 
-      rental: {
-        enabled: formData.rentalCheck,
-        markup: formData.rentalMarkup
-      }
+    projectData.adjustments.equipmentActive = {
+      enabled: formData.activeCheck,
+      regionalAdjustmentsEnabled: formData.activeRegionalCheck,
+      markup: formData.activeMarkup,
+      ownership: formData.activeOwnershipCost,
+      operating: formData.activeOperatingCost
     };
+    projectData.adjustments.equipmentStandby = {
+      enabled: formData.standbyCheck,
+      regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
+      markup: formData.standbyMarkup
+    };
+
+    projectData.adjustments.equipmentRental = {
+      enabled: formData.rentalCheck,
+      markup: formData.rentalMarkup
+    };
+
     projectData.adjustments.material = {
       enabled: formData.materialCheck,
       markup: formData.materialMarkup
@@ -269,11 +257,12 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name, Validators.required),
       zipcode: new FormControl(this.project.zipcode, Validators.required),
-      state: new FormControl(this.project.state, Validators.required),
+      location: new FormControl(null, Validators.required),
       selectedAccount: new FormControl(
         this.firstAccount.id,
         Validators.required
       ),
+      requestingOrgs: new FormControl(this.project.meta.requestingOrgs),
       activeFormula: new FormControl('FHWA'),
       activeMarkup: new FormControl(
         this.project.adjustments.equipmentActive.markup

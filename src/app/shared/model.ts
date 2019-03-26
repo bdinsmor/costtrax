@@ -1126,6 +1126,7 @@ export class Project {
           paymentTerms: 45,
           description: '',
           state: 'GA',
+          requestingOrgs: [],
           zipcode: 30332
         };
       }

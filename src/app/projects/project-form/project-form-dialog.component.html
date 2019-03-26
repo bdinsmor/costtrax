@@ -14,25 +14,30 @@
       <div class="col align-items-center">
         <label class="required pr-2">Project Name: </label>
         <div class="full-width">
-          <input cdkFocusInitial type="text" name="projectName" class="w-50" formControlName="projectName" placeholder="project name"
-            required />
+          <input cdkFocusInitial type="text" name="projectName" class="w-50" formControlName="projectName"
+            placeholder="project name" required />
         </div>
       </div>
     </div>
     <div class="project-section full-width pb-2 row align-items-center">
       <div class="col align-items-center">
         <div class="form-block row no-margin-left align-items-center">
-          <label for="pr-1" class="no-bottom-margin">Zip Code:</label>
-          <div class="pl-1 pr-1">
-            <input type="text" name="zipcode" formControlName="zipcode" required size="9" maxlength="9" placeholder="project zip code" />
-          </div>
-          <label class="required no-bottom-margin pr-1">State: </label>
+
+          <label class="required no-bottom-margin pr-1">Location: </label>
           <div class="w-50">
-            <ng-select formControlName="state" appendTo="body" required>
-              <ng-option *ngFor="let state of states" [value]="state.value">{{
-                state.label
-                }}</ng-option>
+            <ng-select formControlName="location" appendTo="body" bindLabel="label" [items]="locations" required>
+              <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                <span class="blue-text" *ngIf="item.city && item.city !== ''"
+                  [ngOptionHighlight]="search">{{item.city}}&nbsp;</span>
+                <span [class.blue-text]="!item.city || item.city === ''"
+                  [ngOptionHighlight]="search">{{item.region}}</span>
+              </ng-template>
             </ng-select>
+          </div>
+          <label for="p1-1" class="no-bottom-margin">Zip Code:</label>
+          <div class="pl-1 pr-1">
+            <input type="text" name="zipcode" formControlName="zipcode" required size="9" maxlength="9"
+              placeholder="project zip code" />
           </div>
         </div>
         <div class="row no-margin-left font-italic small-text">
@@ -42,8 +47,20 @@
         </div>
       </div>
     </div>
-
-    <div class="form-group pt-2 pr-2">
+    <div class="form-group">
+      <label class="required">Requesting Orgs: </label>
+      <mat-form-field class="full-width" style="margin-top:-25px">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let org of requestingOrgs" [removable]="removable" (removed)="remove(org)">
+            {{org}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+      </mat-form-field>
+    </div>
+    <div class="form-group p1-2 pr-2">
       <label for="formFields_8">Instructions:</label>
 
       <div class="row no-margin-left font-italic small-text">
@@ -59,7 +76,8 @@
       (changed)="refreshRequestors($event)"></app-user-list>
   </section>
   <section class="form-group pr-1">
-    <app-user-list [users]="project.users" [projectId]="project.id" [newProject]="true" [type]="'USER'" (changed)="refreshUsers($event)"></app-user-list>
+    <app-user-list [users]="project.users" [projectId]="project.id" [newProject]="true" [type]="'USER'"
+      (changed)="refreshUsers($event)"></app-user-list>
   </section>
   <section class="form-group">
     <h4 class="project-heading pb-1">Allowable Costs</h4>
@@ -76,7 +94,8 @@
       <div class="cost-content px-1 pb-1">
         <label class="bold-label">Formula:</label>
         <ng-select class="w-25" [items]="activeFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
-          clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body" formControlName="activeFormula">
+          clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
+          formControlName="activeFormula">
         </ng-select>
         <div class="row no-margin-left font-italic small-text">
           (Rental Rate Blue Book Monthly Ownership Cost/176)+(Rental Rate Blue
@@ -91,30 +110,29 @@
             <label for="activeRegionalCheck">Use regional adjustment for
               <span *ngIf="
                   projectFormGroup &&
-                  projectFormGroup.get('state') &&
-                  projectFormGroup.get('state').value
-                "
-                [innerHTML]="findState(projectFormGroup.get('state').value)"></span></label>
+                  projectFormGroup.get('location') &&
+                  projectFormGroup.get('location').value
+                " [innerHTML]="projectFormGroup.get('location').value.label"></span></label>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
             <label class="no-bottom-margin">Reimbursable %, Ownership Cost:</label>
             <div class="spacer"></div>
-            <nz-input-number formControlName="activeOwnershipCost" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-              [nzParser]="parserPercent"></nz-input-number>
+            <nz-input-number formControlName="activeOwnershipCost" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+              [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
             <label class="no-bottom-margin">Reimbursable %, Operating Cost:</label>
             <div class="spacer"></div>
-            <nz-input-number formControlName="activeOperatingCost" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-              [nzParser]="parserPercent"></nz-input-number>
+            <nz-input-number formControlName="activeOperatingCost" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+              [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
           </div>
         </div>
       </div>
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="activeMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number formControlName="activeMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
           <div class="spacer"></div>
           <div class="row no-margin-left font-italic small-text" style="padding-right: 1rem">
             <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
@@ -135,8 +153,9 @@
       </div>
       <div class="cost-content px-1 pb-1">
         <label class="bold-label">Formula:</label>
-        <ng-select class="w-50" [items]="standbyFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
-          clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body" formControlName="standbyFormula">
+        <ng-select class="w-50" [items]="standbyFormulas" bindValue="name" bindLabel="label"
+          placeholder="Choose Formula" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
+          formControlName="standbyFormula">
         </ng-select>
         <div class="row no-margin-left font-italic small-text">
           (Rental Rate Blue Book Monthly Ownership Cost/176)*0.5
@@ -150,18 +169,17 @@
             <label for="standbyRegionalCheck">Use regional adjustment for
               <span *ngIf="
                   projectFormGroup &&
-                  projectFormGroup.get('state') &&
-                  projectFormGroup.get('state').value
-                "
-                [innerHTML]="findState(projectFormGroup.get('state').value)"></span></label>
+                  projectFormGroup.get('location') &&
+                  projectFormGroup.get('location').value
+                " [innerHTML]="projectFormGroup.get('location').value"></span></label>
           </div>
         </div>
       </div>
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="standbyMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number formControlName="standbyMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
           <div class="spacer"></div>
           <div class="row no-margin-left font-italic small-text" style="padding-right: 1rem">
             <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
@@ -188,8 +206,8 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="rentalMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number formControlName="rentalMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
         </div>
       </div>
     </div>
@@ -210,8 +228,8 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="materialMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number formControlName="materialMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
         </div>
       </div>
     </div>
@@ -232,8 +250,8 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="laborMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number formControlName="laborMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
         </div>
       </div>
     </div>
@@ -254,8 +272,8 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="subcontractorMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1" [nzFormatter]="formatterPercent"
-            [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number formControlName="subcontractorMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
+            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
         </div>
       </div>
     </div>

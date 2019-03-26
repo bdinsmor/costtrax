@@ -34,7 +34,7 @@
 
   <div class="full-width mb-1">
     <clr-datagrid>
-      <clr-dg-column style="width:550px">Email</clr-dg-column>
+      <clr-dg-column>Email</clr-dg-column>
       <clr-dg-column>Roles</clr-dg-column>
       <clr-dg-column></clr-dg-column>
 
@@ -52,7 +52,7 @@
           </div>
         </clr-dg-cell>
         <clr-dg-cell>
-          <div class="align-items-center float-right" align="end">
+          <div class="align-items-center">
             <button *ngIf="user.expanded && type !== 'REQUESTOR'" class="ripple icon-30 icon-button" matTooltip="Save"
               (click)="saveRoleEdit(user)">
               <mat-icon color="accent">done</mat-icon>

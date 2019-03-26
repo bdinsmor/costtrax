@@ -30,6 +30,10 @@ export class ProjectsService {
     return of(this.projects.find(x => x.id === id));
   }
 
+  getCostLocations(): Observable<any> {
+    return this.http.get(environment.serverUrl + '/cost-locations');
+  }
+
   getUsers(projectId: string): Observable<any> {
     return this.http.get(
       environment.serverUrl + '/project/' + projectId + '/user'
