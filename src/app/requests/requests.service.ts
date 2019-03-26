@@ -61,7 +61,7 @@ export class RequestsService {
       environment.serverUrl +
         '/request/' +
         requestId +
-        'attachment/' +
+        '/attachment/' +
         attachmentId
     );
   }

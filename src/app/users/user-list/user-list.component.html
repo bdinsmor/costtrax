@@ -1,8 +1,5 @@
 <div class="full-width">
-  <section
-    *ngIf="!newProject"
-    class="full-width d-flex flex-row align-items-center"
-  >
+  <section *ngIf="!newProject" class="full-width d-flex flex-row align-items-center">
     <h5 *ngIf="newProject && type === 'REQUESTOR'" class="no-top-margin pr-1">
       REQUESTORS
     </h5>
@@ -16,38 +13,19 @@
   <h5 *ngIf="newProject && type !== 'REQUESTOR'" class="pt-2 pr-1">
     Do you want to add any additional Approvers or Observers to this project?
   </h5>
-  <button
-    type="button"
-    class="btn btn-sm btn-primary mt-1"
-    *ngIf="type === 'REQUESTOR'"
-    (click)="addRequestor()"
-  >
+  <button type="button" class="btn btn-sm btn-primary mt-1" *ngIf="type === 'REQUESTOR'" (click)="addRequestor()">
     Add Requestor
   </button>
-  <button
-    type="button"
-    class="btn btn-sm btn-primary mt-1"
-    *ngIf="type !== 'REQUESTOR'"
-    (click)="inviteUser()"
-  >
+  <button type="button" class="btn btn-sm btn-primary mt-1" *ngIf="type !== 'REQUESTOR'" (click)="inviteUser()">
     Add User
   </button>
-  <section
-    *ngIf="newProject"
-    class="full-width d-flex flex-row align-items-center"
-  >
-    <div
-      *ngIf="type === 'REQUESTOR'"
-      class="row no-margin-left font-italic small-text"
-    >
+  <section *ngIf="newProject" class="full-width d-flex flex-row align-items-center">
+    <div *ngIf="type === 'REQUESTOR'" class="row no-margin-left font-italic small-text">
       <i class="material-icons md-20 md-dark"> info </i>&nbsp;Added Requestors
       will be sent an email invitation to begin submitting requests for this
       project.
     </div>
-    <div
-      *ngIf="type !== 'REQUESTOR'"
-      class="row no-margin-left font-italic small-text"
-    >
+    <div *ngIf="type !== 'REQUESTOR'" class="row no-margin-left font-italic small-text">
       <i class="material-icons md-20 md-dark"> info </i>&nbsp;Approvers will be
       invited to view and approve submitted requests. Observers will have
       view-only access.
@@ -56,14 +34,14 @@
 
   <div class="full-width mb-1">
     <clr-datagrid>
-      <clr-dg-column>Email</clr-dg-column>
+      <clr-dg-column style="width:550px">Email</clr-dg-column>
       <clr-dg-column>Roles</clr-dg-column>
       <clr-dg-column></clr-dg-column>
 
       <clr-dg-row *ngFor="let user of users; let i = index">
-        <clr-dg-cell
-          ><div class="padding-label-top">{{ user.email }}</div></clr-dg-cell
-        >
+        <clr-dg-cell>
+          <div class="padding-label-top">{{ user.email }}</div>
+        </clr-dg-cell>
         <clr-dg-cell>
           <div class="padding-label-top" *ngIf="user.roles">
             <mat-chip-list selectable="false">
@@ -74,99 +52,56 @@
           </div>
         </clr-dg-cell>
         <clr-dg-cell>
-          <div class="row justify-content-end">
-            <button
-              *ngIf="user.expanded && type !== 'REQUESTOR'"
-              class="ripple icon-30 icon-button"
-              matTooltip="Save"
-              (click)="saveRoleEdit(user)"
-            >
+          <div class="align-items-center float-right" align="end">
+            <button *ngIf="user.expanded && type !== 'REQUESTOR'" class="ripple icon-30 icon-button" matTooltip="Save"
+              (click)="saveRoleEdit(user)">
               <mat-icon color="accent">done</mat-icon>
             </button>
-            <button
-              *ngIf="!user.expanded && type !== 'REQUESTOR'"
-              matTooltip="Edit"
-              class="ripple icon-30 icon-button"
-              (click)="editUser(user)"
-            >
+            <button *ngIf="!user.expanded && type !== 'REQUESTOR'" matTooltip="Edit" class="ripple icon-30 icon-button"
+              (click)="editUser(user)">
               <mat-icon color="primary">edit</mat-icon>
             </button>
-            <button
-              *ngIf="!user.expanded"
-              class="ripple icon-30 icon-button mr-1"
-              matTooltip="Remove"
-              (click)="removeUser(i, user)"
-            >
+            <button *ngIf="!user.expanded" class="ripple icon-30 icon-button" matTooltip="Remove"
+              (click)="removeUser(i, user)">
               <mat-icon color="warn">delete</mat-icon>
             </button>
-            <button
-              *ngIf="user.expanded && type !== 'REQUESTOR'"
-              class="ripple icon-30 icon-button mr-1"
-              matTooltip="Cancel Edits"
-              (click)="cancelRoleEdit(user)"
-            >
+            <button *ngIf="user.expanded && type !== 'REQUESTOR'" class="ripple icon-30 icon-button"
+              matTooltip="Cancel Edits" (click)="cancelRoleEdit(user)">
               <mat-icon color="warn">undo</mat-icon>
             </button>
           </div>
         </clr-dg-cell>
-        <ng-container
-          ngProjectAs="clr-dg-row-detail"
-          *ngIf="type !== 'REQUESTOR'"
-        >
+        <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="type !== 'REQUESTOR'">
           <clr-dg-row-detail *clrIfExpanded="user.expanded">
             <div class="d-flex flex-column col-12 pb-2">
               <h5 class="mb-1 no-top-margin">Project Owner Roles</h5>
               <div class="row no-row-margins">
-                <mat-checkbox
-                  type="checkbox"
-                  matRipple
-                  id="adminCheck"
-                  [(ngModel)]="user.projectManager"
-                  [disabled]="user.isRequestor()"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectManager')"
-                >
+                <mat-checkbox type="checkbox" matRipple id="adminCheck" [(ngModel)]="user.projectManager"
+                  [disabled]="user.isRequestor()" [ngModelOptions]="{ standalone: true }"
+                  (change)="roleChanged(user, 'ProjectManager')">
                 </mat-checkbox>
-                <h6
-                  [class.muted-text]="!user.projectManager"
-                  class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                >
+                <h6 [class.muted-text]="!user.projectManager"
+                  class="pl-1 no-top-margin no-bottom-margin align-items-center">
                   Project Admin
                 </h6>
               </div>
               <div class="row no-row-margins">
-                <mat-checkbox
-                  type="checkbox"
-                  matRipple
-                  id="observeCheck"
-                  [(ngModel)]="user.projectObserver"
-                  [disabled]="user.isRequestor()"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectObserver')"
-                >
+                <mat-checkbox type="checkbox" matRipple id="observeCheck" [(ngModel)]="user.projectObserver"
+                  [disabled]="user.isRequestor()" [ngModelOptions]="{ standalone: true }"
+                  (change)="roleChanged(user, 'ProjectObserver')">
                 </mat-checkbox>
-                <h6
-                  [class.muted-text]="!user.projectObserver"
-                  class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                >
+                <h6 [class.muted-text]="!user.projectObserver"
+                  class="pl-1 no-top-margin no-bottom-margin align-items-center">
                   Project Observer
                 </h6>
               </div>
               <div class="row no-row-margins">
-                <mat-checkbox
-                  type="checkbox"
-                  matRipple
-                  id="requestorCheck"
-                  [(ngModel)]="user.projectApprover"
-                  [disabled]="user.isRequestor()"
-                  [ngModelOptions]="{ standalone: true }"
-                  (change)="roleChanged(user, 'ProjectApprover')"
-                >
+                <mat-checkbox type="checkbox" matRipple id="requestorCheck" [(ngModel)]="user.projectApprover"
+                  [disabled]="user.isRequestor()" [ngModelOptions]="{ standalone: true }"
+                  (change)="roleChanged(user, 'ProjectApprover')">
                 </mat-checkbox>
-                <h6
-                  [class.muted-text]="!user.projectApprover"
-                  class="pl-1 no-top-margin no-bottom-margin align-items-center"
-                >
+                <h6 [class.muted-text]="!user.projectApprover"
+                  class="pl-1 no-top-margin no-bottom-margin align-items-center">
                   Request Approver
                 </h6>
               </div>

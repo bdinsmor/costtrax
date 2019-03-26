@@ -11,11 +11,13 @@ export interface Breadcrumb {
 }
 
 export interface Attachment {
+  id: string;
   uid: string;
   url: string;
   name: string;
   size: number;
   type: string;
+  status: string;
   tempId: string;
 }
 

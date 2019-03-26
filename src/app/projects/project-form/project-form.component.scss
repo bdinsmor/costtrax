@@ -13,6 +13,10 @@
   margin-bottom: 0 !important;
 }
 
+.mat-ripple {
+  overflow: visible !important;
+}
+
 .cost-title {
   color: rgba(0, 0, 0, 0.54);
   background: #fff;
@@ -37,8 +41,8 @@
   padding-left: 4px !important;
 }
 
-.checkbox input[type='checkbox']:checked + label::before,
-.checkbox-inline input[type='checkbox']:checked + label::before {
+.checkbox input[type='checkbox']:checked+label::before,
+.checkbox-inline input[type='checkbox']:checked+label::before {
   background: #003d79 !important;
 }
 

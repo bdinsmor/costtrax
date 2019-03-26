@@ -15,7 +15,7 @@ import {
   OnInit
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
+import { NzMessageService, UploadXHRArgs, UploadFile } from 'ng-zorro-antd';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { RequestsService } from 'src/app/requests/requests.service';
 import { Attachment, Item } from 'src/app/shared/model';
@@ -31,6 +31,7 @@ import { environment } from '../../../environments/environment';
 export class AttachmentsDialogComponent implements OnInit, OnDestroy {
   selectedItem: Item;
   uploading = false;
+  uploaded: [] = [];
   fileList: UploadFile[] = [];
   addedFiles: Attachment[] = [];
   canDelete = false;
@@ -74,6 +75,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
 
   handleChange({ file, fileList }) {
     const status = file.status;
+    console.log('inside handleChange');
     if (status === 'done') {
       fileList.forEach((p: any) => {
         if (!p.url || p.url === '') {
@@ -81,7 +83,11 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
           for (let i = 0; i < this.addedFiles.length; i++) {
             if (this.addedFiles[i].uid === puid) {
               p.url =
-                environment.serverUrl + '/attachment/' + this.addedFiles[i].url;
+                environment.serverUrl +
+                '/request/' +
+                this.requestId +
+                '/attachment/' +
+                this.addedFiles[i].url;
               if (!p.size || p.size === 0) {
                 p.size = this.addedFiles[i].size;
               }
@@ -92,12 +98,24 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
               if (!p.name || p.name === '') {
                 p.name = this.addedFiles[i].name;
               }
+              this.addedFiles[i].url = p.url;
             }
           }
         }
       });
       this.cdr.detectChanges();
     }
+  }
+
+  deleteFile(index: number, file: Attachment) {
+    console.log('inside delete...');
+    return this.requestsService
+      .deleteAttachment(this.requestId, file.id)
+      .pipe(untilDestroyed(this))
+      .subscribe((res: any) => {
+        this.addedFiles.splice(index, 1);
+        this.cdr.detectChanges();
+      });
   }
 
   deleteAttachment = (file: UploadFile) => {
@@ -128,9 +146,11 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
             type: item.file.type,
             size: item.file.size,
             url: res.id,
+            id: res.id,
             name: item.file.name,
             uid: item.file.uid,
-            tempId: res.id
+            tempId: res.id,
+            status: 'uploading'
           });
           const headerSettings: { [name: string]: string | string[] } = {};
 
@@ -155,6 +175,13 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
                 item.onProgress(event2, item.file);
               } else if (event2 instanceof HttpResponse) {
                 item.onSuccess(event2.body, item.file, event2);
+                this.addedFiles.forEach((a: Attachment) => {
+                  if (a.uid === item.file.uid) {
+                    a.status = 'info';
+                  }
+                });
+
+                this.cdr.detectChanges();
               }
             },
             err => {
