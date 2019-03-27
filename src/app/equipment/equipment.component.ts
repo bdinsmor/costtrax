@@ -77,8 +77,8 @@ export class EquipmentComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
-          this.accountSynced =
-            message.advantageId && message.advantageId !== '';
+          this.accountSynced = message.eqwVerified;
+          this.accountSynced = true;
         } else {
           this.accountSynced = false;
         }
@@ -154,11 +154,11 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  makeSelectionChanged(event: any) {
+  manufacturerNameSelectionChanged(event: any) {
     const item: Equipment = this.items[event.index];
     if (item && event.item) {
       if (event.item) {
-        item.makeId = event.item.makeId;
+        item.manufacturerId = event.item.manufacturerId;
         this.items[event.index] = new Equipment(item);
       } else {
         this.items[event.index] = new Equipment({});
@@ -366,6 +366,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
               sc.rates = data;
               if (this.adjustments.equipmentActive.regionalAdjustmentsEnabled) {
+                sc.rates.rate = data.fhwaRate;
                 sc.rates.fhwa = +Number(
                   +sc.rates.monthlyOwnershipCostAdjustedRate +
                     +sc.rates.hourlyOperatingCostAdjusted
@@ -386,6 +387,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                   +sc.rates.monthlyOwnershipCostAdjustedRate
                 ).toFixed(2);
               } else {
+                sc.rates.rate = data.standbyRate;
                 sc.rates.fhwa = +Number(
                   +sc.rates.monthlyOwnershipCostUnadjustedRate +
                     +sc.rates.hourlyOperatingCostUnadjusted

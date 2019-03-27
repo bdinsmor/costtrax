@@ -1,21 +1,13 @@
 <div class="px-1 pt-1 mb-2 full-width">
   <section class="full-width d-flex flex-row align-items-center">
     <h3 class="pr-1 no-top-margin" disabled="true">Owned Equipment</h3>
-    <button
-      type="button"
-      matTooltip="Add Model"
-      class="btn btn-sm btn-primary"
-      (click)="addModel()"
+    <button type="button" matTooltip="Add Model" class="btn btn-sm btn-primary" (click)="addModel()"
       [disabled]="!accountSynced">
       <clr-icon class="hidden-md-up" shape="plus"></clr-icon>
       <span class="hidden-sm-down">Add Model</span>
     </button>
-    <button
-      type="button"
-      matTooltip="Add Miscellaneous Model"
-      [disabled]="!accountSynced"
-      class="btn btn-sm btn-primary"
-      (click)="addMiscEquipment()">
+    <button type="button" matTooltip="Add Miscellaneous Model" [disabled]="!accountSynced"
+      class="btn btn-sm btn-primary" (click)="addMiscEquipment()">
       <clr-icon class="hidden-md-up" shape="plus-circle"></clr-icon>
 
       <span class="hidden-sm-down">Add Miscellaneous Model</span>
@@ -24,9 +16,7 @@
       Upload Equipment
     </button>
   </section>
-  <section
-    class="full-width d-flex flex-row align-items-center"
-    *ngIf="!accountSynced">
+  <section class="full-width d-flex flex-row align-items-center" *ngIf="!accountSynced">
     <h4>
       Check Your Account Details and Log in with your EQW credentials to access
     </h4>
@@ -42,18 +32,11 @@
     <clr-dg-column [clrDgField]="'serial'" style="width:200px">Serial</clr-dg-column>
     <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
     <clr-dg-column style="width:80px">Actions</clr-dg-column>
-    <clr-dg-row
-      *clrDgItems="let item of items; let i= index; trackBy: trackByFn"
-      [clrDgItem]="item">
+    <clr-dg-row *clrDgItems="let item of items; let i= index; trackBy: trackByFn" [clrDgItem]="item">
       <clr-dg-cell>
         <div class="padding-label-top" *ngIf="item.isDraft()">
-          <input
-            class="full-width"
-            type="text"
-            (change)="modelChanged(item)"
-            [(ngModel)]="item.details.id"
-            [ngModelOptions]="{ standalone: true }"
-            />
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.details.id"
+            [ngModelOptions]="{ standalone: true }" />
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
           {{ item.details ? item.details.id : '' }}
@@ -61,24 +44,17 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <app-equipment-select
-            type="make"
-            [index]="i"
-            (selected)="makeSelectionChanged($event)"
-            [initialEquipment]="item"></app-equipment-select>
+          <app-equipment-select type="manufacturerName" [index]="i"
+            (selected)="manufacturerNameSelectionChanged($event)" [initialEquipment]="item"></app-equipment-select>
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
-          {{ item.make }}
+          {{ item.manufacturerName }}
         </div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
-          <app-equipment-select
-            [makeId]="item.makeId"
-            [index]="i"
-            (selected)="modelSelectionChanged($event)"
-            [initialEquipment]="item"
-            [shouldDisable]="!item.makeId"
+          <app-equipment-select [manufacturerId]="item.manufacturerId" [index]="i"
+            (selected)="modelSelectionChanged($event)" [initialEquipment]="item" [shouldDisable]="!item.manufacturerId"
             type="model"></app-equipment-select>
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
@@ -87,20 +63,9 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="!item.misc && item.isDraft()">
-          <ng-select
-            [disabled]="!item.modelId"
-            [items]="item.years"
-            dropdownPosition="top"
-            appendTo="body"
-            (change)="yearSelectionChanged(item, i)"
-            bindLabel="year"
-            bindValue="year"
-            placeholder="Year"
-            clearAllText="Clear"
-            [closeOnSelect]="true"
-            [clearable]="true"
-            [hideSelected]="true"
-            [(ngModel)]="item.year"
+          <ng-select [disabled]="!item.modelId" [items]="item.years" dropdownPosition="top" appendTo="body"
+            (change)="yearSelectionChanged(item, i)" bindLabel="year" bindValue="year" placeholder="Year"
+            clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true" [(ngModel)]="item.year"
             [ngModelOptions]="{ standalone: true }">
           </ng-select>
         </div>
@@ -113,28 +78,16 @@
         <div class="padding-label-top">{{ item.subSize }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
-        <div
-          class="padding-label-top"
-          *ngIf="item.isDraft()">
-          <input
-            class="full-width"
-            type="text"
-            (change)="modelChanged(item)"
-            [(ngModel)]="item.details.vin"
-            [ngModelOptions]="{ standalone: true }"
-            />
+        <div class="padding-label-top" *ngIf="item.isDraft()">
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.details.vin"
+            [ngModelOptions]="{ standalone: true }" />
         </div>
         <div *ngIf="!item.isDraft()">{{ item.details.vin }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div class="padding-label-top" *ngIf="item.isDraft()">
-          <input
-            class="full-width"
-            type="text"
-            (change)="modelChanged(item)"
-            [(ngModel)]="item.description"
-            [ngModelOptions]="{ standalone: true }"
-            />
+          <input class="full-width" type="text" (change)="modelChanged(item)" [(ngModel)]="item.description"
+            [ngModelOptions]="{ standalone: true }" />
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
           {{ item.description }}
@@ -142,62 +95,39 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div class="row justify-content-end">
-          <button
-            *ngIf="item.isDraft()"
-            class="ripple icon-30 icon-button
-            pr-1"
-            matTooltip="Save"
-            (click)="saveChanges(i, item)">
+          <button *ngIf="item.isDraft()" class="ripple icon-30 icon-button
+            pr-1" matTooltip="Save" (click)="saveChanges(i, item)">
             <mat-icon color="accent">done</mat-icon>
           </button>
-          <button
-            *ngIf="!item.isDraft()"
-            class="ripple icon-30 icon-button
-            pr-1"
-            matTooltip="Edit"
-            (click)="editItem(i, item)">
+          <button *ngIf="!item.isDraft()" class="ripple icon-30 icon-button
+            pr-1" matTooltip="Edit" (click)="editItem(i, item)">
             <mat-icon color="accent">edit</mat-icon>
           </button>
-          <button
-            class="ripple icon-button icon-30 pr-1"
-            *ngIf="item.beingEdited"
-            matTooltip="Undo Edits"
+          <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited" matTooltip="Undo Edits"
             (click)="revertEdits(i, item)">
             <mat-icon color="accent">undo</mat-icon>
           </button>
-          <button
-            class="ripple icon-button icon-30 pr-1"
-            *ngIf="!item.beingEdited"
-            matTooltip="Remove"
+          <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited" matTooltip="Remove"
             (click)="remove(i, item)">
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
       </clr-dg-cell>
-      <ng-container
-        ngProjectAs="clr-dg-row-detail"
-        *ngIf="item.modelId && item.year">
+      <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item.modelId && item.year">
         <clr-dg-row-detail *clrIfExpanded>
           <div class="col-10 pb-1">
             <div class="col">
               <h5 class="strong">Model Configuration</h5>
-              <table
-                id="invoice-table"
-                *ngIf="item.details.configurations"
-                class="mt-3p table table-compact table-bordered table-striped
+              <table id="invoice-table" *ngIf="item.details.configurations" class="mt-3p table table-compact table-bordered table-striped
                 comparison-table">
                 <thead>
-                  <th
-                    class="left"
-                    *ngFor="let column of item.details.configurations.columns">
+                  <th class="left" *ngFor="let column of item.details.configurations.columns">
                     {{ column.name }}
                   </th>
                 </thead>
                 <tbody>
                   <tr class="justify-content-center">
-                    <td
-                      class="left"
-                      *ngFor="let column of
+                    <td class="left" *ngFor="let column of
                       item.details.configurations.columns">
                       {{ item.details.selectedConfiguration[column.name] }}
                     </td>
@@ -209,10 +139,8 @@
               <h5 class="strong">
                 Rental Rate Blue Book Ownership & Operating Costs
               </h5>
-              <table
-                *ngIf="item.details.selectedConfiguration &&
-                item.details.selectedConfiguration.rates"
-                class="full-width mt-3p table table-compact table-bordered
+              <table *ngIf="item.details.selectedConfiguration &&
+                item.details.selectedConfiguration.rates" class="full-width mt-3p table table-compact table-bordered
                 table-striped comparison-table">
                 <thead style="display:none">
                   <th></th>
@@ -319,10 +247,8 @@
                 <h6 class="strong no-top-margin">
                   Ownership Costs, Unadjusted (Monthly)
                 </h6>
-                <table
-                  *ngIf="item.details.selectedConfiguration &&
-                  item.details.selectedConfiguration.rates"
-                  class="no-top-margin table table-compact table-bordered
+                <table *ngIf="item.details.selectedConfiguration &&
+                  item.details.selectedConfiguration.rates" class="no-top-margin table table-compact table-bordered
                   table-striped comparison-table full-width">
                   <thead>
                     <th class="left">Element</th>
@@ -403,10 +329,8 @@
               <div class="col">
                 <h5 class="strong">Rate Element Allocation</h5>
                 <h6 class="strong no-top-margin">Operating Costs, (Hourly)</h6>
-                <table
-                  *ngIf="item.details.selectedConfiguration &&
-                  item.details.selectedConfiguration.rates"
-                  class="no-top-margin table table-compact table-bordered
+                <table *ngIf="item.details.selectedConfiguration &&
+                  item.details.selectedConfiguration.rates" class="no-top-margin table table-compact table-bordered
                   table-striped comparison-table full-width">
                   <thead>
                     <th class="left">Element</th>
@@ -450,15 +374,8 @@
     </clr-dg-row>
     <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
   </clr-datagrid>
-  <div
-    class="align-items-center mt-1 float-right"
-    align="end"
-    [formGroup]="equipmentForm">
-    <mat-checkbox
-      type="checkbox"
-      matRipple
-      id="activeCheck"
-      formControlName="autoSave"></mat-checkbox>
+  <div class="align-items-center mt-1 float-right" align="end" [formGroup]="equipmentForm">
+    <mat-checkbox type="checkbox" matRipple id="activeCheck" formControlName="autoSave"></mat-checkbox>
     <label class="no-bottom-margin disabled-text" style="padding-left: 4px">
       Automatically save new models added from requests to my Project Assets
     </label>

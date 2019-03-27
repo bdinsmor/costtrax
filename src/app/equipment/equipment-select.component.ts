@@ -29,7 +29,7 @@ import { EquipmentService } from './equipment.service';
 })
 export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
-  makeId: string;
+  manufacturerId: string;
   @Input()
   manufacturerName: string;
   @Input()
@@ -59,8 +59,8 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit() {
-    if (this.type === 'make') {
-      this.makeSearch();
+    if (this.type === 'manufacturerName') {
+      this.manufacturerSearch();
       this.placeholder = 'Select Manufacturer';
     } else {
       this.modelSearch();
@@ -76,8 +76,9 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (!changes.firstChange) {
       if (
-        changes.makeId &&
-        changes.makeId.previousValue !== changes.makeId.currentValue
+        changes.manufacturerId &&
+        changes.manufacturerId.previousValue !==
+          changes.manufacturerId.currentValue
       ) {
         this.selectedItem = null;
         this.searchInput$.next();
@@ -105,7 +106,7 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
     return;
   }
 
-  makeSearch() {
+  manufacturerSearch() {
     this.searchResults$ = concat(
       of([]), // default items
       this.searchInput$.pipe(
@@ -133,7 +134,7 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
         distinctUntilChanged(),
         tap(() => (this.loading = true)),
         switchMap((term: string) =>
-          this.equipmentService.getModels(term, this.makeId).pipe(
+          this.equipmentService.getModels(term, this.manufacturerId).pipe(
             catchError(() => of([])), // empty list on error
             tap(() => (this.loading = false))
           )

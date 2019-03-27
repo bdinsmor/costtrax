@@ -118,7 +118,7 @@
           <clr-dg-cell>
             <div *ngIf="submitRequests">
               <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text"
-                (change)="laborChanged(item)" (keypress)="laborChanged(item)" [(ngModel)]="item.details.trade"
+                (change)="laborChanged(item)" (keypress)="laborChanged(item)" [(ngModel)]="item.details.class"
                 [ngModelOptions]="{standalone:
                 true}">
             </div>
@@ -192,12 +192,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
-                  As Is" (click)="approve(item)">
+                  As Is" (click)="approve(i,item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                   With
-                  Change" (click)="approveWithChange(item)">
+                  Change" (click)="approveWithChange(i,item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>
@@ -213,7 +213,7 @@
       <clr-datagrid *ngIf="itemType === 'equipmentActive' && accountSynced">
         <clr-dg-column *ngIf="manageRequests || manageProject" [clrDgField]="'status'" style="width:125px">Status
         </clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.manufacturerName'" style="width:200px">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.subSize'" style="width:250px">Subtype
@@ -243,7 +243,7 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <app-equipment-select [makeId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
+              <app-equipment-select [manufacturerId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
                 (selected)="modelNewSelectionChanged($event,item,i)" [shouldDisable]="!item.details.manufacturerId"
                 type="model"></app-equipment-select>
             </div>
@@ -330,12 +330,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
-                  As Is" (click)="approve(item)">
+                  As Is" (click)="approve(i,item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                   With
-                  Change" (click)="approveWithChange(item)">
+                  Change" (click)="approveWithChange(i, item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>
@@ -626,7 +626,7 @@
             accountSynced">
         <clr-dg-column *ngIf="manageRequests || manageProject" [clrDgField]="'status'" style="width:125px">Status
         </clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.manufacturerName'" style="width:200px">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.subSize'" style="width:250px">Subtype
@@ -656,7 +656,7 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <app-equipment-select [makeId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
+              <app-equipment-select [manufacturerId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
                 (selected)="modelNewSelectionChanged($event,item,i)" [shouldDisable]="!item.details.manufacturerId"
                 type="model"></app-equipment-select>
             </div>
@@ -743,12 +743,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
-                      As Is" (click)="approve(item)">
+                      As Is" (click)="approve(i,item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                       With
-                      Change" (click)="approveWithChange(item)">
+                      Change" (click)="approveWithChange(i,item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>
@@ -967,7 +967,7 @@
               accountSynced">
         <clr-dg-column *ngIf="manageRequests || manageProject" [clrDgField]="'status'" style="width:125px">Status
         </clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.make'" style="width:200px">Make</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.manufacturerName'" style="width:200px">Make</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.subSize'" style="width:250px">Subtype & Size Class</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.dateRangeStr'" [clrDgSortBy]="dateRangeComparator" style="width:250px">
@@ -1001,7 +1001,7 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <app-equipment-select [makeId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
+              <app-equipment-select [manufacturerId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
                 (selected)="modelNewSelectionChanged($event,item,i)" [shouldDisable]="!item.details.manufacturerId"
                 type="model"></app-equipment-select>
             </div>
@@ -1045,12 +1045,12 @@
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.invoice_operating
+            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.operating
                     | currency}}</div>
             <div class="padding-label-top" *ngIf="submitRequests">
               <input type="text" [disabled]="!submitRequests
                       || !submitRequests" currencyMask style="width:100px" (blur)="rentalChanged(item)"
-                [(ngModel)]="item.details.invoice_operating" (keypress)="rentalChanged(item)" [ngModelOptions]="{standalone:
+                [(ngModel)]="item.details.operating" (keypress)="rentalChanged(item)" [ngModelOptions]="{standalone:
                       true}">
             </div>
           </clr-dg-cell>
@@ -1106,12 +1106,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
-                          As Is" (click)="approve(item)">
+                          As Is" (click)="approve(i,item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                           With
-                          Change" (click)="approveWithChange(item)">
+                          Change" (click)="approveWithChange(i,item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>
@@ -1352,12 +1352,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
-                              As Is" (click)="approve(item)">
+                              As Is" (click)="approve(i,item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                               With
-                              Change" (click)="approveWithChange(item)">
+                              Change" (click)="approveWithChange(i,item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>
@@ -1439,12 +1439,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="success" matTooltip="Approve
-                              As Is" (click)="approve(item)">
+                              As Is" (click)="approve(i,item)">
                   <mat-icon class="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                               With
-                              Change" (click)="approveWithChange(item)">
+                              Change" (click)="approveWithChange(i,item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>
@@ -1523,12 +1523,12 @@
               </span>
               <span *ngIf="manageRequests">
                 <button class="ripple icon-button" [disabled]="!manageRequests" color="primary" matTooltip="Approve
-                              As Is" (click)="approve(item)">
+                              As Is" (click)="approve(i,item)">
                   <mat-icon color="accent">done</mat-icon>
                 </button>
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                               With
-                              Change" (click)="approveWithChange(item)">
+                              Change" (click)="approveWithChange(i,item)">
                   <mat-icon color="accent">edit</mat-icon>
                 </button>
               </span>

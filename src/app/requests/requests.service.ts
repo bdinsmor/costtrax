@@ -150,8 +150,8 @@ export class RequestsService {
   }
 
   grabRequestId(projectId: string, startDate: string, endDate: string) {
-    startDate = DateTime.fromJSDate(new Date(startDate)).toLocaleString();
-    endDate = DateTime.fromJSDate(new Date(endDate)).toLocaleString();
+    startDate = DateTime.fromJSDate(new Date(startDate)).toFormat('yyyy-MM-dd');
+    endDate = DateTime.fromJSDate(new Date(endDate)).toFormat('yyyy-MM-dd');
     return this.http.post(environment.serverUrl + '/request', {
       projectId: projectId,
       startDate: startDate,
@@ -170,15 +170,9 @@ export class RequestsService {
     );
   }
 
-  update(request: any) {
-    const updates = {
-      notes: request.notes,
-      start: request.startDate,
-      end: request.endDate
-    };
-
+  update(requestId: string, updates: any) {
     return this.http
-      .put(environment.serverUrl + '/request/' + request.id, updates)
+      .put(environment.serverUrl + '/request/' + requestId, updates)
       .pipe(
         map((res: any) => {
           const json = res as any;

@@ -29,17 +29,25 @@ export class EquipmentService implements OnDestroy {
     item.details.year = item.year;
     if (item.id) {
       return this.http.put(
-        environment.serverUrl + '/project/' + projectId + '/models/' + item.id,
+        environment.serverUrl +
+          '/project/' +
+          projectId +
+          '/equipment/' +
+          item.id,
         {
           modelId: item.modelId,
+          configurationSequence:
+            item.details.selectedConfiguration.configurationSequence,
           details: item.details
         }
       );
     } else {
       return this.http.post(
-        environment.serverUrl + '/project/' + projectId + '/models',
+        environment.serverUrl + '/project/' + projectId + '/equipment',
         {
           modelId: item.modelId,
+          configurationSequence:
+            item.details.selectedConfiguration.configurationSequence,
           details: item.details
         }
       );
@@ -48,13 +56,13 @@ export class EquipmentService implements OnDestroy {
 
   deleteRequestorModel(projectId: string, modelId: string): Observable<any> {
     return this.http.delete(
-      environment.serverUrl + '/project/' + projectId + '/models/' + modelId
+      environment.serverUrl + '/project/' + projectId + '/equipment/' + modelId
     );
   }
 
   getModelDetails(modelId: string): Observable<Equipment> {
     return this.http
-      .get(environment.serverUrl + '/equipment/models/' + modelId)
+      .get(environment.serverUrl + '/equipment/equipment/' + modelId)
       .pipe(
         map((res: any) => {
           return new Equipment(res);
@@ -64,7 +72,7 @@ export class EquipmentService implements OnDestroy {
 
   getRequestorModels(projectId: string): Observable<Equipment[]> {
     return this.http
-      .get(environment.serverUrl + '/project/' + projectId + '/models')
+      .get(environment.serverUrl + '/project/' + projectId + '/equipment')
       .pipe(
         map((res: any) => {
           if (!res) {
@@ -210,7 +218,6 @@ export class EquipmentService implements OnDestroy {
     if (!date || date === '') {
       date = new Date().toUTCString();
     }
-    console.log('configurationSequence: ' + configurationSequence);
     params = params.set('date', format(date, 'YYYY-MM-DD'));
     if (year && (year !== '' || year !== undefined)) {
       params = params.set('year', String(year));
@@ -460,9 +467,14 @@ export class EquipmentService implements OnDestroy {
 
   getModels(
     term: string = null,
-    makeId: string = null
+    manufacturerId: string = null
   ): Observable<Equipment[]> {
-    if (!makeId || makeId === '' || !term || term.length === 0) {
+    if (
+      !manufacturerId ||
+      manufacturerId === '' ||
+      !term ||
+      term.length === 0
+    ) {
       return of([]);
     }
     const url: string = environment.serverUrl + '/equipment/models';
@@ -472,8 +484,8 @@ export class EquipmentService implements OnDestroy {
     } else {
       params = params.set('model', '*');
     }
-    if (makeId) {
-      params = params.set('manufacturerId', makeId);
+    if (manufacturerId) {
+      params = params.set('manufacturerId', manufacturerId);
     }
 
     const options = { params: params };

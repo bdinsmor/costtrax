@@ -585,8 +585,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                 transport: 0,
                 years: e.years,
                 hours: 0,
-                make: e.make,
-                makeId: e.makeId,
+                make: e.manufacturerName,
+                manufacturerId: e.manufacturerName,
                 model: e.model,
                 modelId: e.modelId,
                 method: +sc.rates.method,
@@ -624,8 +624,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                     base: e.baseRental,
                     transport: 0,
                     hours: 0,
-                    make: e.make,
-                    makeId: e.makeId,
+                    make: e.manufacturerName,
+                    manufacturerId: e.manufacturerName,
                     model: e.model,
                     modelId: e.modelId,
                     rentalHouseRates: e.rentalHouseRates,
@@ -656,7 +656,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       const e: Item = this.itemList.items[i];
       if (
         e.details.modelId === equipment.modelId &&
-        e.details.make === equipment.make &&
+        e.details.manufacturerName === equipment.manufacturerName &&
         e.details.year === equipment.year &&
         e.details.selectedConfiguration.configurationSequence ===
           equipment.details.selectedConfiguration.configurationSequence
@@ -719,11 +719,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   makeNewSelectionChanged(event: any, item: Item) {
     if (item && item.details && event && event.item) {
-      item.details.manufacturerId = event.item.makeId;
+      item.details.manufacturerId = event.item.manufacturerName;
       item.details.modelId = null;
       item.details.model = null;
       item.misc =
-        event.item.make && event.item.make.toUpperCase() === 'MISCELLANEOUS';
+        event.item.manufacturerName && event.item.manufacturerName.toUpperCase() === 'MISCELLANEOUS';
       item.details.sizeClassName = '';
       item.details.subSize = '';
       item.details.rate = 0;
@@ -839,7 +839,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     item.details.subtypeId = event.item.subtypeId;
     item.details.categoryId = event.item.categoryId;
     item.details.categoryName = event.item.categoryName;
-    item.details.make = event.item.make;
+    item.details.manufacturerName = event.item.manufacturerName;
     item.details.model = event.item.model;
     item.details.modelId = event.item.modelId;
     item.details.dateIntroduced = event.item.dateIntroduced;
@@ -980,9 +980,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               this.standbyFactor
             )
             .subscribe((data: any) => {
-              console.log(
-                'data from cost recovery: ' + JSON.stringify(data, null, 2)
-              );
               sc.rates = data;
 
               if (this.itemType === 'equipmentActive') {
@@ -990,6 +987,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   this.project.adjustments.equipmentActive
                     .regionalAdjustmentsEnabled
                 ) {
+                  item.details.rate = data.fhwaRate;
                   sc.rates.fhwa = +Number(
                     +sc.rates.monthlyOwnershipCostAdjustedRate +
                       +sc.rates.hourlyOperatingCostAdjusted
@@ -1024,6 +1022,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   this.project.adjustments.equipmentStandby
                     .regionalAdjustmentsEnabled
                 ) {
+                  item.details.rate = data.standbyRate;
                   sc.rates.fhwa = +Number(
                     +sc.rates.monthlyOwnershipCostAdjustedStandbyRate
                   ).toFixed(2);
@@ -1056,8 +1055,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               } else {
                 item.resetSelectedConfiguration();
               }
-
-              item.details.rate = sc.rates.fhwa;
               item.details.selectedConfiguration = sc;
               if (this.itemType === 'equipmentActive') {
                 this.activeChanged(item);
@@ -1104,8 +1101,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             lastName: '',
             firstName: ''
           },
+          class: '',
           rate: 0,
-          multiplier: 0,
+          multiplier: 1,
           hours: 0,
           fringe: 0
         }
@@ -1147,9 +1145,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         beingEdited: true,
         requestId: this.requestId,
         type: this.itemType,
+        subtotal: 0,
+        amount: 0,
         details: {
           unitCost: 1,
           units: 1,
+          description: '',
+          type: '',
           transport: 0,
           year: new Date().getFullYear()
         }
@@ -1181,22 +1183,14 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       item.amount = 0;
       return;
     }
-    if (item.details.time1) {
-      total += +item.details.time1 * +item.details.rate;
+    if (!item.details.multiplier) {
+      item.details.multiplier = 1;
     }
-    if (item.details.time15) {
-      total += +item.details.time15 * (1.5 * +item.details.rate);
-    }
-    if (item.details.time2) {
-      total += +item.details.time2 * (2 * +item.details.rate);
-    }
+    total =
+      item.details.multiplier * item.details.rate * item.details.hours +
+      item.details.hours * item.details.fringe;
+
     item.subtotal = total;
-    if (item.details.benefits) {
-      const totalHours =
-        +item.details.time2 + +item.details.time15 + +item.details.time1;
-      const totalBennies = +item.details.benefits * totalHours;
-      total += +totalBennies;
-    }
 
     item.amount = total;
     item.details.subtotal = item.subtotal;
@@ -1237,32 +1231,14 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     if (item.details.transport) {
       total += +item.details.transport;
     }
-    if (item.details.invoice_operating && item.details.hours) {
-      total += +item.details.invoice_operating * item.details.hours;
+    if (item.details.operating && item.details.hours) {
+      total += +item.details.operating * item.details.hours;
     }
     item.subtotal = total;
     item.amount = total;
     if (!item.details.startDate || !item.details.endDate) {
       return;
     }
-
-    const diff = Math.abs(
-      new Date(item.details.startDate).getTime() -
-        new Date(item.details.endDate).getTime()
-    );
-
-    let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-
-    if (diffDays === 0) {
-      diffDays = 1;
-    }
-
-    this.requestsService
-      .getDaysBreakdown(diffDays)
-      .subscribe((breakdown: any) => {
-        item.details.rentalBreakdown = breakdown;
-        item.calculateRentalComps();
-      });
   }
 
   configChosen(configuration: any) {}
@@ -1428,6 +1404,53 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     it.beingEdited = !it.beingEdited;
   }
 
+  approve(index: number, item: Item) {
+    this.selectedItem = item;
+    const dialogRef = this.dialog.open(LineItemApproveDialogComponent, {
+      width: '80vw',
+      data: {
+        selectedItem: item,
+        modalType: 'ApprovedAsIs',
+        modalTitle: 'Approve',
+        modalSubmitLabel: 'Approve'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (item) {
+          this.selectedItem.subtotalApproved = this.selectedItem.amount;
+          this.selectedItem.approvedOn = new Date();
+          // this.itemList.items[index] = this.selectedItem;
+        }
+      }
+    });
+  }
+
+  approveWithChange(index: number, item: Item) {
+    this.selectedItem = item;
+    const dialogRef = this.dialog.open(LineItemApproveDialogComponent, {
+      width: '80vw',
+      data: {
+        selectedItem: item,
+        modalType: 'ApprovedWithChange',
+        modalTitle: 'Approve With Changed',
+        modalSubmitLabel: 'Approve'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.changes) {
+          this.selectedItem.approverNotes = result.changes.changeReason;
+          this.selectedItem.subtotalApproved = result.changes.finalAmount;
+          this.selectedItem.approvedOn = new Date();
+          // this.itemList.items[index] = this.selectedItem;
+        }
+      }
+    });
+  }
+
   viewAttachments(item: Item) {
     this.selectedItem = item;
     const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
@@ -1444,6 +1467,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.fileList) {
         item.attachments = result.fileList;
+
         this.selectedItem = null;
         this.changeDetector.detectChanges();
         this.changeDetector.markForCheck();
@@ -1595,8 +1619,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
                   base: equipment.baseRental,
                   transport: 0,
                   hours: 0,
-                  make: equipment.make,
-                  makeId: equipment.makeId,
+                  make: equipment.manufacturerName,
+                  manufacturerId: equipment.manufacturerName,
                   model: equipment.model,
                   modelId: equipment.modelId,
                   sizeClassName: equipment.sizeClassName,
@@ -1639,8 +1663,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               configurations: equipment.details.configurations,
               transport: 0,
               hours: 0,
-              make: equipment.make,
-              makeId: equipment.makeId,
+              make: equipment.manufacturerName,
+              manufacturerId: equipment.manufacturerName,
               modelId: equipment.modelId,
               sizeClassName: equipment.sizeClassName,
               subSize: equipment.subtypeName + ' ' + equipment.sizeClassName,

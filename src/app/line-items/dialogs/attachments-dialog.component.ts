@@ -66,7 +66,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   done() {
-    this.dialogRef.close({ fileList: this.fileList });
+    this.dialogRef.close({ fileList: this.addedFiles });
   }
 
   openAttachment(file: UploadFile) {
@@ -75,7 +75,6 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
 
   handleChange({ file, fileList }) {
     const status = file.status;
-    console.log('inside handleChange');
     if (status === 'done') {
       fileList.forEach((p: any) => {
         if (!p.url || p.url === '') {
@@ -108,7 +107,6 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
   }
 
   deleteFile(index: number, file: Attachment) {
-    console.log('inside delete...');
     return this.requestsService
       .deleteAttachment(this.requestId, file.id)
       .pipe(untilDestroyed(this))
@@ -177,7 +175,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
                 item.onSuccess(event2.body, item.file, event2);
                 this.addedFiles.forEach((a: Attachment) => {
                   if (a.uid === item.file.uid) {
-                    a.status = 'info';
+                    a.status = 'complete';
                   }
                 });
 

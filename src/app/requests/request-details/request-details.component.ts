@@ -135,18 +135,10 @@ export class RequestDetailsComponent
               this.project = p;
               r.project = p;
               this.request = r;
-              this.request.calculateTotals();
-              this.editMode = false;
               this.notesFormGroup = this.formBuilder.group({
                 notes: new FormControl(r.notes),
                 dateRange: new FormControl(r.dateRange, Validators.required)
               });
-
-              this.notesFormGroup.valueChanges
-                .pipe(auditTime(750))
-                .subscribe((formData: any) => {
-                  this.save(formData.notes, formData.dateRange);
-                });
               this.titleService.setTitle('Request ' + r.oneUp + ': ' + p.name);
               this.breadcrumbService.addProject(p.id, p.name);
               this.breadcrumbService.addRequest(r.id, r.oneUp);
@@ -280,15 +272,22 @@ export class RequestDetailsComponent
       this.request.notes = this.notesFormGroup.value.notes;
       this.request.startDate = new Date(this.notesFormGroup.value.dateRange[0]);
       this.request.endDate = new Date(this.notesFormGroup.value.dateRange[1]);
-      console.log('request: ' + JSON.stringify(this.request, null, 2));
-      /* this.requestsService.update(this.request).subscribe(
+
+      const data = {
+        meta: {
+          notes: this.notesFormGroup.value.notes
+        },
+        lineItems: this.request.buildLineItemsToSave()
+      };
+
+      this.requestsService.update(this.request.id, data).subscribe(
         (response: any) => {
           this.openSnackBar('Request Saved', 'ok', 'OK');
         },
         (error: any) => {
           this.openSnackBar('Request Did Not Save', 'error', 'OK');
         }
-      ); */
+      );
     }
   }
 
@@ -327,24 +326,6 @@ export class RequestDetailsComponent
 
   */
 
-  save(notesValue, dateRange) {
-    if (
-      this.request.id &&
-      this.request.id !== '' &&
-      (this.notesFormGroup && !this.notesFormGroup.hasError('notValid'))
-    ) {
-      this.request.notes = notesValue;
-      this.request.startDate = new Date(dateRange[0]);
-      this.request.endDate = new Date(dateRange[1]);
-      this.requestsService.update(this.request).subscribe((response: any) => {
-        if (this.request.status !== 'PENDING') {
-          this.equipmentService.sendDateChangeNotification();
-        }
-      });
-    } else {
-    }
-  }
-
   compareByValue(c1: Project, c2: Project): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
@@ -355,7 +336,7 @@ export class RequestDetailsComponent
       item.description.toLocaleLowerCase().indexOf(term) > -1 ||
       item.vin.toLocaleLowerCase() === term ||
       item.model.toLocaleLowerCase() === term ||
-      item.make.toLocaleLowerCase() === term
+      item.manufacturerName.toLocaleLowerCase() === term
     );
   }
   removeLineItem() {

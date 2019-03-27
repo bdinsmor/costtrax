@@ -34,7 +34,6 @@ export class AccountFormComponent implements OnInit {
   createAccount() {
     this.account.accountName = this.accountForm.value.accountName;
     this.account.organization = this.account.accountName;
-    console.log('users: ' + JSON.stringify(this.account, null, 2));
     this.accountService.create(this.account).subscribe((res: any) => {
       if (res) {
         this.dialogRef.close({ success: true });

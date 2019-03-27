@@ -52,16 +52,16 @@
         </div>
       </div>
       <div *ngIf="project" class="row mt-1 align-items-center">
-        <button type="button" *ngIf="canSubmitRequests" (click)="createRequest()" matTooltip="Create Request" class="btn ripple btn-primary"
-          color="primary">
+        <button type="button" *ngIf="canSubmitRequests" (click)="createRequest()" matTooltip="Create Request"
+          class="btn ripple btn-primary" color="primary">
           <clr-icon class="is-solid" shape="add"></clr-icon>
           <span>&nbsp;Request</span>
         </button>
         <button type="button" matTooltip="Archive Project" *ngIf="canChangeSettings &&
           (project.draftRequests &&
           project.draftRequests.length === 0 &&
-          (project.pendingRequests && project.pendingRequests.length === 0))"
-          (click)="completeProject()" class="btn btn-success">
+          (project.pendingRequests && project.pendingRequests.length === 0))" (click)="completeProject()"
+          class="btn btn-success">
           <clr-icon class="hidden-md-up is-solid" shape="archive"></clr-icon>
           <span class="hidden-sm-down">Archive Project</span>
         </button>
@@ -92,7 +92,8 @@
           </button>
           <clr-tab-content *clrIfActive>
             <app-requests [items]="project.draftRequests" [projectId]="project.id" [projectName]="project.name"
-              [status]="'DRAFT'" (changed)="refreshItems()" (duplicated)="refreshItems()" [submitRequests]="canSubmitRequests"></app-requests>
+              [status]="'DRAFT'" (changed)="refreshItems()" (duplicated)="refreshItems()"
+              [submitRequests]="canSubmitRequests"></app-requests>
           </clr-tab-content>
         </clr-tab>
         <clr-tab *ngIf="project.pendingRequests && project.pendingRequests.length> 0">
@@ -125,8 +126,8 @@
           </button>
           <clr-tab-content *clrIfActive>
             <div class="px-2 full-width">
-              <app-user-list [users]="project.requestors" [projectId]="project.id" [type]="'REQUESTOR'" [newProject]="newProject"
-                (changed)="refreshUsers()"></app-user-list>
+              <app-user-list [users]="project.requestors" [projectId]="project.id" [type]="'REQUESTOR'"
+                [newProject]="newProject" (changed)="refreshUsers()"></app-user-list>
             </div>
           </clr-tab-content>
         </clr-tab>
@@ -147,7 +148,7 @@
             <clr-icon shape="ruler-pencil"></clr-icon>&nbsp;Project Assets
           </button>
           <clr-tab-content *clrIfActive>
-            <app-equipment [projectId]="project.id" [adjustments]="project.adjustments" [state]="project.state"></app-equipment>
+            <app-equipment [projectId]="project.id" [adjustments]="project.adjustments"></app-equipment>
             <app-labor [projectId]="project.id"></app-labor>
           </clr-tab-content>
         </clr-tab>
@@ -162,14 +163,13 @@
                   <div class="row no-margin-left align-items-center">
                     <label class="no-bottom-margin" for="pr-1">Zip Code:</label>
                     <div class="pl-1 pr-1">
-                      <input type="text" name="zipcode" size="7" maxlength="9" formControlName="zipcode" placeholder="project zip code" />
+                      <input type="text" name="zipcode" size="7" maxlength="9" formControlName="zipcode"
+                        placeholder="project zip code" />
                     </div>
                     <label class="required no-bottom-margin pr-1">State:
                     </label>
                     <div class="w-25">
-                      <ng-select class="full-width" formControlName="state">
-                        <ng-option *ngFor="let state of states" [value]="state.value">{{ state.label }}</ng-option>
-                      </ng-select>
+                      need display for location selection...
                     </div>
                   </div>
                   <div class="row no-margin-left font-italic small-text">
@@ -205,9 +205,9 @@
 
                     <div class="cost-content px-1 pb-1">
                       <label class="bold-label">Formula:</label>
-                      <ng-select class="w-25" [items]="activeFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
-                        clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
-                        formControlName="activeFormula">
+                      <ng-select class="w-25" [items]="activeFormulas" bindValue="name" bindLabel="label"
+                        placeholder="Choose Formula" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true"
+                        appendTo="body" formControlName="activeFormula">
                       </ng-select>
                       <div class="row no-margin-left font-italic small-text">
                         (Rental Rate Blue Book Monthly Ownership
@@ -218,7 +218,8 @@
                       <label class="bold-label">Rate Adjustments:</label>
                       <div class="px-1">
                         <div class="checkbox">
-                          <input type="checkbox" matRipple id="activeRegionalCheck" formControlName="activeRegionalCheck" />
+                          <input type="checkbox" matRipple id="activeRegionalCheck"
+                            formControlName="activeRegionalCheck" />
                           <label for="activeRegionalCheck">Use regional
                             adjustment for
                             <span *ngIf="projectFormGroup &&
@@ -272,9 +273,9 @@
                     </div>
                     <div class="cost-content px-1 pb-1">
                       <label class="bold-label">Formula:</label>
-                      <ng-select class="w-50" [items]="standbyFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
-                        clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
-                        formControlName="standbyFormula">
+                      <ng-select class="w-50" [items]="standbyFormulas" bindValue="name" bindLabel="label"
+                        placeholder="Choose Formula" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true"
+                        appendTo="body" formControlName="standbyFormula">
                       </ng-select>
                       <div class="row no-margin-left font-italic small-text">
                         (Rental Rate Blue Book Monthly Ownership Cost/176)*0.5
@@ -284,7 +285,8 @@
                       <label class="bold-label">Rate Adjustments:</label>
                       <div class="px-1">
                         <div class="checkbox">
-                          <input type="checkbox" matRipple id="standbyRegionalCheck" formControlName="standbyRegionalCheck" />
+                          <input type="checkbox" matRipple id="standbyRegionalCheck"
+                            formControlName="standbyRegionalCheck" />
                           <label for="standbyRegionalCheck">Use regional
                             adjustment for
                             <span *ngIf="projectFormGroup &&
@@ -381,7 +383,8 @@
                   </div>
                   <div class="cost-section mb-1">
                     <div class="row no-margin-left cost-title full-width">
-                      <mat-checkbox type="checkbox" matRipple id="subcontractorCheck" formControlName="subcontractorCheck">
+                      <mat-checkbox type="checkbox" matRipple id="subcontractorCheck"
+                        formControlName="subcontractorCheck">
                       </mat-checkbox>
                       <h4 class="pl-1 no-top-margin no-bottom-margin
                         align-items-center">
