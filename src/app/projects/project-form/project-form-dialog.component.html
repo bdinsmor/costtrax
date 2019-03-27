@@ -127,18 +127,26 @@
     </div>
 
     <div class="form-group p1-2 pt-1 pr-2">
-      <label for="formFields_8">Instructions:</label>
+      <div class="form-block">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Instructions:</mat-label>
 
-      <div class="row no-margin-left font-italic small-text">
-        <i class="material-icons md-20 md-dark"> info </i>&nbsp;Include any
-        relevant instructions or information for users submitting requests on
-        this project.
+          <textarea
+            matInput
+            rows="3"
+            formControlName="projectInstructions"
+            placeholder="Instructions"
+          ></textarea>
+        </mat-form-field>
+        <div
+          class="row no-margin-left font-italic small-text"
+          style="margin-top:-6px"
+        >
+          <i class="material-icons md-20 md-dark"> info </i>&nbsp;Include any
+          relevant instructions or information for users submitting requests on
+          this project.
+        </div>
       </div>
-      <textarea
-        id="formFields_8"
-        rows="3"
-        formControlName="projectInstructions"
-      ></textarea>
     </div>
   </section>
   <section class="form-group pr-1">

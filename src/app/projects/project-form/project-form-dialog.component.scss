@@ -74,6 +74,7 @@ input[type='text']:not([readonly]):focus,
 input[type='time'],
 input[type='time']:not([readonly]):focus,
 input[type='url'],
+textarea,
 input[type='url']:not([readonly]):focus {
     border: none !important;
 }
@@ -86,8 +87,12 @@ input[type='password']:not([readonly]),
 input[type='tel']:not([readonly]),
 input[type='text']:not([readonly]),
 input[type='time']:not([readonly]),
-input[type='url']:not([readonly]) {
+input[type='url']:not([readonly]), textarea {
     background: inherit !important;
+}
+
+textarea:focus {
+    box-shadow: none !important;
 }
 
 input[type='button']:disabled,
