@@ -81,14 +81,19 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  accountChanged() {
-    console.log('this.account: ' + JSON.stringify(this.account, null, 2));
+  accountChanged(event) {
+    if (event && event.action === 'delete') {
+      this.refreshAccount();
+      return;
+    }
+
     this.accountService
       .update(this.account)
       .pipe(untilDestroyed(this))
       .subscribe(
         (response: any) => {
           this.openSnackBar('Account Updated!', 'ok', 'OK');
+          this.refreshAccount();
         },
         (error: any) => {
           this.openSnackBar('Error Updating Account', 'error', 'OK');

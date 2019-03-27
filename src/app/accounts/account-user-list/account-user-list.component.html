@@ -5,7 +5,11 @@
     </h5>
   </section>
 
-  <button type="button" class="btn btn-sm btn-primary mt-1" (click)="addAccountAdmin()">
+  <button
+    type="button"
+    class="btn btn-sm btn-primary mt-1"
+    (click)="addAccountAdmin()"
+  >
     Add Account Admin
   </button>
   <section class="full-width d-flex flex-row align-items-center">
@@ -22,9 +26,16 @@
 
       <clr-dg-row *ngFor="let user of users; let i = index">
         <clr-dg-cell>
-          <div *ngIf="newAccount" [matTooltip]="user.email" class="padding-label-top">{{ user.email | truncate: 30 }}
+          <div
+            *ngIf="newAccount"
+            [matTooltip]="user.email"
+            class="padding-label-top"
+          >
+            {{ user.email | truncate: 30 }}
           </div>
-          <div *ngIf="!newAccount" class="padding-label-top">{{ user.email}}</div>
+          <div *ngIf="!newAccount" class="padding-label-top">
+            {{ user.email }}
+          </div>
         </clr-dg-cell>
         <clr-dg-cell>
           <div class="padding-label-top" *ngIf="user.roles">
@@ -35,9 +46,13 @@
             </mat-chip-list>
           </div>
         </clr-dg-cell>
-        <clr-dg-cell>
-          <button *ngIf="!user.expanded" class="ripple icon-30 icon-button" matTooltip="Remove"
-            (click)="removeUser(i, user)">
+        <clr-dg-cell class="justify-content-center pt-20">
+          <button
+            *ngIf="!user.expanded"
+            class="ripple icon-30 icon-button"
+            matTooltip="Remove"
+            (click)="removeUser(i, user)"
+          >
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </clr-dg-cell>

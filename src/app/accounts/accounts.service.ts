@@ -35,7 +35,7 @@ export class AccountService {
 
   deleteUser(accountId: string, userId: string) {
     return this.http.delete(
-      environment.serverUrl + '/account/' + accountId + '/user/' + userId
+      environment.serverUrl + '/account/' + accountId + '/users/' + userId
     );
   }
 
