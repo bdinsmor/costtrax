@@ -6,7 +6,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
@@ -92,7 +92,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            "Could not load requestor's saved models for this project" + error
+            'Could not load requestor\'s saved models for this project' + error
           );
         }
       );
@@ -291,6 +291,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
             .subscribe((data: any) => {
               sc.rates = data;
               if (this.adjustments.equipmentActive.regionalAdjustmentsEnabled) {
+                sc.rates.rate = data.fhwaRate;
                 sc.rates.fhwa = +Number(
                   +sc.rates.monthlyOwnershipCostAdjustedRate +
                     +sc.rates.hourlyOperatingCostAdjusted
@@ -311,6 +312,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
                   +sc.rates.monthlyOwnershipCostAdjustedRate
                 ).toFixed(2);
               } else {
+                sc.rates.rate = data.standbyRate;
                 sc.rates.fhwa = +Number(
                   +sc.rates.monthlyOwnershipCostUnadjustedRate +
                     +sc.rates.hourlyOperatingCostUnadjusted

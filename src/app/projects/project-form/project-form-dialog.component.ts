@@ -1,7 +1,8 @@
+import { trigger } from '@angular/animations';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatChipInputEvent, MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatAutocompleteTrigger, MatChipInputEvent, MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -26,6 +27,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private changeDetector: ChangeDetectorRef
   ) {}
+  @ViewChild(MatAutocompleteTrigger) trigger;
   visible = true;
   selectable = true;
   removable = true;
@@ -47,6 +49,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   locations: [] = [];
   states: [] = [];
   filteredStates: Observable<string[]>;
+  filteredLocations: Observable<string[]>;
   isLoaded = false;
   activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
   standbyFormulas = [{ name: '50OWNER', label: '50% Ownership Cost' }];
@@ -107,19 +110,27 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     });
   }
 
+  onFocus() {
+    this.trigger._onChange('');
+    this.trigger.openPanel();
+  }
+
   displayFn(val: any) {
     return val ? val.label : val;
   }
 
+  displayLocationFn(val: any) {
+    return val ? val.label : val;
+  }
+
   private _filter(value: any): string[] {
-    if (!value || value === '' || isObject(value)) {
-      return;
+    if (isObject(value)) {
+      return [];
     }
 
     const filterValue = value.toLowerCase();
-
-    return this.states.filter(
-      (option: any) => option.label.toLowerCase().indexOf(filterValue) === 0
+    return this.states.filter((option: any) =>
+      option.label.toLowerCase().includes(filterValue)
     );
   }
 
@@ -172,9 +183,6 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   saveNew() {
     const formData: any = this.projectFormGroup.value;
-    console.log(
-      'formData.rentalState: ' + JSON.stringify(formData.rentalState, null, 2)
-    );
 
     const projectData: any = {
       accountId: formData.selectedAccount,
@@ -276,15 +284,12 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   createProjectFormGroup() {
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name, Validators.required),
-      rentalState: new FormControl(
-        this.project.adjustments.rentalLocation.stateCode,
-        Validators.required
-      ),
+      rentalState: new FormControl(''),
       rentalZipcode: new FormControl(
         this.project.adjustments.rentalLocation.zipcode,
         Validators.required
       ),
-      location: new FormControl(null, Validators.required),
+      location: new FormControl(''),
       selectedAccount: new FormControl(
         this.firstAccount.id,
         Validators.required

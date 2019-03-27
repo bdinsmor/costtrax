@@ -53,14 +53,14 @@
         </mat-chip-list>
       </mat-form-field>
       <h4 class="no-top-margin">Cost Recovery Location</h4>
-      <div class="w-50 pt-1 pb-1">
+      <div class="full-width pt-1 pb-1">
         <ng-select
+          class="height-fix"
           formControlName="location"
           appendTo="body"
           bindLabel="label"
           [items]="locations"
           required
-          style="min-height: 65px !important"
         >
           <ng-template
             ng-option-tmp
@@ -92,6 +92,7 @@
             placeholder="Choose State"
             aria-label="Rental State"
             matInput
+            (focus)="onFocus()"
             formControlName="rentalState"
             [matAutocomplete]="auto"
           />
@@ -103,7 +104,7 @@
             <mat-option
               *ngFor="let choice of (filteredStates | async)"
               [value]="choice"
-            >{{ choice.label }}
+              >{{ choice.label }}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>

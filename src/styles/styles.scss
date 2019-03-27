@@ -108,8 +108,19 @@ $v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
 }
 
 .height-fix {
-    min-height: 69px !important;
+    min-height: 64px !important;
     margin-top: 2px !important;
+}
+
+.height-fix > .ng-select-container {
+    min-height: 64px !important;
+}
+
+.height-fix > .ng-select-container input[type='text'] {
+    margin-top: 13px !important;
+    font-size: 16px !important;
+    color: rgba(0, 0, 0, 1);
+    font-family: inherit !important;
 }
 
 .mat-select {
