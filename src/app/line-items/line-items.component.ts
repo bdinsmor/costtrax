@@ -485,7 +485,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
       selectedEquipment.push(equipment);
     }
-
+    console.log("equipment: " + JSON.stringify(selectedEquipment,null,2));
     this.equipmentService
       .getRateDataforSelectedEquipment(
         selectedEquipment,

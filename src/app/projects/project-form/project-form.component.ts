@@ -1,6 +1,7 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { MatChipInputEvent, MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -32,66 +33,19 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     private projectsService: ProjectsService,
     private titleService: Title
   ) {}
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   private config: MatSnackBarConfig;
   duration = 3000;
   items: any;
   draftCosts = true;
   pendingCosts = true;
   completeCosts = true;
+  requestingOrgs: string[] = [];
 
-  states = [
-    { label: 'Alabama', value: 'AL' },
-    { label: 'Alaska', value: 'AK' },
-    { label: 'Arizona', value: 'AZ' },
-    { label: 'Arkansas', value: 'AR' },
-    { label: 'California', value: 'CA' },
-    { label: 'Colorado', value: 'CO' },
-    { label: 'Connecticut', value: 'CT' },
-    { label: 'Delaware', value: 'DE' },
-    { label: 'District of Columbia', value: 'DC' },
-    { label: 'Florida', value: 'FL' },
-    { label: 'Georgia', value: 'GA' },
-    { label: 'Hawaii', value: 'HI' },
-    { label: 'Idaho', value: 'ID' },
-    { label: 'Illinois', value: 'IL' },
-    { label: 'Indiana', value: 'IN' },
-    { label: 'Iowa', value: 'IA' },
-    { label: 'Kansas', value: 'KS' },
-    { label: 'Kentucky', value: 'KY' },
-    { label: 'Lousiana', value: 'LA' },
-    { label: 'Maine', value: 'ME' },
-    { label: 'Maryland', value: 'MD' },
-    { label: 'Massachusetts', value: 'MA' },
-    { label: 'Michigan', value: 'MI' },
-    { label: 'Minnesota', value: 'MN' },
-    { label: 'Mississippi', value: 'MS' },
-    { label: 'Missouri', value: 'MO' },
-    { label: 'Montana', value: 'MT' },
-    { label: 'Nebraska', value: 'NE' },
-    { label: 'Nevada', value: 'NV' },
-    { label: 'New Hampshire', value: 'NH' },
-    { label: 'New Jersey', value: 'NJ' },
-    { label: 'New Mexico', value: 'NM' },
-    { label: 'New York', value: 'NY' },
-    { label: 'North Carolina', value: 'NC' },
-    { label: 'North Dakota', value: 'ND' },
-    { label: 'Ohio', value: 'OH' },
-    { label: 'Oklahoma', value: 'OK' },
-    { label: 'Oregon', value: 'OR' },
-    { label: 'Pennsylvania', value: 'PA' },
-    { label: 'Rhode Island', value: 'RI' },
-    { label: 'South Carolina', value: 'SC' },
-    { label: 'South Dakota', value: 'SD' },
-    { label: 'Tennessee', value: 'TN' },
-    { label: 'Texas', value: 'TX' },
-    { label: 'Utah', value: 'UT' },
-    { label: 'Vermont', value: 'VT' },
-    { label: 'Virginia', value: 'VA' },
-    { label: 'Washington', value: 'WA' },
-    { label: 'West Virginia', value: 'WV' },
-    { label: 'Wisconsin', value: 'WI' },
-    { label: 'Wyoming', value: 'WY' }
-  ];
   activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
   standbyFormulas = [{ name: '50OWNER', label: '50% Ownership Cost' }];
   projectFormGroup: FormGroup;
@@ -159,24 +113,35 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     this.accounts$ = this.projectsService.getAccounts();
   }
 
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    // Add our fruit
+    if ((value || '').trim()) {
+      this.requestingOrgs.push(value);
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  remove(value): void {
+    const index = this.requestingOrgs.indexOf(value);
+
+    if (index >= 0) {
+      this.requestingOrgs.splice(index, 1);
+    }
+  }
+
   calculateCosts() {
     this.project.calculateCosts(
       this.draftCosts,
       this.pendingCosts,
       this.completeCosts
     );
-  }
-
-  findState(abbr: string) {
-    if (!abbr || abbr === '') {
-      return '';
-    }
-    const st = this.states.find((s: any) => s.value === abbr.toUpperCase());
-    if (st) {
-      return st.label;
-    } else {
-      return '';
-    }
   }
 
   checkPermissions() {
@@ -219,80 +184,13 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       id: this.project.id,
       active: this.project.active,
       accountId: this.project.account.id,
-      name: this.project.name,
-      zipcode: formData.zipcode,
-      state: formData.state,
+      name: formData.projectName,
       description: formData.projectInstructions,
       paymentTerms: this.project.paymentTerms,
       adjustments: {}
     };
 
-    projectData.adjustments.equipment = {
-      active: {
-        enabled: formData.activeCheck,
-        regionalAdjustmentsEnabled: formData.activeRegionalCheck,
-        markup: formData.activeMarkup,
-        ownership: formData.activeOwnershipCost,
-        operating: formData.activeOperatingCost
-      },
-      standby: {
-        enabled: formData.standbyCheck,
-        regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
-        markup: formData.standbyMarkup
-      },
-
-      rental: {
-        enabled: formData.rentalCheck,
-        markup: formData.rentalMarkup
-      }
-    };
-    projectData.adjustments.material = {
-      enabled: formData.materialCheck,
-      markup: formData.materialMarkup
-    };
-    projectData.adjustments.labor = {
-      enabled: formData.laborCheck,
-      markup: formData.laborMarkup
-    };
-    projectData.adjustments.other = {
-      enabled: formData.otherCheck,
-      markup: formData.otherMarkup
-    };
-    projectData.adjustments.subcontractor = {
-      enabled: formData.subcontractorCheck,
-      markup: formData.subcontractorMarkup
-    };
-
-    /*
-    activeFormula: new FormControl('FHWA'),
-      activeMarkup: new FormControl(
-        this.project.adjustments.equipmentActive.markup
-      ),
-      standbyFormula: new FormControl('50OWNER'),
-      standbyMarkup: new FormControl(
-        this.project.adjustments.equipmentStandby.markup
-      ),
-      activeRegionalCheck: new FormControl(
-        this.project.adjustments.equipmentActive.regionalAdjustmentsEnabled
-      ),
-      standbyRegionalCheck: new FormControl(
-        this.project.adjustments.equipmentStandby.regionalAdjustmentsEnabled
-      ),
-      rentalMarkup: new FormControl(
-        this.project.adjustments.equipmentRental.markup
-      ),
-      activeOwnershipCost: new FormControl(
-        this.project.adjustments.equipmentActive.ownership
-      ),
-      activeOperatingCost: new FormControl(
-        this.project.adjustments.equipmentActive.operating
-      ),
-      laborMarkup: new FormControl(this.project.adjustments.labor.markup),
-      subcontractorMarkup: new FormControl(
-        this.project.adjustments.subcontractor.markup
-      ),
-      materialMarkup: new FormControl(this.project.adjustments.material.markup),
-      otherMarkup: new FormControl(this.project.adjustments.other.markup), */
+    projectData.adjustments = this.project.adjustments;
 
     this.projectsService.updateProject(projectData).subscribe(
       (response: any) => {
@@ -386,57 +284,120 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   }
 
   createProjectFormGroup() {
+    let city = '';
+    if (this.project.adjustments.costLocation) {
+      city = this.project.adjustments.costLocation.city;
+      if (city && city !== '') {
+        city = city + ' ' + this.project.adjustments.costLocation.region;
+      }
+    }
+    let rentalZipcode = '';
+    let rentalState = '';
+    if (this.project.adjustments.rentalLocation) {
+      rentalState =
+        this.project.adjustments.rentalLocation.stateCode +
+        ' , ' +
+        this.project.adjustments.rentalLocation.countryCode;
+      rentalZipcode = this.project.adjustments.rentalLocation.zipcode;
+    }
+
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name),
+      projectCity: new FormControl({ value: city, disabled: true }),
       users: new FormControl(this.project.users),
       requestors: new FormControl(this.project.requestors),
-      zipcode: new FormControl(this.project.zipcode),
-      state: new FormControl(this.project.state),
+      rentalState: new FormControl({
+        value: rentalState,
+        disabled: true
+      }),
+      rentalZipcode: new FormControl({
+        value: rentalZipcode,
+        disabled: true
+      }),
+      requestingOrgs: new FormControl(this.project.meta.requestingOrgs),
       projectInstructions: new FormControl(this.project.description),
-      activeFormula: new FormControl('FHWA'),
-      activeMarkup: new FormControl(
-        this.project.adjustments.equipmentActive.markup
-      ),
-      standbyFormula: new FormControl('50OWNER'),
-      standbyMarkup: new FormControl(
-        this.project.adjustments.equipmentStandby.markup
-      ),
-      activeRegionalCheck: new FormControl(
-        this.project.adjustments.equipmentActive.regionalAdjustmentsEnabled
-      ),
-      standbyRegionalCheck: new FormControl(
-        this.project.adjustments.equipmentStandby.regionalAdjustmentsEnabled
-      ),
-      rentalMarkup: new FormControl(
-        this.project.adjustments.equipmentRental.markup
-      ),
-      activeOwnershipCost: new FormControl(
-        this.project.adjustments.equipmentActive.ownership
-      ),
-      activeOperatingCost: new FormControl(
-        this.project.adjustments.equipmentActive.operating
-      ),
-      laborMarkup: new FormControl(this.project.adjustments.labor.markup),
-      subcontractorMarkup: new FormControl(
-        this.project.adjustments.subcontractor.markup
-      ),
-      materialMarkup: new FormControl(this.project.adjustments.material.markup),
-      otherMarkup: new FormControl(this.project.adjustments.other.markup),
-      activeCheck: new FormControl(
-        this.project.adjustments.equipmentActive.enabled
-      ),
-      standbyCheck: new FormControl(
-        this.project.adjustments.equipmentStandby.enabled
-      ),
-      rentalCheck: new FormControl(
-        this.project.adjustments.equipmentRental.enabled
-      ),
-      laborCheck: new FormControl(this.project.adjustments.labor.enabled),
-      materialCheck: new FormControl(this.project.adjustments.material.enabled),
-      otherCheck: new FormControl(this.project.adjustments.other.enabled),
-      subcontractorCheck: new FormControl(
-        this.project.adjustments.subcontractor.enabled
-      )
+      activeFormula: new FormControl({
+        value: 'FHWA',
+        disabled: true
+      }),
+      activeMarkup: new FormControl({
+        value: this.project.adjustments.equipmentActive.markup,
+        disabled: true
+      }),
+      standbyFormula: new FormControl({
+        value: '50OWNER',
+        disabled: true
+      }),
+      standbyMarkup: new FormControl({
+        value: this.project.adjustments.equipmentStandby.markup,
+        disabled: true
+      }),
+      activeRegionalCheck: new FormControl({
+        value: this.project.adjustments.equipmentActive
+          .regionalAdjustmentsEnabled,
+        disabled: true
+      }),
+      standbyRegionalCheck: new FormControl({
+        value: this.project.adjustments.equipmentStandby
+          .regionalAdjustmentsEnabled,
+        disabled: true
+      }),
+      rentalMarkup: new FormControl({
+        value: this.project.adjustments.equipmentRental.markup,
+        disabled: true
+      }),
+      activeOwnershipCost: new FormControl({
+        value: this.project.adjustments.equipmentActive.ownership,
+        disabled: true
+      }),
+      activeOperatingCost: new FormControl({
+        value: this.project.adjustments.equipmentActive.operating,
+        disabled: true
+      }),
+      laborMarkup: new FormControl({
+        value: this.project.adjustments.labor.markup,
+        disabled: true
+      }),
+      subcontractorMarkup: new FormControl({
+        value: this.project.adjustments.subcontractor.markup,
+        disabled: true
+      }),
+      materialMarkup: new FormControl({
+        value: this.project.adjustments.material.markup,
+        disabled: true
+      }),
+      otherMarkup: new FormControl({
+        value: this.project.adjustments.other.markup,
+        disabled: true
+      }),
+      activeCheck: new FormControl({
+        value: this.project.adjustments.equipmentActive.enabled,
+        disabled: true
+      }),
+      standbyCheck: new FormControl({
+        value: this.project.adjustments.equipmentStandby.enabled,
+        disabled: true
+      }),
+      rentalCheck: new FormControl({
+        value: this.project.adjustments.equipmentRental.enabled,
+        disabled: true
+      }),
+      laborCheck: new FormControl({
+        value: this.project.adjustments.labor.enabled,
+        disabled: true
+      }),
+      materialCheck: new FormControl({
+        value: this.project.adjustments.material.enabled,
+        disabled: true
+      }),
+      otherCheck: new FormControl({
+        value: this.project.adjustments.other.enabled,
+        disabled: true
+      }),
+      subcontractorCheck: new FormControl({
+        value: this.project.adjustments.subcontractor.enabled,
+        disabled: true
+      })
     });
   }
 }

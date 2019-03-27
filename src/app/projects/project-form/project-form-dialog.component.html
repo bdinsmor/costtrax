@@ -2,65 +2,130 @@
 
 <mat-dialog-content *ngIf="projectFormGroup" [formGroup]="projectFormGroup">
   <section class="form-block">
-    <div class="form-group">
-      <label for="selects_1">Select Account: </label>
-      <div class="select d-flex w-50">
-        <select id="selects_1" formControlName="selectedAccount" required>
-          <option *ngFor="let choice of (accounts$ | async)" [value]="choice.id">{{ choice.organization }}</option>
-        </select>
-      </div>
-    </div>
-    <div class="project-section full-width pb-2 row align-items-center">
-      <div class="col align-items-center">
-        <label class="required pr-2">Project Name: </label>
-        <div class="full-width">
-          <input cdkFocusInitial type="text" name="projectName" class="w-50" formControlName="projectName"
-            placeholder="project name" required />
-        </div>
-      </div>
-    </div>
-    <div class="project-section full-width pb-2 row align-items-center">
-      <div class="col align-items-center">
-        <div class="form-block row no-margin-left align-items-center">
-
-          <label class="required no-bottom-margin pr-1">Location: </label>
-          <div class="w-50">
-            <ng-select formControlName="location" appendTo="body" bindLabel="label" [items]="locations" required>
-              <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                <span class="blue-text" *ngIf="item.city && item.city !== ''"
-                  [ngOptionHighlight]="search">{{item.city}}&nbsp;</span>
-                <span [class.blue-text]="!item.city || item.city === ''"
-                  [ngOptionHighlight]="search">{{item.region}}</span>
-              </ng-template>
-            </ng-select>
-          </div>
-          <label for="p1-1" class="no-bottom-margin">Zip Code:</label>
-          <div class="pl-1 pr-1">
-            <input type="text" name="zipcode" formControlName="zipcode" required size="9" maxlength="9"
-              placeholder="project zip code" />
-          </div>
-        </div>
-        <div class="row no-margin-left font-italic small-text">
-          <i class="material-icons md-20 md-dark"> info </i>&nbsp;CostTrax uses
-          zip code information to look up local rental rates when auditing
-          submitted equipment costs
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="required">Requesting Orgs: </label>
-      <mat-form-field class="full-width" style="margin-top:-25px">
-        <mat-chip-list #chipList>
-          <mat-chip *ngFor="let org of requestingOrgs" [removable]="removable" (removed)="remove(org)">
-            {{org}}
-            <mat-icon matChipRemove>cancel</mat-icon>
-          </mat-chip>
-          <input [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
-        </mat-chip-list>
+    <div>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Select Account</mat-label>
+        <mat-select formControlName="selectedAccount" required>
+          <mat-option
+            *ngFor="let choice of (accounts$ | async)"
+            [value]="choice.id"
+          >
+            {{ choice.organization }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
-    <div class="form-group p1-2 pr-2">
+    <div>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Project Name</mat-label>
+        <input
+          matInput
+          placeholder="Project Name"
+          type="text"
+          formControlName="projectName"
+          required
+        />
+        <mat-error
+          *ngIf="projectFormGroup.get('projectName').hasError('required')"
+        >
+          Project Name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Requesting Orgs</mat-label>
+        <mat-chip-list #chipList>
+          <mat-chip
+            *ngFor="let org of requestingOrgs"
+            [removable]="removable"
+            (removed)="remove(org)"
+          >
+            {{ org }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur"
+            (matChipInputTokenEnd)="add($event)"
+          />
+        </mat-chip-list>
+      </mat-form-field>
+      <h4 class="no-top-margin">Cost Recovery Location</h4>
+      <div class="w-50 pt-1 pb-1">
+        <ng-select
+          formControlName="location"
+          appendTo="body"
+          bindLabel="label"
+          [items]="locations"
+          required
+          style="min-height: 65px !important"
+        >
+          <ng-template
+            ng-option-tmp
+            let-item="item"
+            let-index="index"
+            let-search="searchTerm"
+          >
+            <span
+              class="blue-text"
+              *ngIf="item.city && item.city !== ''"
+              [ngOptionHighlight]="search"
+              >{{ item.city }}&nbsp;</span
+            >
+            <span
+              [class.blue-text]="!item.city || item.city === ''"
+              [ngOptionHighlight]="search"
+              >{{ item.region }}</span
+            >
+          </ng-template>
+        </ng-select>
+      </div>
+
+      <h4 class="no-top-margin">Rental Location</h4>
+      <div class="row no-margin-left">
+        <mat-form-field class="w-25" appearance="outline">
+          <mat-label>State</mat-label>
+          <input
+            type="text"
+            placeholder="Choose State"
+            aria-label="Rental State"
+            matInput
+            formControlName="rentalState"
+            [matAutocomplete]="auto"
+          />
+          <mat-autocomplete
+            autoActiveFirstOption
+            [displayWith]="displayFn"
+            #auto="matAutocomplete"
+          >
+            <mat-option
+              *ngFor="let choice of (filteredStates | async)"
+              [value]="choice"
+            >{{ choice.label }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="pl-1" appearance="outline">
+          <mat-label>Zip Code</mat-label>
+          <input
+            matInput
+            placeholder="Zip Code"
+            type="text"
+            formControlName="rentalZipcode"
+          />
+        </mat-form-field>
+      </div>
+      <div class="row no-margin-left font-italic small-text">
+        <i class="material-icons md-20 md-dark"> info </i>&nbsp;CostTrax uses
+        zip code information to look up local rental rates when auditing
+        submitted equipment costs
+      </div>
+    </div>
+
+    <div class="form-group p1-2 pt-1 pr-2">
       <label for="formFields_8">Instructions:</label>
 
       <div class="row no-margin-left font-italic small-text">
@@ -68,23 +133,43 @@
         relevant instructions or information for users submitting requests on
         this project.
       </div>
-      <textarea id="formFields_8" rows="3" formControlName="projectInstructions"></textarea>
+      <textarea
+        id="formFields_8"
+        rows="3"
+        formControlName="projectInstructions"
+      ></textarea>
     </div>
   </section>
   <section class="form-group pr-1">
-    <app-user-list [users]="project.requestors" [projectId]="project.id" [newProject]="true" [type]="'REQUESTOR'"
-      (changed)="refreshRequestors($event)"></app-user-list>
+    <app-user-list
+      [users]="project.requestors"
+      [projectId]="project.id"
+      [newProject]="true"
+      [type]="'REQUESTOR'"
+      (changed)="refreshRequestors($event)"
+    ></app-user-list>
   </section>
   <section class="form-group pr-1">
-    <app-user-list [users]="project.users" [projectId]="project.id" [newProject]="true" [type]="'USER'"
-      (changed)="refreshUsers($event)"></app-user-list>
+    <app-user-list
+      [users]="project.users"
+      [projectId]="project.id"
+      [newProject]="true"
+      [type]="'USER'"
+      (changed)="refreshUsers($event)"
+    >
+    </app-user-list>
   </section>
   <section class="form-group">
     <h4 class="project-heading pb-1">Allowable Costs</h4>
 
     <div class="cost-section mb-1" *ngIf="accountSynced">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="activeCheck" formControlName="activeCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="activeCheck"
+          formControlName="activeCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Equipment, Active
@@ -93,9 +178,18 @@
 
       <div class="cost-content px-1 pb-1">
         <label class="bold-label">Formula:</label>
-        <ng-select class="w-25" [items]="activeFormulas" bindValue="name" bindLabel="label" placeholder="Choose Formula"
-          clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
-          formControlName="activeFormula">
+        <ng-select
+          class="w-25"
+          [items]="activeFormulas"
+          bindValue="name"
+          bindLabel="label"
+          placeholder="Choose Formula"
+          clearAllText="Clear"
+          [closeOnSelect]="true"
+          [hideSelected]="true"
+          appendTo="body"
+          formControlName="activeFormula"
+        >
         </ng-select>
         <div class="row no-margin-left font-italic small-text">
           (Rental Rate Blue Book Monthly Ownership Cost/176)+(Rental Rate Blue
@@ -106,35 +200,70 @@
         <label class="bold-label">Rate Adjustments:</label>
         <div class="px-1">
           <div class="checkbox">
-            <input type="checkbox" matRipple id="activeRegionalCheck" formControlName="activeRegionalCheck" />
-            <label for="activeRegionalCheck">Use regional adjustment for
-              <span *ngIf="
+            <input
+              type="checkbox"
+              matRipple
+              id="activeRegionalCheck"
+              formControlName="activeRegionalCheck"
+            />
+            <label for="activeRegionalCheck"
+              >Use regional adjustment for
+              <span
+                *ngIf="
                   projectFormGroup &&
                   projectFormGroup.get('location') &&
                   projectFormGroup.get('location').value
-                " [innerHTML]="projectFormGroup.get('location').value.label"></span></label>
+                "
+                [innerHTML]="projectFormGroup.get('location').value.label"
+              ></span
+            ></label>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
-            <label class="no-bottom-margin">Reimbursable %, Ownership Cost:</label>
+            <label class="no-bottom-margin"
+              >Reimbursable %, Ownership Cost:</label
+            >
             <div class="spacer"></div>
-            <nz-input-number formControlName="activeOwnershipCost" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-              [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+            <nz-input-number
+              formControlName="activeOwnershipCost"
+              [nzMin]="0"
+              [nzMax]="100"
+              [nzStep]="1"
+              [nzFormatter]="formatterPercent"
+              [nzParser]="parserPercent"
+            ></nz-input-number>
           </div>
           <div class="row no-margin-left pb-1 w-50 align-items-center">
-            <label class="no-bottom-margin">Reimbursable %, Operating Cost:</label>
+            <label class="no-bottom-margin"
+              >Reimbursable %, Operating Cost:</label
+            >
             <div class="spacer"></div>
-            <nz-input-number formControlName="activeOperatingCost" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-              [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+            <nz-input-number
+              formControlName="activeOperatingCost"
+              [nzMin]="0"
+              [nzMax]="100"
+              [nzStep]="1"
+              [nzFormatter]="formatterPercent"
+              [nzParser]="parserPercent"
+            ></nz-input-number>
           </div>
         </div>
       </div>
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="activeMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number
+            formControlName="activeMarkup"
+            [nzMin]="0"
+            [nzMax]="100"
+            [nzStep]="1"
+            [nzFormatter]="formatterPercent"
+            [nzParser]="parserPercent"
+          ></nz-input-number>
           <div class="spacer"></div>
-          <div class="row no-margin-left font-italic small-text" style="padding-right: 1rem">
+          <div
+            class="row no-margin-left font-italic small-text"
+            style="padding-right: 1rem"
+          >
             <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
             Adjustments will be applied anywhere rates are displayed<br />
             in CostTrax. Markup applied to Totals and Recapitulation only.
@@ -145,7 +274,12 @@
 
     <div class="cost-section mb-1" *ngIf="accountSynced">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="standbyCheck" formControlName="standbyCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="standbyCheck"
+          formControlName="standbyCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Equipment, Standby
@@ -153,9 +287,18 @@
       </div>
       <div class="cost-content px-1 pb-1">
         <label class="bold-label">Formula:</label>
-        <ng-select class="w-50" [items]="standbyFormulas" bindValue="name" bindLabel="label"
-          placeholder="Choose Formula" clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" appendTo="body"
-          formControlName="standbyFormula">
+        <ng-select
+          class="w-50"
+          [items]="standbyFormulas"
+          bindValue="name"
+          bindLabel="label"
+          placeholder="Choose Formula"
+          clearAllText="Clear"
+          [closeOnSelect]="true"
+          [hideSelected]="true"
+          appendTo="body"
+          formControlName="standbyFormula"
+        >
         </ng-select>
         <div class="row no-margin-left font-italic small-text">
           (Rental Rate Blue Book Monthly Ownership Cost/176)*0.5
@@ -165,23 +308,42 @@
         <label class="bold-label">Rate Adjustments:</label>
         <div class="px-1">
           <div class="checkbox">
-            <input type="checkbox" matRipple id="standbyRegionalCheck" formControlName="standbyRegionalCheck" />
-            <label for="standbyRegionalCheck">Use regional adjustment for
-              <span *ngIf="
+            <input
+              type="checkbox"
+              matRipple
+              id="standbyRegionalCheck"
+              formControlName="standbyRegionalCheck"
+            />
+            <label for="standbyRegionalCheck"
+              >Use regional adjustment for
+              <span
+                *ngIf="
                   projectFormGroup &&
                   projectFormGroup.get('location') &&
                   projectFormGroup.get('location').value
-                " [innerHTML]="projectFormGroup.get('location').value"></span></label>
+                "
+                [innerHTML]="projectFormGroup.get('location').value"
+              ></span
+            ></label>
           </div>
         </div>
       </div>
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="standbyMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number
+            formControlName="standbyMarkup"
+            [nzMin]="0"
+            [nzMax]="100"
+            [nzStep]="1"
+            [nzFormatter]="formatterPercent"
+            [nzParser]="parserPercent"
+          ></nz-input-number>
           <div class="spacer"></div>
-          <div class="row no-margin-left font-italic small-text" style="padding-right: 1rem">
+          <div
+            class="row no-margin-left font-italic small-text"
+            style="padding-right: 1rem"
+          >
             <i class="material-icons md-20 md-dark"> info </i>&nbsp;Rate
             Adjustments will be applied anywhere rates are displayed<br />
             in CostTrax. Markup applied to Totals and Recapitulation only.
@@ -191,7 +353,12 @@
     </div>
     <div class="cost-section mb-1" *ngIf="accountSynced">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="rentalCheck" formControlName="rentalCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="rentalCheck"
+          formControlName="rentalCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Equipment, Rental
@@ -206,14 +373,25 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="rentalMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number
+            formControlName="rentalMarkup"
+            [nzMin]="0"
+            [nzMax]="100"
+            [nzStep]="1"
+            [nzFormatter]="formatterPercent"
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
     <div class="cost-section mb-1">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="materialCheck" formControlName="materialCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="materialCheck"
+          formControlName="materialCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Material
@@ -228,14 +406,25 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="materialMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number
+            formControlName="materialMarkup"
+            [nzMin]="0"
+            [nzMax]="100"
+            [nzStep]="1"
+            [nzFormatter]="formatterPercent"
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
     <div class="cost-section mb-1">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="laborCheck" formControlName="laborCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="laborCheck"
+          formControlName="laborCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Labor
@@ -250,14 +439,25 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="laborMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number
+            formControlName="laborMarkup"
+            [nzMin]="0"
+            [nzMax]="100"
+            [nzStep]="1"
+            [nzFormatter]="formatterPercent"
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
     <div class="cost-section mb-1">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="subcontractorCheck" formControlName="subcontractorCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="subcontractorCheck"
+          formControlName="subcontractorCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Subcontractor
@@ -272,14 +472,25 @@
       <div class="cost-content px-1 pb-1">
         <div class="bold-label">Markup:</div>
         <div class="row no-margin-left">
-          <nz-input-number formControlName="subcontractorMarkup" [nzMin]="0" [nzMax]="100" [nzStep]="1"
-            [nzFormatter]="formatterPercent" [nzParser]="parserPercent"></nz-input-number>
+          <nz-input-number
+            formControlName="subcontractorMarkup"
+            [nzMin]="0"
+            [nzMax]="100"
+            [nzStep]="1"
+            [nzFormatter]="formatterPercent"
+            [nzParser]="parserPercent"
+          ></nz-input-number>
         </div>
       </div>
     </div>
     <div class="cost-section mb-1">
       <div class="row no-margin-left cost-title full-width">
-        <mat-checkbox type="checkbox" matRipple id="otherCheck" formControlName="otherCheck">
+        <mat-checkbox
+          type="checkbox"
+          matRipple
+          id="otherCheck"
+          formControlName="otherCheck"
+        >
         </mat-checkbox>
         <h4 class="pl-1 no-top-margin no-bottom-margin align-items-center">
           Other
@@ -294,10 +505,19 @@
   </section>
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="projectFormGroup">
-  <button type="button" class="btn btn-warning-outline" (click)="cancelCreate()">
+  <button
+    type="button"
+    class="btn btn-warning-outline"
+    (click)="cancelCreate()"
+  >
     Cancel
   </button>
-  <button type="button" class="btn btn-primary" (click)="saveNew()" [disabled]="!projectFormGroup.valid">
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="saveNew()"
+    [disabled]="!projectFormGroup.valid"
+  >
     <clr-icon shape="check"></clr-icon>&nbsp;Save Project
   </button>
 </mat-dialog-actions>

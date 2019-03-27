@@ -236,7 +236,7 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <app-equipment-select type="make" [index]="i" [initialValue]="item" cdkFocusInitial
+              <app-equipment-select type="manufacturerName" [index]="i" [initialValue]="item" cdkFocusInitial
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
             <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
@@ -649,7 +649,7 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <app-equipment-select type="make" [index]="i" [initialValue]="item" cdkFocusInitial
+              <app-equipment-select type="manufacturerName" [index]="i" [initialValue]="item" cdkFocusInitial
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
             <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
@@ -994,7 +994,7 @@
           <clr-dg-cell>
 
             <div *ngIf="submitRequests">
-              <app-equipment-select type="make" [index]="i" [initialValue]="item" cdkFocusInitial
+              <app-equipment-select type="manufacturerName" [index]="i" [initialValue]="item" cdkFocusInitial
                 (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
             </div>
             <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>

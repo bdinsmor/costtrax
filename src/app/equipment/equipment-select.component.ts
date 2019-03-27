@@ -7,17 +7,11 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { concat, Observable, of, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 import { Equipment, Item } from './../shared/model';
 import { EquipmentService } from './equipment.service';
@@ -66,6 +60,7 @@ export class EquipmentSelectComponent implements OnInit, OnDestroy, OnChanges {
       this.modelSearch();
       this.placeholder = 'Select Model';
     }
+
     if (this.initialValue) {
       this.selectedItem = new Equipment(this.initialValue.details);
     } else if (this.initialEquipment) {

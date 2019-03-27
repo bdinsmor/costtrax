@@ -1,30 +1,15 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
-import {
-  MatDialogRef,
-  MatSnackBar,
-  MatSnackBarConfig
-} from '@angular/material';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatChipInputEvent, MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { isObject } from 'util';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { Account, Project } from '../../shared/model';
 import { ProjectsService } from '../projects.service';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material';
 
 @Component({
   selector: 'app-project-dialog-form',
@@ -60,7 +45,8 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   zipPattern = new RegExp(/^\d{5}(?:\d{2})?$/);
   requestingOrgs: string[] = [];
   locations: [] = [];
-
+  states: [] = [];
+  filteredStates: Observable<string[]>;
   isLoaded = false;
   activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
   standbyFormulas = [{ name: '50OWNER', label: '50% Ownership Cost' }];
@@ -68,6 +54,15 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   parserPercent = value => value.replace(' %', '');
 
   ngOnInit() {
+    this.projectsService
+      .getRentalStates()
+      .pipe(untilDestroyed(this))
+      .subscribe((list: any) => {
+        this.states = list.results.map((item: any) => {
+          item.label = item.stateCode + ' , ' + item.countryCode;
+          return item;
+        });
+      });
     this.projectsService
       .getCostLocations()
       .pipe(untilDestroyed(this))
@@ -110,6 +105,22 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
       this.createProjectFormGroup();
       this.isLoaded = true;
     });
+  }
+
+  displayFn(val: any) {
+    return val ? val.label : val;
+  }
+
+  private _filter(value: any): string[] {
+    if (!value || value === '' || isObject(value)) {
+      return;
+    }
+
+    const filterValue = value.toLowerCase();
+
+    return this.states.filter(
+      (option: any) => option.label.toLowerCase().indexOf(filterValue) === 0
+    );
   }
 
   ngOnDestroy(): void {}
@@ -161,6 +172,10 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   saveNew() {
     const formData: any = this.projectFormGroup.value;
+    console.log(
+      'formData.rentalState: ' + JSON.stringify(formData.rentalState, null, 2)
+    );
+
     const projectData: any = {
       accountId: formData.selectedAccount,
       active: true,
@@ -175,12 +190,17 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
       users: this.trimUsers()
     };
-
-    projectData.adjustments.zipcode = formData.zipcode;
-    projectData.adjustments.city = formData.location.city;
-    projectData.adjustments.cityId = formData.location.cityId;
-    projectData.adjustments.region = formData.location.region;
-    projectData.adjustments.regionId = formData.location.regionId;
+    projectData.adjustments.rentalLocation = {
+      stateCode: formData.rentalState.stateCode,
+      countryCode: formData.rentalState.countryCode,
+      zipcode: formData.rentalZipcode
+    };
+    projectData.adjustments.costLocation = {
+      city: formData.location.city,
+      cityId: formData.location.cityId,
+      region: formData.location.region,
+      regionId: formData.location.regionId
+    };
 
     projectData.adjustments.equipmentActive = {
       enabled: formData.activeCheck,
@@ -256,7 +276,14 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   createProjectFormGroup() {
     this.projectFormGroup = new FormGroup({
       projectName: new FormControl(this.project.name, Validators.required),
-      zipcode: new FormControl(this.project.zipcode, Validators.required),
+      rentalState: new FormControl(
+        this.project.adjustments.rentalLocation.stateCode,
+        Validators.required
+      ),
+      rentalZipcode: new FormControl(
+        this.project.adjustments.rentalLocation.zipcode,
+        Validators.required
+      ),
       location: new FormControl(null, Validators.required),
       selectedAccount: new FormControl(
         this.firstAccount.id,
@@ -310,5 +337,13 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
         this.project.adjustments.subcontractor.enabled
       )
     });
+
+    this.filteredStates = this.projectFormGroup
+      .get('rentalState')
+      .valueChanges.pipe(
+        untilDestroyed(this),
+        startWith(''),
+        map(value => this._filter(value))
+      );
   }
 }

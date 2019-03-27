@@ -48,21 +48,15 @@
     <clr-datagrid class="full-width" [(clrDgSelected)]="selected">
       <clr-dg-column [clrDgField]="'lastName'"
         >Last Name
-        <clr-dg-string-filter
-          [clrDgStringFilter]="lastNameFilter"
-        ></clr-dg-string-filter>
+        <clr-dg-string-filter></clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column [clrDgField]="'firstName'"
         >First Name
-        <clr-dg-string-filter
-          [clrDgStringFilter]="firstNameFilter"
-        ></clr-dg-string-filter>
+        <clr-dg-string-filter></clr-dg-string-filter>
       </clr-dg-column>
-      <clr-dg-column [clrDgField]="'trade'"
+      <clr-dg-column [clrDgField]="'class'"
         >Trade/Class
-        <clr-dg-string-filter
-          [clrDgStringFilter]="tradeFilter"
-        ></clr-dg-string-filter>
+        <clr-dg-string-filter></clr-dg-string-filter>
       </clr-dg-column>
       <clr-dg-column [clrDgField]="'rate'">Rate/Hr</clr-dg-column>
       <clr-dg-column [clrDgField]="'benefits'">Fringe Benefits</clr-dg-column>
@@ -77,9 +71,9 @@
       >
         <clr-dg-cell>{{ item.lastName }}</clr-dg-cell>
         <clr-dg-cell>{{ item.firstName }}</clr-dg-cell>
-        <clr-dg-cell>{{ item.trade }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.class }}</clr-dg-cell>
         <clr-dg-cell>{{ item.rate | currency }}</clr-dg-cell>
-        <clr-dg-cell>{{ item.benefits | currency }}</clr-dg-cell>
+        <clr-dg-cell>{{ item.fringe | currency }}</clr-dg-cell>
       </clr-dg-row>
       <clr-dg-footer> </clr-dg-footer>
     </clr-datagrid>

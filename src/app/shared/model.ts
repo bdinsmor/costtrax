@@ -1180,6 +1180,17 @@ export class Project {
 
   buildDefaultAdjustments() {
     return {
+      costLocation: {
+        city: '',
+        cityId: '',
+        region: '',
+        regionId: ''
+      },
+      rentalLocation: {
+        zipcode: '',
+        stateCode: '',
+        countryCode: ''
+      },
       equipmentActive: {
         enabled: true,
         regionalAdjustmentsEnabled: true,
@@ -1215,8 +1226,7 @@ export class Project {
           paymentTerms: 45,
           description: '',
           state: 'GA',
-          requestingOrgs: [],
-          zipcode: 30332
+          requestingOrgs: []
         };
       }
       this.requestStats = project.requestStats || {};
@@ -1381,13 +1391,9 @@ export class Equipment {
 
   setDetailsFromConfiguration() {
     this.manufacturerName =
-      this.details.selectedConfiguration.manufacturerName ||
-      this.details.selectedConfiguration.manufacturerName ||
-      '';
+      this.details.selectedConfiguration.manufacturerName || '';
     this.manufacturerId =
-      this.details.selectedConfiguration.manufacturerName ||
-      this.details.selectedConfiguration.manufacturerId ||
-      '';
+      this.details.selectedConfiguration.manufacturerId || '';
     this.model =
       this.details.selectedConfiguration.model ||
       this.details.selectedConfiguration.modelName ||

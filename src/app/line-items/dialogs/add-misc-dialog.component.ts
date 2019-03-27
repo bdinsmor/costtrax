@@ -76,8 +76,8 @@ export class AddMiscDialogComponent implements OnInit, OnDestroy {
         (configurations: any) => {
           this.configurations = configurations;
 
-          if (configurations && configurations.values.length === 1) {
-            this.selected = configurations.values[0];
+          if (configurations && configurations.count === 1) {
+            this.selected = configurations.results[0];
             this.confirm(this.selected);
             return;
           } else {

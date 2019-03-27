@@ -34,6 +34,10 @@ export class ProjectsService {
     return this.http.get(environment.serverUrl + '/cost-locations');
   }
 
+  getRentalStates(): Observable<any> {
+    return this.http.get(environment.serverUrl + '/rental-locations');
+  }
+
   getUsers(projectId: string): Observable<any> {
     return this.http.get(
       environment.serverUrl + '/project/' + projectId + '/user'
