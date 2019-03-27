@@ -102,7 +102,7 @@ export class AuthenticationService {
           throw new Error('Email/Password combination was not correct.');
         }
         const token = res.token as any;
-
+        console.log('token: \n\n' + token);
         // const token =
         // tslint:disable-next-line:max-line-length
         //  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNWJmMWY5ZC00YTJkLTQ4NzUtYjk3Yy1hZGI5Y2FiZjUzNjEiLCJlbWFpbCI6Imhlcm1lcy5yZXF1ZXN0b3JAbm9ydGhhdmV0ZWNoLmNvbSIsImlhdCI6MTUyNDQ0NDE5NSwiZXhwIjoxNTI0NTMwNTk1LCJpc3MiOiJpbmZvcm1hIn0.j9T-7N_RpYKJOULGhuUkRkLyaJ6Pn4caCwphTtAmxFY';
