@@ -890,7 +890,7 @@ export class Project {
   subcontractorTotal = 0;
   otherTotal = 0;
   progress = 0;
-  statuses = ['Draft', 'Pending', 'Complete'];
+  statuses = ['Draft', 'Pending', 'Approved'];
 
   randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -969,7 +969,7 @@ export class Project {
       if (r.status.toLowerCase() === 'pending') {
         this.pendingRequests.push(r);
       }
-      if (r.status.toLowerCase() === 'complete') {
+      if (r.status.toLowerCase() === 'approved') {
         this.completeRequests.push(r);
       }
     }
@@ -1769,11 +1769,7 @@ export class Request {
   }
 
   isComplete(): boolean {
-    return (
-      this.status &&
-      (this.status.toLowerCase() === 'complete' ||
-        this.status.toLowerCase() === 'completed')
-    );
+    return this.status && this.status.toLowerCase() === 'approved';
   }
 
   getTotals(): any {
