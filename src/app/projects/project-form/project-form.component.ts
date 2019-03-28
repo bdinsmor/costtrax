@@ -295,8 +295,8 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     let rentalState = '';
     if (this.project.adjustments.rentalLocation) {
       rentalState =
-        this.project.adjustments.rentalLocation.stateCode +
-        ' , ' +
+        this.project.adjustments.rentalLocation.stateName +
+        ', ' +
         this.project.adjustments.rentalLocation.countryCode;
       rentalZipcode = this.project.adjustments.rentalLocation.zipcode;
     }
