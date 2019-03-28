@@ -3,13 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { concat, Observable, of, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { Equipment, Item } from './../../shared/model';
@@ -73,6 +67,7 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         year: new FormControl(this.equipment.year, Validators.required)
       });
       this.modelForm.get('model').valueChanges.subscribe(val => {
+        console.log('val: ' + JSON.stringify(val, null, 2));
         this.equipment.manufacturerId = this.modelForm.value.manufacturer;
         this.equipment.years = val.years;
         this.equipment.sizeClassId = val.sizeClassId;
@@ -175,7 +170,7 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         item: this.item
       });
     } else {
-      console.log("year: " + this.equipment.year)
+      console.log('year: ' + this.equipment.year);
       this.equipment.selectedConfiguration = configuration;
       this.equipment.configurations = this.configurations;
       this.dialogRef.close({

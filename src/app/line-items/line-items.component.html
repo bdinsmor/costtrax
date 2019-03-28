@@ -338,20 +338,20 @@
 
                 <div class="col">
                   <h6 class="strong no-top-margin">Configuration</h6>
-                  <table *ngIf="item.details.configurations" class="mt-3p table
+                  <table *ngIf="item.details.columns" class="mt-3p table
                     table-compact table-bordered table-striped
                     comparison-table">
                     <thead>
                       <th class="left" *ngFor="let column of
-                        item.details.configurations.columns">
+                        item.details.columns">
                         {{ column.name }}
                       </th>
                     </thead>
                     <tbody>
                       <tr class="justify-content-center">
                         <td class="left" *ngFor="let column of
-                          item.details.configurations.columns">
-                          {{ item.details.selectedConfiguration[column.name] }}
+                          item.details.columns">
+                          {{ item.details[column.name] }}
                         </td>
                       </tr>
                     </tbody>
@@ -419,8 +419,7 @@
                   <div class="col-3 row-margins" *ngIf="submitRequests">
 
                     <h6 class="strong left">Hourly Ownership & Operating Costs</h6>
-                    <table *ngIf="item.details.configurations &&
-                        item.details" class="mt-3p
+                    <table *ngIf="item.details" class="mt-3p
                         table table-compact table-bordered table-striped
                         comparison-table">
                       <thead>
@@ -430,9 +429,9 @@
                       </thead>
                       <tbody>
                         <tr class="justify-content-center">
-                          <td class="left">{{item.details.hourlyOwnershipCostFinal
+                          <td class="left">{{item.details.activeOwnershipAdjustedRate
                               | currency}}</td>
-                          <td class="left">{{item.details.hourlyOperatingCostFinal
+                          <td class="left">{{item.details.activeOperatingAdjustedRate
                               | currency}}</td>
                           <td class="left">{{item.details.rate | currency}}</td>
                       </tbody>
@@ -579,32 +578,17 @@
 
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="submitRequests">
-              <app-equipment-select type="manufacturerName" [index]="i" [initialValue]="item" cdkFocusInitial
-                (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
-            </div>
-            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
+            
+            <div class="padding-label-top">{{item.details.manufacturerName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="submitRequests">
-              <app-equipment-select [manufacturerId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
-                (selected)="modelNewSelectionChanged($event,item,i)" [shouldDisable]="!item.details.manufacturerId"
-                type="model"></app-equipment-select>
-            </div>
-            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
+            
+            <div class="padding-label-top" >{{item.details.model}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" *ngIf="item.misc">N/A</div>
-            <div class="padding-label-top" *ngIf="!item.misc &&
-                  !submitRequests">{{item.details.year}}</div>
-            <div *ngIf="!item.misc && submitRequests">
-              <ng-select [disabled]="!item.details.modelId" [items]="item.details.years" dropdownPosition="top"
-                appendTo="body" (change)="yearSelectionChanged(item,i)" bindLabel="year" bindValue="year"
-                placeholder="Year" clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true"
-                [(ngModel)]="item.details.year" [ngModelOptions]="{standalone: true}">
-              </ng-select>
-
-            </div>
+            <div class="padding-label-top" *ngIf="!item.misc">{{item.details.year}}</div>
+            
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top">{{item.details.subSize}}</div>
@@ -699,20 +683,20 @@
               <div *ngIf="!item.details.nodata">
                 <div class="col">
                   <h6 class="strong no-top-margin">Configuration</h6>
-                  <table *ngIf="item.details.configurations" class="mt-3p
+                  <table *ngIf="item.details.columns" class="mt-3p
                         table table-compact table-bordered table-striped
                         comparison-table">
                     <thead>
                       <th class="left" *ngFor="let column of
-                            item.details.configurations.columns">
+                            item.details.columns">
                         {{ column.name }}
                       </th>
                     </thead>
                     <tbody>
                       <tr class="justify-content-center">
                         <td class="left" *ngFor="let column of
-                              item.details.configurations.columns">
-                          {{ item.details.selectedConfiguration[column.name]
+                              item.details.columns">
+                          {{ item.details[column.name]
                               }}
                         </td>
                       </tr>
@@ -725,8 +709,7 @@
 
                     <h6 class="strong left">Hourly Ownership & Operating
                       Costs</h6>
-                    <table *ngIf="item.details.configurations &&
-                          item.details.selectedConfiguration &&
+                    <table *ngIf="item.details.selectedConfiguration &&
                           item.details" class="mt-3p
                           table table-compact table-bordered table-striped
                           comparison-table">
@@ -737,9 +720,9 @@
                       </thead>
                       <tbody>
                         <tr class="justify-content-center">
-                          <td class="left">{{item.details.hourlyOwnershipCostFinal
+                          <td class="left">{{item.details.standbyOwnershipAdjustedRate
                                 | currency}}</td>
-                          <td class="left">{{item.details.hourlyOperatingCostFinal
+                          <td class="left">{{item.details.activeOperatingAdjustedRate
                                 | currency}}</td>
                           <td class="left">{{item.details.rate | currency}}</td>
                       </tbody>
@@ -882,19 +865,12 @@
           </clr-dg-cell>
           <clr-dg-cell>
 
-            <div *ngIf="submitRequests">
-              <app-equipment-select type="manufacturerName" [index]="i" [initialValue]="item" cdkFocusInitial
-                (selected)="makeNewSelectionChanged($event,item)"></app-equipment-select>
-            </div>
-            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.manufacturerName}}</div>
+            
+            <div class="padding-label-top" >{{item.details.manufacturerName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="submitRequests">
-              <app-equipment-select [manufacturerId]="item.details.manufacturerId" [initialValue]="item" [index]="i"
-                (selected)="modelNewSelectionChanged($event,item,i)" [shouldDisable]="!item.details.manufacturerId"
-                type="model"></app-equipment-select>
-            </div>
-            <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.model}}</div>
+            
+            <div class="padding-label-top" >{{item.details.model}}</div>
           </clr-dg-cell>
 
           <clr-dg-cell>

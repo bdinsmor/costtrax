@@ -26,7 +26,6 @@ import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddModelDialogComponent } from './dialogs/add-model-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
 import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
-import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
 
@@ -221,16 +220,16 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.itemType === 'equipmentStandby'
     ) {
       this.adjustments = this.project.adjustments.equipmentStandby;
-      this.ownershipAdjustment = +this.adjustments.ownershipPercent;
-      this.operatingAdjustment = +this.adjustments.operatingPercent;
+      this.ownershipAdjustment = +1;
+      this.operatingAdjustment = +1;
     } else if (
       this.project &&
       this.project.adjustments &&
       this.itemType === 'equipmentRental'
     ) {
       this.adjustments = this.project.adjustments.equipmentRental;
-      this.ownershipAdjustment = +this.adjustments.ownershipPercent;
-      this.operatingAdjustment = +this.adjustments.operatingPercent;
+      this.ownershipAdjustment = +1;
+      this.operatingAdjustment = +1;
     } else if (
       this.project &&
       this.project.adjustments &&
@@ -313,140 +312,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     });
   }
 
-  cancelSelectConfiguration() {
-    this.selected = [];
-    this.selectedIndex = -1;
-  }
-
-  selectConfiguration(year: string, configurations: any[]) {
-    if (configurations.length === 0) {
-    }
-    const dialogRef = this.dialog.open(ConfigurationDialogComponent, {
-      data: {
-        configurations: configurations
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result.success) {
-        if (result.configuration) {
-          let state = '';
-          if (
-            this.itemType === 'equipmentRental' ||
-            (this.itemType === 'equipmentActive' &&
-              this.project.adjustments.equipmentActive
-                .regionalAdjustmentsEnabled) ||
-            (this.itemType === 'equipmentStandby' &&
-              this.project.adjustments.equipmentStandby
-                .regionalAdjustmentsEnabled)
-          ) {
-            state = this.project.state;
-          }
-          const sc = result.configuration;
-          this.equipmentService
-            .getRateDataForConfig(
-              sc.modelId,
-              sc.configurationSequence,
-              year,
-              state,
-              this.requestStartDate,
-              this.operatingAdjustment,
-              this.ownershipAdjustment,
-              this.standbyFactor
-            )
-            .subscribe((data: any) => {
-              sc.rates = data;
-              if (this.itemType === 'equipmentActive') {
-                sc.rates.rate = data.fhwaRate;
-                if (
-                  this.project.adjustments.equipmentActive
-                    .regionalAdjustmentsEnabled
-                ) {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedRate +
-                      +sc.rates.hourlyOperatingCostAdjusted
-                  ).toFixed(2);
-
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostAdjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedRate
-                  ).toFixed(2);
-                } else {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedRate +
-                      +sc.rates.hourlyOperatingCostUnadjusted
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostUnadjusted
-                  ).toFixed(2);
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedRate
-                  ).toFixed(2);
-                }
-                sc.rates.method = sc.rates.fhwa;
-              } else if (this.itemType === 'equipmentStandby') {
-                sc.rates.rate = data.standbyRate;
-                if (
-                  this.project.adjustments.equipmentStandby
-                    .regionalAdjustmentsEnabled
-                ) {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedStandbyRate
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedStandby
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostAdjusted
-                  ).toFixed(2);
-
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostAdjustedStandbyRate
-                  ).toFixed(2);
-                } else {
-                  sc.rates.fhwa = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedStandbyRate
-                  ).toFixed(2);
-                  sc.rates.monthlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedStandby
-                  ).toFixed(2);
-                  sc.rates.hourlyOperatingCostFinal = +Number(
-                    +sc.rates.hourlyOperatingCostUnadjusted
-                  ).toFixed(2);
-
-                  sc.rates.hourlyOwnershipCostFinal = +Number(
-                    +sc.rates.monthlyOwnershipCostUnadjustedStandbyRate
-                  ).toFixed(2);
-                }
-                sc.rates.method = sc.rates.fhwa;
-              }
-              this.itemList.items[
-                this.selectedIndex
-              ].details.selectedConfiguration = JSON.parse(JSON.stringify(sc));
-              this.itemList.items[this.selectedIndex].details.rate =
-                sc.rates.rate;
-
-              this.selected = [];
-              this.selectedIndex = -1;
-              this.changeDetector.detectChanges();
-            });
-        } else {
-          this.cancelSelectConfiguration();
-        }
-      } else {
-        this.cancelSelectConfiguration();
-      }
-    });
-  }
-
   confirmAddSavedModels() {
     if (!this.selected || this.selected.length === 0) {
       return;
@@ -463,7 +328,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
       selectedEquipment.push(equipment);
     }
-
     this.equipmentService
       .getRateDataforSelectedEquipment(
         selectedEquipment,
@@ -500,6 +364,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
               details: e,
               selectedConfiguration: sc
             });
+            console.log(
+              'new item: ' + JSON.stringify(newItem.details, null, 2)
+            );
+            newItem.details.rate =
+              newItem.details.selectedConfiguration.rates.rate;
             newItem.beingEdited = true;
             this.itemList.items = [...this.itemList.items, newItem];
             this.changeDetector.detectChanges();
@@ -507,37 +376,20 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         } else if (this.itemType === 'equipmentRental') {
           for (let z = 0; z < updatedEquipment.length; z++) {
             const e: Equipment = updatedEquipment[z];
+            const sc = e.selectedConfiguration;
+            e.selectedConfiguration = sc;
             const newItem = new Item({
               status: 'Draft',
               beingEdited: true,
               requestId: this.requestId,
               type: this.itemType,
               fromSaved: true,
-              details: {
-                invoice: 0,
-                selectedConfiguration: e.details.selectedConfiguration,
-                configurations: e.details.configurations,
-                base: e.baseRental,
-                transport: 0,
-                hours: 0,
-                manufacturerName: e.manufacturerName,
-                manufacturerId: e.manufacturerId,
-                model: e.model,
-                modelId: e.modelId,
-                rentalHouseRates: e.rentalHouseRates,
-                regionalAverages: e.regionalAverages,
-                nationalAverages: e.nationalAverages,
-                fhwa: e.fhwa,
-                method: e.method,
-                sizeClassName: e.sizeClassName,
-                subSize: e.subtypeName + ' ' + e.sizeClassName,
-                subtypeName: e.subtypeName,
-                year: e.year,
-                amount: 0,
-                subtotal: 0
-              }
+              details: e
             });
-
+            newItem.details.configurations = e.details.configurations;
+            newItem.details.selectedConfiguration = sc;
+            newItem.details.rate =
+              newItem.details.selectedConfiguration.rates.rate;
             newItem.beingEdited = true;
             this.itemList.items = [...this.itemList.items, newItem];
           }

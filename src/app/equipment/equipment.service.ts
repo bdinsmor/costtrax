@@ -63,13 +63,11 @@ export class EquipmentService implements OnDestroy {
   }
 
   getModelDetails(modelId: string): Observable<Equipment> {
-    return this.http
-      .get(environment.serverUrl + '/equipment/equipment/' + modelId)
-      .pipe(
-        map((res: any) => {
-          return new Equipment(res);
-        })
-      );
+    return this.http.get(environment.serverUrl + '/equipment/' + modelId).pipe(
+      map((res: any) => {
+        return new Equipment(res);
+      })
+    );
   }
 
   getRequestorModels(projectId: string): Observable<Equipment[]> {
@@ -82,6 +80,34 @@ export class EquipmentService implements OnDestroy {
           }
           const r: Equipment[] = [];
           for (const machine of res) {
+            const specColumns = {};
+            let cols = [];
+
+            const specs = machine.specs;
+            machine.selected = false;
+            for (let j = 0; j < specs.length; j++) {
+              const spec = specs[j];
+              const specNameFriendly = spec.specNameFriendly;
+
+              if (!specColumns[specNameFriendly]) {
+                specColumns[specNameFriendly] = true;
+                cols.push(specNameFriendly);
+              }
+              machine[specNameFriendly] = spec.specValue || '';
+            }
+
+            cols = cols.sort();
+            const updatedCols = [];
+            for (let k = 0; k < cols.length; k++) {
+              const col = cols[k] as string;
+              if (!machine[col]) {
+                machine[col] = '';
+              }
+            }
+            for (let k = 0; k < cols.length; k++) {
+              updatedCols.push({ name: cols[k] });
+            }
+            machine.columns = updatedCols;
             const m: Equipment = new Equipment(machine);
             m.status = 'complete';
             r.push(m);
@@ -105,11 +131,8 @@ export class EquipmentService implements OnDestroy {
         if (res === 'Query not covered at this time') {
           return [];
         }
-        const r: Equipment[] = [];
-        for (const machine of res) {
-          r.push(new Equipment(machine));
-        }
-        return r;
+
+        return res as Equipment[];
       })
     );
   }
@@ -468,12 +491,8 @@ export class EquipmentService implements OnDestroy {
         if (res === 'Query not covered at this time') {
           return [];
         }
-        let r: Equipment[] = [];
-        for (const machine of res) {
-          r.push(new Equipment(machine));
-        }
+        let r: Equipment[] = res as Equipment[];
         r = this.sortEquipment(r, 'model');
-        // this.getRateData(r);
         return r;
       })
     );
@@ -506,16 +525,15 @@ export class EquipmentService implements OnDestroy {
 
     return this.http.get(url, options).pipe(
       map((res: any) => {
-        // console.log('response: ' + JSON.stringify(res, null, 2));
         if (res === 'Query not covered at this time') {
           return [];
         }
         let r: Equipment[] = [];
-        for (const machine of res) {
-          r.push(new Equipment(machine));
-        }
+        res.map((re: any) => {
+          const e = new Equipment(re);
+          r.push(e);
+        });
         r = this.sortEquipment(r, 'model');
-        // this.getRateData(r);
         return r;
       })
     );

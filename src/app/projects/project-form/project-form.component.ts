@@ -158,7 +158,6 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     }
     for (let i = 0; i < this.project.roles.length; i++) {
       const role = this.project.roles[i];
-      console.log('role: ' + role);
       if (role === 'ProjectRequestor') {
         this.canSubmitRequests = true;
         this.hasTabs = true;

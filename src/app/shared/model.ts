@@ -769,7 +769,6 @@ export class Item {
       } else {
         this.details = data.details;
       }
-      
 
       this.id = data.id || '';
       this.requestId = data.requestId || '';
@@ -1393,6 +1392,7 @@ export class Equipment {
   details: any;
   revert: any;
   beingEdited = false;
+  modelName: string;
 
   setDetailsFromConfiguration() {
     this.manufacturerName =
@@ -1495,6 +1495,9 @@ export class Equipment {
       this.subSize = this.sizeClassName;
     } else {
       this.subSize = '';
+    }
+    if (!this.details) {
+      this.details = {};
     }
     this.details.selectedConfiguration = m.selectedConfiguration || {
       configurationSequence: this.configurationSequence

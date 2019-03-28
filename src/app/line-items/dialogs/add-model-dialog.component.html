@@ -29,7 +29,6 @@
         <ng-select
           appendTo="body"
           [items]="modelResults$ | async"
-          [disabled]="modelDisabled()"
           bindLabel="model"
           placeholder="Select Model"
           clearAllText="Clear"
@@ -44,8 +43,7 @@
       <div class="px-2 w-25">
         <h4 class="pb-1">Year:</h4>
         <ng-select
-        *ngIf="!savedAssets"
-          [disabled]="yearDisabled()"
+          *ngIf="!savedAssets"
           [items]="item.details.years"
           dropdownPosition="top"
           appendTo="body"
@@ -59,8 +57,20 @@
           formControlName="year"
         >
         </ng-select>
-        <ng-select *ngIf="savedAssets" [disabled]="yearDisabled()" [items]="equipment.years" dropdownPosition="top" appendTo="body" bindLabel="year"
-          bindValue="year" placeholder="Year" clearAllText="Clear" [closeOnSelect]="true" [clearable]="true" [hideSelected]="true" formControlName="year">
+        <ng-select
+          *ngIf="savedAssets"
+          [items]="equipment.years"
+          dropdownPosition="top"
+          appendTo="body"
+          bindLabel="year"
+          bindValue="year"
+          placeholder="Year"
+          clearAllText="Clear"
+          [closeOnSelect]="true"
+          [clearable]="true"
+          [hideSelected]="true"
+          formControlName="year"
+        >
         </ng-select>
       </div>
     </div>
@@ -77,7 +87,12 @@
 
       <h6
         class="disabled-text"
-        *ngIf="savedAssets && (!equipment || equipment.year) || (!savedAssets && (!item || !item.details.year) || !configurations) && !loading"
+        *ngIf="
+          (savedAssets && (!equipment || equipment.year)) ||
+          (((!savedAssets && (!item || !item.details.year)) ||
+            !configurations) &&
+            !loading)
+        "
       >
         Please select a manufacturer, model, and year to view available
         configurations.
