@@ -15,7 +15,7 @@
     <clr-dg-column [clrDgField]="'firstName'">First Name</clr-dg-column>
     <clr-dg-column [clrDgField]="'trade'">Trade/Class </clr-dg-column>
     <clr-dg-column [clrDgField]="'rate'">Rate/Hr</clr-dg-column>
-    <clr-dg-column [clrDgField]="'benefits'">Fringe Benefits</clr-dg-column>
+    <clr-dg-column [clrDgField]="'fringe'">Fringe Benefits</clr-dg-column>
     <clr-dg-column>Actions</clr-dg-column>
     <clr-dg-row
       *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
@@ -77,11 +77,11 @@
             class="full-width"
             type="text"
             (change)="employeeChanged(item)"
-            [(ngModel)]="item.benefits"
+            [(ngModel)]="item.fringe"
             [ngModelOptions]="{ standalone: true }"
           />
         </div>
-        <div *ngIf="!item.isDraft()">{{ item.benefits | currency }}</div>
+        <div *ngIf="!item.isDraft()">{{ item.fringe | currency }}</div>
       </clr-dg-cell>
       <clr-dg-cell>
         <div *ngIf="item.isDraft()" class="row justify-content-end">

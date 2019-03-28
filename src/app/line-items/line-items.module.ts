@@ -15,6 +15,7 @@ import { MaterialModule } from '../material.module';
 import { SharedModule } from '../shared';
 import { EquipmentModule } from './../equipment/equipment.module';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
+import { AddModelDialogComponent } from './dialogs/add-model-dialog.component';
 import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
 import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
 import { ConfigurationDialogComponent } from './dialogs/configuration-dialog.component';
@@ -43,6 +44,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemDeleteDialogComponent,
     AddSavedDialogComponent,
     AddMiscDialogComponent,
+    AddModelDialogComponent,
     LineItemMailDialogComponent,
     ConfigurationDialogComponent,
     LineItemApproveDialogComponent,
@@ -67,6 +69,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemMailDialogComponent,
     LineItemDeleteDialogComponent,
     AddMiscDialogComponent,
+    AddModelDialogComponent,
     ConfigurationDialogComponent,
     LineItemApproveDialogComponent,
     AttachmentsDialogComponent
@@ -80,6 +83,7 @@ export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
     LineItemMailDialogComponent,
     LineItemDeleteDialogComponent,
     AddSavedDialogComponent,
+    AddModelDialogComponent,
     AddMiscDialogComponent,
     ConfigurationDialogComponent,
     LineItemApproveDialogComponent,

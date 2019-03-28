@@ -40,8 +40,8 @@ export class Employee {
   firstName: string;
   lastName: string;
   displayName: string;
-  trade: string;
-  benefits: number;
+  class: string;
+  fringe: number;
   rate: number;
   company: string;
   selected = false;
@@ -56,9 +56,9 @@ export class Employee {
     this.firstName = employee.firstName || '';
     this.lastName = employee.lastName || '';
     this.displayName = employee.displayName || '';
-    this.trade = employee.trade || '';
+    this.class = employee.class || employee.trade || '';
     this.email = employee.email || '';
-    this.benefits = employee.benefits || 0;
+    this.fringe = employee.fringe || employee.benefits || 0;
     this.rate = employee.rate || 0;
     this.status = employee.status || 'draft';
   }

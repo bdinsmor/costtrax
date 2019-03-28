@@ -1,10 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
+import { DateTime } from 'luxon';
 import { UploadFile } from 'ng-zorro-antd';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DateTime } from 'luxon';
 
 import { environment } from '../../environments/environment';
 import { Account, Item, Project, Request } from '../shared/model';
@@ -181,11 +181,10 @@ export class RequestsService {
       );
   }
 
-  submitRequest(requestId: string, requestNotes: string, eSig: string) {
+  submitRequest(requestId: string, eSig: string) {
     return this.http.put(
       environment.serverUrl + '/request/' + requestId + '/submit',
       {
-        // notes: requestNotes,
         eSig: eSig
       }
     );

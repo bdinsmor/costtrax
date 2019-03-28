@@ -8,36 +8,26 @@ import {
   Component,
   NgZone,
   OnDestroy,
-  OnInit
+  OnInit,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/ngx-bootstrap-datepicker';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
-import { auditTime, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { appAnimations } from '../../core/animations';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { EquipmentService } from '../../equipment/equipment.service';
 import { ProjectsService } from '../../projects/projects.service';
-import {
-  Equipment,
-  Item,
-  ItemList,
-  Project,
-  Request
-} from '../../shared/model';
+import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
+import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
 import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
 
@@ -114,8 +104,7 @@ export class RequestDetailsComponent
       .pipe(untilDestroyed(this))
       .subscribe(message => {
         if (message) {
-          this.accountSynced =
-            message.advantageId && message.advantageId !== '';
+          this.accountSynced = message.eqwVerified;
         } else {
           this.accountSynced = false;
         }
@@ -292,21 +281,13 @@ export class RequestDetailsComponent
   }
 
   submitRequest() {
-    console.log('items: ' + JSON.stringify(this.request.itemsByType, null, 2));
-  }
-  /*
-  submitRequest() {
     const dialogRef = this.dialog.open(RequestSubmitDialogComponent, {
       width: '40vw'
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         this.requestsService
-          .submitRequest(
-            this.request.id,
-            this.notesFormGroup.value.notes,
-            result.signature
-          )
+          .submitRequest(this.request.id, result.signature)
           .subscribe(
             (response: any) => {
               this.openSnackBar('Request Submitted', 'ok', 'OK');
@@ -323,8 +304,6 @@ export class RequestDetailsComponent
       }
     });
   }
-
-  */
 
   compareByValue(c1: Project, c2: Project): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
