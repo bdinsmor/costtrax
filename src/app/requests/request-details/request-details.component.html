@@ -294,7 +294,7 @@
               type="button"
               *ngIf="canManageRequest"
               [disabled]="
-                !canManageRequest || request.status.toLowerCase() === 'complete'
+                !canManageRequest || request.status.toLowerCase() === 'approved'
               "
               (click)="approveRequest()"
               class="btn btn-primary"
