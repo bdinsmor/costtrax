@@ -62,7 +62,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe((list: any) => {
         this.states = list.results.map((item: any) => {
-          item.label = item.stateCode + ' , ' + item.countryCode;
+          item.label = item.stateName + ', ' + item.countryCode;
           return item;
         });
       });
