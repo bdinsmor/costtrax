@@ -1,7 +1,19 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatChipInputEvent, MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import {
+  MatChipInputEvent,
+  MatDialog,
+  MatSnackBar,
+  MatSnackBarConfig
+} from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -34,6 +46,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     private titleService: Title
   ) {}
   visible = true;
+  verticalLayout = 'horizontal';
   selectable = true;
   removable = true;
   addOnBlur = true;

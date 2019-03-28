@@ -10,7 +10,10 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { CoreModule } from '../core';
 import { DirectivesModule } from '../core/directives/directives';
 import { NgxCurrencyModule } from '../core/directives/ngx-currency';
-import { CURRENCY_MASK_CONFIG, CurrencyMaskConfig } from '../core/directives/ngx-currency/src/currency-mask.config';
+import {
+  CURRENCY_MASK_CONFIG,
+  CurrencyMaskConfig
+} from '../core/directives/ngx-currency/src/currency-mask.config';
 import { PipesModule } from '../core/pipes/pipes.module';
 import { EquipmentModule } from '../equipment/equipment.module';
 import { LaborModule } from '../labor/labor.module';
@@ -25,6 +28,7 @@ import { ProjectCompleteDialogComponent } from './project-complete-dialog.compon
 import { ProjectFormComponent } from './project-form/project-form.component';
 import { ProjectRequestDialogComponent } from './project-request-dialog.component';
 import { ProjectsComponent } from './projects.component';
+import { ResponsiveModule } from 'ngx-responsive';
 
 export const CustomCurrencyMaskConfig: CurrencyMaskConfig = {
   align: 'left',
@@ -64,6 +68,7 @@ registerLocaleData(en);
     RequestsModule,
     ClarityModule,
     PipesModule,
+    ResponsiveModule.forRoot(),
     BsDatepickerModule.forRoot()
   ],
   exports: [

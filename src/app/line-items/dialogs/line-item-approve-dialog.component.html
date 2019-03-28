@@ -50,8 +50,7 @@
               <h6 class="row-details">OPERATING</h6>
               <div>
                 {{
-                  selectedItem.details.selectedConfiguration
-                    .hourlyOperatingCost | currency
+                  selectedItem.details.activeOperatingAdjustedRate | currency
                 }}
               </div>
             </div>
@@ -87,8 +86,7 @@
               <h6 class="row-details">OPERATING</h6>
               <div>
                 {{
-                  selectedItem.details.selectedConfiguration
-                    .hourlyOperatingCost | currency
+                  selectedItem.details.activeOperatingAdjustedRate | currency
                 }}
               </div>
             </div>

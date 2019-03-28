@@ -7,10 +7,17 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  Renderer2
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
-import { DomSanitizer } from '@angular/platform-browser';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
+import { DomSanitizer, DOCUMENT } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -20,7 +27,14 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { EquipmentService } from '../equipment/equipment.service';
 import { RequestsService } from '../requests/requests.service';
-import { Employee, Equipment, Item, ItemList, Project, Utils } from '../shared/model';
+import {
+  Employee,
+  Equipment,
+  Item,
+  ItemList,
+  Project,
+  Utils
+} from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddModelDialogComponent } from './dialogs/add-model-dialog.component';
@@ -28,6 +42,7 @@ import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
 import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
+import { Overlay } from '@angular/cdk/overlay';
 
 class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
   compare(a: Item, b: Item) {
@@ -75,6 +90,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     private equipmentService: EquipmentService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
+    public overlay: Overlay,
+    private renderer: Renderer2,
     private authenticationService: AuthenticationService
   ) {
     this.matIconRegistry.addSvgIcon(
@@ -98,7 +115,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   action: string;
   selected: any[];
   selectedConfig: any;
-  selectedConfiguration: any;
   savedModels$: Observable<Equipment[]>;
   categoryResults$: Observable<any>;
   subtypeResults$: Observable<any>;
@@ -167,8 +183,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   itemTypeDisplay: string;
 
   accountSynced = true;
-
-  get;
 
   ngOnInit() {
     this.itemsLoading = true;
@@ -290,6 +304,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   addFromSaved() {
+    this.renderer.addClass(document.body, 'modal-open');
     const dialogRef = this.dialog.open(AddSavedDialogComponent, {
       width: '75vw',
       data: {
@@ -299,6 +314,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.renderer.removeClass(document.body, 'modal-open');
       if (result && result.success) {
         if (result.selected) {
           this.selected = result.selected;
@@ -312,21 +328,60 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     });
   }
 
+  confirmAddModel(item: Item) {
+    this.equipmentService
+      .getRateDataForConfig(
+        item.details.modelId,
+        item.details.configurationSequence,
+        null,
+        this.project.adjustments.rentalLocation.stateCode,
+        this.requestStartDate,
+        this.operatingAdjustment,
+        this.ownershipAdjustment,
+        this.standbyFactor
+      )
+      .subscribe((data: any) => {
+        item.details.rates = data;
+        if (this.itemType === 'equipmentActive') {
+          item.details.rate = data.fhwaRate;
+        } else if (this.itemType === 'equipmentStandby') {
+          item.details.rate = data.standbyRate;
+        }
+        item.buildSpecs();
+        this.itemList.items = [...this.itemList.items, item];
+        this.changeDetector.detectChanges();
+        this.selected = [];
+        this.selectedConfig = null;
+        this.miscEquipment = null;
+      });
+  }
+
   confirmAddSavedModels() {
     if (!this.selected || this.selected.length === 0) {
       return;
     }
-
+    let skipped = 0;
     const selectedEquipment = [];
     for (let i = 0; i < this.selected.length; i++) {
       // check to see if employee already added...
 
       const equipment: Equipment = new Equipment(this.selected[i]);
       if (this.hasEquipment(equipment)) {
+        skipped++;
         continue;
       }
 
       selectedEquipment.push(equipment);
+    }
+    if (selectedEquipment.length === 0 && skipped > 0) {
+      if (skipped > 0) {
+        this.openSnackBar(
+          'Skipped ' + skipped + ' Model(s) already added',
+          'OK',
+          'OK'
+        );
+      }
+      return;
     }
     this.equipmentService
       .getRateDataforSelectedEquipment(
@@ -340,61 +395,38 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       .subscribe((updatedEquipment: any) => {
         if (
           this.itemType === 'equipmentActive' ||
-          this.itemType === 'equipmentStandby'
+          this.itemType === 'equipmentStandby' ||
+          this.itemType === 'equipmentRental'
         ) {
           for (let z = 0; z < updatedEquipment.length; z++) {
-            const e: Equipment = new Equipment(updatedEquipment[z]);
-            const sc = e.selectedConfiguration;
-
+            // const e: Equipment = new Equipment(updatedEquipment[z]);
+            const sc = updatedEquipment[z];
+            const newItem = new Item({
+              status: 'Draft',
+              beingEdited: true,
+              requestId: this.requestId,
+              type: this.itemType,
+              fromSaved: true,
+              details: sc
+            });
             if (this.itemType === 'equipmentActive') {
-              sc.rates.rate = sc.rates.fhwaRate;
-              sc.rates.method = sc.rates.fhwa;
+              newItem.details.rate = sc.rates.fhwaRate;
             } else if (this.itemType === 'equipmentStandby') {
-              sc.rates.rate = sc.rates.standbyRate;
-              sc.rates.method = sc.rates.fhwa;
+              newItem.details.rate = sc.rates.standbyRate;
             }
-            e.selectedConfiguration = sc;
 
-            const newItem = new Item({
-              status: 'Draft',
-              beingEdited: true,
-              requestId: this.requestId,
-              type: this.itemType,
-              fromSaved: true,
-              details: e,
-              selectedConfiguration: sc
-            });
-            console.log(
-              'new item: ' + JSON.stringify(newItem.details, null, 2)
+            this.itemList.items = [...this.itemList.items, newItem];
+          }
+          if (skipped > 0) {
+            this.openSnackBar(
+              'Skipped ' + skipped + ' Model(s) already added',
+              'OK',
+              'OK'
             );
-            newItem.details.rate =
-              newItem.details.selectedConfiguration.rates.rate;
-            newItem.beingEdited = true;
-            this.itemList.items = [...this.itemList.items, newItem];
-            this.changeDetector.detectChanges();
           }
-        } else if (this.itemType === 'equipmentRental') {
-          for (let z = 0; z < updatedEquipment.length; z++) {
-            const e: Equipment = updatedEquipment[z];
-            const sc = e.selectedConfiguration;
-            e.selectedConfiguration = sc;
-            const newItem = new Item({
-              status: 'Draft',
-              beingEdited: true,
-              requestId: this.requestId,
-              type: this.itemType,
-              fromSaved: true,
-              details: e
-            });
-            newItem.details.configurations = e.details.configurations;
-            newItem.details.selectedConfiguration = sc;
-            newItem.details.rate =
-              newItem.details.selectedConfiguration.rates.rate;
-            newItem.beingEdited = true;
-            this.itemList.items = [...this.itemList.items, newItem];
-          }
+
+          this.changeDetector.detectChanges();
         }
-        this.changeDetector.detectChanges();
       });
   }
 
@@ -405,8 +437,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         e.details.modelId === equipment.modelId &&
         e.details.manufacturerName === equipment.manufacturerName &&
         e.details.year === equipment.year &&
-        e.details.selectedConfiguration.configurationSequence ===
-          equipment.details.selectedConfiguration.configurationSequence
+        e.details.configurationSequence === equipment.configurationSequence
       ) {
         return true;
       }
@@ -453,9 +484,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           rate: employee.rate,
           class: employee.class,
           fringe: employee.fringe,
-          time1: 0,
-          time15: 0,
-          time2: 0
+          multiplier: 1
         }
       });
       newItem.beingEdited = true;
@@ -500,14 +529,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
           operating: 0,
           transport: 0,
           year: '',
-          configurations: null,
-          selectedConfiguration: {
-            hourlyOperatingCost: 0,
-            hourlyOwnershipCost: 0,
-            dailyOwnershipCost: 0,
-            weeklyOwnershipCost: 0,
-            monthlyOwnershipCost: 0
-          },
           hours: 0,
           make: '',
           model: '',
@@ -829,6 +850,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   viewAttachments(item: Item) {
     this.selectedItem = item;
+    this.renderer.addClass(document.body, 'modal-open');
     const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
       width: '80vw',
       disableClose: true,
@@ -841,6 +863,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.renderer.removeClass(document.body, 'modal-open');
       if (result && result.fileList) {
         item.attachments = result.fileList;
 
@@ -853,15 +876,17 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   addModel() {
     this.selectedConfig = [];
-
+    this.renderer.addClass(document.body, 'modal-open');
     const dialogRef = this.dialog.open(AddModelDialogComponent, {
       width: '80vw',
+      scrollStrategy: this.overlay.scrollStrategies.block(),
       data: {
         itemType: this.itemType,
         adjustments: this.project.adjustments
       }
     });
     dialogRef.afterClosed().subscribe(result => {
+      this.renderer.removeClass(document.body, 'modal-open');
       if (result && result.success) {
         if (result.item) {
           this.confirmAddModel(result.item);
@@ -872,64 +897,24 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   addMiscEquipment() {
     this.selectedConfig = [];
-    let state = '';
-    if (
-      this.itemType === 'equipmentRental' ||
-      (this.itemType === 'equipmentActive' &&
-        this.project.adjustments.equipmentActive.regionalAdjustmentsEnabled) ||
-      (this.itemType === 'equipmentStandby' &&
-        this.project.adjustments.equipmentStandby.regionalAdjustmentsEnabled)
-    ) {
-      state = this.project.adjustments.rentalLocation.stateCode;
-    }
-
+    this.renderer.addClass(document.body, 'modal-open');
     const dialogRef = this.dialog.open(AddMiscDialogComponent, {
       width: '80vw',
       data: {
         type: this.itemType,
         projectId: this.project.id,
-        projectState: state
+        projectState: this.project.adjustments.rentalLocation.stateCode
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.renderer.removeClass(document.body, 'modal-open');
       if (result && result.success) {
         if (result.item) {
           this.confirmAddModel(result.item);
         }
       }
     });
-  }
-
-  confirmAddModel(item: Item) {
-    this.equipmentService
-      .getRateDataForConfig(
-        item.details.modelId,
-        item.details.selectedConfiguration.configurationSequence,
-        null,
-        this.project.adjustments.rentalLocation.stateCode,
-        this.requestStartDate,
-        this.operatingAdjustment,
-        this.ownershipAdjustment,
-        this.standbyFactor
-      )
-      .subscribe((data: any) => {
-        item.details.selectedConfiguration.rates = data;
-        if (this.itemType === 'equipmentActive') {
-          item.details.selectedConfiguration.rates.rate = data.fhwaRate;
-        } else if (this.itemType === 'equipmentStandby') {
-          item.details.selectedConfiguration.rates.rate = data.standbyRate;
-        }
-        item.details.rate = item.details.selectedConfiguration.rates.rate;
-
-        this.saveChanges(this.itemList.items.length, item);
-        this.itemList.items = [...this.itemList.items, item];
-        this.changeDetector.detectChanges();
-
-        this.selected = [];
-        this.selectedConfig = null;
-        this.miscEquipment = null;
-      });
   }
 }
 

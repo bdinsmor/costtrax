@@ -8,9 +8,14 @@ import {
   Component,
   NgZone,
   OnDestroy,
-  OnInit,
+  OnInit
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +29,13 @@ import { AuthenticationService } from '../../core/authentication/authentication.
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { EquipmentService } from '../../equipment/equipment.service';
 import { ProjectsService } from '../../projects/projects.service';
-import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
+import {
+  Equipment,
+  Item,
+  ItemList,
+  Project,
+  Request
+} from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
@@ -146,6 +157,8 @@ export class RequestDetailsComponent
   }
 
   ngOnDestroy(): void {}
+
+  approveAll(event) {}
 
   findSelectedProject(projects: Project[], project: Project) {
     for (let i = 0; i < projects.length; i++) {

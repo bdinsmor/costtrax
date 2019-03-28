@@ -30,6 +30,7 @@ import {
   MatTooltipModule,
   MatToolbarModule
 } from '@angular/material';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   exports: [
@@ -54,6 +55,7 @@ import {
     MatTooltipModule,
     MatAutocompleteModule,
     MatSelectModule,
+    OverlayModule,
     MatProgressSpinnerModule
   ]
 })

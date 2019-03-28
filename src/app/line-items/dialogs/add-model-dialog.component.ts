@@ -3,7 +3,13 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { concat, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { Equipment, Item } from './../../shared/model';
@@ -106,6 +112,9 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         year: new FormControl(this.item.details.year, Validators.required)
       });
       this.modelForm.get('model').valueChanges.subscribe(val => {
+        if (!val) {
+          return;
+        }
         this.item.details.manufacturerId = this.modelForm.value.manufacturer;
         this.item.details.years = val.years;
         this.item.details.sizeClassId = val.sizeClassId;
@@ -130,6 +139,10 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         this.item.details.dateDiscontinued = val.dateDiscontinued;
       });
       this.modelForm.get('year').valueChanges.subscribe(val => {
+        if (!val) {
+          this.configurations = null;
+          return;
+        }
         this.item.details.year = val;
         this.yearSelectionChanged();
       });
@@ -139,6 +152,33 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
 
     this.manufacturerSearch();
     this.modelSearch();
+  }
+
+  onMakeClear() {
+    this.makeRemove(null);
+  }
+
+  onModelClear() {
+    this.modelRemove(null);
+  }
+
+  onYearClear() {
+    this.yearRemove(null);
+  }
+
+  makeRemove(event) {
+    this.modelForm.reset();
+    this.configurations = null;
+  }
+
+  modelRemove(event) {
+    this.modelForm.get('year').patchValue(null);
+    this.configurations = null;
+  }
+
+  yearRemove(event) {
+    this.modelForm.get('year').patchValue(null);
+    this.configurations = null;
   }
 
   yearDisabled() {
@@ -163,16 +203,26 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
 
   confirm(configuration: any) {
     if (!this.savedAssets) {
-      this.item.details.selectedConfiguration = configuration;
-      this.item.details.configurations = this.configurations;
+      Object.assign(this.item.details, configuration);
+      if (this.configurations) {
+        this.item.details.specsColumns = this.configurations.columns;
+      } else {
+        this.item.details.specsColumns = configuration.columns;
+      }
+
       this.dialogRef.close({
         success: true,
         item: this.item
       });
     } else {
-      console.log('year: ' + this.equipment.year);
-      this.equipment.selectedConfiguration = configuration;
-      this.equipment.configurations = this.configurations;
+      Object.assign(this.equipment, configuration);
+      if (this.configurations) {
+        this.equipment.specsColumns = this.configurations.columns;
+      } else {
+        this.equipment.specsColumns = configuration.columns;
+      }
+
+      // this.equipment.configurations = this.configurations;
       this.dialogRef.close({
         success: true,
         item: this.equipment
@@ -198,13 +248,15 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         )
         .subscribe((configurations: any) => {
           this.item.details.nodata = false;
-
+          console.log(
+            'config return: ' + JSON.stringify(configurations, null, 2)
+          );
           if (configurations && configurations.count > 1) {
             this.configurations = configurations;
             return;
           } else if (configurations && configurations.count === 1) {
             const sc = configurations.results[0];
-            this.item.details.configurations = configurations;
+            //  this.item.details.configurations = configurations;
             this.equipmentService
               .getRateDataForConfig(
                 sc.modelId,
@@ -218,21 +270,16 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
               )
               .subscribe((data: any) => {
                 sc.rates = data;
-
                 if (this.item.type === 'equipmentActive') {
                   this.item.details.rate = data.fhwaRate;
-                  sc.rates.method = sc.rates.fhwa;
                 } else if (this.item.type === 'equipmentStandby') {
                   this.item.details.rate = data.standbyRate;
-
-                  sc.rates.method = sc.rates.fhwa;
                 }
-                this.item.details.selectedConfiguration = sc;
+                this.confirm(sc);
               });
           } else {
-            this.item.setNoCost();
             this.item.details.nodata = true;
-
+            this.item.details.rate = 0;
             this.item.beingEdited = true;
           }
         });
@@ -251,8 +298,8 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
             return;
           } else if (configurations && configurations.count === 1) {
             const sc = configurations.results[0];
-            this.equipment.configurations = configurations;
-            this.equipment.selectedConfiguration = sc;
+            //  this.equipment.configurations = configurations;
+            this.confirm(sc);
           }
         });
     }

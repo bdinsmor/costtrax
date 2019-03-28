@@ -307,26 +307,6 @@ export class Item {
 
   misc = false;
 
-  setNoCost() {
-    this.details.selectedConfiguration = {
-      hourlyOperatingCost: 0,
-      hourlyOwnershipCost: 0,
-      dailyOwnershipCost: 0,
-      weeklyOwnershipCost: 0,
-      monthlyOwnershipCost: 0
-    };
-  }
-
-  resetSelectedConfiguration() {
-    this.details.selectedConfiguration = {
-      hourlyOperatingCost: 0,
-      hourlyOwnershipCost: 0,
-      dailyOwnershipCost: 0,
-      weeklyOwnershipCost: 0,
-      monthlyOwnershipCost: 0
-    };
-  }
-
   buildApproveVersion() {
     const json = this.buildSaveVersion();
     json['approverNotes'] = this.details.approverNotes;
@@ -347,9 +327,7 @@ export class Item {
     }
     if (this.type === 'equipmentActive') {
       json['modelId'] = this.details.modelId;
-      json[
-        'configurationSequence'
-      ] = this.details.selectedConfiguration.configurationSequence;
+      json['configurationSequence'] = this.details.configurationSequence;
       json['hours'] = this.details.hours;
       json['transport'] = this.details.transport;
       json['rate'] = this.details.rate;
@@ -357,9 +335,7 @@ export class Item {
       json['year'] = this.details.year;
     } else if (this.type === 'equipmentStandby') {
       json['modelId'] = this.details.modelId;
-      json[
-        'configurationSequence'
-      ] = this.details.selectedConfiguration.configurationSequence;
+      json['configurationSequence'] = this.details.configurationSequence;
       json['hours'] = this.details.hours;
       json['transport'] = this.details.transport;
       json['rate'] = this.details.rate;
@@ -368,9 +344,7 @@ export class Item {
       json['year'] = this.details.year;
     } else if (this.type === 'equipmentRental') {
       json['modelId'] = this.details.modelId;
-      json[
-        'configurationSequence'
-      ] = this.details.selectedConfiguration.configurationSequence;
+      json['configurationSequence'] = this.details.configurationSequence;
       json['hours'] = this.details.hours;
       json['transport'] = this.details.transport;
       json['operating'] = this.details.operating;
@@ -474,199 +448,10 @@ export class Item {
     return this.id && this.id !== '';
   }
 
-  calculateActiveComps() {
-    if (
-      !this.amount ||
-      !this.details.selectedConfiguration ||
-      !this.details.selectedConfiguration.rates
-    ) {
-      return;
-    }
-
-    this.details.rateTotal = +Number(
-      +this.details.selectedConfiguration.rates.hourlyOwnershipCostFinal +
-        +this.details.selectedConfiguration.rates.hourlyOperatingCostFinal
-    ).toFixed(2);
-    if (!this.details.terms || !this.details.terms.blueBook) {
-      this.details.terms = {
-        days: 0,
-        weeks: 0,
-        months: 0,
-        blueBook: {
-          dailyOwnershipCost: 0,
-          weeklyOwnershipCost: 0,
-          monthlyOwnershipCost: 0,
-          hourlyOwnershipCost: 0,
-          hourlyOperatingCost: 0,
-          ownershipTotal: 0,
-          ownershipDelta: 0,
-          rateTotal: 0,
-          rateDelta: 0
-        }
-      };
-    }
-    this.details.terms.blueBook.hourlyOwnershipCost = +this.details
-      .selectedConfiguration.rates.hourlyOwnershipCostFinal;
-    this.details.terms.blueBook.hourlyOperatingCost = +this.details
-      .selectedConfiguration.rates.hourlyOperatingCostFinal;
-    this.details.terms.blueBook.rateTotal = +Number(
-      +this.details.terms.blueBook.hourlyOwnershipCost +
-        +this.details.terms.blueBook.hourlyOperatingCost
-    ).toFixed(2);
-  }
-
   setDates(dates: any) {
     if (dates && dates.length > 0) {
       this.details.startDate = new Date(dates[0]);
       this.details.endDate = new Date(dates[1]);
-    }
-  }
-
-  calculateRentalComps() {
-    if (!this.details.invoice || !this.details.rentalBreakdown) {
-      return;
-    }
-
-    if (
-      this.details.selectedConfiguration &&
-      this.details.selectedConfiguration.rates
-    ) {
-      this.details.terms = {
-        blueBook: {
-          dailyOwnershipCost: this.details.selectedConfiguration.rates
-            .dailyOwnershipCostUnadjusted,
-          weeklyOwnershipCost: this.details.selectedConfiguration.rates
-            .weeklyOwnershipCostUnadjusted,
-          monthlyOwnershipCost: this.details.selectedConfiguration.rates
-            .monthlyOwnershipCostUnadjusted,
-          hourlyOwnershipCost: this.details.selectedConfiguration.rates
-            .hourlyOwnershipCostUnadjusted,
-          hourlyOperatingCost: this.details.selectedConfiguration.rates
-            .hourlyOperatingCostUnadjusted,
-          ownershipTotal: 0,
-          ownershipDelta: 0
-        },
-        regionalAvg: {
-          dailyRetailRentalCost: 0,
-          weeklyRetailRentalCost: 0,
-          monthlyRetailRentalCost: 0,
-          retailRentalTotal: 0,
-          retailRentalDelta: 0
-        }
-      };
-    } else if (this.details.selectedConfiguration) {
-      this.details.terms = {
-        blueBook: {
-          dailyOwnershipCost:
-            this.details.selectedConfiguration.dailyOwnershipCost || 0,
-          weeklyOwnershipCost:
-            this.details.selectedConfiguration.weeklyOwnershipCost || 0,
-          monthlyOwnershipCost:
-            this.details.selectedConfiguration.monthlyOwnershipCost || 0,
-          hourlyOwnershipCost:
-            this.details.selectedConfiguration.hourlyOwnershipCost || 0,
-          hourlyOperatingCost:
-            this.details.selectedConfiguration.hourlyOperatingCost || 0,
-          ownershipTotal: 0,
-          ownershipDelta: 0
-        },
-        regionalAvg: {
-          dailyRetailRentalCost: 0,
-          weeklyRetailRentalCost: 0,
-          monthlyRetailRentalCost: 0,
-          retailRentalTotal: 0,
-          retailRentalDelta: 0
-        }
-      };
-    }
-
-    if (
-      this.details.regionalAverages &&
-      this.details.regionalAverages.length >= 1
-    ) {
-      this.details.terms.regionalAvg.monthlyRetailRentalCost = +this.details
-        .regionalAverages[0].monthlyRate;
-      this.details.terms.regionalAvg.weeklyRetailRentalCost = +this.details
-        .regionalAverages[0].weeklyRate;
-      this.details.terms.regionalAvg.dailyRetailRentalCost = +this.details
-        .regionalAverages[0].dailyRate;
-    } else if (this.details.nationalAverages) {
-      for (let i = 0; i < this.details.nationalAverages.length; i++) {
-        if (this.details.nationalAverages[i].country === 'US') {
-          this.details.terms.regionalAvg.dailyRetailRentalCost = +Number(
-            +this.details.nationalAverages[i].dailyRate
-          ).toFixed(2);
-          this.details.terms.regionalAvg.weeklyRetailRentalCost = +Number(
-            +this.details.nationalAverages[i].weeklyRate
-          ).toFixed(2);
-          this.details.terms.regionalAvg.monthlyRetailRentalCost = +Number(
-            +this.details.nationalAverages[i].monthlyRate
-          ).toFixed(2);
-          break;
-        }
-      }
-    } else {
-      this.details.terms.regionalAvg.monthlyRetailRentalCost = 0;
-      this.details.terms.regionalAvg.weeklyRetailRentalCost = 0;
-      this.details.terms.regionalAvg.dailyRetailRentalCost = 0;
-    }
-
-    this.details.terms.blueBook.ownershipTotal = 0;
-    this.details.terms.regionalAvg.retailRentalTotal = 0;
-
-    if (this.details.rentalBreakdown.months > 0) {
-      this.details.terms.blueBook.ownershipTotal +=
-        +this.details.rentalBreakdown.months *
-        +this.details.terms.blueBook.monthlyOwnershipCost;
-      this.details.terms.regionalAvg.retailRentalTotal +=
-        +this.details.rentalBreakdown.months *
-        +this.details.terms.regionalAvg.monthlyRetailRentalCost;
-    }
-    if (this.details.rentalBreakdown.weeks > 0) {
-      this.details.terms.blueBook.ownershipTotal +=
-        +this.details.rentalBreakdown.weeks *
-        +this.details.terms.blueBook.weeklyOwnershipCost;
-      this.details.terms.regionalAvg.retailRentalTotal +=
-        +this.details.rentalBreakdown.weeks *
-        +this.details.terms.regionalAvg.weeklyRetailRentalCost;
-    }
-    if (this.details.rentalBreakdown.days > 0) {
-      this.details.terms.blueBook.ownershipTotal +=
-        +this.details.rentalBreakdown.days *
-        +this.details.terms.blueBook.dailyOwnershipCost;
-      this.details.terms.regionalAvg.retailRentalTotal +=
-        +this.details.rentalBreakdown.days *
-        +this.details.terms.regionalAvg.dailyRetailRentalCost;
-    }
-
-    // (Ownership Cost Total - Invoice)/Invoice and (Rental Total - Invoice) / Invoice
-
-    if (this.details.terms.blueBook.ownershipTotal > 0) {
-      this.details.terms.blueBook.ownershipDelta = Math.abs(
-        +Number(
-          (100 *
-            (+this.details.terms.blueBook.ownershipTotal -
-              +this.details.invoice)) /
-            +this.details.invoice
-        ).toFixed(2)
-      );
-      if (
-        +this.details.terms.blueBook.ownershipTotal >= +this.details.invoice
-      ) {
-        this.details.rateVerified = true;
-      } else {
-        this.details.rateVerified = false;
-      }
-    }
-    if (this.details.terms.regionalAvg.retailRentalTotal > 0) {
-      this.details.terms.regionalAvg.retailRentalDelta = Math.abs(
-        +Number(
-          100 *
-            ((+this.details.terms.regionalAvg.retailRentalTotal -
-              +this.details.invoice) /
-              +this.details.invoice)
-        ).toFixed(2)
-      );
     }
   }
 
@@ -711,12 +496,10 @@ export class Item {
     }
     if (this.type.toLowerCase() === 'equipmentActive') {
       this.displayType = 'Equipment|Active';
-      //  this.calculateActiveComps();
     } else if (this.type.toLowerCase() === 'equipmentStandby') {
       this.displayType = 'Equipment|Standby';
     } else if (this.type.toLowerCase() === 'equipmentRental') {
       this.displayType = 'Equipment|Rental';
-      this.calculateRentalComps();
     } else if (this.type.toLowerCase() === 'labor') {
       this.displayType = 'Labor';
     } else if (this.type.toLowerCase() === 'material') {
@@ -762,6 +545,41 @@ export class Item {
     return d;
   }
 
+  buildSpecs() {
+    if (!this.details || !this.details.specs) {
+      return;
+    }
+    const specColumns = {};
+    let cols = [];
+
+    const specs = this.details.specs;
+    for (let j = 0; j < specs.length; j++) {
+      const spec = specs[j];
+      const specNameFriendly = spec.specNameFriendly;
+
+      if (!specColumns[specNameFriendly]) {
+        specColumns[specNameFriendly] = true;
+        cols.push(specNameFriendly);
+      }
+      this.details[specNameFriendly] = spec.specValue || '';
+    }
+
+    cols = cols.sort();
+    const updatedCols = [];
+
+    for (let k = 0; k < cols.length; k++) {
+      const col = cols[k] as string;
+      if (!this.details[col]) {
+        this.details[col] = '';
+      }
+    }
+
+    for (let k = 0; k < cols.length; k++) {
+      updatedCols.push({ name: cols[k] });
+    }
+    this.details.specsColumns = updatedCols;
+  }
+
   constructor(data: any) {
     {
       if (!data.details) {
@@ -769,7 +587,9 @@ export class Item {
       } else {
         this.details = data.details;
       }
-
+      if (this.details && this.details.modelName) {
+        this.details.model = this.details.modelName;
+      }
       this.id = data.id || '';
       this.requestId = data.requestId || '';
       this.eSig = data.eSig || '';
@@ -822,28 +642,9 @@ export class Item {
       } else {
         this.details.subSize = this.details.sizeClassName;
       }
+      this.buildSpecs();
       this.setDisplayType();
       this.setAmounts();
-      if (!this.details) {
-        this.details = {
-          selectedConfiguration: {
-            hourlyOperatingCost: 0,
-            hourlyOwnershipCost: 0,
-            dailyOwnershipCost: 0,
-            weeklyOwnershipCost: 0,
-            monthlyOwnershipCost: 0
-          }
-        };
-      }
-      if (!this.details.selectedConfiguration) {
-        this.details.selectedConfiguration = {
-          hourlyOperatingCost: 0,
-          hourlyOwnershipCost: 0,
-          dailyOwnershipCost: 0,
-          weeklyOwnershipCost: 0,
-          monthlyOwnershipCost: 0
-        };
-      }
     }
   }
 }
@@ -1361,7 +1162,7 @@ export class Equipment {
   configurationSequence: string;
   misc = false;
   configurations: any;
-  selectedConfiguration: any;
+  rates: any;
   year = '';
   vin: string;
   status: string;
@@ -1380,6 +1181,8 @@ export class Equipment {
   sizeClassName: string;
   categoryName: string;
   subSize: string;
+  specs: [];
+  specsColumns: [];
   classificationName: string;
   subtypeName: string;
   sizeClassId: number;
@@ -1393,26 +1196,6 @@ export class Equipment {
   revert: any;
   beingEdited = false;
   modelName: string;
-
-  setDetailsFromConfiguration() {
-    this.manufacturerName =
-      this.details.selectedConfiguration.manufacturerName || '';
-    this.manufacturerId =
-      this.details.selectedConfiguration.manufacturerId || '';
-    this.model =
-      this.details.selectedConfiguration.model ||
-      this.details.selectedConfiguration.modelName ||
-      '';
-    this.modelId = this.details.selectedConfiguration.modelId || '';
-    this.categoryName = this.details.selectedConfiguration.categoryName || '';
-    this.categoryId = this.details.selectedConfiguration.categoryId || '';
-    this.subtypeName = this.details.selectedConfiguration.subtypeName || '';
-    this.subtypeId = this.details.selectedConfiguration.subtypeId || '';
-    this.sizeClassId = this.details.selectedConfiguration.sizeClassId || '';
-    this.sizeClassName = this.details.selectedConfiguration.sizeClassName || '';
-    this.subSize =
-      this.details.selectedConfiguration.subtypeName + ' ' + this.sizeClassName;
-  }
 
   generateYears() {
     if (!this.dateIntroduced) {
@@ -1437,27 +1220,6 @@ export class Equipment {
 
   constructor(m: any) {
     Object.assign(this, m);
-    /*this.id = m.id || '';
-    this.details = m.details || { id: '', serial: '', year: '' };
-    this.guid = m.guid || '';
-    this.manufacturerName = m.manufacturerName || '';
-    this.manufacturerId = m.manufacturerId || '';
-    this.model = m.model || m.modelName || '';
-    this.modelId = m.modelId || '';
-    this.misc = this.manufacturerName.toUpperCase() === 'MISCELLANEOUS';
-    this.configurations = m.specs || m.configurations || {};
-    this.selectedConfiguration = m.selectedConfiguration || { };
-
-
-    if (m.details) {
-      this.vin = m.details.vin || m.details.serial || 0;
-      if (m.details.year) {
-        this.year = m.details.year || '';
-      }
-    } else {
-      this.vin = m.vin || m.serial || 0;
-      this.year = m.year || '';
-    }*/
 
     if (m.dateIntroduced && m.dateIntroduced !== '') {
       if (m.dateIntroduced instanceof Date) {
@@ -1496,12 +1258,10 @@ export class Equipment {
     } else {
       this.subSize = '';
     }
+
     if (!this.details) {
-      this.details = {};
+      this.details = { id: '', vin: '' };
     }
-    this.details.selectedConfiguration = m.selectedConfiguration || {
-      configurationSequence: this.configurationSequence
-    };
 
     this.classificationId = m.classificationId;
     this.classificationName = m.classificationName;
@@ -1514,68 +1274,8 @@ export class Equipment {
       this.type = m.type || this.model;
     }
     this.status = m.status || 'draft';
-    this.calculateHourlyRates();
     this.generateYears();
     this.display = this.manufacturerName + ' ' + this.model;
-  }
-
-  setNoCost() {
-    this.details.selectedConfiguration = {
-      hourlyOperatingCost: 0,
-      hourlyOwnershipCost: 0,
-      dailyOwnershipCost: 0,
-      weeklyOwnershipCost: 0,
-      monthlyOwnershipCost: 0
-    };
-  }
-
-  resetSelectedConfiguration() {
-    this.details.selectedConfiguration = {
-      hourlyOperatingCost: 0,
-      hourlyOwnershipCost: 0,
-      dailyOwnershipCost: 0,
-      weeklyOwnershipCost: 0,
-      monthlyOwnershipCost: 0
-    };
-  }
-
-  calculateHourlyRates() {
-    if (
-      this.details.rates &&
-      this.details.rates.ownership_monthly_calculated_hourly > 0
-    ) {
-      return;
-    }
-
-    this.details.rates = {
-      ownership_monthly_calculated_hourly: 0,
-      ownership_weekly_calculated_hourly: 0,
-      ownership_daily_calculated_hourly: 0,
-      ownership_hourly_calculated_hourly: 0,
-      operating_hourly_calculated_hourly: 0
-    };
-
-    if (
-      this.details.selectedConfiguration &&
-      this.details.selectedConfiguration.rates
-    ) {
-      this.details.rates.ownership_monthly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.rates.monthlyOwnershipCostFinal /
-          176
-      ).toFixed(2);
-      this.details.rates.ownership_weekly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.rates.weeklyOwnershipCostFinal / 40
-      ).toFixed(2);
-      this.details.rates.ownership_daily_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.rates.dailyOwnershipCostFinal / 8
-      ).toFixed(2);
-      this.details.rates.ownership_hourly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.rates.hourlyOwnershipCostFinal
-      ).toFixed(2);
-      this.details.rates.operating_hourly_calculated_hourly = +Number(
-        +this.details.selectedConfiguration.rates.hourlyOperatingCostFinal
-      ).toFixed(2);
-    }
   }
 
   buildDisplay() {

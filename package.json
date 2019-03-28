@@ -1,6 +1,6 @@
 {
   "name": "ctx",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve  --configuration=local",
@@ -47,6 +47,7 @@
     "ngx-bootstrap": "^3.3.0",
     "ngx-countdown": "^3.2.0",
     "ngx-papaparse": "^3.0.2",
+    "ngx-responsive": "^7.0.1",
     "ngx-take-until-destroy": "^5.4.0",
     "path": "^0.12.7",
     "popper.js": "^1.14.7",

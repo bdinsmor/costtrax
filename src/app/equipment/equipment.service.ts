@@ -37,8 +37,7 @@ export class EquipmentService implements OnDestroy {
         {
           modelId: item.modelId,
           year: item.year,
-          configurationSequence:
-            item.selectedConfiguration.configurationSequence,
+          configurationSequence: item.configurationSequence,
           details: item.details
         }
       );
@@ -48,8 +47,7 @@ export class EquipmentService implements OnDestroy {
         {
           modelId: item.modelId,
           year: item.year,
-          configurationSequence:
-            item.selectedConfiguration.configurationSequence,
+          configurationSequence: item.configurationSequence,
           details: item.details
         }
       );
@@ -107,7 +105,7 @@ export class EquipmentService implements OnDestroy {
             for (let k = 0; k < cols.length; k++) {
               updatedCols.push({ name: cols[k] });
             }
-            machine.columns = updatedCols;
+            machine.specsColumns = updatedCols;
             const m: Equipment = new Equipment(machine);
             m.status = 'complete';
             r.push(m);
@@ -174,8 +172,8 @@ export class EquipmentService implements OnDestroy {
     items.forEach((e: Item) => {
       returns.push(
         this.getRateDataForConfig(
-          e.details.selectedConfiguration.modelId,
-          e.details.selectedConfiguration.configurationSequence,
+          e.details.modelId,
+          e.details.configurationSequence,
           e.details.year,
           state,
           date,
@@ -222,15 +220,7 @@ export class EquipmentService implements OnDestroy {
 
     return this.http.get(url, options).pipe(
       map((res: any) => {
-        if (!equipment.selectedConfiguration) {
-          equipment.selectedConfiguration = {
-            modelId: equipment.modelId,
-            configurationSequence: equipment.configurationSequence,
-            rates: res
-          };
-        } else {
-          equipment.selectedConfiguration.rates = res;
-        }
+        equipment.rates = res;
 
         return equipment;
       })

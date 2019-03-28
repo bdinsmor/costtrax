@@ -55,17 +55,15 @@ export class AddMiscDialogComponent implements OnInit, OnDestroy {
 
   confirm(configuration: any) {
     if (!this.savedAssets) {
-      this.item.details.manufacturerName = configuration.manufacturerName;
-      this.item.details.manufacturerId = configuration.manufacturerId;
+      Object.assign(this.item.details, configuration);
+      if (this.configurations) {
+        this.item.details.specsColumns = this.configurations.columns;
+      } else {
+        this.item.details.specsColumns = configuration.columns;
+      }
       this.item.details.model = configuration.modelName;
-      this.item.details.modelId = configuration.modelId;
-      this.item.details.year = configuration.year;
-      this.item.details.sizeClassName = configuration.sizeClassName;
-      this.item.details.sizeClassId = configuration.sizeClassId;
       this.item.details.subSize =
         configuration.subtypeName + ' ' + configuration.sizeClassName;
-      this.item.details.selectedConfiguration = configuration;
-      this.item.details.configurations = this.configurations;
       this.item.misc = true;
 
       this.dialogRef.close({
@@ -73,17 +71,15 @@ export class AddMiscDialogComponent implements OnInit, OnDestroy {
         item: this.item
       });
     } else {
-      this.miscEquipment.manufacturerName = configuration.manufacturerName;
-      this.miscEquipment.manufacturerId = configuration.manufacturerId;
+      Object.assign(this.miscEquipment, configuration);
+      if (this.configurations) {
+        this.miscEquipment.specsColumns = this.configurations.columns;
+      } else {
+        this.miscEquipment.specsColumns = configuration.columns;
+      }
       this.miscEquipment.model = configuration.modelName;
-      this.miscEquipment.modelId = configuration.modelId;
-      this.miscEquipment.year = configuration.year;
-      this.miscEquipment.sizeClassName = configuration.sizeClassName;
-      this.miscEquipment.sizeClassId = configuration.sizeClassId;
       this.miscEquipment.subSize =
         configuration.subtypeName + ' ' + configuration.sizeClassName;
-      this.miscEquipment.selectedConfiguration = configuration;
-      this.miscEquipment.configurations = this.configurations;
       this.miscEquipment.misc = true;
 
       this.dialogRef.close({

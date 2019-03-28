@@ -1,4 +1,4 @@
-<div class="full-width">
+<div class="full-width" [class.mt-2]="!newProject">
   <section *ngIf="!newProject" class="full-width d-flex flex-row align-items-center">
     <h5 *ngIf="newProject && type === 'REQUESTOR'" class="no-top-margin pr-1">
       REQUESTORS

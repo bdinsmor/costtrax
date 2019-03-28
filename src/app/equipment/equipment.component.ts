@@ -6,7 +6,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
@@ -101,7 +101,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         },
         (error: any) => {
           console.error(
-            'Could not load requestor\'s saved models for this project' + error
+            "Could not load requestor's saved models for this project" + error
           );
         }
       );
@@ -148,6 +148,7 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (result.item) {
+          console.log('item: ' + JSON.stringify(result.item, null, 2));
           this.confirmAddModel(result.item);
         }
       }
