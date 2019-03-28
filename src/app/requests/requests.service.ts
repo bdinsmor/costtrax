@@ -164,7 +164,7 @@ export class RequestsService {
   }
 
   clone(request: any) {
-    return this.http.put(
+    return this.http.post(
       environment.serverUrl + '/request/' + request.id + '/duplicate',
       {}
     );

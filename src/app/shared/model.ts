@@ -711,7 +711,7 @@ export class Item {
     }
     if (this.type.toLowerCase() === 'equipmentActive') {
       this.displayType = 'Equipment|Active';
-      this.calculateActiveComps();
+      //  this.calculateActiveComps();
     } else if (this.type.toLowerCase() === 'equipmentStandby') {
       this.displayType = 'Equipment|Standby';
     } else if (this.type.toLowerCase() === 'equipmentRental') {
@@ -764,8 +764,12 @@ export class Item {
 
   constructor(data: any) {
     {
-      console.log('Data: ' + JSON.stringify(data, null, 2));
-      this.details = this.buildDetails(data);
+      if (!data.details) {
+        this.details = this.buildDetails(data);
+      } else {
+        this.details = data.details;
+      }
+      
 
       this.id = data.id || '';
       this.requestId = data.requestId || '';
@@ -783,7 +787,6 @@ export class Item {
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
       this.attachments = data.attachments || [];
-      console.log('item...');
       this.buildRentalDates();
 
       if (this.details.startDate) {
@@ -806,7 +809,6 @@ export class Item {
         }
         this.details.numDays = diffDays;
       }
-      console.log('2');
       this.buildDateRange();
       if (
         this.details.subtypeName &&
@@ -821,10 +823,8 @@ export class Item {
       } else {
         this.details.subSize = this.details.sizeClassName;
       }
-      console.log('3');
       this.setDisplayType();
       this.setAmounts();
-      console.log('4');
       if (!this.details) {
         this.details = {
           selectedConfiguration: {
@@ -987,9 +987,11 @@ export class Project {
     this.requestors = [];
     for (let i = 0; i < this.userJSON.length; i++) {
       const u = new User(this.userJSON[i]);
+
       if (u.containsRole('ProjectRequestor')) {
         this.requestors.push(u);
-      } else {
+      }
+      if (u.containsRole('ProjectObserver') || u.containsRole('ProjectAdmin')) {
         this.users.push(u);
       }
     }
@@ -1226,6 +1228,8 @@ export class Project {
           paymentTerms: 45,
           description: '',
           state: 'GA',
+          autoSaveLabor: false,
+          autoSaveEquipment: false,
           requestingOrgs: []
         };
       }
@@ -1236,6 +1240,7 @@ export class Project {
       if (!this.requestStats.pendingCount) {
         this.requestStats.pendingCount = 0;
       }
+
       this.zipcode = project.meta.zipcode || project.zipcode || 30332;
       this.state = project.meta.state || project.state || 'GA';
       this.active = project.active || true;
@@ -1431,7 +1436,8 @@ export class Equipment {
   }
 
   constructor(m: any) {
-    this.id = m.id || '';
+    Object.assign(this, m);
+    /*this.id = m.id || '';
     this.details = m.details || { id: '', serial: '', year: '' };
     this.guid = m.guid || '';
     this.manufacturerName = m.manufacturerName || '';
@@ -1440,6 +1446,19 @@ export class Equipment {
     this.modelId = m.modelId || '';
     this.misc = this.manufacturerName.toUpperCase() === 'MISCELLANEOUS';
     this.configurations = m.specs || m.configurations || {};
+    this.selectedConfiguration = m.selectedConfiguration || { };
+
+
+    if (m.details) {
+      this.vin = m.details.vin || m.details.serial || 0;
+      if (m.details.year) {
+        this.year = m.details.year || '';
+      }
+    } else {
+      this.vin = m.vin || m.serial || 0;
+      this.year = m.year || '';
+    }*/
+
     if (m.dateIntroduced && m.dateIntroduced !== '') {
       if (m.dateIntroduced instanceof Date) {
         this.dateIntroduced = m.dateIntroduced;
@@ -1459,27 +1478,7 @@ export class Equipment {
     } else {
       this.dateDiscontinued = DateTime.local().toJSDate();
     }
-
-    if (m.details) {
-      this.vin = m.details.vin || m.details.serial || 0;
-      if (m.details.year) {
-        this.year = m.details.year || '';
-      }
-    } else {
-      this.vin = m.vin || m.serial || 0;
-      this.year = m.year || '';
-    }
-
-    if (this.details && !this.details.selectedConfiguration) {
-      this.details.selectedConfiguration = {
-        hourlyOperatingCost: 0,
-        hourlyOwnershipCost: 0,
-        dailyOwnershipCost: 0,
-        weeklyOwnershipCost: 0,
-        monthlyOwnershipCost: 0
-      };
-    }
-
+    this.model = m.model || m.modelName || '';
     this.description = m.description || m.categoryName || '';
     this.baseRental = Number(m.baseRental) || Number(m.base) || 0;
     this.fhwa = Number(m.fhwa) || 0;
@@ -1497,6 +1496,9 @@ export class Equipment {
     } else {
       this.subSize = '';
     }
+    this.details.selectedConfiguration = m.selectedConfiguration || {
+      configurationSequence: this.configurationSequence
+    };
 
     this.classificationId = m.classificationId;
     this.classificationName = m.classificationName;
@@ -1730,7 +1732,7 @@ export class Request {
   paymentTerms: 0;
   itemsByType: ItemList[];
   unsortedItems: Item[];
-  totalItems = 0;
+  lineItemCount = 0;
   lineItemTotals: any;
   notes: string;
   submittedOn: string;
@@ -1969,9 +1971,11 @@ export class Request {
     const lineItems = {};
     this.itemsByType.forEach((it: ItemList) => {
       if (it.items && it.items.length > 0) {
-        lineItems[it.type] = it.items.map((item: Item) => {
-          return item.buildApproveVersion();
-        });
+        lineItems[it.type] = {
+          items: it.items.map((item: Item) => {
+            return item.buildApproveVersion();
+          })
+        };
       }
     });
 
@@ -1982,9 +1986,11 @@ export class Request {
     const lineItems = {};
     this.itemsByType.forEach((it: ItemList) => {
       if (it.items && it.items.length > 0) {
-        lineItems[it.type] = it.items.map((item: Item) => {
-          return item.buildSaveVersion();
-        });
+        lineItems[it.type] = {
+          items: it.items.map((item: Item) => {
+            return item.buildSaveVersion();
+          })
+        };
       }
     });
 
@@ -2001,16 +2007,15 @@ export class Request {
     const types = Object.keys(this.lineItems);
     for (let i = 0; i < types.length; i++) {
       const type = types[i];
-      let typeItems = [];
+      let typeItems: any;
 
       typeItems = this.lineItems[type];
-      if (!typeItems) {
+      if (!typeItems || !typeItems.items) {
         continue;
       }
-      this.totalItems = +this.totalItems + +typeItems.length;
       const items = [];
-      for (let j = 0; j < typeItems.length; j++) {
-        const t = typeItems[j];
+      for (let j = 0; j < typeItems.items.length; j++) {
+        const t = typeItems.items[j];
         t.type = type;
         t.requestId = this.id;
         items.push(new Item(t));
@@ -2019,7 +2024,6 @@ export class Request {
     }
 
     if (this.lineItemTotals) {
-      this.totalItems = this.lineItemTotals.count;
       this.total = this.lineItemTotals.amount;
       this.equipmentTotal = this.lineItemTotals.equipment || 0;
       this.laborTotal = this.lineItemTotals.labor || 0;
@@ -2130,6 +2134,7 @@ export class Request {
       this.submittedBy = request.submittedBy || '';
       this.createdOn = request.createdOn || '';
       this.createdBy = request.createdBy || '';
+      this.lineItemCount = request.lineItemCount || 0;
       this.lastModified = request.lastModified || '';
       this.lastModifiedBy = request.lastModifiedBy || '';
       this.materialSubtotal = +request.materialSubtotal || 0;

@@ -36,8 +36,9 @@ export class EquipmentService implements OnDestroy {
           item.id,
         {
           modelId: item.modelId,
+          year: item.year,
           configurationSequence:
-            item.details.selectedConfiguration.configurationSequence,
+            item.selectedConfiguration.configurationSequence,
           details: item.details
         }
       );
@@ -46,8 +47,9 @@ export class EquipmentService implements OnDestroy {
         environment.serverUrl + '/project/' + projectId + '/equipment',
         {
           modelId: item.modelId,
+          year: item.year,
           configurationSequence:
-            item.details.selectedConfiguration.configurationSequence,
+            item.selectedConfiguration.configurationSequence,
           details: item.details
         }
       );
@@ -182,20 +184,31 @@ export class EquipmentService implements OnDestroy {
     if (state && state !== '') {
       params = params.set('state', state);
     }
+    params = params.set('modelId', String(equipment.modelId));
     params = params.set('operatingAdjustment', String(operatingAdjustment));
     params = params.set('ownershipAdjustment', String(ownershipAdjustment));
     params = params.set('standbyFactor', String(standbyFactor));
+    params = params.set(
+      'configurationSequence',
+      String(equipment.configurationSequence)
+    );
 
-    const url: string =
-      environment.serverUrl +
-      '/equipment/cost-recovery/' +
-      equipment.details.selectedConfiguration.configurationSequence;
+    const url: string = environment.serverUrl + '/equipment/cost-recovery';
 
     const options = { params: params };
 
     return this.http.get(url, options).pipe(
       map((res: any) => {
-        equipment.details.selectedConfiguration.rates = res;
+        if (!equipment.selectedConfiguration) {
+          equipment.selectedConfiguration = {
+            modelId: equipment.modelId,
+            configurationSequence: equipment.configurationSequence,
+            rates: res
+          };
+        } else {
+          equipment.selectedConfiguration.rates = res;
+        }
+
         return equipment;
       })
     );
@@ -257,6 +270,7 @@ export class EquipmentService implements OnDestroy {
         ) {
           return { count: 0, results: [] };
         }
+
         const specColumns = {};
         let cols = [];
         for (let i = 0; i < res.results.length; i++) {
@@ -529,147 +543,4 @@ export class EquipmentService implements OnDestroy {
     });
     return sortedList;
   }
-
-  /*
-"nationalAverages": [
-      {
-        "dailyRate": 192,
-        "weeklyRate": 557,
-        "monthlyRate": 1329,
-        "revisionDate": "2018-04-01"
-      }
-    ]
-
-  */
-
-  getRateDataForSizeClassId(
-    sizeClassId: string,
-    modelId: string,
-    state: string = '',
-    zipcode: number,
-    duration: number = 1
-  ): Observable<any> {
-    return this.http
-      .get(
-        environment.serverUrl +
-          '/equipment/rates?zipcode=' +
-          String(zipcode).trim() +
-          '&state=' +
-          state +
-          '&modelId=' +
-          modelId +
-          '&sizeClassId=' +
-          sizeClassId
-      )
-      .pipe(
-        map((res: any) => {
-          if (res === 'Query not covered at this time') {
-            return null;
-          }
-          const rateData = {
-            nationalAverages: res.nationalAverages,
-            rentalHouseRates: res.rentalHouseRates
-          };
-          if (res.nationalAverages && res.nationalAverages.length > 0) {
-            res.baseRental =
-              Number(res.nationalAverages[0].dailyRate * duration) || 0;
-          }
-          return res;
-        })
-      );
-  }
-
-  getEquipmentRates(choice: Equipment, state: string) {
-    let params = new HttpParams();
-    if (choice.sizeClassId && choice.sizeClassId !== 0) {
-      params = params.set('sizeClassId', String(choice.sizeClassId));
-    }
-    if (state && state !== '') {
-      params = params.set('state', state);
-    }
-    const options = { params: params };
-    return this.http
-      .get(environment.serverUrl + '/equipment/rates', options)
-      .pipe(
-        map((res: any) => {
-          choice.nationalAverages = res.nationalAverages;
-          choice.regionalAverages = res.regionalAverages;
-          choice.sizeClassId = res.sizeClassId;
-          choice.sizeClassMax = res.sizeClassMax;
-          choice.sizeClassMin = res.sizeClassMin;
-          choice.sizeClassUom = res.sizeClassUom;
-          choice.sizeClassName = res.sizeClassName;
-          choice.subtypeId = res.subtypeId;
-          choice.subtypeName = res.subtypeName;
-          choice.dateIntroduced = res.dateIntroduced;
-          choice.dateDiscontinued = res.dateDiscontinued;
-          choice.classificationId = res.classificationId;
-          choice.classificationName = res.classificationName;
-          choice.categoryName = res.categoryName;
-          choice.categoryId = res.categoryId;
-          choice.buildRates(1);
-          return choice;
-        })
-      );
-  }
-
-  getRateData(state: string = '', choices: Equipment[], duration: number = 1) {
-    const returns = [];
-    console.log('# choices: ' + choices.length);
-    choices.forEach((e: Equipment) => {
-      returns.push(this.getEquipmentRates(e, state));
-    });
-    return forkJoin(returns);
-  }
-
-  /*getRateData(
-    state: string = '',
-    choices: Equipment[],
-    duration: number = 1
-  ): Promise<any> {
-    let promises: Promise<any>;
-    promises = Promise.all(
-      choices.map(async (choice: Equipment) =>
-        this.http
-          .get(
-            environment.serverUrl +
-              '/equipment/rates?sizeClassId=' +
-              choice.sizeClassId +
-              '&state=' +
-              state
-          )
-          .toPromise()
-          .then((res: any) => {
-            choice.nationalAverages = res.nationalAverages;
-            choice.regionalAverages = res.regionalAverages;
-            choice.sizeClassId = res.sizeClassId;
-            choice.sizeClassMax = res.sizeClassMax;
-            choice.sizeClassMin = res.sizeClassMin;
-            choice.sizeClassUom = res.sizeClassUom;
-            choice.sizeClassName = res.sizeClassName;
-            choice.subtypeId = res.subtypeId;
-            choice.subtypeName = res.subtypeName;
-            choice.dateIntroduced = res.dateIntroduced;
-            choice.dateDiscontinued = res.dateDiscontinued;
-            choice.classificationId = res.classificationId;
-            choice.classificationName = res.classificationName;
-            choice.categoryName = res.categoryName;
-            choice.categoryId = res.categoryId;
-            choice.buildRates(duration);
-            return new Promise((resolve, reject) => {
-              resolve(choice);
-            });
-
-            // return of(choice).toPromise();
-          })
-      )
-    ).then((response: Equipment[]) => {
-      return of(response);
-      // console.log('promise results: ' + JSON.stringify(response, null, 2));
-    });
-
-    return promises;
-
-    //  return of([]);
-  }*/
 }

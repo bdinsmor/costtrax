@@ -131,6 +131,10 @@ $v7-theme: mat-light-theme($v7-primary, $v7-accent, $v7-warn);
     width: 34px !important;
 }
 
+.datagrid-table .datagrid-placeholder.datagrid-empty {
+    max-height: 60px !important;
+}
+
 .datagrid-host {
     display: flex;
     max-height: 60vh !important;

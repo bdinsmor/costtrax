@@ -16,8 +16,9 @@ import { auditTime } from 'rxjs/operators';
 
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { AddMiscDialogComponent } from '../line-items/dialogs/add-misc-dialog.component';
-import { ConfigurationDialogComponent } from '../line-items/dialogs/configuration-dialog.component';
-import { Equipment } from '../shared/model';
+import { AddModelDialogComponent } from '../line-items/dialogs/add-model-dialog.component';
+import { ProjectsService } from '../projects/projects.service';
+import { Equipment, Project } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { EquipmentDeleteDialogComponent } from './equipment-delete-dialog.component';
 import { EquipmentService } from './equipment.service';
@@ -61,12 +62,14 @@ export class EquipmentComponent implements OnInit, OnDestroy {
   selected: any[];
   private config: MatSnackBarConfig;
   duration = 3000;
+  project: Project;
 
   constructor(
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private equipmentService: EquipmentService,
+    private projectService: ProjectsService,
     private changeDetector: ChangeDetectorRef
   ) {}
 
@@ -85,6 +88,12 @@ export class EquipmentComponent implements OnInit, OnDestroy {
         this.changeDetector.detectChanges();
       });
     if (!this.items && this.projectId) {
+      this.projectService
+        .getProject(this.projectId)
+        .pipe(untilDestroyed(this))
+        .subscribe((p: Project) => {
+          this.project = p;
+        });
       this.equipmentService.getRequestorModels(this.projectId).subscribe(
         (models: Equipment[]) => {
           this.items = models;
@@ -128,308 +137,53 @@ export class EquipmentComponent implements OnInit, OnDestroy {
     //   this.equipmentService.updateAutoSave(autoSaveValue);
   }
 
-  modelChanged(item: Equipment) {}
-
-  modelSelected() {
-    if (this.miscModelId) {
-      this.equipmentService.getModelDetails(this.miscModelId).subscribe(
-        (response: any) => {
-          this.miscEquipment = response;
-          this.equipmentService
-            .getConfiguration(response.modelId)
-            .subscribe((configurations: any) => {
-              this.configurations = configurations;
-              if (configurations && configurations.count === 1) {
-                this.selected = configurations.results[0];
-              } else {
-                this.showConfigurations = true;
-              }
-              this.changeDetector.detectChanges();
-            });
-        },
-        (error: any) => {
-          console.error('Caught error trying to load misc choice: ' + error);
-        }
-      );
-    }
-  }
-
-  manufacturerNameSelectionChanged(event: any) {
-    const item: Equipment = this.items[event.index];
-    if (item && event.item) {
-      if (event.item) {
-        item.manufacturerId = event.item.manufacturerId;
-        this.items[event.index] = new Equipment(item);
-      } else {
-        this.items[event.index] = new Equipment({});
-        this.items[event.index].sizeClassName = '';
-        this.items[event.index].year = null;
-        this.items[event.index].years = null;
-        this.items[event.index].modelId = null;
+  addModel() {
+    const dialogRef = this.dialog.open(AddModelDialogComponent, {
+      width: '80vw',
+      data: {
+        savedAssets: true,
+        adjustments: this.project.adjustments
       }
-    } else {
-      this.items[event.index] = new Equipment({});
-      this.items[event.index].sizeClassName = '';
-      this.items[event.index].year = null;
-      this.items[event.index].years = null;
-      this.items[event.index].modelId = null;
-    }
-  }
-
-  modelSelectionChanged(event: any) {
-    const item: Equipment = this.items[event.index];
-    const eventItem: Equipment = event.item;
-
-    if (item && eventItem) {
-      this.equipmentService
-        .getConfiguration(eventItem.modelId)
-        .subscribe((configurations: any) => {
-          const updatedItem = new Equipment(eventItem);
-          updatedItem.id = item.id;
-          updatedItem.details.id = item.details.id;
-          updatedItem.details.vin = item.details.vin;
-          updatedItem.details.configurations = configurations;
-          if (configurations && configurations.count === 1) {
-            updatedItem.details.selectedConfiguration =
-              configurations.results[0];
-            updatedItem.calculateHourlyRates();
-          } else if (configurations && configurations.count > 1) {
-            this.selectedItem = updatedItem;
-            this.selectedIndex = event.index;
-          } else {
-            updatedItem.resetSelectedConfiguration();
-          }
-          updatedItem.generateYears();
-
-          this.items[event.index] = updatedItem;
-          this.changeDetector.markForCheck();
-        });
-    } else {
-      this.items[event.index].sizeClassName = '';
-      this.items[event.index].year = '';
-      this.items[event.index].years = null;
-      this.items[event.index].modelId = null;
-    }
-  }
-
-  cancelSelectConfiguration() {}
-
-  confirmSelectConfiguration(sc: any) {
-    this.items[this.selectedIndex].details.selectedConfiguration = sc;
-    this.items[this.selectedIndex].calculateHourlyRates();
-    this.changeDetector.markForCheck();
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        if (result.item) {
+          this.confirmAddModel(result.item);
+        }
+      }
+    });
   }
 
   addMiscEquipment() {
     const dialogRef = this.dialog.open(AddMiscDialogComponent, {
       width: '80vw',
-      data: {}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result.success) {
-        if (result.configuration) {
-          this.confirmAddMiscModel(
-            result.equipment,
-            result.configuration,
-            result.configurations
-          );
-        }
-      }
-    });
-  }
-
-  cancelAddMiscModel() {
-    this._miscModelModal = false;
-  }
-
-  confirmAddMiscModel(equipment: any, sc: any, configs: any) {
-    const miscEquipment = new Equipment(equipment);
-    miscEquipment.misc = true;
-    miscEquipment.status = 'draft';
-
-    if (configs) {
-      miscEquipment.details.configurations = configs;
-      miscEquipment.details.selectedConfiguration = sc;
-      miscEquipment.setDetailsFromConfiguration();
-    }
-
-    this.items = [...this.items, miscEquipment];
-    this.changeDetector.detectChanges();
-    this.miscCategoryId = null;
-  }
-
-  yearSelectionChanged(item: Equipment, index: number) {
-    if (!item.year || item.year === '') {
-      item.details.rate = 0;
-      item.resetSelectedConfiguration();
-      return;
-    }
-
-    this.equipmentService
-      .getConfiguration(item.modelId, item.year)
-      .subscribe((configurations: any) => {
-        if (configurations && configurations.count > 1) {
-          this.selectedItem = item;
-          this.selectedIndex = index;
-          this.selectedItem.details.configurations = configurations;
-          this.selectConfiguration(configurations);
-        } else if (configurations && configurations.count === 1) {
-          const sc = configurations.results[0];
-
-          this.equipmentService
-            .getRateDataForConfig(
-              sc.modelId,
-              sc.configurationSequence,
-              item.year,
-              this.state,
-              '',
-              +this.adjustments.equipmentActive.operatingPercent,
-              +this.adjustments.equipmentActive.ownershipPercent,
-              this.standbyFactor
-            )
-            .subscribe((data: any) => {
-              sc.rates = data;
-              if (this.adjustments.equipmentActive.regionalAdjustmentsEnabled) {
-                sc.rates.rate = data.fhwaRate;
-                sc.rates.fhwa = +Number(
-                  +sc.rates.monthlyOwnershipCostAdjustedRate +
-                    +sc.rates.hourlyOperatingCostAdjusted
-                ).toFixed(2);
-                sc.rates.monthlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostAdjusted
-                ).toFixed(2);
-                sc.rates.weeklyOwnershipCostFinal = +Number(
-                  +sc.rates.weeklyOwnershipCostAdjusted
-                ).toFixed(2);
-                sc.rates.dailyOwnershipCostFinal = +Number(
-                  +sc.rates.dailyOwnershipCostAdjusted
-                ).toFixed(2);
-                sc.rates.hourlyOperatingCostFinal = +Number(
-                  +sc.rates.hourlyOperatingCostAdjusted
-                ).toFixed(2);
-                sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostAdjustedRate
-                ).toFixed(2);
-              } else {
-                sc.rates.rate = data.standbyRate;
-                sc.rates.fhwa = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjustedRate +
-                    +sc.rates.hourlyOperatingCostUnadjusted
-                ).toFixed(2);
-                sc.rates.monthlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjusted
-                ).toFixed(2);
-                sc.rates.weeklyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjusted
-                ).toFixed(2);
-                sc.rates.dailyOwnershipCostFinal = +Number(
-                  +sc.rates.dailyOwnershipCostUnadjusted
-                ).toFixed(2);
-                sc.rates.hourlyOperatingCostFinal = +Number(
-                  +sc.rates.hourlyOperatingCostUnadjusted
-                ).toFixed(2);
-                sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjustedRate
-                ).toFixed(2);
-              }
-              sc.rates.method = sc.rates.fhwa;
-              item.details.selectedConfiguration = sc;
-              item.details.configurations = configurations;
-              item.beingEdited = true;
-              this.changeDetector.detectChanges();
-            });
-        }
-      });
-  }
-
-  selectConfiguration(configurations: any[]) {
-    const dialogRef = this.dialog.open(ConfigurationDialogComponent, {
       data: {
-        configurations: configurations
+        savedAssets: true,
+        projectId: this.projectId,
+        adjustments: this.project.adjustments,
+        projectState: this.project.adjustments.rentalLocation.stateCode
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
-        if (result.configuration) {
-          const sc = result.configuration;
-          this.equipmentService
-            .getRateDataForConfig(
-              sc.modelId,
-              sc.configurationSequence,
-              this.selectedItem.year,
-              this.state,
-              '',
-              +this.adjustments.equipmentActive.operatingPercent,
-              +this.adjustments.equipmentActive.ownershipPercent,
-              this.standbyFactor
-            )
-            .subscribe((data: any) => {
-              sc.rates = data;
-              if (this.adjustments.equipmentActive.regionalAdjustmentsEnabled) {
-                sc.rates.rate = data.fhwaRate;
-                sc.rates.fhwa = +Number(
-                  +sc.rates.monthlyOwnershipCostAdjustedRate +
-                    +sc.rates.hourlyOperatingCostAdjusted
-                ).toFixed(2);
-                sc.rates.monthlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostAdjusted
-                ).toFixed(2);
-                sc.rates.weeklyOwnershipCostFinal = +Number(
-                  +sc.rates.weeklyOwnershipCostAdjusted
-                ).toFixed(2);
-                sc.rates.dailyOwnershipCostFinal = +Number(
-                  +sc.rates.dailyOwnershipCostAdjusted
-                ).toFixed(2);
-                sc.rates.hourlyOperatingCostFinal = +Number(
-                  +sc.rates.hourlyOperatingCostAdjusted
-                ).toFixed(2);
-                sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostAdjustedRate
-                ).toFixed(2);
-              } else {
-                sc.rates.rate = data.standbyRate;
-                sc.rates.fhwa = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjustedRate +
-                    +sc.rates.hourlyOperatingCostUnadjusted
-                ).toFixed(2);
-                sc.rates.monthlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjusted
-                ).toFixed(2);
-                sc.rates.weeklyOwnershipCostFinal = +Number(
-                  +sc.rates.weeklyOwnershipCostUnadjusted
-                ).toFixed(2);
-                sc.rates.dailyOwnershipCostFinal = +Number(
-                  +sc.rates.dailyOwnershipCostUnadjusted
-                ).toFixed(2);
-                sc.rates.hourlyOperatingCostFinal = +Number(
-                  +sc.rates.hourlyOperatingCostUnadjusted
-                ).toFixed(2);
-                sc.rates.hourlyOwnershipCostFinal = +Number(
-                  +sc.rates.monthlyOwnershipCostUnadjustedRate
-                ).toFixed(2);
-              }
-              sc.rates.method = sc.rates.fhwa;
-              this.selectedItem.details.selectedConfiguration = sc;
-              this.changeDetector.detectChanges();
-            });
-        } else {
-          this.cancelSelectConfiguration();
+        if (result.item) {
+          this.confirmAddModel(result.item);
         }
-      } else {
-        this.cancelSelectConfiguration();
       }
     });
+  }
+
+  confirmAddModel(item: Equipment) {
+    // console.log('item to add: ' + JSON.stringify(item, null, 2));
+    this.items = [...this.items, item];
+    this.changeDetector.detectChanges();
   }
 
   trackByFn(index: number, item: any) {
     return index; // or item.id
   }
 
-  addModel() {
-    this.items = [...this.items, new Equipment({})];
-  }
   addMisc() {
     this.items = [...this.items, new Equipment({})];
   }

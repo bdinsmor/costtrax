@@ -1,6 +1,6 @@
-<div class="px-1 full-width" *ngIf="project">
+<div class="px-1 full-width">
   <app-breadcrumbs></app-breadcrumbs>
-  <div class="full-width">
+  <div class="full-width" *ngIf="project">
     <div class="px-2 card-header">
       <div class="full-width row align-items-center justify-content-between">
         <h1 class="project-label no-top-margin">{{ project.name }}</h1>
@@ -129,9 +129,17 @@
         </section>
       </div>
     </div>
-    <div class="mt-1 full-width">
+    <div class="mt-1 full-width" *ngIf="hasTabs">
       <clr-tabs class="col-2">
-        <clr-tab *ngIf="canSubmitRequests">
+        <clr-tab
+          *ngIf="
+            canSubmitRequests &&
+            project &&
+            project.meta &&
+            project.draftRequests &&
+            project.draftRequests.length > 0
+          "
+        >
           <button clrTabLink class="align-items-center">
             <clr-icon shape="note"></clr-icon>
             Draft Requests <strong>({{ project.draftRequests.length }})</strong>
@@ -140,7 +148,7 @@
             <app-requests
               [items]="project.draftRequests"
               [projectId]="project.id"
-              [projectName]="project.name"
+              [projectName]="project.meta.name"
               [status]="'DRAFT'"
               (changed)="refreshItems()"
               (duplicated)="refreshItems()"
@@ -148,9 +156,7 @@
             ></app-requests>
           </clr-tab-content>
         </clr-tab>
-        <clr-tab
-          *ngIf="project.pendingRequests && project.pendingRequests.length > 0"
-        >
+        <clr-tab *ngIf="project && project.meta">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="tasks"></clr-icon>
             Pending Requests
@@ -160,18 +166,14 @@
             <app-requests
               [items]="project.pendingRequests"
               [projectId]="project.id"
-              [projectName]="project.name"
+              [projectName]="project.meta.name"
               [status]="'PENDING'"
               (duplicated)="refreshItems()"
               [submitRequests]="canSubmitRequests"
             ></app-requests>
           </clr-tab-content>
         </clr-tab>
-        <clr-tab
-          *ngIf="
-            project.completeRequests && project.completeRequests.length > 0
-          "
-        >
+        <clr-tab *ngIf="project && project.meta && project.completeRequests">
           <button clrTabLink class="align-items-center">
             <clr-icon shape="check"></clr-icon>
             Complete Requests
@@ -181,7 +183,7 @@
             <app-requests
               [items]="project.completeRequests"
               [projectId]="project.id"
-              [projectName]="project.name"
+              [projectName]="project.meta.name"
               [status]="'COMPLETE'"
               (duplicated)="refreshItems()"
               [submitRequests]="canSubmitRequests"
@@ -239,7 +241,7 @@
             <clr-icon shape="cog"></clr-icon>&nbsp;Settings
           </button>
           <clr-tab-content *clrIfActive>
-            <div class="content full-width px-2">
+            <div class="content full-width px-2" *ngIf="projectFormGroup">
               <form class="full-width" [formGroup]="projectFormGroup">
                 <section class="form-block">
                   <div>
@@ -297,7 +299,24 @@
                         />
                       </mat-form-field>
                     </div>
-                    <h4 class="no-top-margin">Rental Location</h4>
+                    <h4 class="row no-top-margin">
+                      Rental Location
+                      <clr-signpost>
+                        <clr-icon
+                          shape="help-info"
+                          class="is-solid has-badge-info"
+                          clrSignpostTrigger
+                        >
+                        </clr-icon>
+                        <clr-signpost-content
+                          [clrPosition]="'bottom-middle'"
+                          *clrIfOpen
+                        >
+                          CostTrax uses zip code information to look up local
+                          rental rates when auditing submitted equipment costs
+                        </clr-signpost-content>
+                      </clr-signpost>
+                    </h4>
                     <div class="pt-1 row no-margin-left">
                       <mat-form-field class="w-25" appearance="outline">
                         <mat-label>Zip Code</mat-label>
@@ -317,12 +336,6 @@
                         />
                       </mat-form-field>
                     </div>
-                  </div>
-
-                  <div class="row no-margin-left font-italic small-text">
-                    <i class="material-icons md-20 md-dark"> info </i
-                    >&nbsp;CostTrax uses zip code information to look up local
-                    rental rates when auditing submitted equipment costs
                   </div>
                 </section>
 
