@@ -1,3 +1,4 @@
+import { Overlay } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -7,17 +8,11 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  Renderer2
+  Renderer2,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig,
-  Sort
-} from '@angular/material';
-import { DomSanitizer, DOCUMENT } from '@angular/platform-browser';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -27,14 +22,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { EquipmentService } from '../equipment/equipment.service';
 import { RequestsService } from '../requests/requests.service';
-import {
-  Employee,
-  Equipment,
-  Item,
-  ItemList,
-  Project,
-  Utils
-} from '../shared/model';
+import { Employee, Equipment, Item, ItemList, Project, Utils } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddModelDialogComponent } from './dialogs/add-model-dialog.component';
@@ -42,7 +30,6 @@ import { AddSavedDialogComponent } from './dialogs/add-saved-dialog.component';
 import { AttachmentsDialogComponent } from './dialogs/attachments-dialog.component';
 import { LineItemApproveDialogComponent } from './dialogs/line-item-approve-dialog.component';
 import { LineItemDeleteDialogComponent } from './dialogs/line-item-delete-dialog.component';
-import { Overlay } from '@angular/cdk/overlay';
 
 class ItemDateRangeComparator implements ClrDatagridComparatorInterface<Item> {
   compare(a: Item, b: Item) {
@@ -226,8 +213,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.itemType === 'equipmentActive'
     ) {
       this.adjustments = this.project.adjustments.equipmentActive;
-      this.ownershipAdjustment = +this.adjustments.ownershipPercent;
-      this.operatingAdjustment = +this.adjustments.operatingPercent;
+      this.ownershipAdjustment = +this.adjustments.ownership;
+      this.operatingAdjustment = +this.adjustments.operating;
     } else if (
       this.project &&
       this.project.adjustments &&
@@ -329,31 +316,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   confirmAddModel(item: Item) {
-    this.equipmentService
-      .getRateDataForConfig(
-        item.details.modelId,
-        item.details.configurationSequence,
-        null,
-        this.project.adjustments.rentalLocation.stateCode,
-        this.requestStartDate,
-        this.operatingAdjustment,
-        this.ownershipAdjustment,
-        this.standbyFactor
-      )
-      .subscribe((data: any) => {
-        item.details.rates = data;
-        if (this.itemType === 'equipmentActive') {
-          item.details.rate = data.fhwaRate;
-        } else if (this.itemType === 'equipmentStandby') {
-          item.details.rate = data.standbyRate;
-        }
-        item.buildSpecs();
-        this.itemList.items = [...this.itemList.items, item];
-        this.changeDetector.detectChanges();
-        this.selected = [];
-        this.selectedConfig = null;
-        this.miscEquipment = null;
-      });
+    this.itemList.items = [...this.itemList.items, item];
+    this.changeDetector.detectChanges();
   }
 
   confirmAddSavedModels() {
@@ -903,6 +867,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       data: {
         type: this.itemType,
         projectId: this.project.id,
+        adjustments: this.project.adjustments,
         projectState: this.project.adjustments.rentalLocation.stateCode
       }
     });

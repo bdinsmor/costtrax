@@ -1,10 +1,10 @@
 <div class="full-width px-1">
   <clr-datagrid>
-    <clr-dg-column [clrDgField]="'name'" [clrDgSortBy]="'name'"
+    <clr-dg-column [clrDgField]="'meta.name'" [clrDgSortBy]="'name'"
       >Project</clr-dg-column
     >
     <clr-dg-column [clrDgField]="'meta.requestingOrgs'"
-      >Requesting Organization</clr-dg-column
+      >Requesting Organizations</clr-dg-column
     >
     <clr-dg-column [clrDgField]="'requestStats.pendingCount'"
       >Open Requests</clr-dg-column
@@ -20,7 +20,7 @@
       *clrDgItems="let item of projects; let i = index"
       (click)="openProject(item)"
     >
-      <clr-dg-cell>{{ item.name }}</clr-dg-cell>
+      <clr-dg-cell>{{ item.meta.name }}</clr-dg-cell>
       <clr-dg-cell>{{ item.meta.requestingOrgs }}</clr-dg-cell>
       <clr-dg-cell>{{ item.requestStats.pendingCount }}</clr-dg-cell>
       <clr-dg-cell>{{ item.requestStats.pendingMaxAge }} days</clr-dg-cell>

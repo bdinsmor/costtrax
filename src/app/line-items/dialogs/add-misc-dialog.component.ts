@@ -27,6 +27,13 @@ export class AddMiscDialogComponent implements OnInit, OnDestroy {
   loading = false;
   savedAssets = false;
   item: Item;
+  state: string;
+  zipcode: number;
+  requestStartDate: string;
+  operatingAdjustment: number;
+  ownershipAdjustment: number;
+  standbyFactor: number;
+  requestId: string;
 
   constructor(
     private equipmentService: EquipmentService,
@@ -37,6 +44,16 @@ export class AddMiscDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   ngOnInit() {
+    this.standbyFactor = this.data.adjustments.equipmentStandby.standbyFactor;
+    if (this.data.itemType === 'equipmentActive') {
+      this.operatingAdjustment = this.data.adjustments.equipmentActive.operatingPercent;
+      this.ownershipAdjustment = this.data.adjustments.equipmentActive.ownershipPercent;
+    } else if (this.data.itemType === 'equipmentStandby') {
+      this.operatingAdjustment = this.data.adjustments.equipmentStandby.operatingPercent;
+      this.ownershipAdjustment = this.data.adjustments.equipmentStandby.ownershipPercent;
+    }
+    this.zipcode = this.data.adjustments.rentalLocation.zipcode;
+    this.state = this.data.adjustments.rentalLocation.stateCode;
     this.savedAssets = this.data.savedAssets;
     if (!this.savedAssets) {
       this.item = new Item({ type: this.data.type });
@@ -55,21 +72,40 @@ export class AddMiscDialogComponent implements OnInit, OnDestroy {
 
   confirm(configuration: any) {
     if (!this.savedAssets) {
-      Object.assign(this.item.details, configuration);
-      if (this.configurations) {
-        this.item.details.specsColumns = this.configurations.columns;
-      } else {
-        this.item.details.specsColumns = configuration.columns;
-      }
-      this.item.details.model = configuration.modelName;
-      this.item.details.subSize =
-        configuration.subtypeName + ' ' + configuration.sizeClassName;
-      this.item.misc = true;
+      this.equipmentService
+        .getRateDataForConfig(
+          configuration.modelId,
+          configuration.configurationSequence,
+          this.item.details.year,
+          this.state,
+          this.requestStartDate,
+          this.operatingAdjustment,
+          this.ownershipAdjustment,
+          this.standbyFactor
+        )
+        .subscribe((data: any) => {
+          configuration.rates = data;
+          Object.assign(this.item.details, configuration);
+          if (this.item.type === 'equipmentActive') {
+            this.item.details.rate = configuration.rates.fhwaRate;
+          } else if (this.item.type === 'equipmentStandby') {
+            this.item.details.rate = configuration.rates.standbyRate;
+          }
+          if (this.configurations) {
+            this.item.details.specsColumns = this.configurations.columns;
+          } else {
+            this.item.details.specsColumns = configuration.columns;
+          }
+          this.item.details.model = configuration.modelName;
+          this.item.details.subSize =
+            configuration.subtypeName + ' ' + configuration.sizeClassName;
+          this.item.misc = true;
 
-      this.dialogRef.close({
-        success: true,
-        item: this.item
-      });
+          this.dialogRef.close({
+            success: true,
+            item: this.item
+          });
+        });
     } else {
       Object.assign(this.miscEquipment, configuration);
       if (this.configurations) {

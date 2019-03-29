@@ -851,6 +851,8 @@ export class Project {
       }
       if (
         u.containsRole('ProjectObserver') ||
+        u.containsRole('ProjectApprover') ||
+        u.containsRole('ProjectManager') ||
         u.containsRole('AccountManager')
       ) {
         this.users.push(u);
@@ -858,141 +860,6 @@ export class Project {
     }
   }
 
-  checkAdjustments() {
-    if (!this.adjustments) {
-      return this.buildDefaultAdjustments();
-    }
-    if (
-      this.adjustments.equipmentActive &&
-      !this.adjustments.equipmentActive.operating
-    ) {
-      this.adjustments.equipmentActive.operating = 100;
-    }
-    if (
-      this.adjustments.equipmentActive &&
-      !this.adjustments.equipmentActive.ownership
-    ) {
-      this.adjustments.equipmentActive.ownership = 100;
-    }
-
-    if (
-      this.adjustments.subcontractor &&
-      this.adjustments.subcontractor.markup &&
-      Number(this.adjustments.subcontractor.markup) < 1
-    ) {
-      this.adjustments.subcontractor.markup = +Number(
-        this.adjustments.subcontractor.markupPercent * 100
-      ).toFixed(0);
-    }
-    if (
-      this.adjustments.other &&
-      this.adjustments.other.markup &&
-      Number(this.adjustments.other.markup) < 1
-    ) {
-      this.adjustments.other.markup = +Number(
-        this.adjustments.other.markupPercent * 100
-      ).toFixed(0);
-    }
-    if (
-      this.adjustments.material &&
-      this.adjustments.material.markup &&
-      Number(this.adjustments.material.markup) < 1
-    ) {
-      this.adjustments.material.markup = +Number(
-        this.adjustments.material.markupPercent * 100
-      ).toFixed(0);
-    }
-    if (
-      this.adjustments.equipment &&
-      this.adjustments.equipmentActive &&
-      this.adjustments.equipmentActive.markup &&
-      Number(this.adjustments.equipmentActive.markup) < 1
-    ) {
-      this.adjustments.equipmentActive.markup = +Number(
-        this.adjustments.equipmentActive.markupPercent * 100
-      ).toFixed(0);
-    }
-    if (
-      this.adjustments.equipment &&
-      this.adjustments.equipmentStandby &&
-      this.adjustments.equipmentStandby.markup &&
-      Number(this.adjustments.equipmentStandby.markup) < 1
-    ) {
-      this.adjustments.equipmentStandby.markup = +Number(
-        this.adjustments.equipmentStandby.markupPercent * 100
-      ).toFixed(0);
-    }
-    if (
-      this.adjustments.equipment &&
-      this.adjustments.equipmentRental &&
-      this.adjustments.equipmentRental.markup &&
-      Number(this.adjustments.equipmentRental.markup) < 1
-    ) {
-      this.adjustments.equipmentRental.markup = +Number(
-        this.adjustments.equipmentRental.markupPercent * 100
-      ).toFixed(0);
-    }
-    if (
-      this.adjustments.labor &&
-      this.adjustments.labor.markup &&
-      Number(this.adjustments.labor.markup) < 1
-    ) {
-      this.adjustments.labor.markup = +Number(
-        this.adjustments.labor.markupPercent * 100
-      ).toFixed(0);
-    }
-  }
-
-  buildMarkup() {
-    if (this.adjustments.equipmentActive) {
-      this.adjustments.equipmentActive.markup = +Number(
-        this.adjustments.equipmentActive.markupPercent * 100
-      ).toFixed(0);
-      this.adjustments.equipmentActive.operating =
-        100 * +this.adjustments.equipmentActive.operatingPercent;
-      this.adjustments.equipmentActive.ownership =
-        100 * +this.adjustments.equipmentActive.ownershipPercent;
-    }
-    if (this.adjustments.equipmentStandby) {
-      this.adjustments.equipmentStandby.markup = +Number(
-        this.adjustments.equipmentStandby.markupPercent * 100
-      ).toFixed(0);
-      if (this.adjustments.equipmentStandby.operatingPercent) {
-        this.adjustments.equipmentStandby.operating =
-          100 * +this.adjustments.equipmentStandby.operatingPercent;
-      }
-      if (this.adjustments.equipmentStandby.ownershipPercent) {
-        this.adjustments.equipmentStandby.ownership = +Number(
-          100 * +this.adjustments.equipmentStandby.ownershipPercent
-        ).toFixed(0);
-      }
-    }
-    if (this.adjustments.equipmentRental) {
-      this.adjustments.equipmentRental.markup = +Number(
-        100 * +this.adjustments.equipmentRental.markupPercent
-      ).toFixed(0);
-    }
-    if (this.adjustments.labor) {
-      this.adjustments.labor.markup = +Number(
-        100 * +this.adjustments.labor.markupPercent
-      ).toFixed(0);
-    }
-    if (this.adjustments.other) {
-      this.adjustments.other.markup = +Number(
-        100 * +this.adjustments.other.markupPercent
-      ).toFixed(0);
-    }
-    if (this.adjustments.material) {
-      this.adjustments.material.markup = +Number(
-        100 * +this.adjustments.material.markupPercent
-      ).toFixed(0);
-    }
-    if (this.adjustments.subcontractor) {
-      this.adjustments.subcontractor.markup = +Number(
-        100 * +this.adjustments.subcontractor.markupPercent
-      ).toFixed(0);
-    }
-  }
 
   buildCostEnabled(p: any) {
     if (
@@ -1128,34 +995,12 @@ export class Project {
       this.accountRoles = project.accountRoles || [];
       this.projectRoles = project.projectRoles || [];
       this.adjustments = project.adjustments || this.buildDefaultAdjustments();
-      this.buildMarkup();
-      if (!this.adjustments.labor) {
-        this.adjustments.labor = {
-          enabled: true,
-          markup: 10,
-          markupPerect: 0.1
-        };
-      }
+     
 
-      if (!this.adjustments.other) {
-        this.adjustments.other = {
-          enabled: true,
-          markup: 10,
-          markupPerect: 0.1
-        };
-      }
-
-      if (!this.adjustments.equipmentRental) {
-        this.adjustments.equipmentRental = {
-          enabled: true,
-          markup: 10,
-          markupPerect: 0.1
-        };
-      }
 
       this.buildCostEnabled(project);
       this.buildRequests(project.requests || []);
-      this.checkAdjustments();
+    
       this.buildUsers();
       const today = new Date();
       const diff = Math.abs(today.getTime() - this.createdOn.getTime());

@@ -200,6 +200,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     };
     projectData.adjustments.rentalLocation = {
       stateCode: formData.rentalState.stateCode,
+      stateName: formData.rentalState.stateName,
       countryCode: formData.rentalState.countryCode,
       zipcode: formData.rentalZipcode
     };
@@ -213,36 +214,36 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     projectData.adjustments.equipmentActive = {
       enabled: formData.activeCheck,
       regionalAdjustmentsEnabled: formData.activeRegionalCheck,
-      markup: formData.activeMarkup,
-      ownership: formData.activeOwnershipCost,
-      operating: formData.activeOperatingCost
+      markup: +(+formData.activeMarkup / 100),
+      ownership: +(+formData.activeOwnershipCost / 100),
+      operating: +(+formData.activeOperatingCost / 100)
     };
     projectData.adjustments.equipmentStandby = {
       enabled: formData.standbyCheck,
       regionalAdjustmentsEnabled: formData.standbyRegionalCheck,
-      markup: formData.standbyMarkup
+      markup: +(+formData.standbyMarkup / 100)
     };
 
     projectData.adjustments.equipmentRental = {
       enabled: formData.rentalCheck,
-      markup: formData.rentalMarkup
+      markup: +(+formData.rentalMarkup / 100)
     };
 
     projectData.adjustments.material = {
       enabled: formData.materialCheck,
-      markup: formData.materialMarkup
+      markup: +(+formData.materialMarkup / 100)
     };
     projectData.adjustments.labor = {
       enabled: formData.laborCheck,
-      markup: formData.laborMarkup
+      markup: +(+formData.laborMarkup / 100)
     };
     projectData.adjustments.other = {
       enabled: formData.otherCheck,
-      markup: formData.otherMarkup
+      markup: +(formData.otherMarkup / 100)
     };
     projectData.adjustments.subcontractor = {
       enabled: formData.subcontractorCheck,
-      markup: formData.subcontractorMarkup
+      markup: +(+formData.subcontractorMarkup / 100)
     };
 
     this.projectsService.save(projectData).subscribe(

@@ -372,7 +372,7 @@
         (allApprove)="approveAll($event)"
         [itemList]="listType"
         (itemRemoved)="removeLineItem($event)"
-        [draftMode]="editMode"
+        [draftMode]="request.isDraft()"
         [requestStartDate]="request.startDate"
         (itemsChanged)="itemsChanged($event)"
         [requestId]="request.id"

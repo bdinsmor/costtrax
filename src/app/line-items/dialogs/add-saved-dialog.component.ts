@@ -27,7 +27,6 @@ export class AddSavedDialogComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.type = this.data.type;
     this.projectId = this.data.projectId;
-
     if (this.type !== 'labor') {
       this.models = this.equipmentService.getRequestorModels(this.projectId);
     } else {

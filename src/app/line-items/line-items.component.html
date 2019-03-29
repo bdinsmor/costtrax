@@ -211,12 +211,12 @@
         <clr-dg-footer *ngIf="!printingInvoice">{{itemList.items.length}} Items</clr-dg-footer>
       </clr-datagrid>
       <clr-datagrid *ngIf="itemType === 'equipmentActive' && accountSynced">
-        <clr-dg-column *ngIf="manageRequests || manageProject" [clrDgField]="'status'" style="width:125px">Status
+        <clr-dg-column *ngIf="manageRequests || manageProject" style="width:50px">Status
         </clr-dg-column>
         <clr-dg-column [clrDgField]="'details.manufacturerName'" style="width:200px">Make</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.subSize'" style="width:250px">Subtype
+        <clr-dg-column [clrDgField]="'details.model'" style="width:150px">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.year'" style="width:75px">Year</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.subSize'" style="width:350px">Subtype
           & Size Class</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.rate'" style="width:150px">FHWA</clr-dg-column>
@@ -325,7 +325,7 @@
 
 
           </clr-dg-cell>
-          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item &&
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="!draftMode && item &&
             item.details &&
             item.details.modelId">
             <clr-dg-row-detail *clrIfExpanded>
@@ -547,12 +547,12 @@
       </clr-datagrid>
       <clr-datagrid *ngIf="itemType === 'equipmentStandby' &&
             accountSynced">
-        <clr-dg-column *ngIf="manageRequests || manageProject" [clrDgField]="'status'" style="width:125px">Status
+        <clr-dg-column *ngIf="manageRequests || manageProject" style="width:50px">Status
         </clr-dg-column>
         <clr-dg-column [clrDgField]="'details.manufacturerName'" style="width:200px">Make</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.year'" style="width:125px">Year</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.subSize'" style="width:250px">Subtype
+        <clr-dg-column [clrDgField]="'details.model'" style="width:150px">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.year'" style="width:75px">Year</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.subSize'" style="width:350px">Subtype
           & Size Class</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.hours'" style="width:55px">Hours</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.rate'" style="width:150px">Standby
@@ -664,7 +664,7 @@
 
           </clr-dg-cell>
 
-          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item &&
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="!draftMode && item &&
                 item.details &&
                 item.details.modelId">
             <clr-dg-row-detail *clrIfExpanded>
@@ -826,11 +826,11 @@
 
       <clr-datagrid *ngIf="itemType === 'equipmentRental' &&
               accountSynced">
-        <clr-dg-column *ngIf="manageRequests || manageProject" [clrDgField]="'status'" style="width:125px">Status
+        <clr-dg-column *ngIf="manageRequests || manageProject" style="width:50px">Status
         </clr-dg-column>
         <clr-dg-column [clrDgField]="'details.manufacturerName'" style="width:200px">Make</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.model'" style="width:200px">Model</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.subSize'" style="width:250px">Subtype & Size Class</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.model'" style="width:150px">Model</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.subSize'" style="width:350px">Subtype & Size Class</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.dateRangeStr'" [clrDgSortBy]="dateRangeComparator" style="width:250px">
           Rental
           Dates</clr-dg-column>
@@ -972,7 +972,7 @@
             </div>
 
           </clr-dg-cell>
-          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="manageRequests || manageProject">
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="!draftMode && (manageRequests || manageProject)">
             <clr-dg-row-detail *clrIfExpanded>
               <div class="col-8">
                 <h6 class="no-top-margin">Rate Verification: Rental Cost</h6>

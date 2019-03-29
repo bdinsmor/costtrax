@@ -79,7 +79,6 @@ export class ProjectsService {
     return this.http.get(environment.serverUrl + '/project/' + id).pipe(
       map((res: any) => {
         const json = res as any;
-        // console.log('project json: ' + JSON.stringify(json, null, 1));
         return new Project(json);
       })
     );

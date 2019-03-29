@@ -3,13 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { concat, Observable, of, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { Equipment, Item } from './../../shared/model';
@@ -73,7 +67,6 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         year: new FormControl(this.equipment.year, Validators.required)
       });
       this.modelForm.get('model').valueChanges.subscribe(val => {
-        console.log('val: ' + JSON.stringify(val, null, 2));
         this.equipment.manufacturerId = this.modelForm.value.manufacturer;
         this.equipment.years = val.years;
         this.equipment.sizeClassId = val.sizeClassId;
@@ -203,17 +196,55 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
 
   confirm(configuration: any) {
     if (!this.savedAssets) {
-      Object.assign(this.item.details, configuration);
-      if (this.configurations) {
-        this.item.details.specsColumns = this.configurations.columns;
+      if (!configuration.rates) {
+        this.equipmentService
+          .getRateDataForConfig(
+            configuration.modelId,
+            configuration.configurationSequence,
+            this.item.details.year,
+            this.state,
+            this.requestStartDate,
+            this.operatingAdjustment,
+            this.ownershipAdjustment,
+            this.standbyFactor
+          )
+          .subscribe((data: any) => {
+            configuration.rates = data;
+            Object.assign(this.item.details, configuration);
+            if (this.item.type === 'equipmentActive') {
+              this.item.details.rate = configuration.rates.fhwaRate;
+            } else if (this.item.type === 'equipmentStandby') {
+              this.item.details.rate = configuration.rates.standbyRate;
+            }
+            if (this.configurations) {
+              this.item.details.specsColumns = this.configurations.columns;
+            } else {
+              this.item.details.specsColumns = configuration.columns;
+            }
+            this.item.buildSpecs();
+            this.dialogRef.close({
+              success: true,
+              item: this.item
+            });
+          });
       } else {
-        this.item.details.specsColumns = configuration.columns;
+        Object.assign(this.item.details, configuration);
+        if (this.item.type === 'equipmentActive') {
+          this.item.details.rate = configuration.rates.fhwaRate;
+        } else if (this.item.type === 'equipmentStandby') {
+          this.item.details.rate = configuration.rates.standbyRate;
+        }
+        if (this.configurations) {
+          this.item.details.specsColumns = this.configurations.columns;
+        } else {
+          this.item.details.specsColumns = configuration.columns;
+        }
+        this.item.buildSpecs();
+        this.dialogRef.close({
+          success: true,
+          item: this.item
+        });
       }
-
-      this.dialogRef.close({
-        success: true,
-        item: this.item
-      });
     } else {
       Object.assign(this.equipment, configuration);
       if (this.configurations) {
@@ -248,9 +279,7 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
         )
         .subscribe((configurations: any) => {
           this.item.details.nodata = false;
-          console.log(
-            'config return: ' + JSON.stringify(configurations, null, 2)
-          );
+
           if (configurations && configurations.count > 1) {
             this.configurations = configurations;
             return;
@@ -270,11 +299,7 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
               )
               .subscribe((data: any) => {
                 sc.rates = data;
-                if (this.item.type === 'equipmentActive') {
-                  this.item.details.rate = data.fhwaRate;
-                } else if (this.item.type === 'equipmentStandby') {
-                  this.item.details.rate = data.standbyRate;
-                }
+
                 this.confirm(sc);
               });
           } else {
