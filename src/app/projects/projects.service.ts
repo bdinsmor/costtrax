@@ -111,6 +111,12 @@ export class ProjectsService {
         (res: any) => {
           const activeProjects: Project[] = [];
           const archivedProjects: Project[] = [];
+          if (!res || !res.results || res.results.length === 0) {
+            return {
+              activeProjects: activeProjects,
+              archivedProjects: archivedProjects
+            };
+          }
           res.results.map((p: any) => {
             if (p.active) {
               activeProjects.push(new Project(p));
@@ -157,6 +163,9 @@ export class ProjectsService {
     return this.http.get(environment.serverUrl + '/project').pipe(
       map((res: any) => {
         const projects: Project[] = [];
+        if (!res || !res.results || res.results.length === 0) {
+          return projects;
+        }
         res.results.forEach((p: any) => {
           if (p.projectRoles) {
             for (let i = 0; i < p.projectRoles.length; i++) {
