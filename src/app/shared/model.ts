@@ -296,6 +296,7 @@ export class Item {
   type: string;
   startDate: Date;
   endDate: Date;
+
   changeReason: string;
   rejectReason: string;
   displayType: string;
@@ -512,22 +513,80 @@ export class Item {
   }
 
   setAmounts() {
-    if (!this.details.rate) {
-      this.details.rate = 0;
-    }
-    if (!this.details.method) {
-      this.details.method = 0;
-    }
-    if (!this.details.transport) {
-      this.details.transport = 0;
-    }
-    if (!this.details.hours) {
-      this.details.hours = 0;
-    } else if (this.details.hours) {
-      this.details.hours = Math.round(this.details.hours);
-    }
-    if (!this.details.base) {
-      this.details.base = 0;
+    if (this.type === 'equipmentRental') {
+      this.details.dailyRate = 0;
+      if (this.details.rentalAverages.dailyRateState) {
+        this.details.rentalAverages.rateSuurce = 'State';
+        this.details.rentalAverages.dailyRate = this.details.rentalAverages.dailyRateState;
+      } else if (this.details.rentalAverages.dailyRateRegional) {
+        this.details.rentalAverages.rateSuurce = 'Regional';
+        this.details.rentalAverages.dailyRate = this.details.rentalAverages.dailyRateRegional;
+      } else if (this.details.rentalAverages.dailyRateNational) {
+        this.details.rentalAverages.rateSuurce = 'National';
+        this.details.rentalAverages.dailyRate = this.details.rentalAverages.dailyRateNational;
+      }
+      this.details.weeklyRate = 0;
+      if (this.details.rentalAverages.weeklyRateState) {
+        this.details.rentalAverages.weeklyRate = this.details.rentalAverages.weeklyRateState;
+      } else if (this.details.rentalAverages.weeklyRateRegional) {
+        this.details.rentalAverages.weeklyRate = this.details.rentalAverages.weeklyRateRegional;
+      } else if (this.details.rentalAverages.weeklyRateNational) {
+        this.details.rentalAverages.weeklyRate = this.details.rentalAverages.weeklyRateNational;
+      }
+      this.details.monthlyRate = 0;
+      if (this.details.rentalAverages.monthlyRateState) {
+        this.details.rentalAverages.monthlyRate = this.details.rentalAverages.monthlyRateState;
+      } else if (this.details.rentalAverages.monthlyRateRegional) {
+        this.details.rentalAverages.monthlyRate = this.details.rentalAverages.monthlyRateRegional;
+      } else if (this.details.rentalAverages.monthlyRateNational) {
+        this.details.rentalAverages.monthlyRate = this.details.rentalAverages.monthlyRateNational;
+      }
+
+      this.details.rentalOwnershipTotal = 0;
+      this.details.rentalOwnershipTotal =
+        this.details.rentalConversion.days *
+          this.details.activeOwnershipAdjustedDaily +
+        this.details.rentalConversion.weeks *
+          this.details.activeOwnershipAdjustedWeekly +
+        this.details.rentalConversion.months *
+          this.details.activeOwnershipAdjustedMonthly;
+
+      this.details.rentalOwnershipDelta = 0;
+      this.details.rentalOwnershipDelta =
+        +this.details.rentalOwnershipTotal / +this.details.invoice;
+
+      this.details.rentalOwnershipDelta = Math.abs(
+        (+this.details.rentalOwnershipTotal - +this.details.invoice) /
+          +this.details.invoice
+      );
+      if (+this.details.rentalOwnershipTotal >= +this.details.invoice) {
+        this.details.rateVerified = true;
+      } else {
+        this.details.rateVerified = false;
+      }
+
+      this.details.rentalRetailTotal =
+        this.details.rentalConversion.days *
+          this.details.rentalAverages.dailyRate +
+        this.details.rentalConversion.weeks *
+          this.details.rentalAverages.weeklyRate +
+        this.details.rentalConversion.months *
+          this.details.rentalAverages.monthlyRate;
+
+      this.details.rentalOwnershipRed =
+        +this.details.invoice > +this.details.rentalOwnershipTotal;
+      this.details.rentalOwnershipGreen =
+        +this.details.invoice <= +this.details.rentalOwnershipTotal;
+      this.details.rentalRetailDelta =
+        +this.details.rentalRetailTotal / +this.details.invoice;
+      this.details.rentalRetailDelta = Math.abs(
+        (+this.details.rentalRetailTotal - +this.details.invoice) /
+          +this.details.invoice
+      );
+      this.details.rentalRetailRed =
+        +this.details.invoice > +this.details.rentalRetailTotal;
+      this.details.rentalRetailGreen =
+        +this.details.invoice <= +this.details.rentalRetailTotal;
     }
   }
 
@@ -607,7 +666,6 @@ export class Item {
       this.comments = data.comments || [];
       this.attachments = data.attachments || [];
       this.buildRentalDates();
-
       if (this.details.startDate) {
         this.details.startDate = new Date(data.details.startDate);
       } else {
@@ -791,7 +849,10 @@ export class Project {
       if (u.containsRole('ProjectRequestor')) {
         this.requestors.push(u);
       }
-      if (u.containsRole('ProjectObserver') || u.containsRole('ProjectAdmin')) {
+      if (
+        u.containsRole('ProjectObserver') ||
+        u.containsRole('AccountManager')
+      ) {
         this.users.push(u);
       }
     }
@@ -1407,9 +1468,9 @@ export class Request {
   messages: number;
   status: string;
   lineItems: any;
-  activeMarkup = 0;
-  standbyMarkup = 0;
-  rentalMarkup = 0;
+  equipmentActiveMarkup = 0;
+  equipmentStandbyMarkup = 0;
+  equipmentRentalMarkup = 0;
   materialMarkup = 0;
   laborMarkup = 0;
   laborBenefitsTotal = 0;
@@ -1428,6 +1489,9 @@ export class Request {
   equipmentActiveSubtotal = 0;
   equipmentStandbySubtotal = 0;
   equipmentRentalSubtotal = 0;
+  equipmentActiveTotal = 0;
+  equipmentStandbyTotal = 0;
+  equipmentRentalTotal = 0;
   approved = false;
   pendingItems: Item[];
   completeItems: Item[];
@@ -1544,128 +1608,6 @@ export class Request {
     return false;
   }
 
-  calculateTotals() {
-    const total = 0;
-    const equipmentTotal = 0;
-    const materialTotal = 0;
-    const activeTotal = 0;
-    const standbyTotal = 0;
-    const rentalTotal = 0;
-    const otherSubtotal = 0;
-    let laborTotal = 0;
-    const laborSubtotal = 0;
-    let laborBenefits = 0;
-    const subcontractorTotal = 0;
-
-    for (let i = 0; i < this.itemsByType.length; i++) {
-      const lit: ItemList = this.itemsByType[i];
-      const items: Item[] = lit.items;
-      for (let j = 0; j < items.length; j++) {
-        const currentItem: Item = items[j];
-
-        if (currentItem.type === 'equipmentRental') {
-          // rentalTotal += Number(lt);
-        } else if (currentItem.type === 'equipmentActive') {
-          //  activeTotal += Number(lt);
-        } else if (currentItem.type === 'equipmentStandby') {
-          //  standbyTotal += Number(lt);
-        } else if (currentItem.type === 'other') {
-          // otherSubtotal += Number(lt);
-        } else if (currentItem.type === 'material') {
-          // materialTotal += Number(lt);
-        } else if (currentItem.type === 'subcontractor') {
-          // subcontractorTotal += Number(lt);
-        } else if (currentItem.type === 'labor') {
-          // laborSubtotal += Number(lt);
-          if (currentItem.details.benefits) {
-            const totalHours =
-              +currentItem.details.time2 +
-              +currentItem.details.time15 +
-              +currentItem.details.time1;
-            const totalBennies = +currentItem.details.benefits * totalHours;
-            laborBenefits += +totalBennies;
-          }
-        }
-      }
-    }
-
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.equipment
-    ) {
-      this.activeMarkup =
-        +this.project.adjustments.equipmentActive.markupPercent *
-        +this.equipmentActiveSubtotal;
-
-      this.standbyMarkup =
-        +this.project.adjustments.equipmentStandby.markup *
-        +this.equipmentStandbySubtotal;
-
-      this.rentalMarkup =
-        +this.project.adjustments.equipmentRental.markupPercent *
-        +this.equipmentRentalSubtotal;
-    }
-    this.equipmentTotal =
-      this.equipmentActiveSubtotal +
-      this.activeMarkup +
-      this.standbyMarkup +
-      this.equipmentStandbySubtotal +
-      this.rentalMarkup +
-      this.equipmentRentalSubtotal;
-    this.laborBenefitsTotal = laborBenefits;
-
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.labor
-    ) {
-      this.laborMarkup =
-        +this.project.adjustments.labor.markupPercent * this.laborSubtotal;
-    }
-    laborTotal = +this.laborSubtotal + +this.laborBenefitsTotal;
-
-    this.laborTotal = laborTotal + this.laborMarkup;
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.subcontractor
-    ) {
-      this.subcontractorMarkup =
-        +this.project.adjustments.subcontractor.markupPercent *
-        +this.subcontractorTotal;
-    }
-    this.subcontractorTotal =
-      +this.subcontractorTotal + this.subcontractorMarkup;
-
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.other
-    ) {
-      this.otherMarkup =
-        +this.project.adjustments.other.markupPercent * this.otherSubtotal;
-    }
-    this.otherTotal = this.otherSubtotal; // + this.otherMarkup;
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.project.adjustments.material
-    ) {
-      this.materialMarkup =
-        +this.project.adjustments.material.markupPercent *
-        this.materialSubtotal;
-    }
-    this.materialTotal = this.materialSubtotal + this.materialMarkup;
-
-    this.total =
-      this.materialTotal +
-      this.laborTotal +
-      this.otherTotal +
-      this.subcontractorTotal +
-      this.equipmentTotal;
-  }
-
   buildLineItemsToApprove() {
     const lineItems = {};
     this.itemsByType.forEach((it: ItemList) => {
@@ -1729,80 +1671,8 @@ export class Request {
       this.materialTotal = this.lineItemTotals.material || 0;
       this.otherTotal = this.lineItemTotals.other || 0;
       this.subcontractorTotal = this.lineItemTotals.subcontractor || 0;
-    } else {
-      if (this.project && this.project.adjustments) {
-        this.activeMarkup =
-          +this.project.adjustments.equipmentActive.markupPercent *
-          +this.equipmentActiveSubtotal;
-        this.standbyMarkup =
-          +this.project.adjustments.equipmentStandby.markupPercent *
-          +this.equipmentStandbySubtotal;
-        this.rentalMarkup =
-          +this.project.adjustments.equipmentRental.markupPercent *
-          +this.equipmentRentalSubtotal;
-      }
-
-      this.equipmentTotal =
-        +this.equipmentActiveSubtotal +
-        this.activeMarkup +
-        this.standbyMarkup +
-        +this.equipmentStandbySubtotal +
-        this.rentalMarkup +
-        +this.equipmentRentalSubtotal;
-
-      this.laborBenefitsTotal = laborBenefits;
-
-      if (
-        this.project &&
-        this.project.adjustments &&
-        this.project.adjustments.labor
-      ) {
-        this.laborMarkup =
-          +this.project.adjustments.labor.markupPercent * +this.laborSubtotal;
-      }
-
-      this.laborTotal =
-        +this.laborSubtotal + this.laborBenefitsTotal + this.laborMarkup;
-
-      if (
-        this.project &&
-        this.project.adjustments &&
-        this.project.adjustments.subcontractor
-      ) {
-        this.subcontractorMarkup =
-          +this.project.adjustments.subcontractor.markupPercent *
-          +this.subcontractorSubtotal;
-      }
-
-      this.subcontractorTotal =
-        +this.subcontractorMarkup + +this.subcontractorSubtotal;
-      if (
-        this.project &&
-        this.project.adjustments &&
-        this.project.adjustments.material
-      ) {
-        this.materialMarkup =
-          +this.project.adjustments.material.markupPercent *
-          +this.materialSubtotal;
-      }
-      if (
-        this.project &&
-        this.project.adjustments &&
-        this.project.adjustments.other
-      ) {
-        this.otherMarkup =
-          +this.project.adjustments.other.markupPercent * +this.otherSubtotal;
-      }
-      this.otherTotal = +this.otherSubtotal + this.otherMarkup;
-      this.materialTotal = +this.materialSubtotal + this.materialMarkup;
     }
 
-    this.total =
-      this.materialTotal +
-      this.subcontractorTotal +
-      this.equipmentTotal +
-      this.laborTotal +
-      this.otherTotal;
     const sorted = this.groupByType();
     // tslint:disable-next-line:forin
     for (const k in sorted) {
@@ -1843,6 +1713,31 @@ export class Request {
       this.equipmentActiveSubtotal = +request.equipmentActiveSubtotal || 0;
       this.equipmentStandbySubtotal = +request.equipmentStandbySubtotal || 0;
       this.equipmentRentalSubtotal = +request.equipmentRentalSubtotal || 0;
+      this.subcontractorTotal = +request.subcontractorSubtotal || 0;
+      this.equipmentActiveTotal = +request.equipmentActiveTotal || 0;
+      this.equipmentStandbyTotal = +request.equipmentStandbyTotal || 0;
+      this.equipmentRentalTotal = +request.equipmentRentalTotal || 0;
+      this.equipmentActiveMarkup =
+        +this.equipmentActiveTotal - +this.equipmentActiveSubtotal;
+      this.equipmentStandbyMarkup =
+        +this.equipmentStandbyTotal - +this.equipmentStandbySubtotal;
+      this.equipmentRentalMarkup =
+        +this.equipmentRentalTotal - +this.equipmentRentalSubtotal;
+      this.laborMarkup = +this.laborTotal - +this.laborSubtotal;
+      this.otherMarkup = +this.otherTotal - +this.otherSubtotal;
+      this.subcontractorMarkup =
+        +this.subcontractorTotal - +this.subcontractorSubtotal;
+      this.materialMarkup = +this.materialTotal - +this.materialSubtotal;
+      this.equipmentTotal =
+        this.equipmentActiveTotal +
+        this.equipmentStandbyTotal +
+        this.equipmentRentalTotal;
+      this.total =
+        this.equipmentTotal +
+        this.laborTotal +
+        this.otherTotal +
+        this.materialTotal +
+        this.subcontractorTotal;
       if (request.meta && request.meta.notes) {
         this.notes = request.meta.notes;
       } else if (request.notes) {
@@ -1878,7 +1773,7 @@ export class Request {
 
       this.signatures = request.signatures || new Signatures({});
       this.messages = request.messages || 0;
-      this.total = request.total || 0;
+
       this.status = request.status || 'PENDING';
       this.lineItems = request.lineItems || [];
       this.lineItemTotals = request.lineItemTotals;

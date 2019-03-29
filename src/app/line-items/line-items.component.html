@@ -389,20 +389,20 @@
                         <tr class="justify-content-center">
                           <td class="strong left">Total</td>
                           <td class="left">{{item.details.rate | currency}}</td>
-                          <td *ngIf="!item.details.terms ||
-                            !item.details.terms.blueBook"></td>
-                          <td *ngIf="item.details.terms &&
-                            item.details.terms.blueBook" class="left pl-1" style="position:relative" [class.green]="item.details.terms.blueBook.rateDelta
-                            >= 0" [class.red]="item.details.terms.blueBook.rateDelta
+                          <td *ngIf="!item.details.rentalConversions ||
+                            !item.details.rentalAverages"></td>
+                          <td *ngIf="item.details.rentalConversions &&
+                            item.details.rentalAverages" class="left pl-1" style="position:relative" [class.green]="item.details.rentalRateDelta
+                            >= 0" [class.red]="item.details.rentalRateDelta
                             <0">
-                            <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.blueBook.rateDelta
+                            <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.rentalRateDelta
                                 >= 0" svgIcon="costtrax-check"></mat-icon>
                             <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px"
-                              *ngIf="item.details.terms.blueBook.rateDelta <0" color="warn">priority_high</mat-icon>
-                            {{item.details.terms.blueBook.rateTotal |
+                              *ngIf="item.details.rentalRateDelta <0" color="warn">priority_high</mat-icon>
+                            {{item.details.rentalRetailTotal |
                               currency}}
                             <br />
-                            ({{item.details.terms.blueBook.rateDelta}} vs
+                            ({{item.details.rentalRateDelta}} vs
                             User
                             Supplied)
                           </td>
@@ -976,13 +976,11 @@
             <clr-dg-row-detail *clrIfExpanded>
               <div class="col-8">
                 <h6 class="no-top-margin">Rate Verification: Rental Cost</h6>
-                <h6 class="muted-text no-top-margin" *ngIf="!item.details.terms ||
-                          !item.details.terms.blueBook ||
-                          !item.details.rentalBreakdown">Unable to load rental
+                <h6 class="muted-text no-top-margin" *ngIf=" !item.details.rentalAverages ||
+                          !item.details.rentalConversion">Unable to load rental
                   cost details</h6>
-                <table id="invoice-table" *ngIf="item.details.terms &&
-                          item.details.terms.blueBook &&
-                          item.details.rentalBreakdown" class="no-top-margin
+                <table id="invoice-table" *ngIf="item.details.rentalAverages &&
+                          item.details.rentalConversion" class="no-top-margin
                           table
                           table-compact
                           table-bordered table-striped comparison-table">
@@ -994,34 +992,34 @@
                     <th class="left">User Supplied,<br />Invoice Amount</th>
                     <th class="left">Rental Rate Blue Book,<br />Ownership
                       Cost</th>
-                    <th class="left">Retail Rental,<br />State Average</th>
+                    <th class="left">Retail Rental,<br />{{item.details.rentalAverages.rateSuurce}} Average</th>
                   </thead>
                   <tbody>
                     <tr class="justify-content-center">
                       <td class="strong left">Monthly Rate</td>
-                      <td class="left">{{item.details.rentalBreakdown.months}}</td>
+                      <td class="left">{{item.details.rentalConversion.months}}</td>
                       <td class="left"></td>
-                      <td class="left">{{item.details.terms.blueBook.monthlyOwnershipCost
+                      <td class="left">{{item.details.activeOwnershipAdjustedMonthly
                                 | currency}}</td>
-                      <td class="left">{{item.details.terms.regionalAvg.monthlyRetailRentalCost
+                      <td class="left">{{item.details.rentalAverages.monthlyRate
                                 | currency}}</td>
                     </tr>
                     <tr class="justify-content-center">
                       <td class="strong left">Weekly Rate</td>
-                      <td class="left">{{item.details.rentalBreakdown.weeks}}</td>
+                      <td class="left">{{item.details.rentalConversion.weeks}}</td>
                       <td class="left"></td>
-                      <td class="left">{{item.details.terms.blueBook.weeklyOwnershipCost
+                      <td class="left">{{item.details.activeOwnershipAdjustedWeekly
                                 | currency}}</td>
-                      <td class="left">{{item.details.terms.regionalAvg.weeklyRetailRentalCost
+                      <td class="left">{{item.details.rentalAverages.weeklyRate
                                 | currency}}</td>
                     </tr>
                     <tr class="justify-content-center">
                       <td class="strong left">Daily Rate</td>
-                      <td class="left">{{item.details.rentalBreakdown.days}}</td>
+                      <td class="left">{{item.details.rentalConversion.days}}</td>
                       <td class="left"></td>
-                      <td class="left">{{item.details.terms.blueBook.dailyOwnershipCost
+                      <td class="left">{{item.details.activeOwnershipAdjustedDaily
                                 | currency}}</td>
-                      <td class="left">{{item.details.terms.regionalAvg.dailyRetailRentalCost
+                      <td class="left">{{item.details.rentalAverages.dailyRate
                                 | currency}}</td>
                     </tr>
                     <tr class="justify-content-center">
@@ -1029,38 +1027,33 @@
                       <td class="left"></td>
                       <td class="left">{{item.details.invoice |
                                 currency}}</td>
-                      <td class="left pl-1" style="position: relative" [class.green]="item.details.terms.blueBook.ownershipTotal
-                                >= item.details.invoice" [class.red]="item.details.terms.blueBook.ownershipTotal
-                                <item.details.invoice">
-                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.blueBook.ownershipTotal
+                      <td class="left pl-1" style="position: relative" [class.green]="item.details.rentalOwnershipGreen" [class.red]="item.details.rentalOwnershipRed">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.rentalOwnershipTotal
                                     >= item.details.invoice" svgIcon="costtrax-check"></mat-icon>
                         <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px"
-                          *ngIf="item.details.terms.blueBook.ownershipTotal
+                          *ngIf="item.details.rentalOwnershipTotal
                                   <item.details.invoice" color="warn">priority_high</mat-icon>
-                        {{item.details.terms.blueBook.ownershipTotal |
+                        {{item.details.rentalOwnershipTotal |
                                   currency}}
                         <br />
-                        ({{item.details.terms.blueBook.ownershipDelta}}
+                        ({{item.details.rentalOwnershipDelta | percent}}
                         <span *ngIf="item.details.invoice <=
-                                    item.details.terms.blueBook.ownershipTotal">above</span><span *ngIf="item.details.invoice>
-                                    item.details.terms.blueBook.ownershipTotal">below</span>&nbsp;Invoice)
+                                    item.details.rentalOwnershipTotal">above</span><span *ngIf="item.details.invoice > item.details.rentalOwnershipTotal">below</span>&nbsp;Invoice)
                       </td>
-                      <td class="left pl-1" style="position: relative" [class.green]="item.details.terms.regionalAvg.retailRentalTotal
-                                  >= item.details.invoice" [class.red]="item.details.terms.regionalAvg.retailRentalTotal
-                                  <item.details.invoice">
-                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.terms.regionalAvg.retailRentalTotal
+                      <td class="left pl-1" style="position: relative" [class.green]="item.details.rentalRetailGreen" [class.red]="item.details.rentalRetailRed">
+                        <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px" *ngIf="item.details.rentalRetailTotal
                                       >= item.details.invoice" svgIcon="costtrax-check"></mat-icon>
                         <mat-icon class="icon rate-icon" style="position:absolute;top:1px;left:4px;font-size:16px"
-                          *ngIf="item.details.terms.regionalAvg.retailRentalTotal
+                          *ngIf="item.details.rentalRetailTotal
                                     <item.details.invoice" color="warn">priority_high</mat-icon>
-                        {{item.details.terms.regionalAvg.retailRentalTotal
+                        {{item.details.rentalRetailTotal
                                     |
                                     currency}}
                         <br />
-                        ({{item.details.terms.regionalAvg.retailRentalDelta}}
+                        ({{item.details.rentalRetailDelta | percent}}
                         <span *ngIf="item.details.invoice <=
-                                      item.details.terms.regionalAvg.retailRentalTotal">above</span><span *ngIf="item.details.invoice>
-                                      item.details.terms.regionalAvg.retailRentalTotal">below</span>&nbsp;Invoice)
+                                      item.details.rentalRetailTotal">above</span><span *ngIf="item.details.invoice>
+                                      item.details.rentalRetailTotal">below</span>&nbsp;Invoice)
                       </td>
                     </tr>
                   </tbody>

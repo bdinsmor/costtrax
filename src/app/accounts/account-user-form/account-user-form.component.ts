@@ -15,7 +15,7 @@ export class AccountUserFormComponent implements OnInit {
   error: string;
   passwordError: string;
   userForm: FormGroup;
-  newUser: User = new User({ roles: ['AccountAdmin', 'ProjectAdmin'] });
+  newUser: User = new User({ roles: ['AccountAdmin', 'AccountManager'] });
 
   constructor(
     private formBuilder: FormBuilder,

@@ -28,7 +28,7 @@
     "@clr/angular": "^1.1.2",
     "@clr/icons": "^1.1.2",
     "@clr/ui": "^1.1.2",
-    "@ng-select/ng-select": "^2.16.2",
+    "@ng-select/ng-select": "^2.16.3",
     "@webcomponents/custom-elements": "^1.2.1",
     "acorn": "^6.1.1",
     "angular2-text-mask": "^9.0.0",

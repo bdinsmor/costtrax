@@ -83,10 +83,12 @@
           </tr>
           <tr>
             <td class="small-text left">
-              Active Markup ({{ project.adjustments.equipmentActive.markup }}%)
+              Active Markup ({{
+                project.adjustments.equipmentActive.markupPercent | percent
+              }})
             </td>
             <td class="small-text right">
-              {{ request.activeMarkup | currency }}
+              {{ request.equipmentActiveMarkup | currency }}
             </td>
             <td></td>
           </tr>
@@ -100,11 +102,11 @@
           <tr>
             <td class="small-text left">
               Standby Markup ({{
-                project.adjustments.equipmentStandby.markup
-              }}%)
+                project.adjustments.equipmentStandby.markupPercent | percent
+              }})
             </td>
             <td class="small-text right">
-              {{ request.standbyMarkup | currency }}
+              {{ request.equipmentStandbyMarkup | currency }}
             </td>
             <td></td>
           </tr>
@@ -117,10 +119,12 @@
           </tr>
           <tr>
             <td class="small-text left">
-              Rental Markup ({{ project.adjustments.equipmentRental.markup }}%)
+              Rental Markup ({{
+                project.adjustments.equipmentRental.markupPercent | percent
+              }})
             </td>
             <td class="small-text right">
-              {{ request.rentalMarkup | currency }}
+              {{ request.equipmentRentalMarkup | currency }}
             </td>
             <td></td>
           </tr>
@@ -156,7 +160,9 @@
           </tr>
           <tr>
             <td class="small-text left">
-              Materials Markup ({{ project.adjustments.material.markup }}%)
+              Materials Markup ({{
+                project.adjustments.material.markupPercent | percent
+              }})
             </td>
             <td class="small-text right">
               {{ request.materialMarkup | currency }}
@@ -198,8 +204,8 @@
           <tr>
             <td class="small-text left">
               Subcontractor Markup ({{
-                project.adjustments.subcontractor.markup
-              }}%)
+                project.adjustments.subcontractor.markupPercent | percent
+              }})
             </td>
             <td class="small-text right">
               {{ request.subcontractorMarkup | currency }}
