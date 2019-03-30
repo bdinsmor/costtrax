@@ -1,5 +1,5 @@
 import { ClrDatagridComparatorInterface } from '@clr/angular';
-import { DateTime } from 'luxon';
+import * as moment from 'moment';
 
 import { DatesPipe } from '../core/pipes/dates.pipe';
 
@@ -350,12 +350,8 @@ export class Item {
       json['transport'] = this.details.transport;
       json['operating'] = this.details.operating;
       json['invoice'] = this.details.invoice;
-      json['start'] = DateTime.fromJSDate(
-        new Date(this.details.startDate)
-      ).toFormat('yyyy-MM-dd');
-      json['end'] = DateTime.fromJSDate(
-        new Date(this.details.endDate)
-      ).toFormat('yyyy-MM-dd');
+      json['start'] = moment(this.details.startDate).format('yyyy-MM-dd');
+      json['end'] = moment(this.details.endDate).format('yyyy-MM-dd');
       json['subtotal'] = this.subtotal;
       json['year'] = this.details.year;
     } else if (this.type === 'other') {
@@ -391,24 +387,27 @@ export class Item {
       this.details.dateIntroduced = new Date(0);
     }
     if (!this.details.dateDiscontinued) {
-      this.details.dateDiscontinued = DateTime.local().toJSDate();
+      this.details.dateDiscontinued = moment().toDate();
     }
     if (this.details.dateIntroduced instanceof Date) {
     } else {
-      this.details.dateIntroduced = DateTime.fromISO(
+      this.details.dateIntroduced = moment(
         this.details.dateIntroduced
-      ).toJSDate();
+      ).toDate();
     }
     if (this.details.dateDiscontinued instanceof Date) {
     } else {
-      this.details.dateDiscontinued = DateTime.fromISO(
+      this.details.dateDiscontinued = moment(
         this.details.dateDiscontinued
-      ).toJSDate();
+      ).toDate();
     }
     let startYear = this.details.dateIntroduced.getFullYear();
     const endYear = this.details.dateDiscontinued.getFullYear();
 
-    const nowYear = DateTime.local().year - 29;
+    const nowYear =
+      moment()
+        .toDate()
+        .getFullYear() - 29;
 
     startYear = +Math.max(+startYear, +nowYear);
     this.details.years = [];
@@ -666,6 +665,13 @@ export class Item {
       this.comments = data.comments || [];
       this.attachments = data.attachments || [];
       this.buildRentalDates();
+      if (!this.details.transport) {
+        this.details.transport = 0;
+      }
+      if (!this.details.hours) {
+        this.details.hours = 0;
+      }
+
       if (this.details.startDate) {
         this.details.startDate = new Date(data.details.startDate);
       } else {
@@ -860,7 +866,6 @@ export class Project {
     }
   }
 
-
   buildCostEnabled(p: any) {
     if (
       p.adjustments &&
@@ -995,12 +1000,10 @@ export class Project {
       this.accountRoles = project.accountRoles || [];
       this.projectRoles = project.projectRoles || [];
       this.adjustments = project.adjustments || this.buildDefaultAdjustments();
-     
-
 
       this.buildCostEnabled(project);
       this.buildRequests(project.requests || []);
-    
+
       this.buildUsers();
       const today = new Date();
       const diff = Math.abs(today.getTime() - this.createdOn.getTime());
@@ -1131,7 +1134,7 @@ export class Equipment {
       if (m.dateIntroduced instanceof Date) {
         this.dateIntroduced = m.dateIntroduced;
       } else {
-        this.dateIntroduced = DateTime.fromISO(m.dateIntroduced).toJSDate();
+        this.dateIntroduced = moment(m.dateIntroduced).toDate();
       }
     } else {
       this.dateIntroduced = new Date(0);
@@ -1141,10 +1144,10 @@ export class Equipment {
       if (m.dateDiscontinued instanceof Date) {
         this.dateDiscontinued = m.dateDiscontinued;
       } else {
-        this.dateDiscontinued = DateTime.fromISO(m.dateDiscontinued).toJSDate();
+        this.dateDiscontinued = moment(m.dateDiscontinued).toDate();
       }
     } else {
-      this.dateDiscontinued = DateTime.local().toJSDate();
+      this.dateDiscontinued = moment().toDate();
     }
     this.model = m.model || m.modelName || '';
     this.description = m.description || m.categoryName || '';
@@ -1605,13 +1608,13 @@ export class Request {
 
       const sd = request.startDate || request.start;
       if (sd && sd !== '') {
-        this.startDate = DateTime.fromISO(sd, { zone: 'utc' }).toJSDate();
+        this.startDate = moment(sd).toDate();
       } else {
         this.startDate = new Date();
       }
       const ed = request.endDate || request.end;
       if (ed && ed !== '') {
-        this.endDate = DateTime.fromISO(ed, { zone: 'utc' }).toJSDate();
+        this.endDate = moment(ed).toDate();
       } else {
         this.endDate = new Date(this.startDate);
       }

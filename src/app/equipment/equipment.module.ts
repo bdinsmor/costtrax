@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
 
 import { DirectivesModule } from '../core/directives/directives';
 import { NgxCurrencyModule } from '../core/directives/ngx-currency';
@@ -19,6 +20,7 @@ import { EquipmentComponent } from './equipment.component';
     MaterialModule,
     NgxCurrencyModule,
     DirectivesModule,
+    NgZorroAntdModule,
     PipesModule
   ],
   declarations: [

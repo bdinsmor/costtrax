@@ -25,7 +25,8 @@
         <div *ngIf="item.isDraft()">
           <input
             class="full-width"
-            type="text"
+            nz-input
+            nzSize="small"
             (change)="employeeChanged(item)"
             [(ngModel)]="item.lastName"
             [ngModelOptions]="{ standalone: true }"
@@ -37,7 +38,8 @@
         <div *ngIf="item.isDraft()">
           <input
             class="full-width"
-            type="text"
+            nz-input
+            nzSize="small"
             (change)="employeeChanged(item)"
             [(ngModel)]="item.firstName"
             [ngModelOptions]="{ standalone: true }"
@@ -49,7 +51,8 @@
         <div *ngIf="item.isDraft()">
           <input
             class="full-width"
-            type="text"
+            nz-input
+            nzSize="small"
             (change)="employeeChanged(item)"
             [(ngModel)]="item.trade"
             [ngModelOptions]="{ standalone: true }"
@@ -62,7 +65,8 @@
           <input
             currencyMask
             class="full-width"
-            type="text"
+            nz-input
+            nzSize="small"
             (change)="employeeChanged(item)"
             [(ngModel)]="item.rate"
             [ngModelOptions]="{ standalone: true }"
@@ -73,9 +77,10 @@
       <clr-dg-cell>
         <div *ngIf="item.isDraft()">
           <input
+            nz-input
+            nzSize="small"
             currencyMask
             class="full-width"
-            type="text"
             (change)="employeeChanged(item)"
             [(ngModel)]="item.fringe"
             [ngModelOptions]="{ standalone: true }"
@@ -86,7 +91,7 @@
       <clr-dg-cell>
         <div *ngIf="item.isDraft()" class="row justify-content-end">
           <button
-            class="ripple icon-button pr-1"
+            class="ripple icon-button"
             matTooltip="Save"
             (click)="saveChanges(i, item)"
           >
@@ -102,14 +107,14 @@
         </div>
         <div *ngIf="!item.isDraft()" class="row justify-content-end">
           <button
-            class="ripple icon-30 icon-button pr-1"
+            class="ripple icon-30 icon-button"
             matTooltip="Edit"
             (click)="editItem(i, item)"
           >
             <mat-icon color="accent">edit</mat-icon>
           </button>
           <button
-            class="ripple icon-30 icon-button pr-1"
+            class="ripple icon-30 icon-button"
             matTooltip="Copy"
             (click)="copy(i, item)"
           >

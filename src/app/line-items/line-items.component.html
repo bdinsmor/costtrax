@@ -85,11 +85,11 @@
       </div>
 
       <clr-datagrid *ngIf="itemType === 'labor'">
-        <clr-dg-column [clrDgField]="'details.employee.lastName'" style="width:150px">Last Name</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.employee.firstName'" style="width:150px">First Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.lastName'" style="width:250px">Last Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.employee.firstName'" style="width:250px">First Name</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.class'" style="width:150px">Trade
           / Class</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.rate'" style="width:250px">Hourly
+        <clr-dg-column [clrDgField]="'details.rate'" style="width:150px">Hourly
           Rate</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.multiplier'" style="width:155px">Multiplier</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.hours'" style="width:155px">Hours</clr-dg-column>
@@ -101,52 +101,51 @@
           trackByFn" [clrDgItem]="item">
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text"
+              <input nz-input nzSize="small" class="full-width"
                 (change)="laborChanged(item)" (keypress)="laborChanged(item)"
-                [(ngModel)]="item.details.employee.lastName" [ngModelOptions]="{standalone: true}">
+                [(ngModel)]="item.details.employee.lastName" [ngModelOptions]="{standalone: true}" />
             </div>
             <div *ngIf="!submitRequests">{{item.details.employee.lastName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text"
+              <input nz-input nzSize="small" class="full-width"
                 (change)="laborChanged(item)" (keypress)="laborChanged(item)"
-                [(ngModel)]="item.details.employee.firstName" [ngModelOptions]="{standalone: true}">
+                [(ngModel)]="item.details.employee.firstName" [ngModelOptions]="{standalone: true}" />
             </div>
             <div *ngIf="!submitRequests">{{item.details.employee.firstName}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests || item.fromSaved" class="full-width" type="text"
+              <input nz-input nzSize="small" class="full-width" 
                 (change)="laborChanged(item)" (keypress)="laborChanged(item)" [(ngModel)]="item.details.class"
                 [ngModelOptions]="{standalone:
-                true}">
+                true}" />
             </div>
             <div *ngIf="!submitRequests">{{item.details.class}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests || item.fromSaved" currencyMask class="full-width" type="text"
-                (change)="laborChanged(item)" (keypress)="laborChanged(item)" [(ngModel)]="item.details.rate"
-                [ngModelOptions]="{standalone:
-                true}">
+                 <input nz-input *ngIf="submitRequests" placeholder="Subtotal" nzSize="small" currencyMask (blur)="laborChanged(item)" style="width:100px"
+              (keypress)="laborChanged(item)" [(ngModel)]="item.details.rate"
+              [ngModelOptions]="{standalone: true}" />
+             
             </div>
             <div *ngIf="!submitRequests">{{item.details.rate | currency}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests" class="full-width" type="number" (change)="laborChanged(item)"
-                (keypress)="laborChanged(item)" [(ngModel)]="item.details.multiplier" [ngModelOptions]="{standalone:
-                true}">
+                <nz-input-number [(ngModel)]="item.details.multiplier" style="width:65px" (ngModelChange)="laborChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
+              
+             
             </div>
             <div *ngIf="!submitRequests">{{item.details.multiplier | number:
               '.1-2'}}</div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests" class="full-width" type="number" (change)="laborChanged(item)"
-                (keypress)="laborChanged(item)" [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone:
-                true}">
+               <nz-input-number [(ngModel)]="item.details.hours" style="width:65px" (ngModelChange)="laborChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
+            
             </div>
             <div *ngIf="!submitRequests">{{item.details.hours | number:
               '.1-2'}}
@@ -154,9 +153,10 @@
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="submitRequests">
-              <input [disabled]="!submitRequests || item.fromSaved" currencyMask class="full-width" type="text"
-                (keypress)="laborChanged(item)" (change)="laborChanged(item)" [(ngModel)]="item.details.fringe"
-                [ngModelOptions]="{standalone: true}">
+                <input nz-input placeholder="Fringe Benefits" nzSize="small" currencyMask (blur)="laborChanged(item)" style="width:100px"
+              (keypress)="laborChanged(item)" [(ngModel)]="item.details.fringe"
+              [ngModelOptions]="{standalone: true}" />
+              
             </div>
             <div *ngIf="!submitRequests">{{item.details.fringe | currency}}</div>
           </clr-dg-cell>
@@ -254,10 +254,8 @@
               <div *ngIf="!submitRequests">{{item.details.hours | number:
                 '.0-0'}}
               </div>
-              <input *ngIf="submitRequests" [disabled]="!submitRequests
-                || !submitRequests" type="number" style="width:55px" (change)="activeChanged(item)"
-                [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone:
-                true}">
+                <nz-input-number *ngIf="submitRequests" [(ngModel)]="item.details.hours" style="width:65px" (ngModelChange)="activeChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
+              
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -271,10 +269,10 @@
               | currency}}
             </div>
             <div class="padding-label-top" *ngIf="submitRequests">
-              <input type="text" [disabled]="!submitRequests
-                || !submitRequests" currencyMask style="width:100px" (blur)="activeChanged(item)"
-                (keypress)="activeChanged(item)" [(ngModel)]="item.details.transport"
-                [ngModelOptions]="{standalone: true}">
+              <input nz-input placeholder="Transport" nzSize="small" currencyMask (blur)="activeChanged(item)" style="width:100px"
+              (keypress)="activeChanged(item)" [(ngModel)]="item.details.transport"
+              [ngModelOptions]="{standalone: true}" />
+             
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -589,19 +587,13 @@
 
           <clr-dg-cell>
             <div class="padding-label-top">
-              <div *ngIf="!submitRequests">{{item.details.hours | number:
-                    '.0-0'}}
-              </div>
-              <input *ngIf="submitRequests" [disabled]="!submitRequests
-                    || !submitRequests" type="number" style="width:55px" (change)="standbyChanged(item)"
-                [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone: true}">
+              <div *ngIf="!submitRequests">{{item.details.hours | number: '.0-0'}} </div>
+               <nz-input-number *ngIf="submitRequests" [(ngModel)]="item.details.hours" style="width:65px" (ngModelChange)="standbyChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div *ngIf="!item.details.nodata" class="padding-label-top">{{item.details.rate
-                  | currency}}</div>
-            <div class="padding-label-top" *ngIf="item.details.nodata">no
-              data</div>
+            <div *ngIf="!item.details.nodata" class="padding-label-top">{{item.details.rate | currency}}</div>
+            <div class="padding-label-top" *ngIf="item.details.nodata">no data</div>
           </clr-dg-cell>
           <clr-dg-cell>
 
@@ -609,16 +601,12 @@
                   | currency}}
             </div>
             <div *ngIf="submitRequests" class="padding-label-top">
-              <input type="text" [disabled]="!submitRequests
-                    || !submitRequests" currencyMask (blur)="standbyChanged(item)" style="width:100px"
-                (keypress)="standbyChanged(item)" [(ngModel)]="item.details.transport"
-                [ngModelOptions]="{standalone: true}">
+                <input nz-input placeholder="Transport" nzSize="small" currencyMask (blur)="standbyChanged(item)" style="width:100px" (keypress)="standbyChanged(item)"
+                  [(ngModel)]="item.details.transport" [ngModelOptions]="{standalone: true}" />
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
-            <div class="padding-label-top" style="width:100px">{{item.subtotal
-                  |
-                  currency}}</div>
+            <div class="padding-label-top" style="width:100px">{{item.subtotal | currency}}</div>
           </clr-dg-cell>
 
 
@@ -880,10 +868,10 @@
             <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.invoice
                     | currency}}</div>
             <div class="padding-label-top" *ngIf="submitRequests">
-              <input type="text" [disabled]="!submitRequests
-                      || !submitRequests" currencyMask style="width:100px" (blur)="rentalChanged(item)"
-                (keypress)="rentalChanged(item)" [(ngModel)]="item.details.invoice"
-                [ngModelOptions]="{standalone: true}">
+            
+                 <input nz-input placeholder="Invoice" nzSize="small" currencyMask (blur)="rentalChanged(item)" style="width:100px"
+              (keypress)="rentalChanged(item)" [(ngModel)]="item.details.invoice"
+              [ngModelOptions]="{standalone: true}" />
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -892,20 +880,20 @@
                     | currency}}
             </div>
             <div class="padding-label-top" *ngIf="submitRequests">
-              <input type="text" [disabled]="!submitRequests
-                      || !submitRequests" currencyMask style="width:100px" (blur)="rentalChanged(item)"
-                (keypress)="rentalChanged(item)" [(ngModel)]="item.details.transport"
-                [ngModelOptions]="{standalone: true}">
+               <input nz-input placeholder="Transport" nzSize="small" currencyMask (blur)="rentalChanged(item)" style="width:100px"
+              (keypress)="rentalChanged(item)" [(ngModel)]="item.details.transport"
+              [ngModelOptions]="{standalone: true}" />
+             
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div class="padding-label-top" *ngIf="!submitRequests">{{item.details.operating
                     | currency}}</div>
             <div class="padding-label-top" *ngIf="submitRequests">
-              <input type="text" [disabled]="!submitRequests
-                      || !submitRequests" currencyMask style="width:100px" (blur)="rentalChanged(item)"
-                [(ngModel)]="item.details.operating" (keypress)="rentalChanged(item)" [ngModelOptions]="{standalone:
-                      true}">
+               <input nz-input placeholder="Operating" nzSize="small" currencyMask (blur)="rentalChanged(item)" style="width:100px"
+              (keypress)="rentalChanged(item)" [(ngModel)]="item.details.operating"
+              [ngModelOptions]="{standalone: true}" />
+             
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -914,9 +902,9 @@
                       | number: '.0-0'}}
               </div>
               <div class="padding-label-top" *ngIf="submitRequests">
-                <input [disabled]="!submitRequests
-                        || !submitRequests" type="number" style="width:55px" (change)="rentalChanged(item)"
-                  [(ngModel)]="item.details.hours" [ngModelOptions]="{standalone: true}">
+                
+                 <nz-input-number *ngIf="submitRequests" [(ngModel)]="item.details.hours" style="width:65px" (ngModelChange)="rentalChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
+              
               </div>
 
             </div>
@@ -1118,8 +1106,8 @@
           Items</clr-dg-footer>
       </clr-datagrid>
       <clr-datagrid *ngIf="itemType === 'material'">
-        <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.units'" style="width:55px">Units</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.description'" style="min-width:300px">Description</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.units'">Units</clr-dg-column>
         <clr-dg-column [clrDgField]="'details.unitCost'">Cost Per
           Unit</clr-dg-column>
         <clr-dg-column [clrDgField]="'subtotal'">Total</clr-dg-column>
@@ -1130,40 +1118,35 @@
           <clr-dg-cell>
             <div *ngIf="!submitRequests">{{item.details.description}}
             </div>
-            <input *ngIf="submitRequests" [disabled]="!submitRequests ||
-                          !submitRequests" class="full-width" type="text" (change)="materialChanged(item)"
-              [(ngModel)]="item.details.description" [ngModelOptions]="{standalone: true}">
+            <input nz-input nzSize="small" style="width:250px" *ngIf="submitRequests" class="full-width" (change)="materialChanged(item)"
+              [(ngModel)]="item.details.description" [ngModelOptions]="{standalone: true}" />
           </clr-dg-cell>
           <clr-dg-cell>
             <div>
-              <div *ngIf="!submitRequests" style="width:75px">{{item.details.units}}</div>
-              <input *ngIf="submitRequests" style="width:75px" [disabled]="!submitRequests
-                            ||
-                            !submitRequests" class="w-55" (change)="materialChanged(item)" type="number"
-                [(ngModel)]="item.details.units" [ngModelOptions]="{standalone:
-                            true}">
+              <div *ngIf="!submitRequests">{{item.details.units}}</div>
+              
+                <nz-input-number [(ngModel)]="item.details.units" (ngModelChange)="materialChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
+            
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div>
-              <div *ngIf="!submitRequests" style="width:100px">{{item.details.unitCost
+              <div *ngIf="!submitRequests" >{{item.details.unitCost
                             |
                             currency}}
               </div>
-              <input type="text" *ngIf="submitRequests" style="width:100px" [disabled]="!submitRequests
-                            ||
-                            !submitRequests" (blur)="materialChanged(item)" (keypress)="materialChanged(item)"
+              <input nz-input nzSize="small" *ngIf="submitRequests" (blur)="materialChanged(item)" (keypress)="materialChanged(item)"
                 currencyMask [(ngModel)]="item.details.unitCost" [ngModelOptions]="{standalone: true}">
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div>
-              <div *ngIf="!submitRequests" style="width:100px">{{item.subtotal
+              <div *ngIf="!submitRequests" >{{item.subtotal
                             | currency}}</div>
-              <input type="text" *ngIf="submitRequests" style="width:100px" [disabled]="!submitRequests
-                            || !submitRequests" (blur)="materialChanged(item)" (keypress)="materialChanged(item)"
-                currencyMask [(ngModel)]="item.subtotal" [ngModelOptions]="{standalone:
-                            true}">
+                             <input nz-input *ngIf="submitRequests" placeholder="Subtotal" nzSize="small" currencyMask (blur)="materialChanged(item)" style="width:100px"
+              (keypress)="materialChanged(item)" [(ngModel)]="item.subtotal"
+              [ngModelOptions]="{standalone: true}" />
+              
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -1219,38 +1202,34 @@
           Items</clr-dg-footer>
       </clr-datagrid>
       <clr-datagrid *ngIf="itemType === 'other'">
-        <clr-dg-column [clrDgField]="'details.type'">Type</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
-        <clr-dg-column [clrDgField]="'subtotal'">Amount</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.type'" style="min-width:150px">Type</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.description'" style="min-width:300px">Description</clr-dg-column>
+        <clr-dg-column [clrDgField]="'subtotal'">Total</clr-dg-column>
         <clr-dg-column></clr-dg-column>
         <clr-dg-row *clrDgItems="let item of itemList.items; let i=
                       index;trackBy:
                       trackByFn" [clrDgItem]="item">
           <clr-dg-cell>
             <div>
-              <div *ngIf="!submitRequests" style="width:100px">{{item.details.type}}</div>
-              <input *ngIf="submitRequests" [disabled]="!submitRequests
-                            ||
-                            !submitRequests" class="full-width" style="width:100px" type="text"
+              <div *ngIf="!submitRequests" >{{item.details.type}}</div>
+              <input nz-input nzSize="small" *ngIf="submitRequests" class="full-width" 
                 (change)="otherChanged(item)" [(ngModel)]="item.details.type" [ngModelOptions]="{standalone: true}">
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
 
-            <div *ngIf="!submitRequests" style="width:175px">{{item.details.description}}</div>
-            <input *ngIf="submitRequests" style="width:175px" [disabled]="!submitRequests ||
-                          !submitRequests" class="full-width" type="text" (change)="otherChanged(item)"
+            <div *ngIf="!submitRequests" >{{item.details.description}}</div>
+            <input *ngIf="submitRequests"  nz-input nzSize="small"  class="full-width" (change)="otherChanged(item)"
               [(ngModel)]="item.details.description" [ngModelOptions]="{standalone: true}">
           </clr-dg-cell>
           <clr-dg-cell>
             <div>
-              <div *ngIf="!submitRequests" style="width:100px">{{item.subtotal
+              <div *ngIf="!submitRequests" >{{item.subtotal
                             | currency}}</div>
-              <input type="text" style="width:100px" *ngIf="submitRequests" [disabled]="!submitRequests
-                            ||
-                            !submitRequests" (blur)="otherChanged(item)" (keypress)="otherChanged(item)" currencyMask
-                [(ngModel)]="item.subtotal" [ngModelOptions]="{standalone:
-                            true}">
+                            <input nz-input *ngIf="submitRequests" placeholder="Subtotal" nzSize="small" currencyMask (blur)="otherChanged(item)" style="width:100px"
+              (keypress)="otherChanged(item)" [(ngModel)]="item.subtotal"
+              [ngModelOptions]="{standalone: true}" />
+              
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -1306,8 +1285,8 @@
       </clr-datagrid>
       <clr-datagrid *ngIf="itemType === 'subcontractor'">
         <clr-dg-column [clrDgField]="'details.subcontractor'">Subcontractor</clr-dg-column>
-        <clr-dg-column [clrDgField]="'details.description'">Description</clr-dg-column>
-        <clr-dg-column [clrDgField]="'subtotal'">Amount</clr-dg-column>
+        <clr-dg-column [clrDgField]="'details.description'" style="min-width:300px">Description</clr-dg-column>
+        <clr-dg-column [clrDgField]="'subtotal'" >Total</clr-dg-column>
         <clr-dg-column></clr-dg-column>
         <clr-dg-row *clrDgItems="let item of itemList.items; let i=
                       index;trackBy:
@@ -1315,26 +1294,23 @@
           <clr-dg-cell>
             <div>
               <div *ngIf="!submitRequests">{{item.details.subcontractor}}</div>
-              <input *ngIf="submitRequests" [disabled]="!submitRequests
-                            ||
-                            (!submitRequests)" class="full-width" type="text" (change)="subcontractorChanged(item)"
+              <input *ngIf="submitRequests" nz-input nzSize="small" class="full-width"  (change)="subcontractorChanged(item)"
                 [(ngModel)]="item.details.subcontractor" [ngModelOptions]="{standalone: true}">
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
             <div *ngIf="!submitRequests">{{item.details.description}}</div>
-            <input *ngIf="submitRequests" [disabled]="!submitRequests ||
-                          (!submitRequests)" class="full-width" type="text" (change)="subcontractorChanged(item)"
+            <input *ngIf="submitRequests" nz-input nzSize="small" class="full-width"  (change)="subcontractorChanged(item)"
               [(ngModel)]="item.details.description" [ngModelOptions]="{standalone: true}">
           </clr-dg-cell>
           <clr-dg-cell>
             <div>
-              <div *ngIf="!submitRequests" style="width:100px">{{item.subtotal
+              <div *ngIf="!submitRequests" >{{item.subtotal
                             | currency}}</div>
-              <input type="text" *ngIf="submitRequests" style="width:100px" [disabled]="!submitRequests ||
-                            (!submitRequests)" (blur)="subcontractorChanged(item)"
-                (keypress)="subcontractorChanged(item)" currencyMask [(ngModel)]="item.subtotal" [ngModelOptions]="{standalone:
-                            true}">
+                            <input nz-input *ngIf="submitRequests" placeholder="Subtotal" nzSize="small" currencyMask (blur)="subcontractorChanged(item)" style="width:100px"
+              (keypress)="subcontractorChanged(item)" [(ngModel)]="item.subtotal"
+              [ngModelOptions]="{standalone: true}" />
+             
             </div>
           </clr-dg-cell>
           <clr-dg-cell>

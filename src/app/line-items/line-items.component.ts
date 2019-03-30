@@ -170,6 +170,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   itemTypeDisplay: string;
 
   accountSynced = true;
+  formatterDollar = (value: number) => `$ ${value}`;
+  parserDollar = (value: string) => {
+    // value.replace('$', '');
+  }
 
   ngOnInit() {
     this.itemsLoading = true;

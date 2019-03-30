@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
-import { DateTime } from 'luxon';
 import { UploadFile } from 'ng-zorro-antd';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -150,8 +150,8 @@ export class RequestsService {
   }
 
   grabRequestId(projectId: string, startDate: string, endDate: string) {
-    startDate = DateTime.fromJSDate(new Date(startDate)).toFormat('yyyy-MM-dd');
-    endDate = DateTime.fromJSDate(new Date(endDate)).toFormat('yyyy-MM-dd');
+    startDate = format(startDate, 'YYYY-MM-DD');
+    endDate = format(endDate, 'YYYY-MM-DD');
     return this.http.post(environment.serverUrl + '/request', {
       projectId: projectId,
       startDate: startDate,
