@@ -1,9 +1,18 @@
 <h3 mat-dialog-title>Line Item Attachments</h3>
 <mat-dialog-content>
   <div class="mb-2">
-    <nz-upload *ngIf="canAdd" [nzShowButton]="canAdd" [nzDisabled]="!canAdd" nzAction="" nzType="drag" nzMultiple
-      [nzFileList]="fileList" [nzCustomRequest]="customReq" [nzShowUploadList]="false"
-      (nzChange)="handleChange($event)">
+    <nz-upload
+      *ngIf="canAdd"
+      [nzShowButton]="canAdd"
+      [nzDisabled]="!canAdd"
+      nzAction=""
+      nzType="drag"
+      nzMultiple
+      [nzFileList]="fileList"
+      [nzCustomRequest]="customReq"
+      [nzShowUploadList]="false"
+      (nzChange)="handleChange($event)"
+    >
       <p class="ant-upload-drag-icon">
         <clr-icon shape="inbox" size="36"></clr-icon>
       </p>
@@ -11,8 +20,16 @@
         Click or drag file(s) to this area to upload
       </p>
     </nz-upload>
-    <nz-upload *ngIf="!canAdd" [nzShowButton]="canAdd" [nzDisabled]="!canAdd" nzAction="" [nzFileList]="fileList"
-      [nzCustomRequest]="customReq" [nzShowUploadList]="false" (nzChange)="handleChange($event)">
+    <nz-upload
+      *ngIf="!canAdd"
+      [nzShowButton]="canAdd"
+      [nzDisabled]="!canAdd"
+      nzAction=""
+      [nzFileList]="fileList"
+      [nzCustomRequest]="customReq"
+      [nzShowUploadList]="false"
+      (nzChange)="handleChange($event)"
+    >
       <h5 class="muted-text" *ngIf="fileList && fileList.length > 0">
         Click on an attachment to download
       </h5>
@@ -21,17 +38,22 @@
       </h5>
     </nz-upload>
     <mat-nav-list class="full-width">
-      <h3 *ngIf="addedFiles && addedFiles.length > 0" matSubheader>Uploaded Files</h3>
+      <h3 *ngIf="!addedFiles || addedFiles.length === 0" matSubheader>
+        No Uploaded Files
+      </h3>
+      <h3 *ngIf="addedFiles && addedFiles.length > 0" matSubheader>
+        Uploaded Files
+      </h3>
       <mat-list-item *ngFor="let file of addedFiles; let index = index">
-        <a [href]="file.url" target="_blank" matLine class="attachment">{{file.name}}</a>
+        <a [href]="file.url" target="_blank" matLine class="attachment">{{
+          file.name
+        }}</a>
         <button class="ripple icon-button" (click)="deleteFile(index, file)">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-list-item>
     </mat-nav-list>
-
   </div>
-
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button type="button" class="btn btn-primary" (click)="done()">Done</button>
