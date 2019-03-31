@@ -1,6 +1,6 @@
 <h3 mat-dialog-title>Confirm Approval</h3>
 <mat-dialog-content>
-  <p>Are you sure you want to approve all pending items?</p>
+  <p>Are you sure you want to approve this request?</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button type="button" class="btn btn-outline-danger" (click)="cancel()">
@@ -9,7 +9,7 @@
   <button
     type="button"
     cdkFocusInitial
-    class="btn btn-success"
+    class="btn btn-primary"
     (click)="confirm()"
   >
     Approve
