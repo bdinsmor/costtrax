@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Project, Request } from 'src/app/shared/model';
+import { Request } from 'src/app/shared/model';
 
 @Component({
   selector: 'app-request-recapitulation-dialog',
@@ -9,7 +9,6 @@ import { Project, Request } from 'src/app/shared/model';
 })
 export class RequestRecapitulationDialogComponent implements OnInit {
   request: Request;
-  project: Project;
 
   constructor(
     public dialogRef: MatDialogRef<any>,
@@ -19,7 +18,6 @@ export class RequestRecapitulationDialogComponent implements OnInit {
   ngOnInit() {
     // console.log('data: ' + JSON.stringify(this.data, null, 2));
     this.request = this.data.request;
-    this.project = this.data.project;
   }
 
   cancel() {

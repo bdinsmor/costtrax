@@ -176,6 +176,7 @@ export class AuthenticationService {
     }
     const loggedIn =
       !!this.credentials && this.isTokenExpired(this.credentials.token, 0);
+    // console.log('token: \n\n' + this.credentials.token);
     this.sendCreds(this.credentials);
     return loggedIn;
   }

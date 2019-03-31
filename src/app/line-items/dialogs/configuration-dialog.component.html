@@ -1,25 +1,41 @@
 <h3 mat-dialog-title>Select Configuration</h3>
 <mat-dialog-content *ngIf="configurations">
-  <div class="pb-2 justify-content-center
-              align-items-center">
+  <div
+    class="pb-2 justify-content-center
+              align-items-center"
+  >
     <clr-datagrid class="datagrid-compact" #configurationGrid1>
       <clr-dg-placeholder>No data found</clr-dg-placeholder>
       <clr-dg-column> </clr-dg-column>
-      <clr-dg-column *ngFor="let column of configurations.columns" [clrDgField]="column.name"
-        [clrDgSorted]="column.name === 'name'">
+      <clr-dg-column
+        *ngFor="let column of configurations.columns"
+        [clrDgField]="column.name"
+        [clrDgSorted]="column.name === 'name'"
+      >
         <div>{{ column.name }}</div>
       </clr-dg-column>
 
-      <clr-dg-row *clrDgItems="
+      <clr-dg-row
+        *clrDgItems="
           let configuration of configurations.results;
           let index = index
-        " [clrDgItem]="configuration">
+        "
+        [clrDgItem]="configuration"
+      >
         <clr-dg-cell>
-          <button type="button" mat-icon-button color="accent" (click)="confirm(configuration)">
+          <button
+            type="button"
+            mat-icon-button
+            color="accent"
+            (click)="confirm(configuration)"
+          >
             <mat-icon color="accent">radio_button_unchecked</mat-icon>
           </button>
         </clr-dg-cell>
-        <clr-dg-cell *ngFor="let column of configurations.columns" class="padding-label-top">
+        <clr-dg-cell
+          *ngFor="let column of configurations.columns"
+          class="configuration-padding-label-top"
+        >
           {{ configuration[column.name] }}
         </clr-dg-cell>
       </clr-dg-row>
@@ -27,7 +43,12 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button type="button" class="btn btn-outline-danger" cdkFocusInitial mat-dialog-close>
+  <button
+    type="button"
+    class="btn btn-outline-danger"
+    cdkFocusInitial
+    mat-dialog-close
+  >
     Cancel
   </button>
 </mat-dialog-actions>

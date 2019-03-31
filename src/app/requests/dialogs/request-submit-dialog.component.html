@@ -2,16 +2,21 @@
 <mat-dialog-content>
   <h3>Please sign this request:</h3>
   <form [formGroup]="signatureFormGroup" class="column full-width">
-    <h6>Signature:</h6>
-    <div class="full-width mt-1">
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Signature</mat-label>
       <input
-        class="full-width"
+        matInput
+        placeholder="Contractor Signature"
         type="text"
         formControlName="signature"
-        placeholder="Signature,
-                          Contractor"
+        required
       />
-    </div>
+      <mat-error
+        *ngIf="signatureFormGroup.get('signature').hasError('required')"
+      >
+        Signature is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

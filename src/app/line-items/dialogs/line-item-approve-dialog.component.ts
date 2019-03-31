@@ -32,14 +32,14 @@ export class LineItemApproveDialogComponent implements OnInit {
     this.changeFormGroup = new FormGroup({
       reasonControl: new FormControl('', Validators.required),
       ammountControl: new FormControl(
-        this.selectedItem.details.amount,
+        this.selectedItem.subtotal,
         Validators.required
-      )
+      ),
+      amountSubmitted: new FormControl({
+        value: this.selectedItem.subtotal,
+        disabled: true
+      })
     });
-  }
-
-  get amountChanged() {
-    return +this.selectedItem.totalAdjusted - +this.selectedItem.amount;
   }
 
   cancel() {
@@ -47,14 +47,11 @@ export class LineItemApproveDialogComponent implements OnInit {
   }
 
   confirm() {
-    if (this.modalType === 'ApprovedWithChange') {
-      const changes = {
-        totalAdjusted: this.selectedItem.totalAdjusted,
-        changeReason: this.changeFormGroup.value.reasonControl
-      };
-      this.dialogRef.close({ success: true, changes: changes });
-    } else {
-      this.dialogRef.close({ success: true });
-    }
+    const changes = {
+      subtotalApproved: this.changeFormGroup.value.ammountControl,
+      approverNotes: this.changeFormGroup.value.reasonControl
+    };
+
+    this.dialogRef.close({ success: true, changes: changes });
   }
 }

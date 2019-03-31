@@ -280,6 +280,7 @@ export class Item {
   fromSaved = false;
   requestId: string;
   details: any;
+  popover = '';
   eSig: string;
   submittedOn: Date;
   submittedBy: string;
@@ -296,7 +297,7 @@ export class Item {
   type: string;
   startDate: Date;
   endDate: Date;
-
+  amountAdjusted = false;
   changeReason: string;
   rejectReason: string;
   displayType: string;
@@ -310,8 +311,8 @@ export class Item {
 
   buildApproveVersion() {
     const json = this.buildSaveVersion();
-    json['approverNotes'] = this.details.approverNotes;
-    json['subtotalApproved'] = this.details.subtotalApproved;
+    json['approverNotes'] = this.approverNotes;
+    json['subtotalApproved'] = this.subtotalApproved;
 
     return json;
   }
@@ -660,6 +661,10 @@ export class Item {
       this.changeReason = data.changeReason || '';
       this.rejectReason = data.rejectReason || '';
       this.totalAdjusted = data.totalAdjusted || 0;
+      this.subtotalApproved = data.subtotalApproved || 0;
+      this.amountAdjusted =
+        this.subtotalApproved > 0 && +this.subtotal !== +this.subtotalApproved;
+
       this.approvedBy = data.approvedBy || '';
       this.approvedOn = data.approvedOn || new Date();
       this.comments = data.comments || [];
@@ -740,6 +745,7 @@ export class Project {
   adjustments: any;
   draftRequests: Request[];
   pendingRequests: Request[];
+  rejectedRequests: Request[];
   completeRequests: Request[];
   requestJSON: any;
   pendingTotal = 0;
@@ -755,11 +761,6 @@ export class Project {
   subcontractorTotal = 0;
   otherTotal = 0;
   progress = 0;
-  statuses = ['Draft', 'Pending', 'Approved'];
-
-  randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
   calculateCosts(includeDraft, includePending, includeComplete) {
     let total = 0;
@@ -779,6 +780,7 @@ export class Project {
         otherTotal += +r.otherTotal;
       }
     }
+
     if (includePending) {
       for (let i = 0; i < this.pendingRequests.length; i++) {
         const r = this.pendingRequests[i];
@@ -814,6 +816,7 @@ export class Project {
     this.draftRequests = [];
     this.pendingRequests = [];
     this.completeRequests = [];
+    this.rejectedRequests = [];
     let total = 0;
     let laborTotal = 0;
     let equipmentTotal = 0;
@@ -821,7 +824,8 @@ export class Project {
     let subcontractorTotal = 0;
     let otherTotal = 0;
     for (let i = 0; i < requestJSON.length; i++) {
-      const r = new Request(requestJSON[i]);
+      requestJSON[i].adjustments = this.adjustments;
+      const r: Request = new Request(requestJSON[i]);
       total += +r.total;
       laborTotal += +r.laborTotal;
       equipmentTotal += +r.equipmentTotal;
@@ -836,6 +840,9 @@ export class Project {
       }
       if (r.status.toLowerCase() === 'approved') {
         this.completeRequests.push(r);
+      }
+      if (r.status.toLowerCase() === 'rejected') {
+        this.rejectedRequests.push(r);
       }
     }
     this.total = total;
@@ -1214,7 +1221,7 @@ export interface Dispute {
 }
 
 export class Utils {
-  static getItemDisplayType(itemType) {
+  static getItemDisplayType(itemType: string) {
     itemType = itemType.toLowerCase();
     switch (itemType) {
       case 'equipmentactive': {
@@ -1302,8 +1309,9 @@ export class Request {
   meta: any;
   coord: any;
   name: string;
-  project: Project;
+  projectRoles: string[];
   projectId: string;
+  projectName: string;
   type: string;
   age: number;
   requestDate: Date;
@@ -1341,6 +1349,7 @@ export class Request {
   equipmentStandbyTotal = 0;
   equipmentRentalTotal = 0;
   approved = false;
+  adjustments = null;
   pendingItems: Item[];
   completeItems: Item[];
   draftItems: Item[];
@@ -1423,9 +1432,6 @@ export class Request {
       });
     }
   }
-  isOverdue(li: any) {
-    return +li.age > +this.paymentTerms;
-  }
 
   groupByType() {
     return this.unsortedItems.reduce(function(groups, item) {
@@ -1487,7 +1493,6 @@ export class Request {
   }
 
   buildLineItems() {
-    const laborBenefits = 0;
     this.pendingItems = [];
     this.completeItems = [];
     this.draftItems = [];
@@ -1544,6 +1549,7 @@ export class Request {
     {
       this.id = request.id || '';
       this.oneUp = request.oneUp || '';
+      this.adjustments = request.adjustments || {};
       this.meta = request.meta || {};
       this.coord = request.coord || {};
       this.canApprove = request.canApprove || false;
@@ -1551,6 +1557,8 @@ export class Request {
       this.submittedBy = request.submittedBy || '';
       this.createdOn = request.createdOn || '';
       this.createdBy = request.createdBy || '';
+      this.projectRoles = request.projectRoles || [];
+      this.projectName = request.projectName || '';
       this.lineItemCount = request.lineItemCount || 0;
       this.lastModified = request.lastModified || '';
       this.lastModifiedBy = request.lastModifiedBy || '';
@@ -1566,20 +1574,28 @@ export class Request {
       this.equipmentStandbyTotal = +request.equipmentStandbyTotal || 0;
       this.equipmentRentalTotal = +request.equipmentRentalTotal || 0;
       this.equipmentActiveMarkup =
-        +this.equipmentActiveTotal - +this.equipmentActiveSubtotal;
+        +this.equipmentActiveSubtotal *
+        +this.adjustments.equipmentActive.markup;
       this.equipmentStandbyMarkup =
-        +this.equipmentStandbyTotal - +this.equipmentStandbySubtotal;
+        +this.equipmentStandbySubtotal *
+        +this.adjustments.equipmentStandby.markup;
+
       this.equipmentRentalMarkup =
-        +this.equipmentRentalTotal - +this.equipmentRentalSubtotal;
-      this.laborMarkup = +this.laborTotal - +this.laborSubtotal;
-      this.otherMarkup = +this.otherTotal - +this.otherSubtotal;
+        +this.equipmentStandbySubtotal *
+        +this.adjustments.equipmentRental.markup;
+      this.laborMarkup = +this.laborSubtotal * +this.adjustments.labor.markup;
+      this.otherMarkup = +this.otherSubtotal * +this.adjustments.other.markup;
       this.subcontractorMarkup =
-        +this.subcontractorTotal - +this.subcontractorSubtotal;
-      this.materialMarkup = +this.materialTotal - +this.materialSubtotal;
+        +this.subcontractorSubtotal * +this.adjustments.subcontractor.markup;
+      this.materialMarkup =
+        +this.materialSubtotal * +this.adjustments.material.markup;
       this.equipmentTotal =
-        this.equipmentActiveTotal +
-        this.equipmentStandbyTotal +
-        this.equipmentRentalTotal;
+        this.equipmentActiveSubtotal +
+        this.equipmentActiveMarkup +
+        this.equipmentStandbySubtotal +
+        this.equipmentStandbyMarkup +
+        this.equipmentRentalSubtotal +
+        this.equipmentRentalMarkup;
       this.total =
         this.equipmentTotal +
         this.laborTotal +

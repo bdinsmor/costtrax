@@ -22,7 +22,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../core/animations';
 import { AuthenticationService } from '../core/authentication/authentication.service';
 import { EquipmentService } from '../equipment/equipment.service';
 import { RequestsService } from '../requests/requests.service';
-import { Employee, Equipment, Item, ItemList, Project, Utils } from '../shared/model';
+import { Employee, Equipment, Item, ItemList, Utils } from '../shared/model';
 import { appAnimations } from './../core/animations';
 import { AddMiscDialogComponent } from './dialogs/add-misc-dialog.component';
 import { AddModelDialogComponent } from './dialogs/add-model-dialog.component';
@@ -87,6 +87,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         '../../assets/icons/check.svg'
       )
     );
+    this.matIconRegistry.addSvgIcon(
+      'approvewedit',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        '../../assets/icons/square-edit-outline.svg'
+      )
+    );
   }
   public dateRangeComparator = new ItemDateRangeComparator();
   dialogTitle: string;
@@ -94,6 +100,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   requestForm: FormGroup;
   projectFormGroup: FormGroup;
   costFormGroup: FormGroup;
+  popoverNotes = '';
+  popoverAmount = 0;
   costDetailsFormGroup: FormGroup;
   signatureFormGroup: FormGroup;
   selectedItem: Item;
@@ -115,8 +123,11 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   bsConfig: Partial<BsDatepickerConfig>;
   @Input() itemList: ItemList;
-  @Input() project: Project;
   @Input() requestId: string;
+  @Input() projectId: string;
+  @Input() requestStatus: string;
+  @Input() projectRoles: string[];
+  @Input() adjustments: any;
   @Input() requestDates: string[];
   @Input() draftMode: boolean;
   @Input() requestStartDate: string;
@@ -134,8 +145,8 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   selectedMachineControl: FormControl;
   machineChoices: Equipment[];
   machineChoice: string;
+  typeAjustments: any;
   item: Item; // selected item to edit or delete
-  adjustments: any;
   submitRequests = false;
   manageRequests = false;
   manageProject = false;
@@ -176,6 +187,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (!this.requestStatus || this.requestStatus === '') {
+      this.requestStatus = 'draft';
+    }
+    this.requestStatus = this.requestStatus.toLowerCase();
     this.itemsLoading = true;
     this.bsConfig = Object.assign(
       {},
@@ -211,54 +226,26 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.setDisplayType();
     this.getComps();
 
-    if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'equipmentActive'
-    ) {
-      this.adjustments = this.project.adjustments.equipmentActive;
+    if (this.adjustments && this.itemType === 'equipmentActive') {
+      this.typeAjustments = this.adjustments.equipmentActive;
       this.ownershipAdjustment = +this.adjustments.ownership;
       this.operatingAdjustment = +this.adjustments.operating;
-    } else if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'equipmentStandby'
-    ) {
-      this.adjustments = this.project.adjustments.equipmentStandby;
+    } else if (this.adjustments && this.itemType === 'equipmentStandby') {
+      this.typeAjustments = this.adjustments.equipmentStandby;
       this.ownershipAdjustment = +1;
       this.operatingAdjustment = +1;
-    } else if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'equipmentRental'
-    ) {
-      this.adjustments = this.project.adjustments.equipmentRental;
+    } else if (this.adjustments && this.itemType === 'equipmentRental') {
+      this.typeAjustments = this.adjustments.equipmentRental;
       this.ownershipAdjustment = +1;
       this.operatingAdjustment = +1;
-    } else if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'material'
-    ) {
-      this.adjustments = this.project.adjustments.material;
-    } else if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'other'
-    ) {
-      this.adjustments = this.project.adjustments.other;
-    } else if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'subcontractor'
-    ) {
-      this.adjustments = this.project.adjustments.subcontractor;
-    } else if (
-      this.project &&
-      this.project.adjustments &&
-      this.itemType === 'labor'
-    ) {
-      this.adjustments = this.project.adjustments.labor;
+    } else if (this.adjustments && this.itemType === 'material') {
+      this.typeAjustments = this.adjustments.material;
+    } else if (this.adjustments && this.itemType === 'other') {
+      this.typeAjustments = this.adjustments.other;
+    } else if (this.adjustments && this.itemType === 'subcontractor') {
+      this.typeAjustments = this.adjustments.subcontractor;
+    } else if (this.adjustments && this.itemType === 'labor') {
+      this.typeAjustments = this.adjustments.labor;
     }
     this.itemsLoading = false;
   }
@@ -300,7 +287,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       width: '75vw',
       data: {
         type: this.itemType,
-        projectId: this.project.id
+        projectId: this.projectId
       }
     });
 
@@ -354,7 +341,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.equipmentService
       .getRateDataforSelectedEquipment(
         selectedEquipment,
-        this.project.adjustments.rentalLocation.stateCode,
+        this.adjustments.rentalLocation.stateCode,
         this.requestStartDate,
         this.operatingAdjustment,
         this.ownershipAdjustment,
@@ -558,8 +545,6 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     item.subtotal = total;
 
     item.amount = total;
-    item.details.subtotal = item.subtotal;
-    item.details.amount = item.amount;
   }
 
   activeChanged(item: Item) {
@@ -657,22 +642,22 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   }
 
   checkPermissions() {
-    if (!this.project || !this.project.roles) {
+    if (!this.projectRoles) {
       return;
     }
     this.manageRequests = false;
     this.manageProject = false;
     this.submitRequests = false;
-    for (let i = 0; i < this.project.roles.length; i++) {
-      const r = this.project.roles[i];
-      if (r === 'ProjectRequestor') {
+    for (let i = 0; i < this.projectRoles.length; i++) {
+      const r = this.projectRoles[i];
+      if (this.requestStatus === 'draft' && r === 'ProjectRequestor') {
         this.submitRequests = true;
       }
 
-      if (r === 'ProjectApprover') {
+      if (this.requestStatus !== 'draft' && r === 'ProjectApprover') {
         this.manageRequests = true;
       }
-      if (r === 'ProjectManager') {
+      if (this.requestStatus !== 'draft' && r === 'ProjectManager') {
         this.manageProject = true;
       }
     }
@@ -799,7 +784,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       data: {
         selectedItem: item,
         modalType: 'ApprovedWithChange',
-        modalTitle: 'Approve With Changed',
+        modalTitle: 'Approve With Changes',
         modalSubmitLabel: 'Approve'
       }
     });
@@ -807,13 +792,29 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.success) {
         if (result.changes) {
-          this.selectedItem.approverNotes = result.changes.changeReason;
-          this.selectedItem.subtotalApproved = result.changes.finalAmount;
-          this.selectedItem.approvedOn = new Date();
-          // this.itemList.items[index] = this.selectedItem;
+          this.itemList.items[index].subtotalApproved =
+            result.changes.subtotalApproved;
+          this.itemList.items[index].approverNotes =
+            result.changes.approverNotes;
+          this.itemList.items[index].amountAdjusted =
+            this.itemList.items[index].subtotalApproved > 0 &&
+            +this.itemList.items[index].subtotal !==
+              +this.itemList.items[index].subtotalApproved;
+
+          this.changeDetector.detectChanges();
         }
       }
     });
+  }
+
+  onPopoverShown(item) {
+    this.popoverAmount = item.subtotal;
+    this.popoverNotes = item.approverNotes;
+  }
+
+  onPopoverHidden() {
+    this.popoverAmount = 0;
+    this.popoverNotes = '';
   }
 
   viewAttachments(item: Item) {
@@ -850,7 +851,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       scrollStrategy: this.overlay.scrollStrategies.block(),
       data: {
         itemType: this.itemType,
-        adjustments: this.project.adjustments
+        adjustments: this.adjustments
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -870,9 +871,9 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       width: '80vw',
       data: {
         type: this.itemType,
-        projectId: this.project.id,
-        adjustments: this.project.adjustments,
-        projectState: this.project.adjustments.rentalLocation.stateCode
+        projectId: this.projectId,
+        adjustments: this.adjustments,
+        projectState: this.adjustments.rentalLocation.stateCode
       }
     });
 

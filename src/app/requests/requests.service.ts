@@ -190,6 +190,20 @@ export class RequestsService {
     );
   }
 
+  reject(requestId: string) {
+    return this.http.put(
+      environment.serverUrl + '/request/' + requestId + '/reject',
+      {}
+    );
+  }
+
+  rework(requestId: string) {
+    return this.http.put(
+      environment.serverUrl + '/request/' + requestId + '/rework',
+      {}
+    );
+  }
+
   approve(requestId: string) {
     return this.http.put(
       environment.serverUrl + '/request/' + requestId + '/approve',

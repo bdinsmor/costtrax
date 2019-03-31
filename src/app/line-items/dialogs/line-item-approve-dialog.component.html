@@ -1,247 +1,87 @@
 <h3 mat-dialog-title>{{ modalTitle }}</h3>
 <mat-dialog-content>
-  <form *ngIf="selectedItem" class="full-width px-1" [formGroup]="changeFormGroup">
-    <div class="px-1 pb-2 bg-white">
-      <ng-container *ngIf="selectedItem.type === 'material'">
-        <div class="row flex-wrap full-width">
-          <div class="column flex-wrap px-1">
-            <h6 class="row-details">DESCRIPTION</h6>
-            <div [matTooltip]="selectedItem.details.description">
-              {{ selectedItem.details.description }}
+  <div *ngIf="selectedItem && changeFormGroup">
+    <form
+      *ngIf="selectedItem"
+      class="full-width px-1"
+      [formGroup]="changeFormGroup"
+    >
+      <div class="pb-2">
+        <div
+          class="column
+        align-items-center"
+        >
+          <div
+            class="row no-row-margins
+                align-items-center"
+          >
+            <div class="column flex-wrap col-4">
+              <h4 class="amount-label">
+                <strong>Amount Submitted:&nbsp;&nbsp;</strong>
+              </h4>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  currencyMask
+                  placeholder="Submitted Amount"
+                  type="text"
+                  formControlName="amountSubmitted"
+                />
+              </mat-form-field>
             </div>
-          </div>
-          <div class="column flex-wrap px-1">
-            <h6 class="row-details">UNITS</h6>
-            <div>{{ selectedItem.details.units }}</div>
-          </div>
-          <div class="column flex-wrap px-1">
-            <h6 class="row-details">COST PER UNIT</h6>
-            <div>{{ selectedItem.details.unitCost | currency }}</div>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'other'">
-        <div class="full-width row align-items-center">
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">TYPE</h6>
-              <div>{{ selectedItem.details.type }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">DESCRIPTION</h6>
-              <div [matTooltip]="selectedItem.details.description">
-                {{ selectedItem.details.description }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'equipmentActive'">
-        <div class="full-width row align-items-center">
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">MACHINE</h6>
-              <div>
-                {{ selectedItem.details.year }} {{ selectedItem.details.manufacturerName }}
-                {{ selectedItem.details.model }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">OPERATING</h6>
-              <div>
-                {{
-                  selectedItem.details.activeOperatingAdjustedRate | currency
-                }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">HOURS</h6>
-              <div>{{ selectedItem.details.hours | number: '.1-2' }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">TRANSPORT</h6>
-              <div>{{ selectedItem.details.transport | currency }}</div>
-            </div>
-          </div>
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">
-                {{ selectedItem.details.description }}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'equipmentStandby'">
-        <div class="full-width row align-items-center">
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">MACHINE</h6>
-              <div>
-                {{ selectedItem.details.year }} {{ selectedItem.details.manufacturerName }}
-                {{ selectedItem.details.model }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">OPERATING</h6>
-              <div>
-                {{
-                  selectedItem.details.activeOperatingAdjustedRate | currency
-                }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">HOURS</h6>
-              <div>{{ selectedItem.details.hours | number: '.1-2' }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">TRANSPORT</h6>
-              <div>{{ selectedItem.details.transport | currency }}</div>
-            </div>
-          </div>
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">
-                {{ selectedItem.details.description }}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'equipmentRental'">
-        <div class="full-width row align-items-center">
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">MACHINE</h6>
-              <div>
-                {{ selectedItem.details.year }} {{ selectedItem.details.manufacturerName }}
-                {{ selectedItem.details.model }}
-                {{ selectedItem.details.subtype }}
-                {{ selectedItem.details.sizeClassName }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">INVOICE</h6>
-              <div>{{ selectedItem.details.invoice | currency }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">TRANSPORT</h6>
-              <div>
-                {{ selectedItem.details.transport || 0 | currency }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">OTHER</h6>
-              <div>{{ selectedItem.details.other || 0 | currency }}</div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'labor'">
-        <div class="full-width row align-items-center">
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">EMPLOYEE</h6>
-              <div>
-                {{ selectedItem.details.employee.lastName }},
-                {{ selectedItem.details.employee.firstName }}
-              </div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">TRADE</h6>
-              <div>{{ selectedItem.details.trade }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">RATE</h6>
-              <div>{{ selectedItem.details.rate | currency }}</div>
-            </div>
-          </div>
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">TIME X 1</h6>
-              <div>{{ selectedItem.details.time1 | number: '.1-2' }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">TIME X 1.5</h6>
-              <div>{{ selectedItem.details.time15 | number: '.1-2' }}</div>
-            </div>
-            <div class="column flex-wrap px-2">
-              <h6 class="row-details">TIME X 2</h6>
-              <div>{{ selectedItem.details.time2 | number: '.1-2' }}</div>
-            </div>
-          </div>
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">
-                {{ selectedItem.details.description }}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="selectedItem.type === 'subcontractor'">
-        <div class="full-width row align-items-center">
-          <div class="full-width row align-items-center">
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">SUBCONTRACTOR</h6>
-              <div>{{ selectedItem.details.subcontractor }}</div>
-            </div>
-            <div class="column flex-wrap px-1">
-              <h6 class="row-details">DESCRIPTION</h6>
-              <div [matTooltip]="selectedItem.details.description">
-                {{ selectedItem.details.description }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
+            <div class="pl-1 column flex-wrap col-6">
+              <h4 class="amount-label">
+                <strong>Amount Approved:&nbsp;&nbsp;</strong>
+              </h4>
 
-      <div *ngIf="modalType === 'ApprovedWithChange'" class="column
-        align-items-center">
-        <div class="column flex-wrap">
-          <h4 class="amount-label">
-            <strong>Amount Submitted:&nbsp;&nbsp;</strong>
-          </h4>
-          <label class="amount-label amount-submitted">{{ selectedItem.amount | currency }}
-          </label>
+              <mat-form-field appearance="outline">
+                <input
+                  matInput
+                  currencyMask
+                  placeholder="Adjusted Amount"
+                  type="text"
+                  formControlName="ammountControl"
+                  required
+                />
+                <mat-error
+                  *ngIf="
+                    changeFormGroup.get('ammountControl').hasError('required')
+                  "
+                >
+                  Amount Approved is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
         </div>
-        <div class="column flex-wrap">
+        <div class="full-width mt-1">
           <h4 class="amount-label">
-            <strong>Amount Approved:&nbsp;&nbsp;</strong>
+            <strong>Reason for Adjustment:&nbsp;&nbsp;</strong>
           </h4>
-
-          <input class="amount-text" type="text" formControlName="ammountControl"
-            [(ngModel)]="selectedItem.totalAdjusted" currencyMask placeholder="Amount Approved" />
+          <mat-form-field appearance="outline" class="full-width">
+            <textarea
+              matInput
+              rows="5"
+              formControlName="reasonControl"
+            ></textarea>
+            <mat-error
+              *ngIf="changeFormGroup.get('ammountControl').hasError('required')"
+            >
+              Please enter a reason for this adjustment.
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
-      <div *ngIf="modalType === 'ApprovedAsIs'" class="w-75">
-        <div class="column pb-4 green">
-          <h4 class="amount-label">
-            <strong>Amount Submitted:&nbsp;&nbsp;</strong>
-          </h4>
-          <label class="amount-label amount-submitted">{{ selectedItem.amount | currency }}
-          </label>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="modalType === 'ApprovedWithChange'" class="full-width">
-      <h4 class="amount-label" [ngClass]="amountChanged >= 0 ? 'green' : 'red'">
-        <strong>Change Amount:&nbsp;&nbsp;</strong>{{ amountChanged | currency }}
-      </h4>
-
-      <h4 class="amount-label"><strong>Change Reason:&nbsp;&nbsp;</strong></h4>
-      <textarea id="changeReason" rows="5" [(ngModel)]="selectedItem.changeReason"
-        formControlName="reasonControl"></textarea>
-    </div>
-  </form>
+    </form>
+  </div>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
+<mat-dialog-actions *ngIf="changeFormGroup" align="end">
   <button class="btn btn-outline-danger" (click)="cancel()">Cancel</button>
-  <button class="btn btn-primary mr-1" *ngIf="modalType === 'ApprovedAsIs'" (click)="confirm()">
-    {{ modalSubmitLabel }}
-  </button>
-  <button class="btn btn-primary mr-1" *ngIf="modalType === 'ApprovedWithChange'" (click)="confirm()"
-    [disabled]="!changeFormGroup.valid">
+  <button
+    class="btn btn-primary mr-1"
+    (click)="confirm()"
+    [disabled]="!changeFormGroup.valid"
+  >
     {{ modalSubmitLabel }}
   </button>
 </mat-dialog-actions>

@@ -79,12 +79,31 @@ clr-dg-row {
     font-size: 13px !important;
 }
 
+.approvewedit {
+    margin-top: -6px !important;
+}
+
 .mat-icon-position {}
 
 .badge-position {
     position: relative;
     left: 35px;
     top: -6px;
+}
+
+input[type='button']:disabled,
+input[type='date']:disabled,
+input[type='datetime-local']:disabled,
+input[type='email']:disabled,
+input[type='number']:disabled,
+input[type='password']:disabled,
+input[type='submit']:disabled,
+input[type='tel']:disabled,
+input[type='text']:disabled,
+input[type='time']:disabled,
+input[type='url']:disabled,
+textarea:disabled {
+    opacity: 1 !important;
 }
 
 .notify-badge {

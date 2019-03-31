@@ -1,3 +1,56 @@
 .pt-6px {
-  padding-top: 6px;
+    padding-top: 6px;
+}
+
+input[type='date'],
+input[type='date']:not([readonly]):focus,
+input[type='datetime-local'],
+input[type='datetime-local']:not([readonly]):focus,
+input[type='email'],
+input[type='email']:not([readonly]):focus,
+input[type='number'],
+input[type='number']:not([readonly]):focus,
+input[type='password'],
+input[type='password']:not([readonly]):focus,
+input[type='tel'],
+input[type='tel']:not([readonly]):focus,
+input[type='text'],
+input[type='text']:not([readonly]):focus,
+input[type='time'],
+input[type='time']:not([readonly]):focus,
+input[type='url'],
+textarea,
+input[type='url']:not([readonly]):focus {
+    border: none !important;
+}
+
+input[type='date']:not([readonly]),
+input[type='datetime-local']:not([readonly]),
+input[type='email']:not([readonly]),
+input[type='number']:not([readonly]),
+input[type='password']:not([readonly]),
+input[type='tel']:not([readonly]),
+input[type='text']:not([readonly]),
+input[type='time']:not([readonly]),
+input[type='url']:not([readonly]), textarea {
+    background: inherit !important;
+}
+
+textarea:focus {
+    box-shadow: none !important;
+}
+
+input[type='button']:disabled,
+input[type='date']:disabled,
+input[type='datetime-local']:disabled,
+input[type='email']:disabled,
+input[type='number']:disabled,
+input[type='password']:disabled,
+input[type='submit']:disabled,
+input[type='tel']:disabled,
+input[type='text']:disabled,
+input[type='time']:disabled,
+input[type='url']:disabled,
+textarea:disabled {
+    opacity: 1 !important;
 }

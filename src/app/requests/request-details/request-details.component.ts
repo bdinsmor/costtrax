@@ -27,6 +27,8 @@ import { ProjectsService } from '../../projects/projects.service';
 import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
+import { RequestRejectDialogComponent } from '../dialogs/request-reject-dialog.component';
+import { RequestReworkDialogComponent } from '../dialogs/request-rework-dialog.component';
 import { RequestSubmitDialogComponent } from '../dialogs/request-submit-dialog.component';
 import { RequestsService } from '../requests.service';
 import { RequestApproveDialogComponent } from './../dialogs/request-approve-dialog.component';
@@ -48,7 +50,6 @@ export class RequestDetailsComponent
   lineItemFormGroup: FormGroup;
   notesFormGroup: FormGroup;
   accountSynced = false;
-  project: Project;
   request: Request;
   lineItems: Map<String, Item[]>;
   selectedItems: Item[];
@@ -118,23 +119,19 @@ export class RequestDetailsComponent
     if (id) {
       this.requestsService.getRequest(id).subscribe(
         (r: Request) => {
-          this.projectsService
-            .getProject(r.projectId)
-            .subscribe((p: Project) => {
-              this.project = p;
-              r.project = p;
-              this.request = r;
-              this.notesFormGroup = this.formBuilder.group({
-                notes: new FormControl(r.notes),
-                dateRange: new FormControl(r.dateRange, Validators.required)
-              });
-              this.titleService.setTitle('Request ' + r.oneUp + ': ' + p.name);
-              this.breadcrumbService.addProject(p.id, p.name);
-              this.breadcrumbService.addRequest(r.id, r.oneUp);
-              this.checkPermissions();
-              this.buildItemTypes();
-              this.changeDetector.detectChanges();
-            });
+          this.request = r;
+          this.notesFormGroup = this.formBuilder.group({
+            notes: new FormControl(r.notes),
+            dateRange: new FormControl(r.dateRange, Validators.required)
+          });
+          this.titleService.setTitle(
+            'Request ' + r.oneUp + ': ' + r.projectName
+          );
+          this.breadcrumbService.addProject(r.projectId, r.projectName);
+          this.breadcrumbService.addRequest(r.id, r.oneUp);
+          this.checkPermissions();
+          this.buildItemTypes();
+          this.changeDetector.detectChanges();
         },
         err => {}
       );
@@ -149,24 +146,16 @@ export class RequestDetailsComponent
 
   approveAll(event) {}
 
-  findSelectedProject(projects: Project[], project: Project) {
-    for (let i = 0; i < projects.length; i++) {
-      if (project.id === projects[i].id) {
-        return projects[i];
-      }
-    }
-    return '';
-  }
   checkPermissions() {
     let scrollAdded = false;
     this.canManageRequest = false;
     this.canSubmitRequest = false;
     this.canManageProject = false;
-    if (!this.project) {
+    if (!this.request.projectRoles) {
       return;
     }
-    for (let i = 0; i < this.project.roles.length; i++) {
-      const role = this.project.roles[i];
+    for (let i = 0; i < this.request.projectRoles.length; i++) {
+      const role = this.request.projectRoles[i];
       if (role === 'ProjectApprover') {
         this.canManageRequest = true;
         if (!scrollAdded && this.request.isComplete()) {
@@ -220,14 +209,16 @@ export class RequestDetailsComponent
 
   exportRecapitulation() {
     this.requestsService
-      .export(this.project.id, this.project.name, [this.request.id])
+      .export(this.request.projectId, this.request.projectName, [
+        this.request.id
+      ])
       .subscribe((response: any) => {});
   }
 
   viewRecapitulation() {
     const dialogRef = this.dialog.open(RequestRecapitulationDialogComponent, {
       width: '95vw',
-      data: { project: this.project, request: this.request }
+      data: { request: this.request }
     });
     dialogRef.afterClosed().subscribe(result => {});
   }
@@ -293,8 +284,8 @@ export class RequestDetailsComponent
           .subscribe(
             (response: any) => {
               this.openSnackBar('Request Submitted', 'ok', 'OK');
-              if (this.project) {
-                this.router.navigate(['../projects', this.project.id]);
+              if (this.request.projectId) {
+                this.router.navigate(['../projects', this.request.projectId]);
               } else {
                 this.router.navigate(['../home']);
               }
@@ -322,35 +313,18 @@ export class RequestDetailsComponent
   }
   removeLineItem() {}
 
-  onProjectChange(event: any) {
-    this.project = this.requestFormGroup.get('selectedProjectControl')
-      .value as Project;
-
-    if (!this.project) {
-      this.request.itemsByType = [];
-      this.request.lineItems = [];
-      this.buildItemTypes();
-      this.changeDetector.detectChanges();
-      return;
-    }
-    this.checkPermissions();
-    this.request = new Request({});
-
-    this.request.status = 'DRAFT';
-  }
-
   buildItemTypes() {
     this.itemTypes = [];
-    if (!this.project) {
+    if (!this.request.adjustments) {
       return;
     }
-    if (this.project.adjustments.labor.enabled) {
+    if (this.request.adjustments.labor.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'labor', label: 'Labor', sortOrder: 0 }
       ];
     }
-    if (this.project.adjustments.equipmentActive.enabled) {
+    if (this.request.adjustments.equipmentActive.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -360,7 +334,7 @@ export class RequestDetailsComponent
         }
       ];
     }
-    if (this.project.adjustments.equipmentStandby.enabled) {
+    if (this.request.adjustments.equipmentStandby.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -370,7 +344,7 @@ export class RequestDetailsComponent
         }
       ];
     }
-    if (this.project.adjustments.equipmentRental.enabled) {
+    if (this.request.adjustments.equipmentRental.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         {
@@ -381,19 +355,19 @@ export class RequestDetailsComponent
       ];
     }
 
-    if (this.project.adjustments.material.enabled) {
+    if (this.request.adjustments.material.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'material', label: 'Material', sortOrder: 4 }
       ];
     }
-    if (this.project.adjustments.other.enabled) {
+    if (this.request.adjustments.other.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'other', label: 'Other', sortOrder: 6 }
       ];
     }
-    if (this.project.adjustments.subcontractor.enabled) {
+    if (this.request.adjustments.subcontractor.enabled) {
       this.itemTypes = [
         ...this.itemTypes,
         { value: 'subcontractor', label: 'Subcontractor', sortOrder: 5 }
@@ -421,16 +395,10 @@ export class RequestDetailsComponent
   refreshRequest() {
     this.requestsService.getRequest(this.request.id).subscribe(
       (r: Request) => {
-        this.projectsService
-          .getProject(this.request.projectId)
-          .subscribe((p: Project) => {
-            this.project = p;
-            r.project = p;
-            this.request = r;
-            this.checkPermissions();
-            this.buildItemTypes();
-            this.changeDetector.detectChanges();
-          });
+        this.request = r;
+        this.checkPermissions();
+        this.buildItemTypes();
+        this.changeDetector.detectChanges();
       },
       err => {}
     );
@@ -443,6 +411,53 @@ export class RequestDetailsComponent
 
   itemsChanged(event: any) {}
 
+  reworkRequest() {
+    const dialogRef = this.dialog.open(RequestReworkDialogComponent, {
+      width: '50vw'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.requestsService.rework(this.request.id).subscribe(
+          (response: any) => {
+            this.openSnackBar('Request Returned to Draft', 'ok', 'OK');
+            this.router.navigate(['../projects', this.request.projectId]);
+          },
+          err => {
+            this.openSnackBar(
+              'An error occurred trying to re-work request',
+              'ok',
+              'OK'
+            );
+          }
+        );
+        this.changeDetector.detectChanges();
+      }
+    });
+  }
+  rejectRequest() {
+    const dialogRef = this.dialog.open(RequestRejectDialogComponent, {
+      width: '50vw'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        this.requestsService.reject(this.request.id).subscribe(
+          (response: any) => {
+            this.openSnackBar('Request Rejected', 'ok', 'OK');
+            this.refreshRequest();
+          },
+          err => {
+            this.openSnackBar(
+              'An error occurred trying to reject request',
+              'ok',
+              'OK'
+            );
+          }
+        );
+        this.changeDetector.detectChanges();
+      }
+    });
+  }
+
   approveRequest() {
     const dialogRef = this.dialog.open(RequestApproveDialogComponent, {
       data: {
@@ -453,7 +468,7 @@ export class RequestDetailsComponent
       if (result && result.success) {
         this.requestsService.approve(this.request.id).subscribe(
           (response: any) => {
-            this.openSnackBar(' Request Approved', 'ok', 'OK');
+            this.openSnackBar('Request Approved', 'ok', 'OK');
             this.refreshRequest();
           },
           err => {

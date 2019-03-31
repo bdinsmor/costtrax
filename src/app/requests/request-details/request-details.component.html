@@ -66,7 +66,9 @@
       </div>
       <div class="col-5 column pl-2">
         <div class="row no-row-margins">
-          <h2 class="strong project-label no-top-margin">{{ project.name }}</h2>
+          <h2 class="strong project-label no-top-margin">
+            {{ request.projectName }}
+          </h2>
         </div>
         <div class="hidden-lg-up column no-row-margins pt-1">
           <div class="row no-row-margins">
@@ -103,7 +105,7 @@
             </h3>
           </div>
         </div>
-        <div *ngIf="request && project" class="column align-items-center">
+        <div *ngIf="request" class="column align-items-center">
           <h3 class="no-top-margin strong row-details pt-1">Notes:</h3>
 
           <div class="full-width">
@@ -144,34 +146,34 @@
           class="table totals-table table-compact"
         >
           <tbody>
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td class="left">Labor Total</td>
               <td class="left">{{ request.laborTotal | currency }}</td>
               <td></td>
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">Equipment Total</td>
               <td class="left">{{ request.equipmentTotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.material.enabled">
+            <tr *ngIf="request.adjustments.material.enabled">
               <td class="left">Materials Total</td>
               <td class="left">{{ request.materialTotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled"></tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled">
+            <tr *ngIf="request.adjustments.subcontractor.enabled"></tr>
+            <tr *ngIf="request.adjustments.subcontractor.enabled">
               <td class="left">Subcontractor Total</td>
               <td class="left">{{ request.subcontractorTotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.other.enabled">
+            <tr *ngIf="request.adjustments.other.enabled">
               <td class="left">Other Total</td>
               <td class="left">{{ request.otherTotal | currency }}</td>
               <td></td>
@@ -211,6 +213,23 @@
           <div
             *ngIf="
               request &&
+              request.status.toLowerCase() === 'rejected' &&
+              canSubmitRequest
+            "
+            class="row mt-1 mx-auto no-row-margins"
+          >
+            <button
+              type="button"
+              (click)="reworkRequest()"
+              class="btn btn-primary ripple"
+            >
+            <clr-icon shape="undo"></clr-icon>
+              Re-Work
+            </button>
+          </div>
+          <div
+            *ngIf="
+              request &&
               request.status.toLowerCase() !== 'draft' &&
               canManageRequest
             "
@@ -221,8 +240,16 @@
               *ngIf="request.status.toLowerCase() === 'pending'"
               (click)="approveRequest()"
               class="btn btn-primary ripple"
-            >
-              Approve Request
+            ><clr-icon shape="check"></clr-icon>
+              Approve
+            </button>
+            <button
+              type="button"
+              *ngIf="request.status.toLowerCase() === 'pending'"
+              (click)="rejectRequest()"
+              class="btn btn-danger ripple"
+            ><clr-icon shape="times"></clr-icon>
+              Reject
             </button>
           </div>
           <div
@@ -256,7 +283,6 @@
               [disabled]="
                 signatureFormGroup.invalid ||
                 notesFormGroup.hasError('notValid') ||
-                !project ||
                 !request.hasLineItems() ||
                 !request.isDraft()
               "
@@ -290,22 +316,6 @@
               <clr-icon class="hidden-md-up" shape="times"></clr-icon>
               <span class="hidden-sm-down">Delete</span>
             </button>
-            <button
-              type="button"
-              *ngIf="canManageRequest"
-              [disabled]="
-                !canManageRequest || request.status.toLowerCase() === 'approved'
-              "
-              (click)="approveRequest()"
-              class="btn btn-primary"
-              color="primary"
-            >
-              Approve Request
-            </button>
-            <!--
-              <div class="spacer"></div>
-              <button *ngIf="!printingInvoice" class="btn btn-link" (click)="captureScreen()">Print to PDF</button>
-            -->
           </div>
         </div>
       </div>
@@ -339,7 +349,7 @@
         </div>
 
         <h5 class="px-1 strong project-label no-top-margin">
-          {{ project.name }} | Request #{{ request.oneUp }} |
+          {{ request.projectName }} | Request #{{ request.oneUp }} |
         </h5>
         <h5 class="no-top-margin row-details">
           {{ request.dateRange | dates: 'MM/dd/yy' }}
@@ -376,13 +386,16 @@
         [requestStartDate]="request.startDate"
         (itemsChanged)="itemsChanged($event)"
         [requestId]="request.id"
-        [project]="project"
+        [projectId]="request.projectId"
+        [adjustments]="request.adjustments"
+        [projectRoles]="request.projectRoles"
+        [requestStatus]="request.status"
       ></app-line-items>
     </div>
   </div>
 
   <div
-    *ngIf="request && project"
+    *ngIf="request"
     class="d-flex mt-1 mb-4
     flex-row justify-content-around
     full-width"
@@ -396,15 +409,18 @@
           (click)="approveRequest()"
           class="btn btn-primary"
           color="primary"
-        >
-          Approve Request
+        ><clr-icon shape="check"></clr-icon>
+          Approve
+        </button>
+        <button type="button" *ngIf="request.status.toLowerCase() === 'pending' && canManageRequest" (click)="rejectRequest()" class="btn btn-danger"
+          ><clr-icon shape="times"></clr-icon>
+          Reject
         </button>
         <button
           *ngIf="canSubmitRequest"
           [disabled]="
             signatureFormGroup.invalid ||
             notesFormGroup.hasError('notValid') ||
-            !project ||
             !request.hasLineItems() ||
             !request.isDraft()
           "
@@ -413,58 +429,56 @@
           btn-success mr-1"
           (click)="submitRequest()"
         >
-          Submit Request
+          Submit
         </button>
       </div>
       <div class="full-width">
         <table id="invoice-table" class="table table-compact">
           <tbody>
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td class="left strong" colspan="3">Labor</td>
             </tr>
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td class="left">Labor</td>
               <td class="left">{{ request.laborSubtotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td class="left">Fringe Benefits</td>
               <td class="left">{{ request.laborBenefitsTotal | currency }}</td>
               <td></td>
             </tr>
 
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td class="left">
-                Labor Markup ({{
-                  project.adjustments.labor.markupPercent | percent
-                }})
+                Labor Markup ({{ request.adjustments.labor.markup | percent }})
               </td>
               <td class="left">{{ request.laborMarkup | currency }}</td>
               <td></td>
             </tr>
 
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td class="left">Labor Total</td>
               <td class="left">{{ request.laborTotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.labor.enabled">
+            <tr *ngIf="request.adjustments.labor.enabled">
               <td colspan="4"><br /></td>
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left strong" colspan="3">Equipment</td>
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">Active Subtotal</td>
@@ -475,14 +489,14 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">
                 Active Markup ({{
-                  project.adjustments.equipmentActive.markupPercent | percent
+                  request.adjustments.equipmentActive.markup | percent
                 }})
               </td>
               <td class="left">
@@ -492,9 +506,9 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">Standby Subtotal</td>
@@ -505,14 +519,14 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">
                 Standby Markup ({{
-                  project.adjustments.equipmentStandby.markupPercent | percent
+                  request.adjustments.equipmentStandby.markup | percent
                 }})
               </td>
               <td class="left">
@@ -522,9 +536,9 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">Rental Subtotal</td>
@@ -535,14 +549,14 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">
                 Rental Markup ({{
-                  project.adjustments.equipmentRental.markupPercent | percent
+                  request.adjustments.equipmentRental.markup | percent
                 }})
               </td>
               <td class="left">
@@ -552,9 +566,9 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td class="left">Equipment Total</td>
@@ -563,67 +577,67 @@
             </tr>
             <tr
               *ngIf="
-                project.adjustments.equipmentActive.enabled ||
-                project.adjustments.equipmentStandby.enabled ||
-                project.adjustments.equipmentRental.enabled
+                request.adjustments.equipmentActive.enabled ||
+                request.adjustments.equipmentStandby.enabled ||
+                request.adjustments.equipmentRental.enabled
               "
             >
               <td colspan="4"><br /></td>
             </tr>
 
-            <tr *ngIf="project.adjustments.material.enabled">
+            <tr *ngIf="request.adjustments.material.enabled">
               <td class="left strong" colspan="3">Materials</td>
             </tr>
-            <tr *ngIf="project.adjustments.material.enabled">
+            <tr *ngIf="request.adjustments.material.enabled">
               <td class="left">Materials Subtotal</td>
               <td class="left">{{ request.materialSubtotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.material.enabled">
+            <tr *ngIf="request.adjustments.material.enabled">
               <td class="left">
                 Materials Markup ({{
-                  project.adjustments.material.markupPercent | percent
+                  request.adjustments.material.markup | percent
                 }})
               </td>
               <td class="left">{{ request.materialMarkup | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.material.enabled">
+            <tr *ngIf="request.adjustments.material.enabled">
               <td class="left">Materials Total</td>
               <td class="left">{{ request.materialTotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.material.enabled">
+            <tr *ngIf="request.adjustments.material.enabled">
               <td colspan="4"><br /></td>
             </tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled">
+            <tr *ngIf="request.adjustments.subcontractor.enabled">
               <td class="left strong" colspan="3">Subcontractor</td>
             </tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled">
+            <tr *ngIf="request.adjustments.subcontractor.enabled">
               <td class="left">Subcontractor Subtotal</td>
               <td class="left">
                 {{ request.subcontractorSubtotal | currency }}
               </td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled">
+            <tr *ngIf="request.adjustments.subcontractor.enabled">
               <td class="left">
                 Subcontractor Markup ({{
-                  project.adjustments.subcontractor.markupPercent | percent
+                  request.adjustments.subcontractor.markup | percent
                 }})
               </td>
               <td class="left">{{ request.subcontractorMarkup | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled">
+            <tr *ngIf="request.adjustments.subcontractor.enabled">
               <td class="left">Subcontractor Total</td>
               <td class="left">{{ request.subcontractorTotal | currency }}</td>
               <td></td>
             </tr>
-            <tr *ngIf="project.adjustments.subcontractor.enabled">
+            <tr *ngIf="request.adjustments.subcontractor.enabled">
               <td colspan="4"><br /></td>
             </tr>
-            <tr *ngIf="project.adjustments.other.enabled">
+            <tr *ngIf="request.adjustments.other.enabled">
               <td class="left">Other Total</td>
               <td class="left">{{ request.otherTotal | currency }}</td>
               <td></td>

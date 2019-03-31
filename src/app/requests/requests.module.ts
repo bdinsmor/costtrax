@@ -16,6 +16,8 @@ import { RequestApproveDialogComponent } from './dialogs/request-approve-dialog.
 import { RequestCloneDialogComponent } from './dialogs/request-clone-dialog.component';
 import { RequestDeleteDialogComponent } from './dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from './dialogs/request-recapitulation-dialog.component';
+import { RequestRejectDialogComponent } from './dialogs/request-reject-dialog.component';
+import { RequestReworkDialogComponent } from './dialogs/request-rework-dialog.component';
 import { RequestSubmitDialogComponent } from './dialogs/request-submit-dialog.component';
 import { RequestDetailsComponent } from './request-details/request-details.component';
 import { RequestsComponent } from './requests.component';
@@ -41,7 +43,9 @@ registerLocaleData(en);
     RequestsComponent,
     RequestCloneDialogComponent,
     RequestSubmitDialogComponent,
+    RequestRejectDialogComponent,
     RequestApproveDialogComponent,
+    RequestReworkDialogComponent,
     RequestDeleteDialogComponent,
     RequestRecapitulationDialogComponent,
     RequestDetailsComponent
@@ -61,6 +65,8 @@ registerLocaleData(en);
     RequestDetailsComponent,
     RequestCloneDialogComponent,
     RequestSubmitDialogComponent,
+    RequestRejectDialogComponent,
+    RequestReworkDialogComponent,
     RequestApproveDialogComponent,
     RequestDeleteDialogComponent,
     RequestRecapitulationDialogComponent,
@@ -75,6 +81,8 @@ registerLocaleData(en);
     RequestRecapitulationDialogComponent,
     RequestCloneDialogComponent,
     RequestSubmitDialogComponent,
+    RequestRejectDialogComponent,
+    RequestReworkDialogComponent,
     RequestApproveDialogComponent,
     RequestDeleteDialogComponent,
     RequestDetailsComponent

@@ -1,33 +1,83 @@
 <h3 mat-dialog-title>Add Model</h3>
 <mat-dialog-content>
-  <div *ngIf="modelForm" [formGroup]="modelForm" class="px-2 pb-2 full-width justify-content-center
-    align-items-center">
+  <div
+    *ngIf="modelForm"
+    [formGroup]="modelForm"
+    class="px-2 pb-2 full-width justify-content-center
+    align-items-center"
+  >
     <div>
       <h4 class="pb-1">Manufacturer:</h4>
-      <ng-select appendTo="body" [items]="manufacturerResults$ | async" bindLabel="manufacturerName"
-        bindValue="manufacturerId" placeholder="Choose Manufacturer" clearAllText="Clear" [closeOnSelect]="true"
-        [hideSelected]="true" [loading]="manufacturerLoading" (clear)="onMakeClear()" (remove)="onMakeRemove($event)"
-        [typeahead]="manufacturerInput$" formControlName="manufacturer">
+      <ng-select
+        appendTo="body"
+        [items]="manufacturerResults$ | async"
+        bindLabel="manufacturerName"
+        bindValue="manufacturerId"
+        placeholder="Choose Manufacturer"
+        clearAllText="Clear"
+        [closeOnSelect]="true"
+        [hideSelected]="true"
+        [loading]="manufacturerLoading"
+        (clear)="onMakeClear()"
+        (remove)="onMakeRemove($event)"
+        [typeahead]="manufacturerInput$"
+        formControlName="manufacturer"
+      >
       </ng-select>
     </div>
     <div class="row no-margin-left">
       <div class="w-50">
         <h4 class="pb-1">Model:</h4>
-        <ng-select appendTo="body" [items]="modelResults$ | async" bindLabel="model" placeholder="Select Model"
-          clearAllText="Clear" [closeOnSelect]="true" [hideSelected]="true" [loading]="modelLoading"
-          [typeahead]="modelInput$" (remove)="onModelRmove($event)" (clear)="onModelClear()" formControlName="model">
+        <ng-select
+          appendTo="body"
+          [items]="modelResults$ | async"
+          bindLabel="model"
+          placeholder="Select Model"
+          clearAllText="Clear"
+          [closeOnSelect]="true"
+          [hideSelected]="true"
+          [loading]="modelLoading"
+          [typeahead]="modelInput$"
+          (remove)="onModelRmove($event)"
+          (clear)="onModelClear()"
+          formControlName="model"
+        >
         </ng-select>
       </div>
       <div class="px-2 w-50">
         <h4 class="pb-1">Year:</h4>
-        <ng-select *ngIf="!savedAssets" [items]="item.details.years" dropdownPosition="top" appendTo="body"
-          bindLabel="year" bindValue="year" placeholder="Year" clearAllText="Clear" [closeOnSelect]="true"
-          [clearable]="true" [hideSelected]="true" (remove)="onYearRemove($event)" formControlName="year">
+        <ng-select
+          *ngIf="!savedAssets"
+          [items]="item.details.years"
+          dropdownPosition="top"
+          appendTo="body"
+          bindLabel="year"
+          bindValue="year"
+          placeholder="Year"
+          clearAllText="Clear"
+          [closeOnSelect]="true"
+          [clearable]="true"
+          [hideSelected]="true"
+          (remove)="onYearRemove($event)"
+          formControlName="year"
+        >
         </ng-select>
-        <ng-select *ngIf="savedAssets" [items]="equipment.years" dropdownPosition="top" appendTo="body" bindLabel="year"
-          bindValue="year" placeholder="Year" clearAllText="Clear" (remove)="onYearRemove($event)"
-          [closeOnSelect]="true" [clearable]="true" [hideSelected]="true" (clear)="onYearClear()"
-          formControlName="year">
+        <ng-select
+          *ngIf="savedAssets"
+          [items]="equipment.years"
+          dropdownPosition="top"
+          appendTo="body"
+          bindLabel="year"
+          bindValue="year"
+          placeholder="Year"
+          clearAllText="Clear"
+          (remove)="onYearRemove($event)"
+          [closeOnSelect]="true"
+          [clearable]="true"
+          [hideSelected]="true"
+          (clear)="onYearClear()"
+          formControlName="year"
+        >
         </ng-select>
       </div>
     </div>
@@ -42,38 +92,58 @@
         </h5>
       </div>
 
-      <h6 class="disabled-text" *ngIf="
+      <h6
+        class="disabled-text"
+        *ngIf="
           (savedAssets && (!equipment || equipment.year)) ||
           (((!savedAssets && (!item || !item.details.year)) ||
             !configurations) &&
             !loading)
-        ">
+        "
+      >
         Please select a manufacturer, model, and year to view available
         configurations.
       </h6>
       <h6 *ngIf="!loading && configurations && configurations.count === 0">
         No configurations found for this model.
       </h6>
-      <clr-datagrid *ngIf="!loading && configurations && configurations.count > 0" class="datagrid-compact"
-        #lineItemConfigurationGrid>
+      <clr-datagrid
+        *ngIf="!loading && configurations && configurations.count > 0"
+        class="datagrid-compact"
+        #lineItemConfigurationGrid
+      >
         <clr-dg-placeholder>No data found</clr-dg-placeholder>
         <clr-dg-column style="width:60px"></clr-dg-column>
-        <clr-dg-column *ngFor="let column of configurations.columns" [clrDgField]="column.name"
-          [clrDgSorted]="column.name === 'name'">
+        <clr-dg-column
+          *ngFor="let column of configurations.columns"
+          [clrDgField]="column.name"
+          [clrDgSorted]="column.name === 'name'"
+        >
           <div>{{ column.name }}</div>
         </clr-dg-column>
 
-        <clr-dg-row *clrDgItems="
+        <clr-dg-row
+          *clrDgItems="
             let configuration of configurations.results;
             let index = index
-          " [clrDgItem]="configuration">
-          <clr-dg-cell style="width:60px"><button type="button" mat-icon-button color="accent"
-              (click)="confirm(configuration)">
+          "
+          [clrDgItem]="configuration"
+        >
+          <clr-dg-cell style="width:60px"
+            ><button
+              type="button"
+              mat-icon-button
+              color="accent"
+              (click)="confirm(configuration)"
+            >
               <mat-icon color="accent">radio_button_unchecked</mat-icon>
             </button>
           </clr-dg-cell>
-          <clr-dg-cell class="padding-label-top pointer" (click)="confirm(configuration)"
-            *ngFor="let column of configurations.columns">{{ configuration[column.name] }}
+          <clr-dg-cell
+            class="configuration-padding-label-top pointer"
+            (click)="confirm(configuration)"
+            *ngFor="let column of configurations.columns"
+            >{{ configuration[column.name] }}
           </clr-dg-cell>
         </clr-dg-row>
       </clr-datagrid>
