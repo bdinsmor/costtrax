@@ -523,7 +523,8 @@ export class Item {
     if (
       this.type === 'equipmentRental' &&
       this.details &&
-      this.details.rentalAverages
+      this.details.rentalAverages &&
+      this.details.rentalConversion
     ) {
       this.details.dailyRate = 0;
       if (this.details.rentalAverages.dailyRateState) {
@@ -674,7 +675,7 @@ export class Item {
       this.totalAdjusted = data.totalAdjusted || 0;
       this.subtotalApproved = data.subtotalApproved || 0;
       this.amountAdjusted =
-        this.subtotalApproved > 0 && +this.subtotal !== +this.subtotalApproved;
+        this.subtotal > 0 && +this.subtotal !== +this.subtotalApproved;
 
       this.approvedBy = data.approvedBy || '';
       this.approvedOn = data.approvedOn || new Date();
@@ -1598,10 +1599,14 @@ export class Request {
       this.laborTotal = this.laborSubtotal + this.laborMarkup;
       this.otherMarkup = +this.otherSubtotal * +this.adjustments.other.markup;
       this.otherTotal = +this.otherMarkup + +this.otherSubtotal;
-      this.subcontractorMarkup =
-        +this.subcontractorSubtotal * +this.adjustments.subcontractor.markup;
       this.materialMarkup =
         +this.materialSubtotal * +this.adjustments.material.markup;
+      this.materialTotal = +this.materialMarkup + +this.materialSubtotal;
+
+      this.subcontractorMarkup =
+        +this.subcontractorSubtotal * +this.adjustments.subcontractor.markup;
+      this.subcontractorTotal =
+        +this.subcontractorMarkup + +this.subcontractorSubtotal;
       this.equipmentTotal =
         this.equipmentActiveSubtotal +
         this.equipmentActiveMarkup +
