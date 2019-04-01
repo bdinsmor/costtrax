@@ -181,12 +181,10 @@ export class RequestsService {
       );
   }
 
-  submitRequest(requestId: string, eSig: string) {
+  submitRequest(requestId: string, updates: any) {
     return this.http.put(
       environment.serverUrl + '/request/' + requestId + '/submit',
-      {
-        eSig: eSig
-      }
+      updates
     );
   }
 

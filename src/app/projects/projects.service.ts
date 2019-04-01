@@ -93,9 +93,9 @@ export class ProjectsService {
     );
   }
 
-  updateProject(project: any) {
+  updateProject(projectId: string, project: any) {
     return this.http.put(
-      environment.serverUrl + '/project/' + project.id,
+      environment.serverUrl + '/project/' + projectId,
       project
     );
   }

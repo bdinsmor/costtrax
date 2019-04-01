@@ -57,7 +57,6 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   draftCosts = true;
   pendingCosts = true;
   completeCosts = true;
-  requestingOrgs: string[] = [];
 
   activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
   standbyFormulas = [{ name: '50OWNER', label: '50% Ownership Cost' }];
@@ -96,6 +95,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
         } else {
           this.accountSynced = false;
         }
+        this.accountSynced = true;
         this.changeDetector.detectChanges();
       });
 
@@ -135,7 +135,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
     // Add our fruit
     if ((value || '').trim()) {
-      this.requestingOrgs.push(value);
+      this.project.meta.requestingOrgs.push(value);
     }
 
     // Reset the input value
@@ -145,10 +145,10 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   }
 
   remove(value): void {
-    const index = this.requestingOrgs.indexOf(value);
+    const index = this.project.meta.requestingOrgs.indexOf(value);
 
     if (index >= 0) {
-      this.requestingOrgs.splice(index, 1);
+      this.project.meta.requestingOrgs.splice(index, 1);
     }
   }
 
@@ -208,11 +208,11 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
         name: formData.projectName,
         description: formData.projectInstructions,
         paymentTerms: this.project.paymentTerms,
-        requestingOrgs: this.requestingOrgs
+        requestingOrgs: this.project.meta.requestingOrgs
       }
     };
 
-    this.projectsService.updateProject(projectData).subscribe(
+    this.projectsService.updateProject(this.project.id, projectData).subscribe(
       (response: any) => {
         this.openSnackBar('Project Saved', 'ok', 'OK');
       },
@@ -249,6 +249,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       this.project = data;
       this.project.users = data.users;
       this.project.requestors = data.requestors;
+      this.revertChanges();
       this.changeDetector.markForCheck();
     });
   }
@@ -352,7 +353,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
           disabled: true
         }),
         activeMarkup: new FormControl({
-          value: this.project.adjustments.equipmentActive.markup,
+          value: this.project.adjustments.equipmentActive.markupPercent,
           disabled: true
         }),
         standbyFormula: new FormControl({
@@ -360,7 +361,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
           disabled: true
         }),
         standbyMarkup: new FormControl({
-          value: this.project.adjustments.equipmentStandby.markup,
+          value: 100 * +this.project.adjustments.equipmentStandby.markup,
           disabled: true
         }),
         activeRegionalCheck: new FormControl({
@@ -374,31 +375,31 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
           disabled: true
         }),
         rentalMarkup: new FormControl({
-          value: this.project.adjustments.equipmentRental.markup,
+          value: 100 * +this.project.adjustments.equipmentRental.markup,
           disabled: true
         }),
         activeOwnershipCost: new FormControl({
-          value: this.project.adjustments.equipmentActive.ownership,
+          value: 100 * +this.project.adjustments.equipmentActive.ownership,
           disabled: true
         }),
         activeOperatingCost: new FormControl({
-          value: this.project.adjustments.equipmentActive.operating,
+          value: 100 * +this.project.adjustments.equipmentActive.operating,
           disabled: true
         }),
         laborMarkup: new FormControl({
-          value: this.project.adjustments.labor.markup,
+          value: 100 * +this.project.adjustments.labor.markup,
           disabled: true
         }),
         subcontractorMarkup: new FormControl({
-          value: this.project.adjustments.subcontractor.markup,
+          value: 100 * +this.project.adjustments.subcontractor.markup,
           disabled: true
         }),
         materialMarkup: new FormControl({
-          value: this.project.adjustments.material.markup,
+          value: 100 * +this.project.adjustments.material.markup,
           disabled: true
         }),
         otherMarkup: new FormControl({
-          value: this.project.adjustments.other.markup,
+          value: 100 * +this.project.adjustments.other.markup,
           disabled: true
         }),
         activeCheck: new FormControl({

@@ -8,10 +8,16 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  Renderer2,
+  Renderer2
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
+import {
+  MatDialog,
+  MatIconRegistry,
+  MatSnackBar,
+  MatSnackBarConfig,
+  Sort
+} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
@@ -184,7 +190,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   formatterDollar = (value: number) => `$ ${value}`;
   parserDollar = (value: string) => {
     // value.replace('$', '');
-  }
+  };
 
   ngOnInit() {
     if (!this.requestStatus || this.requestStatus === '') {
@@ -203,7 +209,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
         if (message && message.eqwVerified) {
           this.accountSynced = message.eqwVerified;
         } else {
-          this.accountSynced = true;
+          this.accountSynced = false;
         }
         this.accountSynced = true;
         this.changeDetector.detectChanges();

@@ -285,14 +285,30 @@ export class RequestDetailsComponent
   }
 
   submitRequest() {
-    const dialogRef = this.dialog.open(RequestSubmitDialogComponent, {
-      width: '40vw'
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result.success) {
-        this.requestsService
-          .submitRequest(this.request.id, result.signature)
-          .subscribe(
+    if (
+      this.request.id &&
+      this.request.id !== '' &&
+      (this.notesFormGroup && !this.notesFormGroup.hasError('notValid'))
+    ) {
+      this.request.notes = this.notesFormGroup.value.notes;
+      this.request.startDate = new Date(this.notesFormGroup.value.dateRange[0]);
+      this.request.endDate = new Date(this.notesFormGroup.value.dateRange[1]);
+
+      const data = {
+        meta: {
+          eSig: '',
+          notes: this.notesFormGroup.value.notes
+        },
+        lineItems: this.request.buildLineItemsToSave()
+      };
+
+      const dialogRef = this.dialog.open(RequestSubmitDialogComponent, {
+        width: '40vw'
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result && result.success) {
+          data.meta.eSig = result.signature;
+          this.requestsService.submitRequest(this.request.id, data).subscribe(
             (response: any) => {
               this.openSnackBar('Request Submitted', 'ok', 'OK');
               if (this.request.projectId) {
@@ -305,8 +321,9 @@ export class RequestDetailsComponent
               this.openSnackBar('Request Did Not Submit', 'error', 'OK');
             }
           );
-      }
-    });
+        }
+      });
+    }
   }
 
   compareByValue(c1: Project, c2: Project): boolean {

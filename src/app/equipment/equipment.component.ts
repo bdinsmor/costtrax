@@ -81,7 +81,6 @@ export class EquipmentComponent implements OnInit, OnDestroy {
       .subscribe(message => {
         if (message) {
           this.accountSynced = message.eqwVerified;
-          this.accountSynced = true;
         } else {
           this.accountSynced = false;
         }

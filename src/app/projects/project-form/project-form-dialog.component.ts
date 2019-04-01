@@ -203,7 +203,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
       users: this.trimUsers()
     };
-  
+
     projectData.adjustments.rentalLocation = {
       stateCode: formData.rentalState.stateCode,
       stateName: formData.rentalState.stateName,

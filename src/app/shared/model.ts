@@ -1595,6 +1595,7 @@ export class Request {
         +this.equipmentRentalSubtotal *
         +this.adjustments.equipmentRental.markup;
       this.laborMarkup = +this.laborSubtotal * +this.adjustments.labor.markup;
+      this.laborTotal = this.laborSubtotal + this.laborMarkup;
       this.otherMarkup = +this.otherSubtotal * +this.adjustments.other.markup;
       this.otherTotal = +this.otherMarkup + +this.otherSubtotal;
       this.subcontractorMarkup =
@@ -1608,6 +1609,7 @@ export class Request {
         this.equipmentStandbyMarkup +
         this.equipmentRentalSubtotal +
         this.equipmentRentalMarkup;
+
       this.total =
         this.equipmentTotal +
         this.laborTotal +

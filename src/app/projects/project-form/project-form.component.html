@@ -199,7 +199,8 @@
                       <mat-form-field class="full-width" appearance="outline">
                         <mat-label>Requesting Orgs</mat-label>
                         <mat-chip-list #chipList>
-                          <mat-chip *ngFor="let org of requestingOrgs" [removable]="removable" (removed)="remove(org)">
+                          <mat-chip *ngFor="let org of project.meta.requestingOrgs" [removable]="removable"
+                            (removed)="remove(org)">
                             {{ org }}
                             <mat-icon matChipRemove>cancel</mat-icon>
                           </mat-chip>
@@ -494,10 +495,10 @@
             </div>
 
             <div class="p-20 d-flex flex-row flex-row-reverse">
-              <button class="btn btn-primary" (click)="saveProject()" [disabled]="!projectFormGroup.dirty">
+              <button class="btn btn-primary" (click)="saveProject()">
                 Save
               </button>
-              <button class="btn btn-outline-warning" (click)="revertChanges()" [disabled]="!projectFormGroup.dirty">
+              <button class="btn btn-outline-warning" (click)="reloadProject()">
                 Cancel
               </button>
             </div>
