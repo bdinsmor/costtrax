@@ -1592,10 +1592,11 @@ export class Request {
         +this.adjustments.equipmentStandby.markup;
 
       this.equipmentRentalMarkup =
-        +this.equipmentStandbySubtotal *
+        +this.equipmentRentalSubtotal *
         +this.adjustments.equipmentRental.markup;
       this.laborMarkup = +this.laborSubtotal * +this.adjustments.labor.markup;
       this.otherMarkup = +this.otherSubtotal * +this.adjustments.other.markup;
+      this.otherTotal = +this.otherMarkup + +this.otherSubtotal;
       this.subcontractorMarkup =
         +this.subcontractorSubtotal * +this.adjustments.subcontractor.markup;
       this.materialMarkup =

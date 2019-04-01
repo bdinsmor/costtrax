@@ -225,17 +225,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View
-                Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)="viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
@@ -361,17 +351,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View
-                Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)="viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
@@ -731,17 +711,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View
-                    Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)="viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
@@ -1044,17 +1014,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View
-                      Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)="viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
@@ -1291,8 +1251,8 @@
             <div>
               <div *ngIf="!submitRequests">{{ item.details.units }}</div>
 
-              <nz-input-number [(ngModel)]="item.details.units" (ngModelChange)="materialChanged(item)"
-                [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
+              <nz-input-number *ngIf="submitRequests" [(ngModel)]="item.details.units"
+                (ngModelChange)="materialChanged(item)" [nzSize]="'small'" [nzMin]="0" [nzStep]="1"></nz-input-number>
             </div>
           </clr-dg-cell>
           <clr-dg-cell>
@@ -1337,16 +1297,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)="viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
@@ -1430,16 +1381,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)=" viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
@@ -1529,16 +1471,7 @@
                   ripple:
                     submitRequests ||
                     (item.attachments && item.attachments.length > 0)
-                }" [disabled]="
-                  (manageRequests || manageProject) &&
-                  (!item.attachments || item.attachments.length === 0)
-                " [matTooltip]="
-                  manageRequests ||
-                  manageProject ||
-                  (item.attachments && item.attachments.length > 0)
-                    ? 'View Attachments'
-                    : 'Add Attachments'
-                " (click)="viewAttachments(item)">
+                }" [disabled]="!submitRequests && item.attachments.length === 0" (click)="viewAttachments(item)">
                 <span *ngIf="
                     submitRequests &&
                     (!item.attachments || item.attachments.length === 0)
