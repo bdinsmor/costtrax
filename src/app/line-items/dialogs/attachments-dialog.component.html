@@ -45,9 +45,15 @@
         Uploaded Files
       </h3>
       <mat-list-item *ngFor="let file of addedFiles; let index = index">
-        <a [href]="file.url" target="_blank" matLine class="attachment">{{
-          file.name
-        }}</a>
+        <a
+          [href]="file.url"
+          target="_blank"
+          matLine
+          class="attachment"
+          [matTooltip]="file.message"
+          [class.red]="file.status === 'error'"
+          >{{ file.name }}</a
+        >
         <button class="ripple icon-button" (click)="deleteFile(index, file)">
           <mat-icon>delete</mat-icon>
         </button>

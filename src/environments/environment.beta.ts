@@ -7,7 +7,7 @@ import env from './.env';
 export const environment = {
   production: false,
   version: env.npm_package_version,
-  attachmentURL: 'costtrax-beta.s3.amazonaws.com',
+  attachmentURL: 'costtrax-dev.s3.amazonaws.com',
   serverUrl: 'https://costtrax-beta.development.equipmentwatchapi.com',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US']

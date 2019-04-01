@@ -19,7 +19,7 @@ export class RolePipe implements PipeTransform {
     } else if (value === 'ProjectManager') {
       return 'Manager';
     } else if (value === 'AccountManager') {
-      return 'Project Admin';
+      return 'Account Manager';
     }
     return value;
   }

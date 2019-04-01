@@ -18,6 +18,7 @@ export interface Attachment {
   size: number;
   type: string;
   status: string;
+  message: string;
   tempId: string;
 }
 

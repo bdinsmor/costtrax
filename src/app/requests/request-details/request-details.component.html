@@ -109,7 +109,6 @@
           <h4 class="no-top-margin strong row-details pt-1">Notes:</h4>
 
           <div class="full-width">
-            
             <textarea
               *ngIf="canSubmitRequest && request.isDraft()"
               class="full-width muted-text"
@@ -268,8 +267,7 @@
               matTooltip="Save Request"
               [disabled]="
                 signatureFormGroup.invalid ||
-                notesFormGroup.hasError('notValid') ||
-                !project
+                notesFormGroup.hasError('notValid')
               "
               class="ripple
                         btn

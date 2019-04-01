@@ -1,21 +1,7 @@
-import {
-  HttpClient,
-  HttpEvent,
-  HttpEventType,
-  HttpHeaders,
-  HttpRequest,
-  HttpResponse
-} from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { NzMessageService, UploadXHRArgs, UploadFile } from 'ng-zorro-antd';
+import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { RequestsService } from 'src/app/requests/requests.service';
 import { Attachment, Item } from 'src/app/shared/model';
@@ -57,9 +43,25 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
       if (p.fileName && p.fileName !== '') {
         p.name = p.fileName;
       }
+      if (!p.message) {
+        p.message = 'Click to view file';
+      }
+      if (!p.status) {
+        p.status = 'complete';
+      }
 
       p.uid = p.id;
-      this.fileList.push(p as UploadFile);
+      this.addedFiles.push({
+        type: p.type,
+        size: p.size,
+        url: p.url,
+        id: p.id,
+        name: p.name,
+        uid: p.uid,
+        tempId: p.id,
+        message: p.message,
+        status: p.status
+      });
     });
   }
 
@@ -123,7 +125,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.cdr.detectChanges();
       });
-  };
+  }
 
   showUpload() {
     return { showPreviewIcon: false, showRemoveIcon: this.canDelete };
@@ -148,6 +150,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
             name: item.file.name,
             uid: item.file.uid,
             tempId: res.id,
+            message: '',
             status: 'uploading'
           });
           const headerSettings: { [name: string]: string | string[] } = {};
@@ -176,6 +179,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
                 this.addedFiles.forEach((a: Attachment) => {
                   if (a.uid === item.file.uid) {
                     a.status = 'complete';
+                    a.message = 'Click to download file';
                   }
                 });
 
@@ -183,13 +187,21 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
               }
             },
             err => {
+              console.log('got error');
               item.onError(err, item.file);
+              this.addedFiles.forEach((a: Attachment) => {
+                if (a.uid === item.file.uid) {
+                  a.status = 'error';
+                  a.message = 'File failed to upload';
+                }
+              });
             }
           );
         },
         err => {
+          console.log('got error2');
           item.onError(err, item.file);
         }
       );
-  };
+  }
 }
