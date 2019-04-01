@@ -10,6 +10,12 @@ export interface Breadcrumb {
   display: string;
 }
 
+export interface State {
+  label: string;
+  stateName: string;
+  countryCode: string;
+}
+
 export interface Attachment {
   id: string;
   uid: string;
@@ -514,7 +520,11 @@ export class Item {
   }
 
   setAmounts() {
-    if (this.type === 'equipmentRental') {
+    if (
+      this.type === 'equipmentRental' &&
+      this.details &&
+      this.details.rentalAverages
+    ) {
       this.details.dailyRate = 0;
       if (this.details.rentalAverages.dailyRateState) {
         this.details.rentalAverages.rateSuurce = 'State';

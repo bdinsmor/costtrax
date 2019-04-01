@@ -8,9 +8,14 @@ import {
   Component,
   NgZone,
   OnDestroy,
-  OnInit,
+  OnInit
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +29,13 @@ import { AuthenticationService } from '../../core/authentication/authentication.
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
 import { EquipmentService } from '../../equipment/equipment.service';
 import { ProjectsService } from '../../projects/projects.service';
-import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
+import {
+  Equipment,
+  Item,
+  ItemList,
+  Project,
+  Request
+} from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestRejectDialogComponent } from '../dialogs/request-reject-dialog.component';
@@ -465,8 +476,14 @@ export class RequestDetailsComponent
       }
     });
     dialogRef.afterClosed().subscribe(result => {
+      const data = {
+        meta: {
+          notes: this.notesFormGroup.value.notes
+        },
+        lineItems: this.request.buildLineItemsToApprove()
+      };
       if (result && result.success) {
-        this.requestsService.approve(this.request.id).subscribe(
+        this.requestsService.approve(this.request.id, data).subscribe(
           (response: any) => {
             this.openSnackBar('Request Approved', 'ok', 'OK');
             this.refreshRequest();

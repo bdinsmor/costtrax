@@ -1,60 +1,60 @@
 .project-form {
-    overflow: auto;
-    display: flex;
-    max-height: 60vh !important;
+  overflow: auto;
+  display: flex;
+  max-height: 60vh !important;
 }
 
 .small-text {
-    font-size: 90%;
+  font-size: 90%;
 }
 
 .bordered {
-    border: 1px solid #ccc;
-    border-radius: 3px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
 }
 
 .mat-ripple {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
 .blue-text {
-    color: #1890ff;
+  color: #1890ff;
 }
 
 .padded {
-    padding-top: 3px;
-    padding-left: 4px;
-    padding-bottom: 3px;
+  padding-top: 3px;
+  padding-left: 4px;
+  padding-bottom: 3px;
 }
 
 .bold-label {
-    font-weight: 700;
-    color: rgba(0, 0, 0, 0.54);
-    margin-bottom: 0 !important;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 0 !important;
 }
 
 .cost-title {
-    color: rgba(0, 0, 0, 0.54);
-    background: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    padding-left: 8px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+  color: rgba(0, 0, 0, 0.54);
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .cost-section {
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
-    margin: 4px 0;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 0 2px rgba(0, 0, 0, 0.12);
+  margin: 4px 0;
 }
 
 .cost-content {
-    background: #fff;
-    padding: 4px;
+  background: #fff;
+  padding: 4px;
 }
 
 .project-heading {
-    color: rgba(0, 0, 0, 0.54) !important;
+  color: rgba(0, 0, 0, 0.54) !important;
 }
 
 input[type='date'],
@@ -76,7 +76,7 @@ input[type='time']:not([readonly]):focus,
 input[type='url'],
 textarea,
 input[type='url']:not([readonly]):focus {
-    border: none !important;
+  border: none !important;
 }
 
 input[type='date']:not([readonly]),
@@ -87,12 +87,13 @@ input[type='password']:not([readonly]),
 input[type='tel']:not([readonly]),
 input[type='text']:not([readonly]),
 input[type='time']:not([readonly]),
-input[type='url']:not([readonly]), textarea {
-    background: inherit !important;
+input[type='url']:not([readonly]),
+textarea {
+  background: inherit !important;
 }
 
 textarea:focus {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 input[type='button']:disabled,
@@ -107,10 +108,5 @@ input[type='text']:disabled,
 input[type='time']:disabled,
 input[type='url']:disabled,
 textarea:disabled {
-    opacity: 1 !important;
-}
-
-.height-fix {
-    min-height: 69px !important;
-    margin-top: 2px !important;
+  opacity: 1 !important;
 }

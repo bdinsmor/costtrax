@@ -64,7 +64,7 @@ export class ProjectsService {
 
   deleteUser(projectId: string, userId: string) {
     return this.http.delete(
-      environment.serverUrl + '/project/' + projectId + '/user/' + userId
+      environment.serverUrl + '/project/' + projectId + '/users/' + userId
     );
   }
 

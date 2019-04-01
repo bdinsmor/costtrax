@@ -1,15 +1,34 @@
 import { trigger } from '@angular/animations';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatAutocompleteTrigger, MatChipInputEvent, MatDialogRef, MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+import {
+  MatAutocompleteTrigger,
+  MatChipInputEvent,
+  MatDialogRef,
+  MatSnackBar,
+  MatSnackBarConfig
+} from '@angular/material';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { isObject } from 'util';
 
 import { AuthenticationService } from '../../core/authentication/authentication.service';
-import { Account, Project } from '../../shared/model';
+import { Account, Project, State } from '../../shared/model';
 import { ProjectsService } from '../projects.service';
 
 @Component({
@@ -37,6 +56,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   projectFormGroup: FormGroup;
   project: Project;
   accountSynced = false;
+  selectedState: State;
   firstAccount: Account = new Account({});
   @Output()
   cancel = new EventEmitter();
@@ -48,7 +68,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
   requestingOrgs: string[] = [];
   locations: [] = [];
   states: [] = [];
-  filteredStates: Observable<string[]>;
+  filteredStates: Observable<State[]>;
   filteredLocations: Observable<string[]>;
   isLoaded = false;
   activeFormulas = [{ name: 'FHWA', label: 'FHWA' }];
@@ -63,7 +83,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
       .subscribe((list: any) => {
         this.states = list.results.map((item: any) => {
           item.label = item.stateName + ', ' + item.countryCode;
-          return item;
+          return item as State;
         });
       });
     this.projectsService
@@ -115,23 +135,8 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
     this.trigger.openPanel();
   }
 
-  displayFn(val: any) {
-    return val ? val.label : val;
-  }
-
   displayLocationFn(val: any) {
     return val ? val.label : val;
-  }
-
-  private _filter(value: any): string[] {
-    if (isObject(value)) {
-      return [];
-    }
-
-    const filterValue = value.toLowerCase();
-    return this.states.filter((option: any) =>
-      option.label.toLowerCase().includes(filterValue)
-    );
   }
 
   ngOnDestroy(): void {}
@@ -198,6 +203,7 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
       users: this.trimUsers()
     };
+  
     projectData.adjustments.rentalLocation = {
       stateCode: formData.rentalState.stateCode,
       stateName: formData.rentalState.stateName,
@@ -284,13 +290,13 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
 
   createProjectFormGroup() {
     this.projectFormGroup = new FormGroup({
-      projectName: new FormControl(this.project.name, Validators.required),
-      rentalState: new FormControl(''),
+      projectName: new FormControl(this.project.meta.name, Validators.required),
+      rentalState: new FormControl(null),
       rentalZipcode: new FormControl(
         this.project.adjustments.rentalLocation.zipcode,
         Validators.required
       ),
-      location: new FormControl(''),
+      location: new FormControl(null),
       selectedAccount: new FormControl(
         this.firstAccount.id,
         Validators.required
@@ -343,13 +349,5 @@ export class ProjectFormDialogComponent implements OnInit, OnDestroy {
         this.project.adjustments.subcontractor.enabled
       )
     });
-
-    this.filteredStates = this.projectFormGroup
-      .get('rentalState')
-      .valueChanges.pipe(
-        untilDestroyed(this),
-        startWith(''),
-        map(value => this._filter(value))
-      );
   }
 }

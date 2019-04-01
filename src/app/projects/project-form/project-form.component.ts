@@ -202,17 +202,15 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
   saveProject() {
     const formData: any = this.projectFormGroup.value;
-    const projectData: any = {
-      id: this.project.id,
-      active: this.project.active,
-      accountId: this.project.account.id,
-      name: formData.projectName,
-      description: formData.projectInstructions,
-      paymentTerms: this.project.paymentTerms,
-      adjustments: {}
-    };
 
-    projectData.adjustments = this.project.adjustments;
+    const projectData: any = {
+      meta: {
+        name: formData.projectName,
+        description: formData.projectInstructions,
+        paymentTerms: this.project.paymentTerms,
+        requestingOrgs: this.requestingOrgs
+      }
+    };
 
     this.projectsService.updateProject(projectData).subscribe(
       (response: any) => {
@@ -317,10 +315,20 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       let rentalZipcode = '';
       let rentalState = '';
       if (this.project.adjustments.rentalLocation) {
-        rentalState =
-          this.project.adjustments.rentalLocation.stateName +
-          ', ' +
-          this.project.adjustments.rentalLocation.countryCode;
+        if (
+          this.project.adjustments.rentalLocation.stateName &&
+          this.project.adjustments.rentalLocation.stateName !== '' &&
+          this.project.adjustments.rentalLocation.countryCode &&
+          this.project.adjustments.rentalLocation.countryCode !== ''
+        ) {
+          rentalState =
+            this.project.adjustments.rentalLocation.stateName +
+            ', ' +
+            this.project.adjustments.rentalLocation.countryCode;
+        } else {
+          rentalState = '';
+        }
+
         rentalZipcode = this.project.adjustments.rentalLocation.zipcode;
       }
 

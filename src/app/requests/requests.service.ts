@@ -204,10 +204,10 @@ export class RequestsService {
     );
   }
 
-  approve(requestId: string) {
+  approve(requestId: string, data: any) {
     return this.http.put(
       environment.serverUrl + '/request/' + requestId + '/approve',
-      {}
+      data
     );
   }
 }

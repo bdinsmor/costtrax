@@ -3,7 +3,13 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { concat, Observable, of, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { EquipmentService } from 'src/app/equipment/equipment.service';
 
 import { Equipment, Item } from './../../shared/model';
@@ -45,106 +51,113 @@ export class AddModelDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   ngOnInit() {
-    this.standbyFactor = this.data.adjustments.equipmentStandby.standbyFactor;
-    if (this.data.itemType === 'equipmentActive') {
-      this.operatingAdjustment = this.data.adjustments.equipmentActive.operatingPercent;
-      this.ownershipAdjustment = this.data.adjustments.equipmentActive.ownershipPercent;
-    } else if (this.data.itemType === 'equipmentStandby') {
-      this.operatingAdjustment = this.data.adjustments.equipmentStandby.operatingPercent;
-      this.ownershipAdjustment = this.data.adjustments.equipmentStandby.ownershipPercent;
+    try {
+      this.standbyFactor = this.data.adjustments.equipmentStandby.standbyFactor;
+      if (this.data.itemType === 'equipmentActive') {
+        this.operatingAdjustment = this.data.adjustments.equipmentActive.operatingPercent;
+        this.ownershipAdjustment = this.data.adjustments.equipmentActive.ownershipPercent;
+      } else if (this.data.itemType === 'equipmentStandby') {
+        this.operatingAdjustment = this.data.adjustments.equipmentStandby.operatingPercent;
+        this.ownershipAdjustment = this.data.adjustments.equipmentStandby.ownershipPercent;
+      }
+      this.zipcode = this.data.adjustments.rentalLocation.zipcode;
+      this.state = this.data.adjustments.rentalLocation.stateCode;
+      this.savedAssets = this.data.savedAssets;
+      if (this.savedAssets) {
+        this.equipment = new Equipment({});
+        this.modelForm = new FormGroup({
+          model: new FormControl(this.equipment.modelId, Validators.required),
+          manufacturer: new FormControl(
+            this.equipment.manufacturerId,
+            Validators.required
+          ),
+          year: new FormControl(this.equipment.year, Validators.required)
+        });
+        this.modelForm.get('model').valueChanges.subscribe(val => {
+          this.equipment.manufacturerId = this.modelForm.value.manufacturer;
+          this.equipment.years = val.years;
+          this.equipment.sizeClassId = val.sizeClassId;
+          this.equipment.sizeClassName = val.sizeClassName;
+          this.equipment.subtypeName = val.subtypeName;
+          this.equipment.subSize = val.subSize;
+          this.equipment.year = val.year;
+          this.equipment.subtypeId = val.subtypeId;
+          this.equipment.classificationId = val.classificationId;
+          this.equipment.classificationName = val.classificationName;
+          this.equipment.display = val.display;
+
+          this.equipment.description = val.description;
+          this.equipment.subtypeName = val.subtypeName;
+          this.equipment.subtypeId = val.subtypeId;
+          this.equipment.categoryId = val.categoryId;
+          this.equipment.categoryName = val.categoryName;
+          this.equipment.manufacturerName = val.manufacturerName;
+          this.equipment.model = val.model;
+          this.equipment.modelId = val.modelId;
+          this.equipment.dateIntroduced = val.dateIntroduced;
+          this.equipment.dateDiscontinued = val.dateDiscontinued;
+        });
+        this.modelForm.get('year').valueChanges.subscribe(val => {
+          this.equipment.year = val;
+          this.yearSelectionChanged();
+        });
+      } else {
+        this.item = new Item({ type: this.data.itemType });
+        this.modelForm = new FormGroup({
+          model: new FormControl(
+            this.item.details.modelId,
+            Validators.required
+          ),
+          manufacturer: new FormControl(
+            this.item.details.manufacturerId,
+            Validators.required
+          ),
+          year: new FormControl(this.item.details.year, Validators.required)
+        });
+        this.modelForm.get('model').valueChanges.subscribe(val => {
+          if (!val) {
+            return;
+          }
+          this.item.details.manufacturerId = this.modelForm.value.manufacturer;
+          this.item.details.years = val.years;
+          this.item.details.sizeClassId = val.sizeClassId;
+          this.item.details.sizeClassName = val.sizeClassName;
+          this.item.details.subtypeName = val.subtypeName;
+          this.item.details.subSize = val.subSize;
+          this.item.details.year = val.year;
+          this.item.details.subtypeId = val.subtypeId;
+          this.item.details.classificationId = val.classificationId;
+          this.item.details.classificationName = val.classificationName;
+          this.item.details.display = val.display;
+
+          this.item.details.description = val.description;
+          this.item.details.subtypeName = val.subtypeName;
+          this.item.details.subtypeId = val.subtypeId;
+          this.item.details.categoryId = val.categoryId;
+          this.item.details.categoryName = val.categoryName;
+          this.item.details.manufacturerName = val.manufacturerName;
+          this.item.details.model = val.model;
+          this.item.details.modelId = val.modelId;
+          this.item.details.dateIntroduced = val.dateIntroduced;
+          this.item.details.dateDiscontinued = val.dateDiscontinued;
+        });
+        this.modelForm.get('year').valueChanges.subscribe(val => {
+          if (!val) {
+            this.configurations = null;
+            return;
+          }
+          this.item.details.year = val;
+          this.yearSelectionChanged();
+        });
+      }
+
+      this.configurations = this.data.configurations;
+
+      this.manufacturerSearch();
+      this.modelSearch();
+    } catch (e) {
+      console.log('caught error: ' + e);
     }
-    this.zipcode = this.data.adjustments.rentalLocation.zipcode;
-    this.state = this.data.adjustments.rentalLocation.stateCode;
-    this.savedAssets = this.data.savedAssets;
-    if (this.savedAssets) {
-      this.equipment = new Equipment({});
-      this.modelForm = new FormGroup({
-        model: new FormControl(this.equipment.modelId, Validators.required),
-        manufacturer: new FormControl(
-          this.equipment.manufacturerId,
-          Validators.required
-        ),
-        year: new FormControl(this.equipment.year, Validators.required)
-      });
-      this.modelForm.get('model').valueChanges.subscribe(val => {
-        this.equipment.manufacturerId = this.modelForm.value.manufacturer;
-        this.equipment.years = val.years;
-        this.equipment.sizeClassId = val.sizeClassId;
-        this.equipment.sizeClassName = val.sizeClassName;
-        this.equipment.subtypeName = val.subtypeName;
-        this.equipment.subSize = val.subSize;
-        this.equipment.year = val.year;
-        this.equipment.subtypeId = val.subtypeId;
-        this.equipment.classificationId = val.classificationId;
-        this.equipment.classificationName = val.classificationName;
-        this.equipment.display = val.display;
-
-        this.equipment.description = val.description;
-        this.equipment.subtypeName = val.subtypeName;
-        this.equipment.subtypeId = val.subtypeId;
-        this.equipment.categoryId = val.categoryId;
-        this.equipment.categoryName = val.categoryName;
-        this.equipment.manufacturerName = val.manufacturerName;
-        this.equipment.model = val.model;
-        this.equipment.modelId = val.modelId;
-        this.equipment.dateIntroduced = val.dateIntroduced;
-        this.equipment.dateDiscontinued = val.dateDiscontinued;
-      });
-      this.modelForm.get('year').valueChanges.subscribe(val => {
-        this.equipment.year = val;
-        this.yearSelectionChanged();
-      });
-    } else {
-      this.item = new Item({ type: this.data.itemType });
-      this.modelForm = new FormGroup({
-        model: new FormControl(this.item.details.modelId, Validators.required),
-        manufacturer: new FormControl(
-          this.item.details.manufacturerId,
-          Validators.required
-        ),
-        year: new FormControl(this.item.details.year, Validators.required)
-      });
-      this.modelForm.get('model').valueChanges.subscribe(val => {
-        if (!val) {
-          return;
-        }
-        this.item.details.manufacturerId = this.modelForm.value.manufacturer;
-        this.item.details.years = val.years;
-        this.item.details.sizeClassId = val.sizeClassId;
-        this.item.details.sizeClassName = val.sizeClassName;
-        this.item.details.subtypeName = val.subtypeName;
-        this.item.details.subSize = val.subSize;
-        this.item.details.year = val.year;
-        this.item.details.subtypeId = val.subtypeId;
-        this.item.details.classificationId = val.classificationId;
-        this.item.details.classificationName = val.classificationName;
-        this.item.details.display = val.display;
-
-        this.item.details.description = val.description;
-        this.item.details.subtypeName = val.subtypeName;
-        this.item.details.subtypeId = val.subtypeId;
-        this.item.details.categoryId = val.categoryId;
-        this.item.details.categoryName = val.categoryName;
-        this.item.details.manufacturerName = val.manufacturerName;
-        this.item.details.model = val.model;
-        this.item.details.modelId = val.modelId;
-        this.item.details.dateIntroduced = val.dateIntroduced;
-        this.item.details.dateDiscontinued = val.dateDiscontinued;
-      });
-      this.modelForm.get('year').valueChanges.subscribe(val => {
-        if (!val) {
-          this.configurations = null;
-          return;
-        }
-        this.item.details.year = val;
-        this.yearSelectionChanged();
-      });
-    }
-
-    this.configurations = this.data.configurations;
-
-    this.manufacturerSearch();
-    this.modelSearch();
   }
 
   onMakeClear() {
