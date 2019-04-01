@@ -459,7 +459,7 @@ export class RequestDetailsComponent
           err => {
             this.openSnackBar(
               'An error occurred trying to reject request',
-              'ok',
+              'OK',
               'OK'
             );
           }
