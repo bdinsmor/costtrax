@@ -1,23 +1,13 @@
 <div class="px-1 pt-1 mb-2 full-width">
   <section class="full-width d-flex flex-row align-items-center">
     <h3 class="pr-1 no-top-margin" disabled="true">Owned Equipment</h3>
-    <button
-      type="button"
-      matTooltip="Add Model"
-      class="btn btn-sm btn-primary"
-      (click)="addModel()"
-      [disabled]="!accountSynced"
-    >
+    <button type="button" matTooltip="Add Model" class="btn btn-sm btn-primary" (click)="addModel()"
+      [disabled]="!accountSynced">
       <clr-icon class="hidden-md-up" shape="plus"></clr-icon>
       <span class="hidden-sm-down">Add Model</span>
     </button>
-    <button
-      type="button"
-      matTooltip="Add Miscellaneous Model"
-      [disabled]="!accountSynced"
-      class="btn btn-sm btn-primary"
-      (click)="addMiscEquipment()"
-    >
+    <button type="button" matTooltip="Add Miscellaneous Model" [disabled]="!accountSynced"
+      class="btn btn-sm btn-primary" (click)="addMiscEquipment()">
       <clr-icon class="hidden-md-up" shape="plus-circle"></clr-icon>
 
       <span class="hidden-sm-down">Add Miscellaneous Model</span>
@@ -26,10 +16,7 @@
       Upload Equipment
     </button>
   </section>
-  <section
-    class="full-width d-flex flex-row align-items-center"
-    *ngIf="!accountSynced"
-  >
+  <section class="full-width d-flex flex-row align-items-center" *ngIf="!accountSynced">
     <h4>
       Check Your Account Details and Log in with your EQW credentials to access
     </h4>
@@ -37,34 +24,18 @@
 
   <clr-datagrid *ngIf="accountSynced">
     <clr-dg-column [clrDgField]="'id'" style="width:50px">ID</clr-dg-column>
-    <clr-dg-column [clrDgField]="'make'" style="width:200px"
-      >Make</clr-dg-column
-    >
-    <clr-dg-column [clrDgField]="'model'" style="max-width:150px"
-      >Model</clr-dg-column
-    >
-    <clr-dg-column [clrDgField]="'year'" style="max-width:80px"
-      >Year</clr-dg-column
-    >
-    <clr-dg-column [clrDgField]="'sizeClassName'" style="width:200px"
-      >Subtype & Size Class</clr-dg-column
-    >
+    <clr-dg-column [clrDgField]="'make'" style="width:200px">Make</clr-dg-column>
+    <clr-dg-column [clrDgField]="'model'" style="max-width:150px">Model</clr-dg-column>
+    <clr-dg-column [clrDgField]="'year'">Year</clr-dg-column>
+    <clr-dg-column [clrDgField]="'sizeClassName'" style="width:200px">Subtype & Size Class</clr-dg-column>
     <clr-dg-column [clrDgField]="'serial'">Serial</clr-dg-column>
     <clr-dg-column [clrDgField]="'description'">Description</clr-dg-column>
     <clr-dg-column>Actions</clr-dg-column>
-    <clr-dg-row
-      *clrDgItems="let item of items; let i = index; trackBy: trackByFn"
-      [clrDgItem]="item"
-    >
+    <clr-dg-row *clrDgItems="let item of items; let i = index; trackBy: trackByFn" [clrDgItem]="item">
       <clr-dg-cell>
         <div class="padding-label-top" *ngIf="item.isDraft()">
-          <input
-            nz-input
-            nzSize="small"
-            class="full-width"
-            [(ngModel)]="item.details.id"
-            [ngModelOptions]="{ standalone: true }"
-          />
+          <input nz-input nzSize="small" class="full-width" [(ngModel)]="item.details.id"
+            [ngModelOptions]="{ standalone: true }" />
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
           {{ item.details ? item.details.id : '' }}
@@ -91,13 +62,8 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div class="padding-label-top" *ngIf="item.isDraft()">
-          <input
-            nz-input
-            nzSize="small"
-            class="full-width"
-            [(ngModel)]="item.details.vin"
-            [ngModelOptions]="{ standalone: true }"
-          />
+          <input nz-input nzSize="small" class="full-width" [(ngModel)]="item.details.vin"
+            [ngModelOptions]="{ standalone: true }" />
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
           {{ item.details.vin }}
@@ -105,13 +71,8 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div class="padding-label-top" *ngIf="item.isDraft()">
-          <input
-            nz-input
-            nzSize="small"
-            class="full-width"
-            [(ngModel)]="item.description"
-            [ngModelOptions]="{ standalone: true }"
-          />
+          <input nz-input nzSize="small" class="full-width" [(ngModel)]="item.description"
+            [ngModelOptions]="{ standalone: true }" />
         </div>
         <div class="padding-label-top" *ngIf="!item.isDraft()">
           {{ item.description }}
@@ -119,56 +80,31 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <div class="row justify-content-end">
-          <button
-            *ngIf="item.isDraft()"
-            class="ripple icon-30 icon-button
-            pr-1"
-            matTooltip="Save"
-            (click)="saveChanges(i, item)"
-          >
+          <button *ngIf="item.isDraft()" class="ripple icon-30 icon-button
+            pr-1" matTooltip="Save" (click)="saveChanges(i, item)">
             <mat-icon color="accent">done</mat-icon>
           </button>
-          <button
-            *ngIf="!item.isDraft()"
-            class="ripple icon-30 icon-button
-            pr-1"
-            matTooltip="Edit"
-            (click)="editItem(i, item)"
-          >
+          <button *ngIf="!item.isDraft()" class="ripple icon-30 icon-button
+            pr-1" matTooltip="Edit" (click)="editItem(i, item)">
             <mat-icon color="accent">edit</mat-icon>
           </button>
-          <button
-            class="ripple icon-button icon-30 pr-1"
-            *ngIf="item.beingEdited"
-            matTooltip="Undo Edits"
-            (click)="revertEdits(i, item)"
-          >
+          <button class="ripple icon-button icon-30 pr-1" *ngIf="item.beingEdited" matTooltip="Undo Edits"
+            (click)="revertEdits(i, item)">
             <mat-icon color="accent">undo</mat-icon>
           </button>
-          <button
-            class="ripple icon-button icon-30 pr-1"
-            *ngIf="!item.beingEdited"
-            matTooltip="Remove"
-            (click)="remove(i, item)"
-          >
+          <button class="ripple icon-button icon-30 pr-1" *ngIf="!item.beingEdited" matTooltip="Remove"
+            (click)="remove(i, item)">
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
       </clr-dg-cell>
-      <ng-container
-        ngProjectAs="clr-dg-row-detail"
-        *ngIf="item.modelId && item.year"
-      >
+      <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item.modelId && item.year">
         <clr-dg-row-detail *clrIfExpanded>
           <div class="col-10 pb-1">
             <div class="col">
               <h5 class="strong">Model Configuration</h5>
-              <table
-                id="invoice-table"
-                *ngIf="item.specsColumns"
-                class="mt-3p table table-compact table-bordered table-striped
-                comparison-table"
-              >
+              <table id="invoice-table" *ngIf="item.specsColumns" class="mt-3p table table-compact table-bordered table-striped
+                comparison-table">
                 <thead>
                   <th class="left" *ngFor="let column of item.specsColumns">
                     {{ column.name }}
@@ -187,11 +123,8 @@
               <h5 class="strong">
                 Rental Rate Blue Book Ownership & Operating Costs
               </h5>
-              <table
-                *ngIf="item && item.rates"
-                class="full-width mt-3p table table-compact table-bordered
-                table-striped comparison-table"
-              >
+              <table *ngIf="item && item.rates" class="full-width mt-3p table table-compact table-bordered
+                table-striped comparison-table">
                 <thead style="display:none">
                   <th></th>
                   <th></th>
@@ -269,11 +202,8 @@
                 <h6 class="strong no-top-margin">
                   Ownership Costs, Unadjusted (Monthly)
                 </h6>
-                <table
-                  *ngIf="item"
-                  class="no-top-margin table table-compact table-bordered
-                  table-striped comparison-table full-width"
-                >
+                <table *ngIf="item" class="no-top-margin table table-compact table-bordered
+                  table-striped comparison-table full-width">
                   <thead>
                     <th class="left">Element</th>
                     <th class="left">Percentage</th>
@@ -322,11 +252,8 @@
               <div class="col">
                 <h5 class="strong">Rate Element Allocation</h5>
                 <h6 class="strong no-top-margin">Operating Costs, (Hourly)</h6>
-                <table
-                  *ngIf="item"
-                  class="no-top-margin table table-compact table-bordered
-                  table-striped comparison-table full-width"
-                >
+                <table *ngIf="item" class="no-top-margin table table-compact table-bordered
+                  table-striped comparison-table full-width">
                   <thead>
                     <th class="left">Element</th>
                     <th class="left">Percentage</th>
@@ -355,17 +282,8 @@
     </clr-dg-row>
     <clr-dg-footer *ngIf="items">{{ items.length }} Items</clr-dg-footer>
   </clr-datagrid>
-  <div
-    class="align-items-center mt-1 float-right"
-    align="end"
-    [formGroup]="equipmentForm"
-  >
-    <mat-checkbox
-      type="checkbox"
-      matRipple
-      id="activeCheck"
-      formControlName="autoSave"
-    ></mat-checkbox>
+  <div class="align-items-center mt-1 float-right" align="end" [formGroup]="equipmentForm">
+    <mat-checkbox type="checkbox" matRipple id="activeCheck" formControlName="autoSave"></mat-checkbox>
     <label class="no-bottom-margin disabled-text" style="padding-left: 4px">
       Automatically save new models added from requests to my Project Assets
     </label>

@@ -673,9 +673,11 @@ export class Item {
       this.changeReason = data.changeReason || '';
       this.rejectReason = data.rejectReason || '';
       this.totalAdjusted = data.totalAdjusted || 0;
-      this.subtotalApproved = data.subtotalApproved || 0;
+      this.subtotalApproved = data.subtotalApproved || null;
       this.amountAdjusted =
-        this.subtotal > 0 && +this.subtotal !== +this.subtotalApproved;
+        this.subtotalApproved &&
+        this.subtotal > 0 &&
+        +this.subtotal !== +this.subtotalApproved;
 
       this.approvedBy = data.approvedBy || '';
       this.approvedOn = data.approvedOn || new Date();

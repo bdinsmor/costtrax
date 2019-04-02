@@ -276,6 +276,7 @@ export class RequestDetailsComponent
       this.requestsService.update(this.request.id, data).subscribe(
         (response: any) => {
           this.openSnackBar('Request Saved', 'ok', 'OK');
+          this.refreshRequest();
         },
         (error: any) => {
           this.openSnackBar('Request Did Not Save', 'error', 'OK');

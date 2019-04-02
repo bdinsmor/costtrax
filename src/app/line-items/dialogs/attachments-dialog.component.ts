@@ -1,5 +1,19 @@
-import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  HttpClient,
+  HttpEvent,
+  HttpEventType,
+  HttpHeaders,
+  HttpRequest,
+  HttpResponse
+} from '@angular/common/http';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -39,7 +53,13 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
     this.canAdd = this.data.canAdd;
     this.requestId = this.data.requestId;
     this.selectedItem.attachments.forEach((p: any) => {
-      p.url = environment.serverUrl + '/attachment/' + p.id;
+      p.url =
+        environment.serverUrl +
+        '/request/' +
+        this.requestId +
+        '/attachment/' +
+        p.id;
+
       if (p.fileName && p.fileName !== '') {
         p.name = p.fileName;
       }
@@ -125,7 +145,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.cdr.detectChanges();
       });
-  }
+  };
 
   showUpload() {
     return { showPreviewIcon: false, showRemoveIcon: this.canDelete };
@@ -203,5 +223,5 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
           item.onError(err, item.file);
         }
       );
-  }
+  };
 }
