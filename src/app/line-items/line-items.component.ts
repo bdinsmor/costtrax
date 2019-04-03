@@ -197,6 +197,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       this.requestStatus = 'draft';
     }
     this.requestStatus = this.requestStatus.toLowerCase();
+    console.log('request status: ' + this.requestStatus);
     this.itemsLoading = true;
     this.bsConfig = Object.assign(
       {},

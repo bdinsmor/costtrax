@@ -4,16 +4,8 @@
   <form [formGroup]="signatureFormGroup" class="column full-width">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Signature</mat-label>
-      <input
-        matInput
-        placeholder="Contractor Signature"
-        type="text"
-        formControlName="signature"
-        required
-      />
-      <mat-error
-        *ngIf="signatureFormGroup.get('signature').hasError('required')"
-      >
+      <input matInput placeholder="Contractor Signature" type="text" formControlName="signature" required />
+      <mat-error *ngIf="signatureFormGroup.get('signature').hasError('required')">
         Signature is <strong>required</strong>
       </mat-error>
     </mat-form-field>
@@ -23,15 +15,10 @@
   <button type="button" class="btn btn-outline" (click)="cancel()">
     Cancel
   </button>
-  <button
-    type="button"
-    class="btn btn-success"
-    [disabled]="
+  <button type="button" class="btn btn-success" [disabled]="
       !signatureFormGroup.valid ||
       signatureFormGroup.get('signature').value === ''
-    "
-    (click)="confirm()"
-  >
+    " (click)="confirm()">
     Submit
   </button>
 </mat-dialog-actions>

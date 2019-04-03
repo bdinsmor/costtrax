@@ -243,7 +243,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                   With
                   Change" (click)="approveWithChange(i, item)">
@@ -369,7 +369,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                   With
                   Change" (click)="approveWithChange(i, item)">
@@ -378,8 +378,7 @@
               </span>
             </div>
           </clr-dg-cell>
-          <ng-container ngProjectAs="clr-dg-row-detail"
-            *ngIf="!draftMode && item && item.details && item.details.modelId">
+          <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="item && item.details">
             <clr-dg-row-detail *clrIfExpanded>
               <div *ngIf="item.details.nodata" class="px-3 mb-3
                 align-content-center align-items-center text-center">
@@ -480,7 +479,8 @@
                   </div>
                 </div>
                 <div class="row no-row-margins col-10 pb-1">
-                  <div class="col-3 row-margins" *ngIf="submitRequests">
+                  <div class="col-3 row-margins"
+                    *ngIf="submitRequests && item.details.activeOwnershipAdjustedRate && item.details.activeOwnershipAdjustedRate > 0">
                     <h6 class="strong left">
                       Hourly Ownership & Operating Costs
                     </h6>
@@ -517,7 +517,8 @@
                     </h6>
                   </div>
 
-                  <div class="col no-row-margins">
+                  <div class="col no-row-margins"
+                    *ngIf="item.details && item.details.depreciationValue && item.details.depreciationValue > 0">
                     <h6 class="strong left">Rate Element Allocation</h6>
                     <h6 class="strong left no-top-margin">
                       Ownership Costs, Unadjusted (Monthly)
@@ -575,7 +576,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <div class="col">
+                  <div class="col" *ngIf="item.details && item.details.fuelUnitCost && item.details.fuelUnitCost > 0">
                     <h6 class="strong left">Rate Element Allocation</h6>
                     <h6 class="strong left no-top-margin">
                       Operating Costs, (Hourly)
@@ -729,7 +730,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                       With
                       Change" (click)="approveWithChange(i, item)">
@@ -740,7 +741,7 @@
           </clr-dg-cell>
 
           <ng-container ngProjectAs="clr-dg-row-detail"
-            *ngIf="!draftMode && item && item.details && item.details.modelId">
+            *ngIf="item && item.details && item.details.modelId">
             <clr-dg-row-detail *clrIfExpanded>
               <div *ngIf="item.details.nodata" class="px-3 mb-3
                     align-content-center align-items-center text-center">
@@ -768,7 +769,7 @@
                 </div>
 
                 <div class="row no-row-margins col-10 pb-1">
-                  <div class="col row-margins" *ngIf="submitRequests">
+                  <div class="col row-margins" *ngIf="submitRequests && item.details && item.details.standbyOwnershipAdjustedRate && item.details.standbyOwnershipAdjustedRate > 0">
                     <h6 class="strong left">
                       Hourly Ownership & Operating Costs
                     </h6>
@@ -802,7 +803,7 @@
                     </table>
                   </div>
 
-                  <div class="col">
+                  <div class="col" *ngIf="item.details && item.details.depreciationValue && item.details.depreciationValue > 0">
                     <h6 class="strong left">Rate Element Allocation</h6>
                     <h6 class="strong no-top-margin">
                       Ownership Costs, Unadjusted (Monthly)
@@ -857,7 +858,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <div class="col">
+                  <div class="col" *ngIf="item.details && item.details && item.details.fuelUnitCost && item.details.fuelUnitCost > 0">
                     <h6 class="strong left">Rate Element Allocation</h6>
                     <h6 class="strong no-top-margin">
                       Operating Costs, (Hourly)
@@ -1033,7 +1034,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                           With
                           Change" (click)="approveWithChange(i, item)">
@@ -1316,7 +1317,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                               With
                               Change" (click)="approveWithChange(i, item)">
@@ -1400,7 +1401,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                               With
                               Change" (click)="approveWithChange(i, item)">
@@ -1490,7 +1491,7 @@
                   <mat-icon color="warn">delete</mat-icon>
                 </button>
               </span>
-              <span *ngIf="manageRequests">
+              <span *ngIf="manageRequests && requestStatus !== 'approved'">
                 <button class="ripple icon-button" [disabled]="!manageRequests" matTooltip="Approve
                               With
                               Change" (click)="approveWithChange(i, item)">

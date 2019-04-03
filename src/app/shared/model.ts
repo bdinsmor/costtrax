@@ -319,7 +319,9 @@ export class Item {
   buildApproveVersion() {
     const json = this.buildSaveVersion();
     json['approverNotes'] = this.approverNotes;
-    json['subtotalApproved'] = this.subtotalApproved;
+    if (this.subtotalApproved) {
+      json['subtotalApproved'] = this.subtotalApproved;
+    }
 
     return json;
   }
