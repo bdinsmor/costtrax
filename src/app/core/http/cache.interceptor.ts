@@ -1,24 +1,20 @@
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-  HttpResponse
-} from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { RequestCacheService } from './http-cache.service';
 
-const TTL = 5;
+const TTL = 25;
 
 @Injectable()
 export class CacheInterceptor implements HttpInterceptor {
   constructor(private cache: RequestCacheService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    return this.sendRequest(req, next);
+    const cachedResponse = this.cache.get(req.url);
+
+    return cachedResponse ? of(cachedResponse) : this.sendRequest(req, next);
   }
 
   sendRequest(

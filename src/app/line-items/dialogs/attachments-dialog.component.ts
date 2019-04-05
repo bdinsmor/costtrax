@@ -1,19 +1,5 @@
-import {
-  HttpClient,
-  HttpEvent,
-  HttpEventType,
-  HttpHeaders,
-  HttpRequest,
-  HttpResponse
-} from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { NzMessageService, UploadFile, UploadXHRArgs } from 'ng-zorro-antd';
 import { untilDestroyed } from 'ngx-take-until-destroy';
@@ -71,6 +57,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
       }
 
       p.uid = p.id;
+      this.fileList.push(p);
       this.addedFiles.push({
         type: p.type,
         size: p.size,
@@ -91,8 +78,8 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close({ fileList: this.addedFiles });
   }
 
-  openAttachment(file: UploadFile) {
-    this.requestsService.openAttachment(file).subscribe((res: any) => {});
+  openAttachment(url: string, fileName: string) {
+    this.requestsService.openAttachment(url, fileName);
   }
 
   handleChange({ file, fileList }) {
@@ -145,7 +132,7 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.cdr.detectChanges();
       });
-  };
+  }
 
   showUpload() {
     return { showPreviewIcon: false, showRemoveIcon: this.canDelete };
@@ -195,7 +182,9 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
 
                 item.onProgress(event2, item.file);
               } else if (event2 instanceof HttpResponse) {
-                item.onSuccess(event2.body, item.file, event2);
+                try {
+                  item.onSuccess(event2.body, item.file, event2);
+                } catch (e) {}
                 this.addedFiles.forEach((a: Attachment) => {
                   if (a.uid === item.file.uid) {
                     a.status = 'complete';
@@ -207,7 +196,6 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
               }
             },
             err => {
-              console.log('got error');
               item.onError(err, item.file);
               this.addedFiles.forEach((a: Attachment) => {
                 if (a.uid === item.file.uid) {
@@ -223,5 +211,5 @@ export class AttachmentsDialogComponent implements OnInit, OnDestroy {
           item.onError(err, item.file);
         }
       );
-  };
+  }
 }

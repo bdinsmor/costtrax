@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AccountDetailsComponent } from './accounts/account-details/account-details.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { AuthenticationGuard } from './core';
+import { DeactivateGuard } from './core/authentication/can-deactivate.guard';
 import { UberAdminGuard } from './core/authentication/uberAdmin.guard';
 import { EquipmentComponent } from './equipment/equipment.component';
 import { HomeComponent } from './home/home.component';
@@ -86,6 +87,7 @@ const routes: Routes = [
     path: 'requests/:id',
     component: RequestDetailsComponent,
     canActivate: [AuthenticationGuard],
+    canDeactivate: [DeactivateGuard],
     data: {
       animation: 'details'
     }

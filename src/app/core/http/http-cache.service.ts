@@ -10,6 +10,7 @@ export class RequestCacheService {
     if (!tuple) {
       return null;
     }
+
     const expires = tuple[0];
     const httpResponse = tuple[1];
 
@@ -19,7 +20,6 @@ export class RequestCacheService {
       this.cache.delete(key);
       return null;
     }
-
     return httpResponse;
   }
 

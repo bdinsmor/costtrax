@@ -655,81 +655,92 @@ export class Item {
 
   constructor(data: any) {
     {
-      if (!data.details) {
-        this.details = this.buildDetails(data);
-      } else {
-        this.details = data.details;
-      }
-      if (this.details && this.details.modelName) {
-        this.details.model = this.details.modelName;
-      }
-      this.id = data.id || '';
-      this.requestId = data.requestId || '';
-      this.eSig = data.eSig || '';
-      this.age = data.age || 0;
-      this.subtotal = data.subtotal || this.details.subtotal || 0;
-      this.amount = data.amount || 0;
-      this.type = data.type || 'Other';
-      this.submittedBy = data.submittedBy || data.userId || '';
-      this.submittedOn = data.submittedOn || new Date();
-      this.changeReason = data.changeReason || '';
-      this.rejectReason = data.rejectReason || '';
-      this.totalAdjusted = data.totalAdjusted || 0;
-      this.subtotalApproved = data.subtotalApproved || null;
-      this.amountAdjusted =
-        this.subtotalApproved &&
-        this.subtotal > 0 &&
-        +this.subtotal !== +this.subtotalApproved;
-
-      this.approvedBy = data.approvedBy || '';
-      this.approvedOn = data.approvedOn || new Date();
-      this.comments = data.comments || [];
-      this.attachments = data.attachments || [];
-      this.buildRentalDates();
-      if (!this.details.transport) {
-        this.details.transport = 0;
-      }
-      if (!this.details.hours) {
-        this.details.hours = 0;
-      }
-
-      if (this.details.startDate) {
-        this.details.startDate = new Date(data.details.startDate);
-      } else {
-        this.details.startDate = new Date();
-      }
-      if (this.details.endDate) {
-        this.details.endDate = new Date(data.details.endDate);
-      } else {
-        this.details.endDate = new Date();
-      }
-      if (this.details.startDate && this.details.endDate) {
-        const diff = Math.abs(
-          this.details.endDate.getTime() - this.details.startDate.getTime()
-        );
-        let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-        if (diffDays === 0) {
-          diffDays = 1;
+      try {
+        //  console.log('inside item constructor: ' + JSON.stringify(data, null, 2));
+        if (!data.details) {
+          // console.log('building details...');
+          this.details = this.buildDetails(data);
+        } else {
+          this.details = data.details;
         }
-        this.details.numDays = diffDays;
+        if (this.details && this.details.modelName) {
+          this.details.model = this.details.modelName;
+        }
+        this.id = data.id || '';
+        this.requestId = data.requestId || '';
+        this.eSig = data.eSig || '';
+        this.age = data.age || 0;
+        this.subtotal = data.subtotal || this.details.subtotal || 0;
+        this.amount = data.amount || 0;
+        this.type = data.type || 'Other';
+        this.submittedBy = data.submittedBy || data.userId || '';
+        this.submittedOn = data.submittedOn || new Date();
+        this.changeReason = data.changeReason || '';
+        this.rejectReason = data.rejectReason || '';
+        this.totalAdjusted = data.totalAdjusted || 0;
+        this.subtotalApproved = data.subtotalApproved || null;
+        this.amountAdjusted =
+          this.subtotalApproved &&
+          this.subtotal > 0 &&
+          +this.subtotal !== +this.subtotalApproved;
+
+        this.approvedBy = data.approvedBy || '';
+        this.approvedOn = data.approvedOn || new Date();
+        this.comments = data.comments || [];
+        this.attachments = data.attachments || [];
+        this.buildRentalDates();
+        if (!this.details.transport) {
+          this.details.transport = 0;
+        }
+        if (!this.details.hours) {
+          this.details.hours = 0;
+        }
+
+        if (this.details.startDate) {
+          this.details.startDate = new Date(this.details.startDate);
+        } else {
+          this.details.startDate = new Date();
+        }
+        if (this.details.endDate) {
+          this.details.endDate = new Date(this.details.endDate);
+        } else {
+          this.details.endDate = new Date();
+        }
+        if (this.details.startDate && this.details.endDate) {
+          const diff = Math.abs(
+            this.details.endDate.getTime() - this.details.startDate.getTime()
+          );
+          let diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+          if (diffDays === 0) {
+            diffDays = 1;
+          }
+          this.details.numDays = diffDays;
+        }
+        this.buildDateRange();
+        if (
+          this.details.subtypeName &&
+          (this.details.sizeClassName &&
+            this.details.sizeClassName !== '' &&
+            this.details.sizeClassName !== undefined)
+        ) {
+          this.details.subSize =
+            this.details.subtypeName + ' ' + this.details.sizeClassName;
+        } else if (this.details.subtypeName) {
+          this.details.subSize = this.details.subtypeName;
+        } else {
+          this.details.subSize = this.details.sizeClassName;
+        }
+        this.buildSpecs();
+        this.setDisplayType();
+        this.setAmounts();
+      } catch (e) {
+        console.log(
+          'caught item constructor error: ' +
+            e +
+            '\n\n' +
+            JSON.stringify(data, null, 2)
+        );
       }
-      this.buildDateRange();
-      if (
-        this.details.subtypeName &&
-        (this.details.sizeClassName &&
-          this.details.sizeClassName !== '' &&
-          this.details.sizeClassName !== undefined)
-      ) {
-        this.details.subSize =
-          this.details.subtypeName + ' ' + this.details.sizeClassName;
-      } else if (this.details.subtypeName) {
-        this.details.subSize = this.details.subtypeName;
-      } else {
-        this.details.subSize = this.details.sizeClassName;
-      }
-      this.buildSpecs();
-      this.setDisplayType();
-      this.setAmounts();
     }
   }
 }
@@ -1563,110 +1574,114 @@ export class Request {
 
   public constructor(request: any) {
     {
-      this.id = request.id || '';
-      this.oneUp = request.oneUp || '';
-      this.adjustments = request.adjustments || {};
-      this.meta = request.meta || {};
-      this.coord = request.coord || {};
-      this.canApprove = request.canApprove || false;
-      this.submittedOn = request.submittedOn || '';
-      this.submittedBy = request.submittedBy || '';
-      this.createdOn = request.createdOn || '';
-      this.createdBy = request.createdBy || '';
-      this.projectRoles = request.projectRoles || [];
-      this.projectName = request.projectName || '';
-      this.lineItemCount = request.lineItemCount || 0;
-      this.lastModified = request.lastModified || '';
-      this.lastModifiedBy = request.lastModifiedBy || '';
-      this.materialSubtotal = +request.materialSubtotal || 0;
-      this.laborSubtotal = +request.laborSubtotal || 0;
-      this.otherSubtotal = +request.otherSubtotal || 0;
-      this.subcontractorSubtotal = +request.subcontractorSubtotal || 0;
-      this.equipmentActiveSubtotal = +request.equipmentActiveSubtotal || 0;
-      this.equipmentStandbySubtotal = +request.equipmentStandbySubtotal || 0;
-      this.equipmentRentalSubtotal = +request.equipmentRentalSubtotal || 0;
-      this.subcontractorTotal = +request.subcontractorSubtotal || 0;
-      this.equipmentActiveTotal = +request.equipmentActiveTotal || 0;
-      this.equipmentStandbyTotal = +request.equipmentStandbyTotal || 0;
-      this.equipmentRentalTotal = +request.equipmentRentalTotal || 0;
-      this.equipmentActiveMarkup =
-        +this.equipmentActiveSubtotal *
-        +this.adjustments.equipmentActive.markup;
-      this.equipmentStandbyMarkup =
-        +this.equipmentStandbySubtotal *
-        +this.adjustments.equipmentStandby.markup;
+      try {
+        this.id = request.id || '';
+        this.oneUp = request.oneUp || '';
+        this.adjustments = request.adjustments || {};
+        this.meta = request.meta || {};
+        this.coord = request.coord || {};
+        this.canApprove = request.canApprove || false;
+        this.submittedOn = request.submittedOn || '';
+        this.submittedBy = request.submittedBy || '';
+        this.createdOn = request.createdOn || '';
+        this.createdBy = request.createdBy || '';
+        this.projectRoles = request.projectRoles || [];
+        this.projectName = request.projectName || '';
+        this.lineItemCount = request.lineItemCount || 0;
+        this.lastModified = request.lastModified || '';
+        this.lastModifiedBy = request.lastModifiedBy || '';
+        this.materialSubtotal = +request.materialSubtotal || 0;
+        this.laborSubtotal = +request.laborSubtotal || 0;
+        this.otherSubtotal = +request.otherSubtotal || 0;
+        this.subcontractorSubtotal = +request.subcontractorSubtotal || 0;
+        this.equipmentActiveSubtotal = +request.equipmentActiveSubtotal || 0;
+        this.equipmentStandbySubtotal = +request.equipmentStandbySubtotal || 0;
+        this.equipmentRentalSubtotal = +request.equipmentRentalSubtotal || 0;
+        this.subcontractorTotal = +request.subcontractorSubtotal || 0;
+        this.equipmentActiveTotal = +request.equipmentActiveTotal || 0;
+        this.equipmentStandbyTotal = +request.equipmentStandbyTotal || 0;
+        this.equipmentRentalTotal = +request.equipmentRentalTotal || 0;
+        this.equipmentActiveMarkup =
+          +this.equipmentActiveSubtotal *
+          +this.adjustments.equipmentActive.markup;
+        this.equipmentStandbyMarkup =
+          +this.equipmentStandbySubtotal *
+          +this.adjustments.equipmentStandby.markup;
 
-      this.equipmentRentalMarkup =
-        +this.equipmentRentalSubtotal *
-        +this.adjustments.equipmentRental.markup;
-      this.laborMarkup = +this.laborSubtotal * +this.adjustments.labor.markup;
-      this.laborTotal = this.laborSubtotal + this.laborMarkup;
-      this.otherMarkup = +this.otherSubtotal * +this.adjustments.other.markup;
-      this.otherTotal = +this.otherMarkup + +this.otherSubtotal;
-      this.materialMarkup =
-        +this.materialSubtotal * +this.adjustments.material.markup;
-      this.materialTotal = +this.materialMarkup + +this.materialSubtotal;
+        this.equipmentRentalMarkup =
+          +this.equipmentRentalSubtotal *
+          +this.adjustments.equipmentRental.markup;
+        this.laborMarkup = +this.laborSubtotal * +this.adjustments.labor.markup;
+        this.laborTotal = this.laborSubtotal + this.laborMarkup;
+        this.otherMarkup = +this.otherSubtotal * +this.adjustments.other.markup;
+        this.otherTotal = +this.otherMarkup + +this.otherSubtotal;
+        this.materialMarkup =
+          +this.materialSubtotal * +this.adjustments.material.markup;
+        this.materialTotal = +this.materialMarkup + +this.materialSubtotal;
 
-      this.subcontractorMarkup =
-        +this.subcontractorSubtotal * +this.adjustments.subcontractor.markup;
-      this.subcontractorTotal =
-        +this.subcontractorMarkup + +this.subcontractorSubtotal;
-      this.equipmentTotal =
-        this.equipmentActiveSubtotal +
-        this.equipmentActiveMarkup +
-        this.equipmentStandbySubtotal +
-        this.equipmentStandbyMarkup +
-        this.equipmentRentalSubtotal +
-        this.equipmentRentalMarkup;
+        this.subcontractorMarkup =
+          +this.subcontractorSubtotal * +this.adjustments.subcontractor.markup;
+        this.subcontractorTotal =
+          +this.subcontractorMarkup + +this.subcontractorSubtotal;
+        this.equipmentTotal =
+          this.equipmentActiveSubtotal +
+          this.equipmentActiveMarkup +
+          this.equipmentStandbySubtotal +
+          this.equipmentStandbyMarkup +
+          this.equipmentRentalSubtotal +
+          this.equipmentRentalMarkup;
 
-      this.total =
-        this.equipmentTotal +
-        this.laborTotal +
-        this.otherTotal +
-        this.materialTotal +
-        this.subcontractorTotal;
-      if (request.meta && request.meta.notes) {
-        this.notes = request.meta.notes;
-      } else if (request.notes) {
-        this.notes = request.notes || '';
-      } else {
-        this.notes = '';
+        this.total =
+          this.equipmentTotal +
+          this.laborTotal +
+          this.otherTotal +
+          this.materialTotal +
+          this.subcontractorTotal;
+        if (request.meta && request.meta.notes) {
+          this.notes = request.meta.notes;
+        } else if (request.notes) {
+          this.notes = request.notes || '';
+        } else {
+          this.notes = '';
+        }
+        this.name = request.name || '';
+        this.projectId = request.projectId || '';
+        this.type = request.type || 'Force Account';
+        this.requestDate = request.requestDate || new Date();
+        if (request.age) {
+          this.age = request.age;
+        } else {
+          const diff = Math.abs(
+            this.requestDate.getTime() - new Date().getTime()
+          );
+          this.age = Math.ceil(diff / (1000 * 3600 * 24));
+        }
+
+        const sd = request.startDate || request.start;
+        if (sd && sd !== '') {
+          this.startDate = moment(sd).toDate();
+        } else {
+          this.startDate = new Date();
+        }
+        const ed = request.endDate || request.end;
+        if (ed && ed !== '') {
+          this.endDate = moment(ed).toDate();
+        } else {
+          this.endDate = new Date(this.startDate);
+        }
+
+        this.signatures = request.signatures || new Signatures({});
+        this.messages = request.messages || 0;
+
+        this.status = request.status || 'PENDING';
+        this.lineItems = request.lineItems || [];
+        this.lineItemTotals = request.lineItemTotals;
+        this.buildLineItems();
+        this.buildDateRange();
+        this.sortLineItemsByAge();
+      } catch (e) {
+        console.log('request constructor error: ' + e);
       }
-      this.name = request.name || '';
-      this.projectId = request.projectId || '';
-      this.type = request.type || 'Force Account';
-      this.requestDate = request.requestDate || new Date();
-      if (request.age) {
-        this.age = request.age;
-      } else {
-        const diff = Math.abs(
-          this.requestDate.getTime() - new Date().getTime()
-        );
-        this.age = Math.ceil(diff / (1000 * 3600 * 24));
-      }
-
-      const sd = request.startDate || request.start;
-      if (sd && sd !== '') {
-        this.startDate = moment(sd).toDate();
-      } else {
-        this.startDate = new Date();
-      }
-      const ed = request.endDate || request.end;
-      if (ed && ed !== '') {
-        this.endDate = moment(ed).toDate();
-      } else {
-        this.endDate = new Date(this.startDate);
-      }
-
-      this.signatures = request.signatures || new Signatures({});
-      this.messages = request.messages || 0;
-
-      this.status = request.status || 'PENDING';
-      this.lineItems = request.lineItems || [];
-      this.lineItemTotals = request.lineItemTotals;
-      this.buildLineItems();
-      this.buildDateRange();
-      this.sortLineItemsByAge();
     }
   }
 }

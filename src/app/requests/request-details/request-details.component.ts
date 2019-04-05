@@ -8,14 +8,9 @@ import {
   Component,
   NgZone,
   OnDestroy,
-  OnInit
+  OnInit,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatSnackBarConfig } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,19 +18,12 @@ import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/ngx-bootstrap-datep
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CanComponentDeactivate } from 'src/app/core/authentication/can-deactivate.guard';
 
 import { appAnimations } from '../../core/animations';
 import { AuthenticationService } from '../../core/authentication/authentication.service';
 import { BreadcrumbService } from '../../core/breadcrumbs/breadcrumbs.service';
-import { EquipmentService } from '../../equipment/equipment.service';
-import { ProjectsService } from '../../projects/projects.service';
-import {
-  Equipment,
-  Item,
-  ItemList,
-  Project,
-  Request
-} from '../../shared/model';
+import { Equipment, Item, ItemList, Project, Request } from '../../shared/model';
 import { RequestDeleteDialogComponent } from '../dialogs/request-delete-dialog.component';
 import { RequestRecapitulationDialogComponent } from '../dialogs/request-recapitulation-dialog.component';
 import { RequestRejectDialogComponent } from '../dialogs/request-reject-dialog.component';
@@ -52,7 +40,12 @@ import { RequestApproveDialogComponent } from './../dialogs/request-approve-dial
   animations: appAnimations
 })
 export class RequestDetailsComponent
-  implements OnInit, OnDestroy, AfterViewInit, AfterContentInit {
+  implements
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    AfterContentInit,
+    CanComponentDeactivate {
   private config: MatSnackBarConfig;
   shrinkToolbar = false;
   duration = 3000;
@@ -76,7 +69,7 @@ export class RequestDetailsComponent
   itemTypes: any[];
   machineChoices: Equipment[];
   machineChoice: string;
-
+  formDirty = false;
   colorTheme = 'theme-dark-blue';
 
   bsConfig: Partial<BsDatepickerConfig>;
@@ -91,8 +84,6 @@ export class RequestDetailsComponent
     private route: ActivatedRoute,
     private router: Router,
     private requestsService: RequestsService,
-    private projectsService: ProjectsService,
-    private equipmentService: EquipmentService,
     private authenticationService: AuthenticationService,
     private breadcrumbService: BreadcrumbService,
     private _location: Location,
@@ -103,6 +94,31 @@ export class RequestDetailsComponent
   ngAfterViewInit() {}
 
   ngAfterContentInit(): void {}
+
+  confirm(): boolean {
+    if (this.formDirty) {
+      return false;
+      /*
+      console.log('CHECKING candeactivate...');
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: '55vw',
+        data: {
+          message: 'Discard changes to line items?',
+          title: 'Discard Request Changes'
+        }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result.success) {
+          return true;
+        } else {
+          return false;
+        }
+      });*/
+    } else {
+      console.log('CAN candeactivate...');
+      return true;
+    }
+  }
 
   ngOnInit() {
     this.bsConfig = Object.assign({}, { containerClass: this.colorTheme });
@@ -424,6 +440,7 @@ export class RequestDetailsComponent
   refreshRequest() {
     this.requestsService.getRequest(this.request.id).subscribe(
       (r: Request) => {
+        this.formDirty = false;
         this.request = r;
         this.checkPermissions();
         this.buildItemTypes();
@@ -438,7 +455,9 @@ export class RequestDetailsComponent
     this.snackBar.open(message, action, this.config);
   }
 
-  itemsChanged(event: any) {}
+  itemsChanged(event: any) {
+    this.formDirty = true;
+  }
 
   reworkRequest() {
     const dialogRef = this.dialog.open(RequestReworkDialogComponent, {

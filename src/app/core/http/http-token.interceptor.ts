@@ -1,10 +1,4 @@
-import {
-  HttpEvent,
-  HttpHandler,
-  HttpHeaders,
-  HttpInterceptor,
-  HttpRequest
-} from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { from, Observable } from 'rxjs';
@@ -29,6 +23,7 @@ export class TokenInterceptor implements HttpInterceptor {
   ): Promise<HttpEvent<any>> {
     let changedRequest = request;
     let token;
+
     const headerSettings: { [name: string]: string | string[] } = {};
     for (const key of request.headers.keys()) {
       headerSettings[key] = request.headers.getAll(key);
@@ -39,7 +34,6 @@ export class TokenInterceptor implements HttpInterceptor {
       this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (!request.url.includes(environment.attachmentURL)) {
-      // console.log("token:\n\n " + token);
       headerSettings['Authorization'] = 'Bearer ' + token;
       headerSettings['Cache-Control'] = 'no-cache';
       headerSettings['Pragma'] = 'no-cache';

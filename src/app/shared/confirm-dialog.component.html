@@ -1,0 +1,17 @@
+<h3 mat-dialog-title>{{ title }}</h3>
+<mat-dialog-content class="pb-2">
+  <p>{{ message }}</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button type="button" class="btn btn-outline-danger" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    type="button"
+    cdkFocusInitial
+    class="btn btn-success"
+    (click)="confirm()"
+  >
+    Continue
+  </button>
+</mat-dialog-actions>

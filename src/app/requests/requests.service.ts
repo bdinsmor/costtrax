@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
 import { UploadFile } from 'ng-zorro-antd';
+import { FileSaverService } from 'ngx-filesaver';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -23,7 +24,10 @@ export class RequestsService {
 
   uploading = false;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private _FileSaverService: FileSaverService
+  ) {
     this.editedItems = {};
   }
 
@@ -50,10 +54,16 @@ export class RequestsService {
       );
   }
 
-  openAttachment(uploadFile: UploadFile) {
-    return this.http.get(
-      environment.serverUrl + '/attachment/' + uploadFile.uid
-    );
+  openAttachment(url, fileName) {
+    console.log('\nfileName: ' + fileName + '\n\nurl: ' + url);
+    this.http
+      .get(url, {
+        observe: 'response',
+        responseType: 'blob'
+      })
+      .subscribe(res => {
+        this._FileSaverService.save(res.body, fileName);
+      });
   }
 
   deleteAttachment(requestId: string, attachmentId: string) {
@@ -92,8 +102,13 @@ export class RequestsService {
   getRequest(id: string): Observable<Request> {
     return this.http.get(environment.serverUrl + '/request/' + id).pipe(
       map((res: any) => {
-        const json = res as any;
-        return new Request(json);
+        try {
+          const json = res as any;
+          const r: Request = new Request(json);
+          return r;
+        } catch (e) {
+          console.log('error: ' + JSON.stringify(e, null, 2));
+        }
       })
     );
   }

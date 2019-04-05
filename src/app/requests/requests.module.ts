@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { FileSaverModule } from 'ngx-filesaver';
 
 import { CoreModule } from '../core';
 import { DirectivesModule } from '../core/directives/directives';
@@ -59,6 +60,7 @@ registerLocaleData(en);
     NgZorroAntdModule,
     LineItemsModule,
     NgxCurrencyModule,
+    FileSaverModule,
     BsDatepickerModule.forRoot()
   ],
   exports: [

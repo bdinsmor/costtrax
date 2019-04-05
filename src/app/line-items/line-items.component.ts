@@ -8,16 +8,10 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  Renderer2
+  Renderer2,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import {
-  MatDialog,
-  MatIconRegistry,
-  MatSnackBar,
-  MatSnackBarConfig,
-  Sort
-} from '@angular/material';
+import { MatDialog, MatIconRegistry, MatSnackBar, MatSnackBarConfig, Sort } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ClrDatagridComparatorInterface } from '@clr/angular/data/datagrid';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker/bs-datepicker.config';
@@ -190,14 +184,13 @@ export class LineItemsComponent implements OnInit, OnDestroy {
   formatterDollar = (value: number) => `$ ${value}`;
   parserDollar = (value: string) => {
     // value.replace('$', '');
-  };
+  }
 
   ngOnInit() {
     if (!this.requestStatus || this.requestStatus === '') {
       this.requestStatus = 'draft';
     }
     this.requestStatus = this.requestStatus.toLowerCase();
-    console.log('request status: ' + this.requestStatus);
     this.itemsLoading = true;
     this.bsConfig = Object.assign(
       {},
@@ -315,6 +308,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
 
   confirmAddModel(item: Item) {
     this.itemList.items = [...this.itemList.items, item];
+    this.itemsChanged.emit();
     this.changeDetector.detectChanges();
   }
 
@@ -378,6 +372,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             }
 
             this.itemList.items = [...this.itemList.items, newItem];
+            this.itemsChanged.emit();
           }
           if (skipped > 0) {
             this.openSnackBar(
@@ -451,6 +446,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       });
       newItem.beingEdited = true;
       this.itemList.items = [...this.itemList.items, newItem];
+      this.itemsChanged.emit();
       this.changeDetector.detectChanges();
     }
   }
@@ -518,10 +514,12 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     }
     newItem.beingEdited = true;
     this.itemList.items = [...this.itemList.items, newItem];
+    this.itemsChanged.emit();
     this.saveChanges(this.itemList.items.length, newItem);
   }
 
   removeLastRow() {
+    this.itemsChanged.emit();
     this.itemList.items.pop();
   }
 
@@ -695,7 +693,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
       if (result && result.success) {
         this.selectedItem = null;
         this.itemList.items.splice(this.selectedIndex, 1);
-
+        this.itemsChanged.emit();
         this.changeDetector.detectChanges();
       }
     });
@@ -807,7 +805,7 @@ export class LineItemsComponent implements OnInit, OnDestroy {
             this.itemList.items[index].subtotalApproved > 0 &&
             +this.itemList.items[index].subtotal !==
               +this.itemList.items[index].subtotalApproved;
-
+          this.itemsChanged.emit();
           this.changeDetector.detectChanges();
         }
       }
@@ -824,12 +822,19 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     this.popoverNotes = '';
   }
 
+  compareAttachments(o1: any[], o2: any[]) {
+    return (
+      Object.keys(o1).length === Object.keys(o2).length &&
+      Object.keys(o1).every(p => o1[p] === o2[p])
+    );
+  }
+
   viewAttachments(item: Item) {
     this.selectedItem = item;
     this.renderer.addClass(document.body, 'modal-open');
     const dialogRef = this.dialog.open(AttachmentsDialogComponent, {
       width: '80vw',
-      disableClose: true,
+      disableClose: false,
       data: {
         requestId: this.requestId,
         selectedItem: item,
@@ -841,6 +846,10 @@ export class LineItemsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       this.renderer.removeClass(document.body, 'modal-open');
       if (result && result.fileList) {
+        const eq = this.compareAttachments(item.attachments, result.fileList);
+        if (!eq) {
+          this.itemsChanged.emit();
+        }
         item.attachments = result.fileList;
 
         this.selectedItem = null;

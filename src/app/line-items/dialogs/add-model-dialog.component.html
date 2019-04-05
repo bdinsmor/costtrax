@@ -19,7 +19,7 @@
         [hideSelected]="true"
         [loading]="manufacturerLoading"
         (clear)="onMakeClear()"
-        (remove)="onMakeRemove($event)"
+        (remove)="makeRemove($event)"
         [typeahead]="manufacturerInput$"
         formControlName="manufacturer"
       >
@@ -38,7 +38,7 @@
           [hideSelected]="true"
           [loading]="modelLoading"
           [typeahead]="modelInput$"
-          (remove)="onModelRmove($event)"
+          (remove)="modelRemove($event)"
           (clear)="onModelClear()"
           formControlName="model"
         >
@@ -58,7 +58,7 @@
           [closeOnSelect]="true"
           [clearable]="true"
           [hideSelected]="true"
-          (remove)="onYearRemove($event)"
+          (remove)="yearRemove($event)"
           formControlName="year"
         >
         </ng-select>
@@ -71,7 +71,7 @@
           bindValue="year"
           placeholder="Year"
           clearAllText="Clear"
-          (remove)="onYearRemove($event)"
+          (remove)="yearRemove($event)"
           [closeOnSelect]="true"
           [clearable]="true"
           [hideSelected]="true"

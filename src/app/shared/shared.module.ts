@@ -7,6 +7,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 
 import { MaterialModule } from '../material.module';
 import { UsersModule } from '../users/users.module';
+import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -20,7 +21,7 @@ import { LoaderComponent } from './loader/loader.component';
     CommonModule,
     UsersModule
   ],
-  declarations: [LoaderComponent],
+  declarations: [ConfirmDialogComponent, LoaderComponent],
   exports: [
     FormsModule,
     ReactiveFormsModule,
@@ -28,7 +29,9 @@ import { LoaderComponent } from './loader/loader.component';
     CommonModule,
     ClarityModule,
     NgSelectModule,
+    ConfirmDialogComponent,
     LoaderComponent
-  ]
+  ],
+  entryComponents: [ConfirmDialogComponent]
 })
 export class SharedModule {}
